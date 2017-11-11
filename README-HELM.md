@@ -6,7 +6,7 @@ Two VMs are used here: build-VM and deployment-VM.
 
 ## Prepare Machines
  
-Prepare two machines. One for build process - 8Gb ram, 2 cores, 60Gb disk (m4.large in amazon). Second for run openstack-helm gating - 32Gb ram, 16 cores, 60Gb disk (c4.4xlarge in amazon).
+Prepare two machines. One for build process - 8Gb ram, 2 cores, 60Gb disk (m4.large in amazon). Second for running openstack-helm gating - 32Gb ram, 16 cores, 60Gb disk (c4.4xlarge in amazon).
 
 ## Prepare VPC
 
