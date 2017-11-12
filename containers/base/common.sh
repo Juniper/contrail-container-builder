@@ -94,7 +94,7 @@ EOM
 
 
 DEFAULT_IFACE=`ip -4 route list 0/0 | awk '{ print $5; exit }'`
-DEFAULT_LOCAL_IP=`ip addr | grep $iface | grep 'inet ' | awk '{print $2}' | cut -d '/' -f 1`
+DEFAULT_LOCAL_IP=`ip addr | grep $DEFAULT_IFACE | grep 'inet ' | awk '{print $2}' | cut -d '/' -f 1`
 
 function set_third_party_auth_config(){
   if [[ $CONFIG_API_AUTH == "keystone" ]]; then
