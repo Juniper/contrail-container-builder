@@ -2,9 +2,13 @@
 
 function wait_for_contrail_api() {
   # TODO: wait for correct contrail API address.
-  # TODO: ansible waits on 8082 port for non-openstack or aaa-mode=no-auth
+  # TODO: try to rework it  non-openstack or aaa-mode=no-auth
   for (( i=0; i<120; i++)) ; do
+    # 8095 is used when cloud_orchestrator == openstack and aaa-mode != no-auth
     if curl -sI http://127.0.0.1:8095/ | head -1 | grep -q 200 ; then
+      return
+    # 8082 in other cases
+    elif curl -sI http://127.0.0.1:8082/ | head -1 | grep -q 200 ; then
       return
     fi
     sleep 1
