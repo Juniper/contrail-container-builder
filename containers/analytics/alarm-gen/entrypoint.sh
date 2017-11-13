@@ -4,7 +4,7 @@ source /common.sh
 
 cat > /etc/contrail/contrail-alarm-gen.conf << EOM
 [DEFAULTS]
-host_ip=${ALARMGEN_LISTEN_IP:-`get_listen_ip`}
+host_ip=${ALARMGEN_LISTEN_IP:-${DEFAULT_LOCAL_IP}}
 partitions=${ALARMGEN_partitions:-30}
 http_server_port=${ALARMGEN_INTROSPECT_LISTEN_PORT:-$ALARMGEN_INTROSPECT_PORT}
 log_file=${ALARMGEN_LOG_FILE:-"$LOG_DIR/contrail-alarm-gen.log"}

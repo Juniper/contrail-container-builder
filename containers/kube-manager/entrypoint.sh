@@ -15,7 +15,7 @@ log_level=${KUBEMANAGER_LOG_LEVEL:-$LOG_LEVEL}
 log_file=${KUBEMANAGER_LOG_FILE:-"$LOG_DIR/contrail-kube-manager.log"}
 
 [KUBERNETES]
-kubernetes_api_server=${KUBERNETES_API_SERVER:-`get_listen_ip`}
+kubernetes_api_server=${KUBERNETES_API_SERVER:-${DEFAULT_LOCAL_IP}}
 kubernetes_api_port=${KUBERNETES_API_PORT:-8080}
 kubernetes_api_secure_port=${KUBERNETES_API_SECURE_PORT:-6443}
 service_subnets=${KUBERNETES_SERVICE_SUBNETS:-"10.96.0.0/12"}

@@ -4,7 +4,7 @@ source /common.sh
 
 cat > /etc/contrail/contrail-device-manager.conf << EOM
 [DEFAULTS]
-api_server_ip=${CONFIG_API_ADDRESS:-`get_listen_ip`}
+api_server_ip=${CONFIG_API_ADDRESS:-${DEFAULT_LOCAL_IP}}
 api_server_port=$CONFIG_API_PORT
 log_file=${CONFIG_DEVICEMGR_LOG_FILE:-"$LOG_DIR/contrail-device-manager.log"}
 log_level=${CONFIG_DEVICEMGR_LOG_LEVEL:-$LOG_LEVEL}

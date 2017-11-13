@@ -4,7 +4,7 @@ source /common.sh
 
 cat > /etc/contrail/contrail-analytics-api.conf << EOM
 [DEFAULTS]
-host_ip=${ANALYTICS_API_LISTEN_IP:-`get_listen_ip`}
+host_ip=${ANALYTICS_API_LISTEN_IP:-${DEFAULT_LOCAL_IP}}
 http_server_port=${ANALYTICS_API_INTROSPECT_LISTEN_PORT:-$ANALYTICS_API_INTROSPECT_PORT}
 rest_api_port=${ANALYTICS_API_LISTEN_PORT:-$ANALYTICS_API_PORT}
 rest_api_ip=${ANALYTICS_API_LISTEN_IP:-0.0.0.0}

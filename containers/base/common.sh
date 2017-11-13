@@ -2,7 +2,10 @@
 
 source /functions.sh
 
-CONTROLLER_NODES=${CONTROLLER_NODES:-`get_listen_ip`}
+DEFAULT_IFACE=`ip -4 route list 0/0 | awk '{ print $5; exit }'`
+DEFAULT_LOCAL_IP=`ip addr | grep $DEFAULT_IFACE | grep 'inet ' | awk '{print $2}' | cut -d '/' -f 1`
+
+CONTROLLER_NODES=${CONTROLLER_NODES:-${DEFAULT_LOCAL_IP}}
 CONFIG_NODES=${CONFIG_NODES:-${CONTROLLER_NODES}}
 RABBITMQ_NODES=${RABBITMQ_NODES:-${CONFIG_NODES}}
 CONFIGDB_NODES=${CONFIGDB_NODES:-${CONFIG_NODES}}
@@ -92,9 +95,6 @@ sandesh_certfile=${SANDESH_CERTFILE:-/etc/contrail/ssl/certs/server.pem}
 sandesh_ca_cert=${SANDESH_CA_CERT:-/etc/contrail/ssl/certs/ca-cert.pem}
 EOM
 
-
-DEFAULT_IFACE=`ip -4 route list 0/0 | awk '{ print $5; exit }'`
-DEFAULT_LOCAL_IP=`ip addr | grep $DEFAULT_IFACE | grep 'inet ' | awk '{print $2}' | cut -d '/' -f 1`
 
 function set_third_party_auth_config(){
   if [[ $CONFIG_API_AUTH == "keystone" ]]; then

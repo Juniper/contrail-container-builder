@@ -3,7 +3,7 @@
 source /common.sh
 
 HYPERVISOR_TYPE="${HYPERVISOR_TYPE:-kvm}"
-PHYS_INT=${PHYSICAL_INTERFACE:-`get_default_nic`}
+PHYS_INT=${PHYSICAL_INTERFACE:-${DEFAULT_IFACE}}
 CUR_INT=$PHYS_INT
 if [[ `ip address show vhost0 |grep "inet "` ]]; then
   CUR_INT=vhost0

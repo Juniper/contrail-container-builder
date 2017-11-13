@@ -26,7 +26,7 @@ named_max_cache_size=${DNS_NAMED_MAX_CACHE_SIZE:-32M} # max-cache-size (bytes) p
 named_max_retransmissions=${DNS_NAMED_MAX_RETRANSMISSIONS:-12}
 named_retransmission_interval=${DNS_RETRANSMISSION_INTERVAL:-1000} # msec
 
-hostip=${DNS_LISTEN_IP:-`get_listen_ip`}
+hostip=${DNS_LISTEN_IP:-${DEFAULT_LOCAL_IP}}
 hostname=${DNS_HOSTNAME:-`hostname`}
 http_server_port=${DNS_INTROSPECT_LISTEN_PORT:-$DNS_INTROSPECT_PORT}
 dns_server_port=$DNS_SERVER_PORT
