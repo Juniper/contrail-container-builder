@@ -3,6 +3,7 @@
 export OHOME=$HOME
 
 linux=$(awk -F"=" '/^ID=/{print $2}' /etc/os-release | tr -d '"')
+hostname=`cat /etc/hostname`
 
 sudo -u root /bin/bash << EOS
 
@@ -62,6 +63,13 @@ case "${linux}" in
     install_for_centos
     ;;
 esac
+
+# cloud-init of oficial AWS CentOS image at first boot dynamically changes hostname to short name while static name is full one.
+# This leads to the node register itself with the short name and cannot register after rebooting with full name.
+# Here we try to set hostname to static name if they differ.
+if [[ -n "$hostname" && "$hostname" != `hostname` ]]; then
+  hostname $hostname
+fi
 
 kubeadm init --kubernetes-version v1.7.4
 
