@@ -48,4 +48,5 @@ read -r -d '' contrail_cni_conf << EOM
 EOM
 
 echo "$contrail_cni_conf" > /host/etc_cni/net.d/10-contrail.conf
+
 exec "$@"

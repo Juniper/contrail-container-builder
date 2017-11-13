@@ -25,4 +25,3 @@ EOM
 set_vnc_api_lib_ini
 
 exec "$@"
-

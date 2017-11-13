@@ -109,15 +109,17 @@ if [[ -z `lsmod | grep vrouter` ]]; then
 fi
 
 if [[ $CUR_INT != "vhost0" ]]; then
-        echo "Inserting vrouter"
-        insert_vrouter
+  echo "Inserting vrouter"
+  insert_vrouter
 
-        echo "Changing physical interface to vhost in ip table"
-        ip address delete $VROUTER_IP/$VROUTER_MASK dev ${PHYS_INT}
-        ip address add $VROUTER_IP/$VROUTER_MASK dev vhost0
-        if [[ $VROUTER_GATEWAY ]]; then
-            ip route add default via $VROUTER_GATEWAY
-        fi
+  echo "Changing physical interface to vhost in ip table"
+  set -x
+  ip address delete $VROUTER_IP/$VROUTER_MASK dev ${PHYS_INT}
+  ip address add $VROUTER_IP/$VROUTER_MASK dev vhost0
+  if [[ $VROUTER_GATEWAY ]]; then
+    ip route add default via $VROUTER_GATEWAY
+  fi
+  set +x
 fi
 
 # Prepare agent configs
@@ -127,6 +129,8 @@ set_vnc_api_lib_ini
 
 # Prepare default_pmac
 echo $PHYS_INT_MAC > /etc/contrail/default_pmac
+
+wait_for_contrail_api
 
 # Provision vrouter
 echo "Provisioning vrouter"

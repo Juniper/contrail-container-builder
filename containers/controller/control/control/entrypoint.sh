@@ -54,6 +54,8 @@ EOM
 set_third_party_auth_config
 set_vnc_api_lib_ini
 
+wait_for_contrail_api
+
 IFS=',' read -ra config_node_list <<< "${CONFIG_NODES}"
 config_node=${config_node_list[0]}
 /opt/contrail/utils/provision_control.py --host_name ${hostname} --host_ip ${listen_ip} --router_asn ${BGP_ASN} \
