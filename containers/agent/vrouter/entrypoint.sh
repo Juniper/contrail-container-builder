@@ -4,18 +4,20 @@ source /common.sh
 
 HYPERVISOR_TYPE="${HYPERVISOR_TYPE:-kvm}"
 PHYS_INT=${PHYSICAL_INTERFACE:-${DEFAULT_IFACE}}
+echo "INFO: Physical interface: $PHYS_INT"
 CUR_INT=$PHYS_INT
-if [[ `ip address show vhost0 |grep "inet "` ]]; then
-  CUR_INT=vhost0
+if ip address show vhost0 | grep -q "inet " ; then
+  CUR_INT='vhost0'
 fi
-VROUTER_CIDR=`ip address show ${CUR_INT} |grep "inet "|awk '{print $2}'`
+echo "INFO: Current interface: $CUR_INT"
+VROUTER_CIDR=`ip address show ${CUR_INT} | grep "inet " | awk '{print $2}'`
 VROUTER_IP=${VROUTER_CIDR%/*}
 VROUTER_MASK=${VROUTER_CIDR#*/}
 
-if [[ `ip address show ${CUR_INT} |grep "inet "` ]]; then
+if ip address show ${CUR_INT} | grep -q "inet "; then
   VROUTER_GATEWAY=''
-  if [[ `ip route show |grep default|grep ${CUR_INT}` ]]; then
-        VROUTER_GATEWAY=`ip route show |grep default|grep ${CUR_INT}|awk '{print $3}'`
+  if ip route show | grep default | grep ${CUR_INT} ; then
+    VROUTER_GATEWAY=`ip route show | grep default | grep ${CUR_INT} | awk '{print $3}'`
   fi
 fi
 
@@ -103,24 +105,24 @@ kver=`uname -r | awk -F"-" '{print $1}'`
 modfile=`ls -1rt /opt/contrail/vrouter-kernel-modules/$kver-*/vrouter.ko | tail -1`
 echo "Modprobing vrouter "$modfile
 insmod $modfile
-if [[ -z `lsmod | grep vrouter` ]]; then
+if ! lsmod | grep -q vrouter ; then
   echo "Failed to insert vrouter kernel module"
   exit 1
 fi
 
-if [[ $CUR_INT != "vhost0" ]]; then
+set -x
+if [[ "$CUR_INT" != "vhost0" ]] ; then
   echo "Inserting vrouter"
   insert_vrouter
 
   echo "Changing physical interface to vhost in ip table"
-  set -x
   ip address delete $VROUTER_IP/$VROUTER_MASK dev ${PHYS_INT}
   ip address add $VROUTER_IP/$VROUTER_MASK dev vhost0
   if [[ $VROUTER_GATEWAY ]]; then
     ip route add default via $VROUTER_GATEWAY
   fi
-  set +x
 fi
+set +x
 
 # Prepare agent configs
 echo "Preparing configs"
