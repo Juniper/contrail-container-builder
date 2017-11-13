@@ -11,6 +11,7 @@ function wait_for_contrail_api() {
     elif curl -sI http://127.0.0.1:8082/ | head -1 | grep -q 200 ; then
       return
     fi
+    echo "INFO: waiting for API server: $i / 120"
     sleep 1
   done
   echo "ERROR: Config API server is not responding. Exiting..."
