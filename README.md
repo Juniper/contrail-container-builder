@@ -88,4 +88,4 @@ Please refer to the README-HELM.md
 ~~26. Add synchronization for containers (supposedly Cassandra and Zookeeper for controller should be run before contrail containers)~~
 
 27. Remove contrail-config section from yaml and remove all its remaining usages
-
+28. Add comments to each entrypoint.sh for interface ENV variables 
