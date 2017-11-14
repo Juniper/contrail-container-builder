@@ -120,8 +120,6 @@ spec:
       - name: zookeeper
         image: "zookeeper:3.4.10"
         imagePullPolicy: ""
-        securityContext:
-          privileged: true
         volumeMounts:
         - mountPath: /var/lib/zookeeper
           name: zookeeper-config-data
@@ -164,8 +162,6 @@ spec:
       - name: kafka
         image: "{{registry}}/contrail-analyticsdb-kafka:{{version}}"
         imagePullPolicy: ""
-        securityContext:
-          privileged: true
         envFrom:
         - configMapRef:
             name: env
@@ -204,8 +200,6 @@ spec:
       - name: contrail-analyticsdb
         image: "cassandra:2.2.10"
         imagePullPolicy: ""
-        securityContext:
-          privileged: true
         envFrom:
         - configMapRef:
             name: contrail-analyticsdb-config
@@ -251,8 +245,6 @@ spec:
       - name: contrail-configdb
         image: "cassandra:2.2.10"
         imagePullPolicy: ""
-        securityContext:
-          privileged: true
         envFrom:
         - configMapRef:
             name: contrail-configdb-config
@@ -298,8 +290,6 @@ spec:
       - name: contrail-analytics-api
         image: "{{registry}}/contrail-analytics-api:{{version}}"
         imagePullPolicy: ""
-        securityContext:
-          privileged: true
         envFrom:
         - configMapRef:
             name: env
@@ -309,48 +299,36 @@ spec:
         envFrom:
         - configMapRef:
             name: env
-        securityContext:
-          privileged: true
       - name: contrail-analytics-alarm-gen
         image: "{{registry}}/contrail-analytics-alarm-gen:{{version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
             name: env
-        securityContext:
-          privileged: true
       - name: contrail-analytics-query-engine
         image: "{{registry}}/contrail-analytics-query-engine:{{version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
             name: env
-        securityContext:
-          privileged: true
       - name: contrail-analytics-snmp-collector
         image: "{{registry}}/contrail-analytics-snmp-collector:{{version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
             name: env
-        securityContext:
-          privileged: true
       - name: contrail-analytics-topology
         image: "{{registry}}/contrail-analytics-topology:{{version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
             name: env
-        securityContext:
-          privileged: true
       - name: contrail-analytics-nodemgr
         image: "{{registry}}/contrail-analytics-nodemgr:{{version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
             name: nodemgr-config
-        securityContext:
-          privileged: true
 # todo: there is type Socket in new kubernetes, it is possible to use full
 # path:
 # hostPath:
@@ -398,8 +376,6 @@ spec:
       - name: contrail-controller-control
         image: "{{registry}}/contrail-controller-control-control:{{version}}"
         imagePullPolicy: ""
-        securityContext:
-          privileged: true
         envFrom:
         - configMapRef:
             name: env
@@ -409,14 +385,13 @@ spec:
         envFrom:
         - configMapRef:
             name: env
-        securityContext:
-          privileged: true
       - name: contrail-controller-control-named
         image: "{{registry}}/contrail-controller-control-named:{{version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
             name: env
+        # priveled mode is used for: syscall(capset) failed: Operation not permitted: please ensure that the capset kernel module is loaded.  see insmod(8)
         securityContext:
           privileged: true
       - name: contrail-controller-control-nodemgr
@@ -425,8 +400,6 @@ spec:
         envFrom:
         - configMapRef:
             name: nodemgr-config
-        securityContext:
-          privileged: true
 # todo: there is type Socket in new kubernetes, it is possible to use full
 # path:
 # hostPath:
@@ -474,8 +447,6 @@ spec:
       - name: contrail-controller-config-api
         image: "{{registry}}/contrail-controller-config-api:{{version}}"
         imagePullPolicy: ""
-        securityContext:
-          privileged: true
         envFrom:
         - configMapRef:
             name: env
@@ -485,21 +456,15 @@ spec:
         envFrom:
         - configMapRef:
             name: env
-        securityContext:
-          privileged: true
       - name: contrail-controller-config-schema
         image: "{{registry}}/contrail-controller-config-schema:{{version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
             name: env
-        securityContext:
-          privileged: true
       - name: contrail-controller-config-svcmonitor
         image: "{{registry}}/contrail-controller-config-svcmonitor:{{version}}"
         imagePullPolicy: ""
-        securityContext:
-          privileged: true
         envFrom:
         - configMapRef:
             name: env
@@ -509,8 +474,6 @@ spec:
         envFrom:
         - configMapRef:
             name: nodemgr-config
-        securityContext:
-          privileged: true
 # todo: there is type Socket in new kubernetes, it is possible to use full
 # path:
 # hostPath:
@@ -558,8 +521,6 @@ spec:
       - name: contrail-controller-webui-job
         image: "{{registry}}/contrail-controller-webui-job:{{version}}"
         imagePullPolicy: ""
-        securityContext:
-          privileged: true
         envFrom:
         - configMapRef:
             name: env
@@ -569,8 +530,6 @@ spec:
         envFrom:
         - configMapRef:
             name: env
-        securityContext:
-          privileged: true
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -606,8 +565,6 @@ spec:
       - name: redis
         image: "redis:4.0.2"
         imagePullPolicy: ""
-        securityContext:
-          privileged: true
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -646,8 +603,6 @@ spec:
         env:
         - name: RABBITMQ_ERLANG_COOKIE
           value: "47EFF3BB-4786-46E0-A5BB-58455B3C2CB4"
-        securityContext:
-          privileged: true
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -684,8 +639,6 @@ spec:
       - name: contrail-kube-manager
         image: "{{registry}}/contrail-kube-manager:{{version}}"
         imagePullPolicy: ""
-        securityContext:
-          privileged: true
         env:
         - name: K8S_TOKEN_FILE
           value: "/tmp/serviceaccount/token"
@@ -746,8 +699,6 @@ spec:
       - name: contrail-kubernetes-agent
         image: "{{registry}}/contrail-kubernetes-kube-agent:{{version}}"
         imagePullPolicy: ""
-        securityContext:
-          privileged: true
         volumeMounts:
         - mountPath: /tmp/contrailctl
           name: tmp-contrail-config
@@ -792,8 +743,6 @@ spec:
         envFrom:
         - configMapRef:
             name: nodemgr-config
-        securityContext:
-          privileged: true
 # todo: there is type Socket in new kubernetes, it is possible to use full
 # path:
 # hostPath:
