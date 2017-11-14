@@ -398,7 +398,7 @@ spec:
         securityContext:
           privileged: true
       - name: contrail-controller-nodemgr
-        image: "{{registry}}/contrail-controller-control-nodemgr:{{version}}"
+        image: "{{registry}}/contrail-nodemgr:{{version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -706,7 +706,7 @@ spec:
       automountServiceAccountToken: false
       hostNetwork: true
       initContainers:
-      - name: contrail-kubernetes-agent
+      - name: contrail-kubernetes-vrouter-init
         image: "{{registry}}/contrail-kubernetes-vrouter-init:{{version}}"
         imagePullPolicy: ""
         volumeMounts:
