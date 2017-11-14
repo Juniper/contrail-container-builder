@@ -62,8 +62,11 @@ Please refer to the README-HELM.md
 4. Kubeagent - create new one
 5. All scripts - move to root dir
 6. Source rpm repo in setup, add parameter to take from non-S3
+
 ~~7. Rename contrail-micro.yaml to contrail-micro.yaml.sample~~
+
 ~~8. Create README~~
+
 9. Remove firewall during setup
 10. Deal with “cannot allocate memory” during kernel module loading
 11. Complete vrouter container - add DPDK, VLAN, etc.
@@ -81,6 +84,8 @@ Please refer to the README-HELM.md
 23. Add yum clean at the end of containers
 24. Rename kubernetes/kube-agent to kubernetes/vrouter-init
 25. Move kube-manager to kubernetes folder
+
 ~~26. Add synchronization for containers (supposedly Cassandra and Zookeeper for controller should be run before contrail containers)~~
+
 27. Remove contrail-config section from yaml and remove all its remaining usages
 
