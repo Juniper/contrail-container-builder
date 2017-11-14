@@ -637,7 +637,7 @@ spec:
       hostNetwork: true
       containers:
       - name: contrail-kube-manager
-        image: "{{registry}}/contrail-kube-manager:{{version}}"
+        image: "{{registry}}/contrail-kubernetes-kube-manager:{{version}}"
         imagePullPolicy: ""
         env:
         - name: K8S_TOKEN_FILE
@@ -696,8 +696,8 @@ spec:
       automountServiceAccountToken: false
       hostNetwork: true
       initContainers:
-      - name: contrail-kubernetes-agent
-        image: "{{registry}}/contrail-kubernetes-kube-agent:{{version}}"
+      - name: contrail-kubernetes-vrouter-init
+        image: "{{registry}}/contrail-kubernetes-vrouter-init:{{version}}"
         imagePullPolicy: ""
         volumeMounts:
         - mountPath: /tmp/contrailctl
