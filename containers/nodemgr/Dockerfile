@@ -10,7 +10,7 @@ RUN /usr/bin/yes | cp -r /contrail-controller/src/nodemgr /usr/lib/python2.7/sit
 COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/usr/bin/python", "/usr/bin/contrail-nodemgr", "--nodetype=$NODEMGR_TYPE"]
+CMD /usr/bin/python /usr/bin/contrail-nodemgr --nodetype=${NODEMGR_TYPE}
 
 LABEL net.juniper.nodemgr.filter.name=nodemgr
 LABEL net.juniper.contrail=nodemgr
