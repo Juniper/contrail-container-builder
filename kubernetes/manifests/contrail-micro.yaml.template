@@ -324,11 +324,15 @@ spec:
         - configMapRef:
             name: env
       - name: contrail-analytics-nodemgr
-        image: "{{registry}}/contrail-analytics-nodemgr:{{version}}"
+        image: "{{registry}}/contrail-nodemgr:{{version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
             name: nodemgr-config
+        env:
+        - name: NODE_TYPE
+          value: analytics 
+
 # todo: there is type Socket in new kubernetes, it is possible to use full
 # path:
 # hostPath:
@@ -391,15 +395,17 @@ spec:
         envFrom:
         - configMapRef:
             name: env
-        # priveled mode is used for: syscall(capset) failed: Operation not permitted: please ensure that the capset kernel module is loaded.  see insmod(8)
         securityContext:
           privileged: true
-      - name: contrail-controller-control-nodemgr
+      - name: contrail-controller-nodemgr
         image: "{{registry}}/contrail-controller-control-nodemgr:{{version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
             name: nodemgr-config
+        env:
+        - name: NODE_TYPE
+          value: control
 # todo: there is type Socket in new kubernetes, it is possible to use full
 # path:
 # hostPath:
@@ -447,6 +453,7 @@ spec:
       - name: contrail-controller-config-api
         image: "{{registry}}/contrail-controller-config-api:{{version}}"
         imagePullPolicy: ""
+
         envFrom:
         - configMapRef:
             name: env
@@ -469,11 +476,14 @@ spec:
         - configMapRef:
             name: env
       - name: contrail-controller-config-nodemgr
-        image: "{{registry}}/contrail-controller-config-nodemgr:{{version}}"
+        image: "{{registry}}/contrail-nodemgr:{{version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
             name: nodemgr-config
+        env:
+        - name: NODE_TYPE
+          value: config
 # todo: there is type Socket in new kubernetes, it is possible to use full
 # path:
 # hostPath:
@@ -696,7 +706,7 @@ spec:
       automountServiceAccountToken: false
       hostNetwork: true
       initContainers:
-      - name: contrail-kubernetes-vrouter-init
+      - name: contrail-kubernetes-agent
         image: "{{registry}}/contrail-kubernetes-vrouter-init:{{version}}"
         imagePullPolicy: ""
         volumeMounts:
@@ -738,11 +748,14 @@ spec:
         - mountPath: /tmp/serviceaccount
           name: pod-secret
       - name: contrail-agent-nodemgr
-        image: "{{registry}}/contrail-agent-nodemgr:{{version}}"
+        image: "{{registry}}/contrail-nodemgr:{{version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
-            name: nodemgr-config
+            name: nodemgr-config            
+        env:
+        - name: NODE_TYPE
+          value: vrouter
 # todo: there is type Socket in new kubernetes, it is possible to use full
 # path:
 # hostPath:
