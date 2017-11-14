@@ -84,8 +84,10 @@ Please refer to the README-HELM.md
 21. Cluster-deployment for Contrail, Cassandra, etc (Helm POC chart has problem for Cassandra config)
 22. Rework Helm charts to reuse third-party charts instead of built-in sections
 23. Add yum clean at the end of containers
-24. Rename kubernetes/kube-agent to kubernetes/vrouter-init
-25. Move kube-manager to kubernetes folder
+
+~~24. Rename kubernetes/kube-agent to kubernetes/vrouter-init~~
+
+~~25. Move kube-manager to kubernetes folder~~
 
 ~~26. Add synchronization for containers (supposedly Cassandra and Zookeeper for controller should be run before contrail containers)~~
 
