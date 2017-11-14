@@ -12,6 +12,9 @@ RUN yum update -y && yum install -y \
     contrail-lib contrail-setup contrail-utils python-contrail \
   && yum clean all
 
+# looks strange. contrail-lib installs shared libraries...
+RUN ldconfig
+
 COPY *.sh /
 
 CMD ["/usr/bin/tail","-f","/dev/null"]
