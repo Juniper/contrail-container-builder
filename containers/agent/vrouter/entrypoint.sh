@@ -2,9 +2,10 @@
 
 source /common.sh
 
-ip address show
-
 HYPERVISOR_TYPE="${HYPERVISOR_TYPE:-kvm}"
+mkdir -p -m 777 /var/crashes
+
+ip address show
 PHYS_INT=${PHYSICAL_INTERFACE:-${DEFAULT_IFACE}}
 echo "INFO: Physical interface: $PHYS_INT"
 CUR_INT=$PHYS_INT
