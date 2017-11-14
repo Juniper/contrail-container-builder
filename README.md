@@ -57,7 +57,9 @@ Please refer to the README-HELM.md
 ## TODOs
 
 1. Refactoring - base and common split to specific modules
-2. NodeManager - eliminate all, leave just one
+
+~~2. NodeManager - eliminate all, leave just one~~
+
 3. Neutron, nova - revisit pluginization mechanism
 4. Kubeagent - create new one
 5. All scripts - move to root dir
