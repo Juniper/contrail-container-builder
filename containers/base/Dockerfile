@@ -10,10 +10,10 @@ RUN yum update -y && yum install -y \
     https://repos.fedorapeople.org/repos/openstack/openstack-newton/rdo-release-newton-5.noarch.rpm \
   && yum install -y iproute less \
     contrail-lib contrail-setup contrail-utils python-contrail \
-  && yum clean all
+  && yum clean all \
+  && ldconfig
 
-# looks strange. contrail-lib installs shared libraries...
-RUN ldconfig
+# ldconfig looks strange. contrail-lib installs shared libraries but do not call it...
 
 COPY *.sh /
 
