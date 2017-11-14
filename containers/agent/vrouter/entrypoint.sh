@@ -2,6 +2,8 @@
 
 source /common.sh
 
+ip address show
+
 HYPERVISOR_TYPE="${HYPERVISOR_TYPE:-kvm}"
 PHYS_INT=${PHYSICAL_INTERFACE:-${DEFAULT_IFACE}}
 echo "INFO: Physical interface: $PHYS_INT"
