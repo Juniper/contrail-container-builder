@@ -9,11 +9,8 @@ RUN /usr/bin/yes | cp -r /contrail-controller/src/nodemgr /usr/lib/python2.7/sit
 
 COPY entrypoint.sh /
 
-ENV VAR_PREFIX="AGENTNODEMGR" \
-    NODEMGR_NAME="contrail-vrouter-nodemgr"
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/usr/bin/python", "/usr/bin/contrail-nodemgr", "--nodetype=contrail-vrouter"]
+CMD ["/usr/bin/python", "/usr/bin/contrail-nodemgr", "--nodetype=$NODEMGR_TYPE"]
 
-LABEL net.juniper.nodemgr.filter.name=contrail-vrouter-nodemgr
-LABEL net.juniper.contrail=config
-LABEL net.juniper.node=controller
+LABEL net.juniper.nodemgr.filter.name=nodemgr
+LABEL net.juniper.contrail=nodemgr

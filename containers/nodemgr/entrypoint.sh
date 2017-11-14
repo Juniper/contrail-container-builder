@@ -2,6 +2,14 @@
 
 source /common.sh
 
+# Env variables:
+# NODE_TYPE = name of the component [vrouter, config, control, analytics, ....]
+
+VAR_PREFIX=${NODE_TYPE^^}NODEMGR
+# ToDo - decide how to resolve this for non-contrail parts
+NODEMGR_TYPE=contrail-${NODE_TYPE}
+NODEMGR_NAME=${NODEMGR_TYPE}-nodemgr
+
 log_local=${VAR_PREFIX}_LOG_LOCAL
 log_level=${VAR_PREFIX}_LOG_LEVEL
 log_file=${VAR_PREFIX}_LOG_FILE
