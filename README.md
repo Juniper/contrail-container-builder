@@ -25,9 +25,12 @@ Use this section if you want to deploy Contrail with Kubernetes without Helm
 
 * Configure ```common.env``` if it's not done previously (copy ```common.env.sample``` for that)
 * Create deployment yaml like this: 
-  ```kubernetes/manifests/resolve-manifest.sh < contrail-micro.yaml.template > contrail-micro.yaml```
+  ```
+  cd kubernetes/manifests
+  ./resolve-manifest.sh contrail-micro.yaml.template > contrail-micro.yaml
+  ```
 * Deploy Contrail:
-  ```kubectl apply -f kubernetes/manifests/contrail-micro.yaml```
+  ```kubectl apply -f contrail-micro.yaml```
 * Check the deployment by:
   ```kubectl -n=kube-system get pods```
   
