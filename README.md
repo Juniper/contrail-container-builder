@@ -19,7 +19,7 @@ You can check them here: ```http://localhost:5000/v2/_catalog```
 
 Use this section if you want to deploy Contrail with Kubernetes without Helm
 
-* Run ```kubernetes/setup-k8s.sh```
+* Run ```kubernetes/setup-k8s.sh``` (don't forget to ```cd ../``` if you're in ```containers```)
 
 ## Provisioning Contrail and CNI in Kubernetes without Helm
 
