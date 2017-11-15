@@ -139,6 +139,6 @@ wait_for_contrail_api
 
 # Provision vrouter
 echo "Provisioning vrouter"
-/usr/share/contrail-utils/provision_vrouter.py  --api_server_ip $CONTROLLER_NODES --host_name $VROUTER_HOSTNAME --host_ip $VROUTER_IP --oper add
+/usr/share/contrail-utils/provision_vrouter.py  --api_server_ip $CONTROLLER_NODES --host_name $VROUTER_HOSTNAME --host_ip $VROUTER_IP $AUTH_PARAMS --oper add
 
 exec "$@"

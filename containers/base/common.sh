@@ -5,6 +5,13 @@ source /functions.sh
 DEFAULT_IFACE=`ip -4 route list 0/0 | awk '{ print $5; exit }'`
 DEFAULT_LOCAL_IP=`ip addr | grep $DEFAULT_IFACE | grep 'inet ' | awk '{print $2}' | cut -d '/' -f 1`
 
+CLOUD_ORCHESTRATOR=${CLOUD_ORCHESTRATOR:-kubernetes}
+AAA_MODE=${AAA_MODE:-no-auth}
+AUTH_MODE='noauth'
+if [[ $CLOUD_ORCHESTRATOR == 'openstack' && $AAA_MODE != 'no-auth' ]] ; then
+  AUTH_MODE='keystone'
+fi
+
 CONTROLLER_NODES=${CONTROLLER_NODES:-${DEFAULT_LOCAL_IP}}
 CONFIG_NODES=${CONFIG_NODES:-${CONTROLLER_NODES}}
 RABBITMQ_NODES=${RABBITMQ_NODES:-${CONFIG_NODES}}
@@ -74,15 +81,27 @@ LOG_LOCAL=${LOG_LOCAL:-1}
 
 BGP_ASN=64512
 
-CONFIG_API_AUTH=${CONFIG_API_AUTH:-noauth}
-ADMIN_TENANT=${ADMIN_TENANT:-admin}
-ADMIN_USER=${ADMIN_USER:-admin}
-ADMIN_PASSWORD=${ADMIN_PASSWORD:-contrail123}
-AUTH_PROJECT_DOMAIN_NAME=${AUTH_PROJECT_DOMAIN_NAME:-Default}
-AUTH_USER_DOMAIN_NAME=${AUTH_USER_DOMAIN_NAME:-Default}
-AUTH_URL_VERSION=${AUTH_URL_VERSION:-'/v2.0'}
-AUTH_URL_TOKENS=${AUTH_URL_TOKENS:-'/v2.0/tokens'}
+KEYSTONE_AUTH_ADMIN_TENANT=${KEYSTONE_AUTH_ADMIN_TENANT:-admin}
+KEYSTONE_AUTH_ADMIN_USER=${KEYSTONE_AUTH_ADMIN_USER:-admin}
+KEYSTONE_AUTH_ADMIN_PASSWORD=${KEYSTONE_AUTH_ADMIN_PASSWORD:-contrail123}
+KEYSTONE_AUTH_PROJECT_DOMAIN_NAME=${KEYSTONE_AUTH_PROJECT_DOMAIN_NAME:-Default}
+KEYSTONE_AUTH_USER_DOMAIN_NAME=${KEYSTONE_AUTH_USER_DOMAIN_NAME:-Default}
 
+KEYSTONE_AUTH_URL_VERSION=${KEYSTONE_AUTH_URL_VERSION:-'/v2.0'}
+KEYSTONE_AUTH_HOST=${KEYSTONE_AUTH_HOST:-'127.0.0.1'}
+KEYSTONE_AUTH_PROTO=${KEYSTONE_AUTH_PROTO:-'http'}
+KEYSTONE_AUTH_ADMIN_PORT=${KEYSTONE_AUTH_ADMIN_PORT:-'35357'}
+KEYSTONE_AUTH_PUBLIC_PORT=${KEYSTONE_AUTH_PUBLIC_PORT:-'5000'}
+
+KEYSTONE_AUTH_URL_TOKENS='/v2.0/tokens'
+if [[ "$KEYSTONE_AUTH_URL_VERSION" == '/v3' ]] ; then
+  KEYSTONE_AUTH_URL_TOKENS='/v3/auth/tokens'
+fi
+
+AUTH_PARAMS=''
+if [[ AUTH_MODE == 'keystone' ]] ; then
+  AUTH_PARAMS="--admin_password $KEYSTONE_AUTH_ADMIN_PASSWORD --admin_tenant_name $KEYSTONE_AUTH_ADMIN_TENANT --admin_user $KEYSTONE_AUTH_ADMIN_USER"
+fi
 
 RNDC_KEY="xvysmOR8lnUQRBcunkC6vg=="
 
@@ -97,24 +116,24 @@ EOM
 
 
 function set_third_party_auth_config(){
-  if [[ $CONFIG_API_AUTH == "keystone" ]]; then
+  if [[ $AUTH_MODE == "keystone" ]]; then
     cat > /etc/contrail/contrail-keystone-auth.conf << EOM
 [KEYSTONE]
 #memcache_servers=127.0.0.1:11211
-admin_password = $ADMIN_PASSWORD
-admin_tenant_name = $ADMIN_TENANT
-admin_user = $ADMIN_USER
-auth_host = $CONFIG_AUTHN_SERVER
-auth_port = 35357
-auth_protocol = http
+admin_password = $KEYSTONE_AUTH_ADMIN_PASSWORD
+admin_tenant_name = $KEYSTONE_AUTH_ADMIN_TENANT
+admin_user = $KEYSTONE_AUTH_ADMIN_USER
+auth_host = $KEYSTONE_AUTH_HOST
+auth_port = $KEYSTONE_AUTH_ADMIN_PORT
+auth_protocol = $KEYSTONE_AUTH_PROTO
 insecure = false
-auth_url = http://${CONFIG_AUTHN_SERVER}:35357${AUTH_URL_VERSION}
+auth_url = $KEYSTONE_AUTH_PROTO://${CONFIG_AUTHN_SERVER}:${KEYSTONE_AUTH_ADMIN_PORT}${KEYSTONE_AUTH_URL_VERSION}
 auth_type = password
 EOM
-    if [[ "$AUTH_URL_VERSION" == '/v3' ]] ; then
+    if [[ "$KEYSTONE_AUTH_URL_VERSION" == '/v3' ]] ; then
       cat >> /etc/contrail/contrail-keystone-auth.conf << EOM
-user_domain_name = $AUTH_USER_DOMAIN_NAME
-project_domain_name = $AUTH_PROJECT_DOMAIN_NAME
+user_domain_name = $KEYSTONE_AUTH_USER_DOMAIN_NAME
+project_domain_name = $KEYSTONE_AUTH_PROJECT_DOMAIN_NAME
 EOM
     fi
   fi
@@ -124,26 +143,22 @@ function set_vnc_api_lib_ini(){
 # TODO: set WEB_SERVER to VIP
   cat > /etc/contrail/vnc_api_lib.ini << EOM
 [global]
-;WEB_SERVER = 127.0.0.1
-;WEB_PORT = 9696  ; connection through quantum plugin
-
 WEB_SERVER = $CONFIG_NODES
 WEB_PORT = ${CONFIG_API_PORT:-8082}
 BASE_URL = /
-;BASE_URL = /tenants/infra ; common-prefix for all URLs
 EOM
 
-  if [[ $CONFIG_API_AUTH == "keystone" ]]; then
+  if [[ $AUTH_MODE == "keystone" ]]; then
     cat >> /etc/contrail/vnc_api_lib.ini << EOM
 
 ; Authentication settings (optional)
 [auth]
 AUTHN_TYPE = keystone
-AUTHN_PROTOCOL = http
-AUTHN_SERVER = $CONFIG_AUTHN_SERVER
-AUTHN_PORT = 35357
-AUTHN_URL = $AUTH_URL_TOKENS
-AUTHN_DOMAIN = $AUTH_PROJECT_DOMAIN_NAME
+AUTHN_PROTOCOL = $KEYSTONE_AUTH_PROTO
+AUTHN_SERVER = $KEYSTONE_AUTH_HOST
+AUTHN_PORT = $KEYSTONE_AUTH_ADMIN_PORT
+AUTHN_URL = $KEYSTONE_AUTH_URL_TOKENS
+AUTHN_DOMAIN = $KEYSTONE_AUTH_PROJECT_DOMAIN_NAME
 ;AUTHN_TOKEN_URL = http://127.0.0.1:35357/v2.0/tokens
 EOM
   else

@@ -26,7 +26,7 @@ collectors=$COLLECTOR_SERVERS
 [SCHEDULER]
 # Analytics server list used to get vrouter status and schedule service instance
 analytics_server_list=$ANALYTICS_SERVERS
-aaa_mode = ${ANALYTICS_API_AAA_MODE:-no-auth}
+aaa_mode = $AAA_MODE
 
 $sandesh_client_config
 EOM

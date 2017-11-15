@@ -16,7 +16,7 @@ cat > /etc/contrail/config.global.js << EOM
 var config = {};
 
 config.orchestration = {};
-config.orchestration.Manager = "${orchestration_Manager:-none}";
+config.orchestration.Manager = "${CLOUD_ORCHESTRATOR}";
 
 config.serviceEndPointFromConfig = ${serviceEndPointFromConfig:-true};
 
@@ -56,10 +56,10 @@ config.computeManager.strictSSL = ${computeManager_strictSSL:-false};
 config.computeManager.ca = "$computeManager_ca";
 
 config.identityManager = {};
-config.identityManager.ip = "${identityManager_ip:-127.0.0.1}";
-config.identityManager.port = "${identityManager_port:-5000}";
-config.identityManager.authProtocol = "${identityManager_authProtocol:-http}";
-config.identityManager.apiVersion = ${identityManager_apiVersion:-['v2.0']};
+config.identityManager.ip = "$KEYSTONE_AUTH_HOST";
+config.identityManager.port = "$KEYSTONE_AUTH_PUBLIC_PORT";
+config.identityManager.authProtocol = "$KEYSTONE_AUTH_PROTO";
+config.identityManager.apiVersion = ${identityManager_apiVersion:-['v2.0', 'v3']};
 config.identityManager.strictSSL = ${identityManager_strictSSL:-false};
 config.identityManager.ca = "$identityManager_ca";
 

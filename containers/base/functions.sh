@@ -2,8 +2,8 @@
 
 function wait_for_contrail_api() {
   # TODO: wait for correct contrail API address.
-  # TODO: try to rework it  non-openstack or aaa-mode=no-auth
   for (( i=0; i<120; i++)) ; do
+    # TODO: check only one port depending on input params
     # 8095 is used when cloud_orchestrator == openstack and aaa-mode != no-auth
     if curl -sI http://127.0.0.1:8095/ | head -1 | grep -q 200 ; then
       echo "INFO $(date): API server is ready."

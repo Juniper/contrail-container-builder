@@ -8,7 +8,7 @@ fi
 
 cat > /etc/contrail/contrail-kubernetes.conf << EOM
 [DEFAULTS]
-orchestrator=${CLOUD_ORCHESTRATOR:-kubernetes}
+orchestrator=${CLOUD_ORCHESTRATOR}
 token=$K8S_TOKEN
 log_local=${KUBEMANAGER_LOG_LOCAL:-$LOG_LOCAL}
 log_level=${KUBEMANAGER_LOG_LEVEL:-$LOG_LEVEL}
