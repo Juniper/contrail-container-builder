@@ -59,7 +59,7 @@ Please refer to the README-HELM.md
 1. Refactoring - base and common split to specific modules
 2. ~~NodeManager - eliminate all, leave just one~~
 3. Neutron, nova - revisit pluginization mechanism
-4. Kubeagent - create new one
+4. ~~Kubeagent - create new one~~
 5. All scripts - move to root dir
 6. Source rpm repo in setup, add parameter to take from non-S3
 7. ~~Rename contrail-micro.yaml to contrail-micro.yaml.sample~~
@@ -85,3 +85,5 @@ Please refer to the README-HELM.md
 27. Remove contrail-config section from yaml and remove all its remaining usages
 28. Add comments to each entrypoint.sh for interface ENV variables 
 29. Rework configuration passing in charts
+30. Improve provisioning scripts to work with existing docker repo and other features
+
