@@ -57,18 +57,13 @@ Please refer to the README-HELM.md
 ## TODOs
 
 1. Refactoring - base and common split to specific modules
-
-~~2. NodeManager - eliminate all, leave just one~~
-
+2. ~~NodeManager - eliminate all, leave just one~~
 3. Neutron, nova - revisit pluginization mechanism
 4. Kubeagent - create new one
 5. All scripts - move to root dir
 6. Source rpm repo in setup, add parameter to take from non-S3
-
-~~7. Rename contrail-micro.yaml to contrail-micro.yaml.sample~~
-
-~~8. Create README~~
-
+7. ~~Rename contrail-micro.yaml to contrail-micro.yaml.sample~~
+8. ~~Create README~~
 9. Remove firewall during setup
 10. Deal with “cannot allocate memory” during kernel module loading
 11. Complete vrouter container - add DPDK, VLAN, etc.
@@ -77,19 +72,16 @@ Please refer to the README-HELM.md
 14. Remove all notions about OpenStack/Keystone/Kubernetes from Contrail containers and add separate containers (sidecars) bringing orchestrator-related functionality.
 15. Ubuntu version
 16. Nested cni.conf (if needed)
-17. /var/crashes folder should be created (mounted in host)
-18. Unnecessary packages should be removed from containers
+17. ~~/var/crashes folder should be created~~
+18. ~~Unnecessary packages should be removed from containers~~
 19. Make DEBUG logging configurable
 20. Multi-node deployment
 21. Cluster-deployment for Contrail, Cassandra, etc (Helm POC chart has problem for Cassandra config)
 22. Rework Helm charts to reuse third-party charts instead of built-in sections
 23. Add yum clean at the end of containers
-
-~~24. Rename kubernetes/kube-agent to kubernetes/vrouter-init~~
-
-~~25. Move kube-manager to kubernetes folder~~
-
-~~26. Add synchronization for containers (supposedly Cassandra and Zookeeper for controller should be run before contrail containers)~~
-
+24. ~~Rename kubernetes/kube-agent to kubernetes/vrouter-init~~
+25. ~~Move kube-manager to kubernetes folder~~
+26. ~~Add synchronization for containers (supposedly Cassandra and Zookeeper for controller should be run before contrail containers)~~
 27. Remove contrail-config section from yaml and remove all its remaining usages
 28. Add comments to each entrypoint.sh for interface ENV variables 
+29. Rework configuration passing in charts
