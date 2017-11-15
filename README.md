@@ -92,4 +92,4 @@ Please refer to the README-HELM.md
 31. Nodemgr - rework to use single conf and no env variables (everything is taken from conf)
 32. Nodemgr - fix known bugs
 33. Nodemgr - package correctly into rpm, now docker takes it by git clone
-
+34. Separate Contrail containers from auth and Orchestrator's specifics (k8s, keystone, openstack, etc), make it pluggable
