@@ -86,4 +86,7 @@ Please refer to the README-HELM.md
 28. Add comments to each entrypoint.sh for interface ENV variables 
 29. Rework configuration passing in charts
 30. Improve provisioning scripts to work with existing docker repo and other features
+31. Nodemgr - rework to use single conf and no env variables (everything is taken from conf)
+32. Nodemgr - fix known bugs
+33. Nodemgr - package correctly into rpm, now docker takes it by git clone
 
