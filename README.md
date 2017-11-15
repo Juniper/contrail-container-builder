@@ -67,9 +67,9 @@ Please refer to the README-HELM.md
 6. Source rpm repo in setup, add parameter to take from non-S3
 7. ~~Rename contrail-micro.yaml to contrail-micro.yaml.sample~~
 8. ~~Create README~~
-9. Remove firewall during setup
+9. ~~Remove firewall during setup~~
 10. Deal with “cannot allocate memory” during kernel module loading
-11. Complete vrouter container - add DPDK, VLAN, etc.
+11. **Complete vrouter container - add DPDK, VLAN, etc.**
 12. Create initContainer for vrouter compilation
 13. Split charts to Contrail-only and the rest
 14. Remove all notions about OpenStack/Keystone/Kubernetes from Contrail containers and add separate containers (sidecars) bringing orchestrator-related functionality.
@@ -78,8 +78,8 @@ Please refer to the README-HELM.md
 17. ~~/var/crashes folder should be created~~
 18. ~~Unnecessary packages should be removed from containers~~
 19. Make DEBUG logging configurable
-20. Multi-node deployment
-21. Cluster-deployment for Contrail, Cassandra, etc (Helm POC chart has problem for Cassandra config)
+20. **Multi-node deployment**
+21. **Cluster-deployment for Contrail, Cassandra, etc (Helm POC chart has problem for Cassandra config)**
 22. Rework Helm charts to reuse third-party charts instead of built-in sections
 23. Add yum clean at the end of containers
 24. ~~Rename kubernetes/kube-agent to kubernetes/vrouter-init~~
@@ -92,5 +92,4 @@ Please refer to the README-HELM.md
 31. Nodemgr - rework to use single conf and no env variables (everything is taken from conf)
 32. Nodemgr - fix known bugs
 33. Nodemgr - package correctly into rpm, now docker takes it by git clone
-34. Separate Contrail containers from auth and Orchestrator's specifics (k8s, keystone, openstack, etc), make it pluggable
-35. Optimize size
+34. Optimize size
