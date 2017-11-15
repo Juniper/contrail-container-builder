@@ -160,7 +160,7 @@ spec:
       hostNetwork: true
       containers:
       - name: kafka
-        image: "{{registry}}/contrail-analyticsdb-kafka:{{version}}"
+        image: "{{registry}}/contrail-external-kafka:{{version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
