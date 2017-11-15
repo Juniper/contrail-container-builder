@@ -40,9 +40,9 @@ Please refer to the README-HELM.md
 
 ## Known issues
 
-* "No route to host" error during container build
+* "No route to host" or cannot access mirrors.centos.org errors during container build
   - The reason: firewall
-  - To fix: Stop the firewalld or ```add iptables -I INPUT -j ACCEPT; iptables -I OUTPUT -j ACCEPT```
+  - To fix: Allow connectivity like ```add iptables -I INPUT -j ACCEPT```
 * "Connection refused" error during container build when accessing repodata/repomd.xml
   - The reason: lighthttpd doesn't work properly
   - To fix: bring up some other httpd server and allow visibility for the repo
