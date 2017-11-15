@@ -2,42 +2,6 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: contrail-config
-  namespace: kube-system
-data:
-  global-config: |-
-    [GLOBAL]
-    cloud_orchestrator = kubernetes
-    sandesh_ssl_enable = False
-    enable_config_service = True
-    enable_control_service = True
-    enable_webui_service = True
-    introspect_ssl_enable = False
-    config_nodes = {{config_nodes}}
-    controller_nodes = {{controller_nodes}}
-    analytics_nodes = {{analytics_nodes}}
-    analyticsdb_nodes = {{analyticsdb_nodes}}
-    # analyticsdb_minimum_diskgb = 50
-    # configdb_minimum_diskgb = 5
-  agent-config: |-
-    [AGENT]
-    compile_vrouter_module = True
-    # Optional ctrl_data_network, if different from management
-    # ctrl_data_network = "192.168.10.0/24"
-  kubemanager-config: |-
-    [KUBERNETES]
-    cluster_name = k8s-default
-    cluster_project = {'domain': 'default-domain', 'project': 'default'}
-    cluster_network = {}
-    service_subnets = 10.96.0.0/12
-    pod_subnets = 10.32.0.0/12
-    api_server = {{api_server}}
-  kubernetes-agent-config: |-
-    [AGENT]
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
   name: env
   namespace: kube-system
 data:
@@ -653,21 +617,10 @@ spec:
         - name: K8S_TOKEN_FILE
           value: "/tmp/serviceaccount/token"
         volumeMounts:
-        - mountPath: /tmp/contrailctl
-          name: tmp-contrail-config
         - mountPath: /tmp/serviceaccount
           name: pod-secret
       volumes:
-      - name: tmp-contrail-config
-        configMap:
-          name: contrail-config
-          items:
-          - key: global-config
-            path: global.conf
-          - key: kubemanager-config
-            path: kubemanager.conf
-          - key: kubernetes-agent-config
-            path: kubernetesagent.conf
+
       - name: pod-secret
         secret:
           secretName: contrail-kube-manager-token
@@ -710,8 +663,6 @@ spec:
         image: "{{registry}}/contrail-kubernetes-vrouter-init:{{version}}"
         imagePullPolicy: ""
         volumeMounts:
-        - mountPath: /tmp/contrailctl
-          name: tmp-contrail-config
         - mountPath: /var/lib/contrail/
           name: var-lib-contrail
         - mountPath: /host/etc_cni
@@ -734,8 +685,6 @@ spec:
           name: usr-src
         - mountPath: /lib/modules
           name: lib-modules
-        - mountPath: /tmp/contrailctl
-          name: tmp-contrail-config
         - mountPath: /var/lib/contrail/
           name: var-lib-contrail
         - mountPath: /var/crashes
@@ -770,18 +719,6 @@ spec:
       - name: docker-unix-socket
         hostPath:
           path: /var/run
-      - name: tmp-contrail-config
-        configMap:
-          name: contrail-config
-          items:
-          - key: global-config
-            path: global.conf
-          - key: agent-config
-            path: agent.conf
-          - key: kubemanager-config
-            path: kubemanager.conf
-          - key: kubernetes-agent-config
-            path: kubernetesagent.conf
       - name: pod-secret
         secret:
           secretName: contrail-kube-manager-token
