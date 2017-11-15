@@ -738,6 +738,8 @@ spec:
           name: tmp-contrail-config
         - mountPath: /var/lib/contrail/
           name: var-lib-contrail
+        - mountPath: /var/crashes
+          name: var-crashes
         - mountPath: /host/etc_cni
           name: etc-cni
         - mountPath: /host/opt_cni_bin
@@ -752,7 +754,7 @@ spec:
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
-            name: nodemgr-config            
+            name: nodemgr-config
         env:
         - name: NODE_TYPE
           value: vrouter
@@ -792,6 +794,9 @@ spec:
       - name: var-lib-contrail
         hostPath:
           path: /var/lib/contrail/
+      - name: var-crashes
+        hostPath:
+          path: /var/crashes/
       - name: etc-cni
         hostPath:
           path: /etc/cni
