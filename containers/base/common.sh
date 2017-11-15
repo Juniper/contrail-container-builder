@@ -80,7 +80,7 @@ ADMIN_USER=${ADMIN_USER:-admin}
 ADMIN_PASSWORD=${ADMIN_PASSWORD:-contrail123}
 AUTH_PROJECT_DOMAIN_NAME=${AUTH_PROJECT_DOMAIN_NAME:-Default}
 AUTH_USER_DOMAIN_NAME=${AUTH_USER_DOMAIN_NAME:-Default}
-AUTH_URL_VERSION=${AUTH_URL_VERSION:-'v2.0'}
+AUTH_URL_VERSION=${AUTH_URL_VERSION:-'/v2.0'}
 AUTH_URL_TOKENS=${AUTH_URL_TOKENS:-'/v2.0/tokens'}
 
 
@@ -108,10 +108,10 @@ auth_host = $CONFIG_AUTHN_SERVER
 auth_port = 35357
 auth_protocol = http
 insecure = false
-auth_url = http://$CONFIG_AUTHN_SERVER:35357/$AUTH_URL_VERSION
+auth_url = http://${CONFIG_AUTHN_SERVER}:35357${AUTH_URL_VERSION}
 auth_type = password
 EOM
-    if [[ "$AUTH_URL_VERSION" == 'v3' ]] ; then
+    if [[ "$AUTH_URL_VERSION" == '/v3' ]] ; then
       cat >> /etc/contrail/contrail-keystone-auth.conf << EOM
 user_domain_name = $AUTH_USER_DOMAIN_NAME
 project_domain_name = $AUTH_PROJECT_DOMAIN_NAME
