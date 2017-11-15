@@ -49,10 +49,10 @@ Please refer to the README-HELM.md
 * vrouter container in agent pod can fail when loading kernel module with "cannot allocate memory". 
   - The reason: large driver memory appetites and probably significant memory fragmentation.
   - To fix: reboot the machine and in the worst case insert the vrouter module manually right after the reboot.
-* kube-dns and any application containers (if you run some later) can be stuck in "Container creating" state. 
+* (Fixed) ~~kube-dns and any application containers (if you run some later) can be stuck in "Container creating" state. 
   - The reason: Supposed race condition during start-up with Contrail DB. Will be fixed later
   - To fix: manually restart all contrail-* and kube-manager containers. Probably by restart their pods (haven't tried yet).    Restarting can be done by: 
-```docker ps | grep contrail | awk '{print($1)}' | xargs docker restart```
+```docker ps | grep contrail | awk '{print($1)}' | xargs docker restart```~~
 
 ## TODOs
 
