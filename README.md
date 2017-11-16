@@ -12,7 +12,7 @@ Everything is tested in CentOS 7.4 for deployment to run on one machine.
 * Run ```setup-for-build.sh```
 * Run ```sudo build.sh```
 
-You'll get Docker registry running locally on port 5000 with the containers built. 
+You'll get Docker registry running locally on port 5000 with the containers built.
 You can check them here: ```http://localhost:5000/v2/_catalog```
 
 ## Provisioning Kubernetes
@@ -24,7 +24,7 @@ Use this section if you want to deploy Contrail with Kubernetes without Helm
 ## Provisioning Contrail and CNI in Kubernetes without Helm
 
 * Configure ```common.env``` if it's not done previously (copy ```common.env.sample``` for that)
-* Create deployment yaml like this: 
+* Create deployment yaml like this:
   ```
   cd kubernetes/manifests
   ./resolve-manifest.sh contrail-micro.yaml.template > contrail-micro.yaml
@@ -33,7 +33,7 @@ Use this section if you want to deploy Contrail with Kubernetes without Helm
   ```kubectl apply -f contrail-micro.yaml```
 * Check the deployment by:
   ```kubectl -n=kube-system get pods```
-  
+
 You'll have Contrail deployed in Kubernetes. Check WebUI in https://localhost:8143 (login:admin password:contrail123)
 This deployment will work with noauth authentication.
 
@@ -49,12 +49,12 @@ Please refer to the README-HELM.md
 * "Connection refused" error during container build when accessing repodata/repomd.xml
   - The reason: lighthttpd doesn't work properly
   - To fix: bring up some other httpd server and allow visibility for the repo
-* vrouter container in agent pod can fail when loading kernel module with "cannot allocate memory". 
+* vrouter container in agent pod can fail when loading kernel module with "cannot allocate memory".
   - The reason: large driver memory appetites and probably significant memory fragmentation.
   - To fix: reboot the machine and in the worst case insert the vrouter module manually right after the reboot.!~
-* (Fixed). kube-dns and any application containers (if you run some later) can be stuck in "Container creating" state. 
+* (Fixed). kube-dns and any application containers (if you run some later) can be stuck in "Container creating" state.
   - The reason: Supposed race condition during start-up with Contrail DB. Will be fixed later
-  - To fix: manually restart all contrail-* and kube-manager containers. Probably by restart their pods (haven't tried yet).    Restarting can be done by: 
+  - To fix: manually restart all contrail-* and kube-manager containers. Probably by restart their pods (haven't tried yet).    Restarting can be done by:
 ```docker ps | grep contrail | awk '{print($1)}' | xargs docker restart```~~
 
 ## TODOs
@@ -81,12 +81,12 @@ Please refer to the README-HELM.md
 20. **Multi-node deployment**
 21. **Cluster-deployment for Contrail, Cassandra, etc (Helm POC chart has problem for Cassandra config)**
 22. Rework Helm charts to reuse third-party charts instead of built-in sections
-23. Add yum clean at the end of containers
+23. ~~Add yum clean at the end of containers ~~
 24. ~~Rename kubernetes/kube-agent to kubernetes/vrouter-init~~
 25. ~~Move kube-manager to kubernetes folder~~
 26. ~~Add synchronization for containers (supposedly Cassandra and Zookeeper for controller should be run before contrail containers)~~
-27. Remove contrail-config section from yaml and remove all its remaining usages
-28. Add comments to each entrypoint.sh for interface ENV variables 
+27. ~~Remove contrail-config section from yaml and remove all its remaining usages~~
+28. Add comments to each entrypoint.sh for interface ENV variables
 29. ~~Rework configuration passing in charts~~
 30. Improve provisioning scripts to work with existing docker repo and other features
 31. Nodemgr - rework to use single conf and no env variables (everything is taken from conf)

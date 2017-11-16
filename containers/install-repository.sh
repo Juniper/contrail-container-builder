@@ -29,13 +29,13 @@ chgrp -R $OGROUP /var/www
 
 EOS
 
-contrail_version=${CONTRAIL_VERSION:-'4.0.1.0-32'}
+contrail_version=${CONTRAIL_VERSION:-'4.0.2.0-35'}
 os_versions=(ocata newton pike)
-s3_bucket_url="https://s3-us-west-2.amazonaws.com/contrailrhel7"
+package_base_url=${CONTRAIL_INSTALL_PACKAGE_URL:-"https://s3-us-west-2.amazonaws.com/contrailrhel7"}
 
 for os_version in ${os_versions[@]}:
 do
-  package_url=$s3_bucket_url'/contrail-install-packages-'$contrail_version'~'$os_version'.el7.noarch.rpm'
+  package_url=$package_base_url'/contrail-install-packages-'$contrail_version'~'$os_version'.el7.noarch.rpm'
   http_status=$(curl -Isw "%{http_code}" -o /dev/null $package_url)
   if [ $http_status == "200" ]; then
     break
