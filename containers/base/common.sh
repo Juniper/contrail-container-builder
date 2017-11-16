@@ -99,7 +99,7 @@ if [[ "$KEYSTONE_AUTH_URL_VERSION" == '/v3' ]] ; then
 fi
 
 AUTH_PARAMS=''
-if [[ AUTH_MODE == 'keystone' ]] ; then
+if [[ "$AUTH_MODE" == 'keystone' ]] ; then
   AUTH_PARAMS="--admin_password $KEYSTONE_AUTH_ADMIN_PASSWORD --admin_tenant_name $KEYSTONE_AUTH_ADMIN_TENANT --admin_user $KEYSTONE_AUTH_ADMIN_USER"
 fi
 
