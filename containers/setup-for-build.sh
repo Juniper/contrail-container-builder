@@ -4,10 +4,12 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 source "$DIR/../parse-env.sh"
 
 echo 'Contrail version: '$version
+echo 'OpenStack version: '$os_version
 echo 'Contrail registry: '$registry
 echo 'Contrail repository: '$repository
 
 CONTRAIL_VERSION=$version
+OPENSTACK_VERSION=$os_version
 CONTRAIL_REGISTRY=$registry
 CONTRAIL_REPOSITORY=$repository
 

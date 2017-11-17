@@ -7,11 +7,17 @@ path=$1
 opts=$2
 
 echo 'Contrail version: '$version
+echo 'OpenStack version: '$os_version
 echo 'Contrail registry: '$registry
 echo 'Contrail repository: '$repository
 if [ -n "$opts" ]; then
   echo 'Options: '$opts
 fi
+
+# TODO: rework or remove this
+declare -A os_subversions
+os_subversions=([newton]=5 [ocata]=3)
+export os_subversion="${os_subversions[$os_version]}"
 
 linux=$(awk -F"=" '/^ID=/{print $2}' /etc/os-release | tr -d '"')
 was_errors=0
@@ -23,7 +29,10 @@ build_container () {
   echo 'Building '$container_name
   if [ $linux == "centos" ]; then
     cat $dir/Dockerfile \
-      | sed -e 's/\(^ARG CONTRAIL_REGISTRY=.*\)/#\1/' -e 's/\(^ARG CONTRAIL_VERSION=.*\)/#\1/' \
+      | sed -e 's/\(^ARG CONTRAIL_REGISTRY=.*\)/#\1/' \
+      -e 's/\(^ARG CONTRAIL_VERSION=.*\)/#\1/' \
+      -e 's/\(^ARG OPENSTACK_VERSION=.*\)/#\1/' \
+      -e 's/\(^ARG OPENSTACK_SUBVERSION=.*\)/#\1/' \
       -e 's|^FROM ${CONTRAIL_REGISTRY}/\([^:]*\):${CONTRAIL_VERSION}|FROM '$registry'/\1:'$version'|' \
       > $dir/Dockerfile.nofromargs
     int_opts="-f $dir/Dockerfile.nofromargs"
@@ -31,6 +40,8 @@ build_container () {
   local logfile='build-'$container_name'.log'
   docker build -t ${registry}'/'${container_name}:${version} \
     --build-arg CONTRAIL_VERSION=${version} \
+    --build-arg OPENSTACK_VERSION=${os_version} \
+    --build-arg OPENSTACK_SUBVERSION=${os_subversion} \
     --build-arg CONTRAIL_REGISTRY=${registry} \
     --build-arg REPOSITORY=${repository} \
     ${int_opts} ${opts} $dir |& tee $logfile

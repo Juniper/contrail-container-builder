@@ -30,21 +30,14 @@ chgrp -R $OGROUP /var/www
 EOS
 
 contrail_version=${CONTRAIL_VERSION:-'4.0.2.0-35'}
-os_versions=(ocata newton pike)
+os_version=${OPENSTACK_VERSION:-ocata}
 package_base_url=${CONTRAIL_INSTALL_PACKAGE_URL:-"https://s3-us-west-2.amazonaws.com/contrailrhel7"}
 
-for os_version in ${os_versions[@]}:
-do
-  package_url=$package_base_url'/contrail-install-packages-'$contrail_version'~'$os_version'.el7.noarch.rpm'
-  http_status=$(curl -Isw "%{http_code}" -o /dev/null $package_url)
-  if [ $http_status == "200" ]; then
-    break
-  fi
-done
-
+package_url=$package_base_url'/contrail-install-packages-'$contrail_version'~'$os_version'.el7.noarch.rpm'
+http_status=$(curl -Isw "%{http_code}" -o /dev/null $package_url)
 if [ $http_status != "200" ]; then
-  echo 'No Contrail packages found for version '$contrail_version
-  exit
+  echo "No Contrail packages found for Contrail version '$contrail_version' and OpenStack version '$os_version'"
+  exit 1
 fi
 
 package_fname=$(mktemp)

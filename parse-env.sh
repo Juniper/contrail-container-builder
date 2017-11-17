@@ -1,5 +1,6 @@
 #!/bin/bash
 version=$CONTRAIL_VERSION
+os_version=$OPENSTACK_VERSION
 registry=$CONTRAIL_REGISTRY
 repository=$CONTRAIL_REPOSITORY
 
@@ -10,7 +11,8 @@ if [ -f $env_file ]; then
   source $env_file
 fi
 
-version=${version:-${CONTRAIL_VERSION:-'4.0.1.0-32'}}
+version=${version:-${CONTRAIL_VERSION:-'4.0.2.0-35'}}
+os_version=${os_version:-${OPENSTACK_VERSION:-'ocata'}}
 registry=${registry:-${CONTRAIL_REGISTRY:-'auto'}}
 repository=${repository:-${CONTRAIL_REPOSITORY:-'auto'}}
 
