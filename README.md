@@ -77,7 +77,7 @@ Please refer to the README-HELM.md
 16. Nested cni.conf (if needed)
 17. ~~/var/crashes folder should be created~~
 18. ~~Unnecessary packages should be removed from containers~~
-19. Make DEBUG logging configurable
+19. ~~Make DEBUG logging configurable~~
 20. **Multi-node deployment**
 21. **Cluster-deployment for Contrail, Cassandra, etc (Helm POC chart has problem for Cassandra config)**
 22. Rework Helm charts to reuse third-party charts instead of built-in sections
@@ -93,3 +93,4 @@ Please refer to the README-HELM.md
 32. Nodemgr - fix known bugs
 33. Nodemgr - package correctly into rpm, now docker takes it by git clone
 34. Optimize size
+35. Make CNI plugin log level configurable.

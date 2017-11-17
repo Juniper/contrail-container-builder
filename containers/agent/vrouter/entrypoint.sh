@@ -33,9 +33,9 @@ servers=${XMPP_SERVERS:-`get_server_list CONTROLLER ":$XMPP_SERVER_PORT "`}
 
 [DEFAULT]
 collectors=$COLLECTOR_SERVERS
-log_file=/var/log/contrail/contrail-vrouter-agent.log
-log_level=SYS_NOTICE
-log_local=1
+log_file=${VROUTER_LOG_FILE:-"$LOG_DIR/contrail-vrouter-agent.log"}
+log_level=${VROUTER_LOG_LEVEL:-$LOG_LEVEL}
+log_local=${VROUTER_LOG_LOCAL:-$LOG_LOCAL}
 
 xmpp_dns_auth_enable = False
 xmpp_auth_enable = False
