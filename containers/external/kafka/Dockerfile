@@ -1,4 +1,4 @@
-FROM centos:7.3.1611
+FROM centos:7.4.1708
 
 ARG DISTRO_NAME=kafka_2.11-0.9.0.1
 ENV KAFKA_DIR=/opt/$DISTRO_NAME \

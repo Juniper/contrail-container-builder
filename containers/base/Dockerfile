@@ -1,4 +1,4 @@
-FROM centos:7.3.1611
+FROM centos:7.4.1708
 
 ARG REPOSITORY=http://10.0.2.15/contrail
 ARG OPENSTACK_VERSION=ocata
