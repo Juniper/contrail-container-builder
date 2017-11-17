@@ -9,8 +9,8 @@ RUN printf "[contrail] \nname = Contrail repo \nbaseurl = $REPOSITORY \nenabled 
 RUN yum update -y && \
     yum install -y \
       yum-plugin-priorities \
-      http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-10.noarch.rpm \
-      https://repos.fedorapeople.org/repos/openstack/openstack-${OPENSTACK_VERSION}/rdo-release-${OPENSTACK_VERSION}-${OPENSTACK_SUBVERSION}.noarch.rpm && \
+      https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
+      https://repos.fedorapeople.org/repos/openstack/openstack-$OPENSTACK_VERSION/rdo-release-$OPENSTACK_VERSION-$OPENSTACK_SUBVERSION.noarch.rpm && \
     yum install -y iproute less contrail-lib contrail-setup contrail-utils python-contrail && \
     yum clean all -y && \
     rm -rf /var/cache/yum && \

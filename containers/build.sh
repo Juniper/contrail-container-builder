@@ -33,6 +33,8 @@ build_container () {
       -e 's/\(^ARG CONTRAIL_VERSION=.*\)/#\1/' \
       -e 's/\(^ARG OPENSTACK_VERSION=.*\)/#\1/' \
       -e 's/\(^ARG OPENSTACK_SUBVERSION=.*\)/#\1/' \
+      -e "s/\$OPENSTACK_VERSION/$os_version/g" \
+      -e "s/\$OPENSTACK_SUBVERSION/$os_subversion/g" \
       -e 's|^FROM ${CONTRAIL_REGISTRY}/\([^:]*\):${CONTRAIL_VERSION}|FROM '$registry'/\1:'$version'|' \
       > $dir/Dockerfile.nofromargs
     int_opts="-f $dir/Dockerfile.nofromargs"
