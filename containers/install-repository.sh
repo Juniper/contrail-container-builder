@@ -30,7 +30,7 @@ chgrp -R $OGROUP /var/www
 EOS
 
 contrail_version=${CONTRAIL_VERSION:-'4.0.2.0-35'}
-os_version=${OPENSTACK_VERSION:-ocata}
+os_version=${OPENSTACK_VERSION:-newton}
 package_base_url=${CONTRAIL_INSTALL_PACKAGE_URL:-"https://s3-us-west-2.amazonaws.com/contrailrhel7"}
 
 package_url=$package_base_url'/contrail-install-packages-'$contrail_version'~'$os_version'.el7.noarch.rpm'
