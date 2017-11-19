@@ -5,7 +5,7 @@ ENV KAFKA_DIR=/opt/$DISTRO_NAME \
     KAFKA_CONF_DIR=/opt/$DISTRO_NAME/config
 
 RUN yum install -y java iproute && \
-    curl -o $DISTRO_NAME.tgz http://www-us.apache.org/dist/kafka/0.9.0.1/$DISTRO_NAME.tgz && \
+    curl -o $DISTRO_NAME.tgz http://archive.apache.org/dist/kafka/0.9.0.1/$DISTRO_NAME.tgz && \
     tar -xvf $DISTRO_NAME.tgz && \
     mv $DISTRO_NAME /opt/$DISTRO_NAME && \
     rm -f $DISTRO_NAME.tgz && \
