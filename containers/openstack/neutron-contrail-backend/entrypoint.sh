@@ -7,5 +7,3 @@ for module in neutron_plugin_contrail vnc_api cfgm_common neutron_lbaas ; do
     cp -r $item /opt/plugin/site-packages/
   done
 done
-
-cp /neutron-server.sh /opt/plugin/neutron-server.sh
