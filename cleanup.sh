@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-kubectl delete -f ./kubernetes/manifests/contrail-micro.yaml
+kubectl delete -f ./kubernetes/manifests/contrail.yaml
 
 for i in {1..100} ; do
   echo "waiting till pods destroyed $i"
