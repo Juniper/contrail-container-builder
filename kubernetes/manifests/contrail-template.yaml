@@ -1,0 +1,269 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: env
+  namespace: kube-system
+data:
+  CONTROLLER_NODES: {{ controller_nodes }}
+  CONTROL_NODES: {{ control_nodes }}
+  CONFIG_NODES: {{ config_nodes }}
+  ZOOKEEPER_NODES: {{ zookeeper_nodes }}
+  CONFIGDB_NODES: {{ configdb_nodes }}
+  ANALYTICS_NODES: {{ analytics_nodes }}
+  REDIS_NODES: {{ redis_nodes }}
+  ANALYTICSDB_NODES: {{ analyticsdb_nodes }}
+  KAFKA_NODES: {{ kafka_nodes }}
+  PHYSICAL_INTERFACE: {{ physical_interface }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: contrail-analyticsdb-config
+  namespace: kube-system
+data:
+  CASSANDRA_SEEDS: {{ analyticsdb_nodes }}
+  CASSANDRA_CLUSTER_NAME: Contrail
+  CASSANDRA_START_RPC: "true"
+  CASSANDRA_LISTEN_ADDRESS: auto
+  JVM_EXTRA_OPTS: >-
+    -Dcassandra.rpc_port=9160
+    -Dcassandra.native_transport_port=9042
+    -Dcassandra.ssl_storage_port=7001
+    -Dcassandra.storage_port=7000
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: contrail-configdb-config
+  namespace: kube-system
+data:
+  CASSANDRA_SEEDS: {{ configdb_nodes }}
+  CASSANDRA_CLUSTER_NAME: ContrailConfigDB
+  CASSANDRA_START_RPC: "true"
+  CASSANDRA_LISTEN_ADDRESS: auto
+  JVM_EXTRA_OPTS: >-
+    -Dcassandra.rpc_port=9161
+    -Dcassandra.native_transport_port=9041
+    -Dcassandra.ssl_storage_port=7011
+    -Dcassandra.storage_port=7010
+    -Dcassandra.jmx.local.port=7200
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: contrail-zookeeper-starter
+  namespace: kube-system
+data:
+  contrail-entrypoint.sh: |-
+    #!/bin/bash
+
+    ord=1
+    IFS=',' read -ra srv_list <<< "$ZOOKEEPER_NODES"
+    for srv in "${srv_list[@]}"; do
+      if [[ "$POD_IP" == "$srv" ]]; then
+        break
+      fi
+      ord=$((ord+1))
+    done
+
+    if (( $ord < 1 || $ord > "${#srv_list[@]}" )); then
+      echo 'Cannot find self ip ('$POD_IP') in Zookeeper nodes ('$ZOOKEEPER_NODES')'
+      exit
+    fi
+
+    export ZOO_MY_ID=$ord
+    exec /docker-entrypoint.sh zkServer.sh start-foreground
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: zookeeper
+  namespace: kube-system
+  labels:
+    app: zookeeper
+spec:
+  template:
+    metadata:
+      labels:
+        app: zookeeper
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: "opencontrail.org/zookeeper"
+                operator: Exists
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      hostNetwork: true
+      containers:
+      - name: zookeeper
+        image: "zookeeper:3.4.10"
+        imagePullPolicy: ""
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: ZOOKEEPER_NODES
+          value: "{{ zookeeper_nodes }}"
+        command: ["/bin/bash", "/opt/contrail/contrail-entrypoint.sh"]
+        volumeMounts:
+        - mountPath: /var/lib/zookeeper
+          name: zookeeper-config-data
+        - mountPath: /opt/contrail
+          name: contrail-zookeeper-starter
+      volumes:
+      - name: zookeeper-config-data
+        hostPath:
+          path: /var/lib/config_zookeeper_data
+      - name: contrail-zookeeper-starter
+        configMap:
+          name: contrail-zookeeper-starter
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: kafka
+  namespace: kube-system
+  labels:
+    app: kafka
+spec:
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: "opencontrail.org/kafka"
+                operator: Exists
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      hostNetwork: true
+      containers:
+      - name: kafka
+        image: "{{registry}}/contrail-analyticsdb-kafka:{{version}}"
+        imagePullPolicy: ""
+        envFrom:
+        - configMapRef:
+            name: env
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: contrail-analyticsdb
+  namespace: kube-system
+  labels:
+    app: contrail-analyticsdb
+spec:
+  template:
+    metadata:
+      labels:
+        app: contrail-analyticsdb
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: "opencontrail.org/analyticsdb"
+                operator: Exists
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      hostNetwork: true
+      containers:
+      - name: contrail-analyticsdb
+        image: "cassandra:2.2.10"
+        imagePullPolicy: ""
+        envFrom:
+        - configMapRef:
+            name: contrail-analyticsdb-config
+        volumeMounts:
+        - mountPath: /var/lib/cassandra
+          name: analyticsdb-data
+      volumes:
+      - name: analyticsdb-data
+        hostPath:
+          path: /var/lib/analyticsdb
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: contrail-configdb
+  namespace: kube-system
+  labels:
+    app: contrail-configdb
+spec:
+  template:
+    metadata:
+      labels:
+        app: contrail-configdb
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: "opencontrail.org/configdb"
+                operator: Exists
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      hostNetwork: true
+      containers:
+      - name: contrail-configdb
+        image: "cassandra:2.2.10"
+        imagePullPolicy: ""
+        envFrom:
+        - configMapRef:
+            name: contrail-configdb-config
+        volumeMounts:
+        - mountPath: /var/lib/cassandra
+          name: configdb-data
+      volumes:
+      - name: configdb-data
+        hostPath:
+          path: /var/lib/configdb
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: redis
+  namespace: kube-system
+  labels:
+    app: redis
+spec:
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: "opencontrail.org/redis"
+                operator: Exists
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      hostNetwork: true
+      containers:
+      - name: redis
+        image: "redis:4.0.2"
+        imagePullPolicy: ""
