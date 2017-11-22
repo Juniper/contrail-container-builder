@@ -23,11 +23,11 @@ function wait_for_contrail_api() {
     done
   done
   if (( count == 0 )) ; then
-    echo "ERROR $(date): Config API servers  ${config_node_list[@]}  are not responding. Exiting..."
+    echo "ERROR $(date): Config API servers  ${config_node_list[@]}  are not responding on port ${port}. Exiting..."
     exit 1
   fi
   if (( count != ${#config_node_list[@]} )) ; then
-    echo "WARNING $(date): Some of Config API servers  ${config_node_list[@]}  are not responding."
+    echo "WARNING $(date): Some of Config API servers  ${config_node_list[@]}  are not responding on port ${port}."
   fi
 }
 
