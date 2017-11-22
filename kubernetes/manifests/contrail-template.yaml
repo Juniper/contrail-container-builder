@@ -225,6 +225,7 @@ spec:
         envFrom:
         - configMapRef:
             name: contrail-analyticsdb-config
+        command: ["/bin/bash", "/opt/contrail/contrail-entrypoint.sh"]
         volumeMounts:
         - mountPath: /var/lib/cassandra
           name: analyticsdb-data
@@ -270,6 +271,7 @@ spec:
         envFrom:
         - configMapRef:
             name: contrail-configdb-config
+        command: ["/bin/bash", "/opt/contrail/contrail-entrypoint.sh"]
         volumeMounts:
         - mountPath: /var/lib/cassandra
           name: configdb-data
