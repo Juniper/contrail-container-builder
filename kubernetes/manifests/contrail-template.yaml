@@ -114,6 +114,15 @@ data:
     export ZOO_MY_ID=$ord
     exec /docker-entrypoint.sh zkServer.sh start-foreground
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kube-manager-config
+  namespace: kube-system
+data:
+  KUBERNETES_API_SERVER: {{ kubernetes_api_server }}
+  K8S_TOKEN_FILE: "/tmp/serviceaccount/token"
+---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
@@ -143,9 +152,9 @@ spec:
       - name: zookeeper
         image: "zookeeper:3.4.10"
         imagePullPolicy: ""
-        env:
-        - name: ZOOKEEPER_NODES
-          value: "{{ zookeeper_nodes }}"
+        envFrom:
+        - configMapRef:
+            name: env
         command: ["/bin/bash", "/opt/contrail/contrail-entrypoint.sh"]
         volumeMounts:
         - mountPath: /var/lib/zookeeper
@@ -648,9 +657,11 @@ spec:
       - name: contrail-kube-manager
         image: "{{registry}}/contrail-kubernetes-kube-manager:{{version}}"
         imagePullPolicy: ""
-        env:
-        - name: K8S_TOKEN_FILE
-          value: "/tmp/serviceaccount/token"
+        envFrom:
+        - configMapRef:
+            name: env
+        - configMapRef:
+            name: kube-manager-config
         volumeMounts:
         - mountPath: /tmp/serviceaccount
           name: pod-secret
@@ -691,6 +702,9 @@ spec:
       - name: contrail-kubernetes-vrouter-init
         image: "{{registry}}/contrail-kubernetes-vrouter-init:{{version}}"
         imagePullPolicy: ""
+        envFrom:
+        - configMapRef:
+            name: env
         volumeMounts:
         - mountPath: /var/lib/contrail/
           name: var-lib-contrail

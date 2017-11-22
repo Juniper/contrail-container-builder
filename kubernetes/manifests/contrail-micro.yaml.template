@@ -15,9 +15,7 @@ metadata:
   name: nodemgr-config
   namespace: kube-system
 data:
-  LOG_LEVEL: {{ log_level }}
   DOCKER_HOST: "unix://mnt/docker.sock"
-  CONTROLLER_NODES: {{controller_nodes}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -295,6 +293,8 @@ spec:
         envFrom:
         - configMapRef:
             name: nodemgr-config
+        - configMapRef:
+            name: env
         env:
         - name: NODE_TYPE
           value: analytics
@@ -369,6 +369,8 @@ spec:
         envFrom:
         - configMapRef:
             name: nodemgr-config
+        - configMapRef:
+            name: env
         env:
         - name: NODE_TYPE
           value: control
@@ -447,6 +449,8 @@ spec:
         envFrom:
         - configMapRef:
             name: nodemgr-config
+        - configMapRef:
+            name: env
         env:
         - name: NODE_TYPE
           value: config
@@ -615,6 +619,9 @@ spec:
       - name: contrail-kube-manager
         image: "{{registry}}/contrail-kubernetes-kube-manager:{{version}}"
         imagePullPolicy: ""
+        envFrom:
+        - configMapRef:
+            name: env
         env:
         - name: K8S_TOKEN_FILE
           value: "/tmp/serviceaccount/token"
@@ -706,6 +713,8 @@ spec:
         envFrom:
         - configMapRef:
             name: nodemgr-config
+        - configMapRef:
+            name: env
         env:
         - name: NODE_TYPE
           value: vrouter
