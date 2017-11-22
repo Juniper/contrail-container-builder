@@ -78,7 +78,7 @@ data:
     done
 
     if [ -z "$my_ip" ]; then
-      echo "ERROR: Cannot find self ips ('$local_ips') in Cassandra nodes ('$CASSANDRA_NODES')"
+      echo "ERROR: Cannot find self ips ('$local_ips') in Cassandra nodes ('$CASSANDRA_SEEDS')"
       exit
     fi
 
@@ -224,6 +224,7 @@ spec:
         envFrom:
         - configMapRef:
             name: contrail-analyticsdb-config
+        command: ["/bin/bash", "/opt/contrail/contrail-entrypoint.sh"]
         volumeMounts:
         - mountPath: /var/lib/cassandra
           name: analyticsdb-data
@@ -269,6 +270,7 @@ spec:
         envFrom:
         - configMapRef:
             name: contrail-configdb-config
+        command: ["/bin/bash", "/opt/contrail/contrail-entrypoint.sh"]
         volumeMounts:
         - mountPath: /var/lib/cassandra
           name: configdb-data
