@@ -28,10 +28,13 @@ config_nodes=${CONFIG_NODES:-$controller_nodes}
 zookeeper_nodes=${ZOOKEEPER_NODES:-$config_nodes}
 configdb_nodes=${CONFIGDB_NODES:-$config_nodes}
 rabbitmq_nodes=${RABBITMQ_NODES:-$config_nodes}
+webui_nodes=${WEBUI_NODES:-$controller_nodes}
 analytics_nodes=${ANALYTICS_NODES:-$controller_nodes}
 redis_nodes=${REDIS_NODES:-$analytics_nodes}
 analyticsdb_nodes=${ANALYTICSDB_NODES:-$controller_nodes}
 kafka_nodes=${KAFKA_NODES:-$analyticsdb_nodes}
+agent_nodes=${AGENT_NODES:-$controller_nodes}
+
 log_level=${LOG_LEVEL:-SYS_NOTICE}
 physical_interface=${PHYSICAL_INTERFACE:-`ip route show | grep "default via" | awk '{print $5}'`}
 
