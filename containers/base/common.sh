@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source /functions.sh
-
 DEFAULT_IFACE=`ip -4 route list 0/0 | awk '{ print $5; exit }'`
 DEFAULT_LOCAL_IP=`ip addr | grep $DEFAULT_IFACE | grep 'inet ' | awk '{print $2}' | cut -d '/' -f 1`
 
@@ -56,18 +54,6 @@ ANALYTICSDB_PORT=${ANALYTICSDB_PORT:-9160}
 ANALYTICSDB_CQL_PORT=${ANALYTICSDB_CQL_PORT:-9042}
 KAFKA_PORT=${KAFKA_PORT:-9092}
 
-CONFIG_SERVERS=${CONFIG_SERVERS:-`get_server_list CONFIG ":$CONFIG_API_PORT "`}
-CONFIGDB_SERVERS=${CONFIGDB_SERVERS:-`get_server_list CONFIGDB ":$CONFIGDB_PORT "`}
-CONFIGDB_CQL_SERVERS=${CONFIGDB_CQL_SERVERS:-`get_server_list CONFIGDB ":$CONFIGDB_CQL_PORT "`}
-ZOOKEEPER_SERVERS=${ZOOKEEPER_SERVERS:-`get_server_list ZOOKEEPER ":$ZOOKEEPER_PORT,"`}
-RABBITMQ_SERVERS=${RABBITMQ_SERVERS:-`get_server_list RABBITMQ ":$RABBITMQ_PORT,"`}
-ANALYTICS_SERVERS=${ANALYTICS_SERVERS:-`get_server_list ANALYTICS ":$ANALYTICS_API_PORT "`}
-COLLECTOR_SERVERS=${COLLECTOR_SERVERS:-`get_server_list ANALYTICS ":$COLLECTOR_PORT "`}
-REDIS_SERVERS=${REDIS_SERVERS:-`get_server_list REDIS ":$REDIS_SERVER_PORT "`}
-ANALYTICSDB_SERVERS=${ANALYTICSDB_SERVERS:-`get_server_list ANALYTICSDB ":$ANALYTICSDB_PORT "`}
-ANALYTICSDB_CQL_SERVERS=${ANALYTICSDB_CQL_SERVERS:-`get_server_list ANALYTICSDB ":$ANALYTICSDB_CQL_PORT "`}
-KAFKA_SERVERS=${KAFKA_SERVERS:-`get_server_list KAFKA ":$KAFKA_PORT "`}
-
 RABBITMQ_VHOST=${RABBITMQ_VHOST:-/}
 RABBITMQ_USER=${RABBITMQ_USER:-guest}
 RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD:-guest}
@@ -105,6 +91,19 @@ if [[ "$AUTH_MODE" == 'keystone' ]] ; then
   AUTH_PARAMS="--admin_password $KEYSTONE_AUTH_ADMIN_PASSWORD --admin_tenant_name $KEYSTONE_AUTH_ADMIN_TENANT --admin_user $KEYSTONE_AUTH_ADMIN_USER"
 fi
 
+source /functions.sh
+
+CONFIG_SERVERS=${CONFIG_SERVERS:-`get_server_list CONFIG ":$CONFIG_API_PORT "`}
+CONFIGDB_SERVERS=${CONFIGDB_SERVERS:-`get_server_list CONFIGDB ":$CONFIGDB_PORT "`}
+CONFIGDB_CQL_SERVERS=${CONFIGDB_CQL_SERVERS:-`get_server_list CONFIGDB ":$CONFIGDB_CQL_PORT "`}
+ZOOKEEPER_SERVERS=${ZOOKEEPER_SERVERS:-`get_server_list ZOOKEEPER ":$ZOOKEEPER_PORT,"`}
+RABBITMQ_SERVERS=${RABBITMQ_SERVERS:-`get_server_list RABBITMQ ":$RABBITMQ_PORT,"`}
+ANALYTICS_SERVERS=${ANALYTICS_SERVERS:-`get_server_list ANALYTICS ":$ANALYTICS_API_PORT "`}
+COLLECTOR_SERVERS=${COLLECTOR_SERVERS:-`get_server_list ANALYTICS ":$COLLECTOR_PORT "`}
+REDIS_SERVERS=${REDIS_SERVERS:-`get_server_list REDIS ":$REDIS_SERVER_PORT "`}
+ANALYTICSDB_SERVERS=${ANALYTICSDB_SERVERS:-`get_server_list ANALYTICSDB ":$ANALYTICSDB_PORT "`}
+ANALYTICSDB_CQL_SERVERS=${ANALYTICSDB_CQL_SERVERS:-`get_server_list ANALYTICSDB ":$ANALYTICSDB_CQL_PORT "`}
+KAFKA_SERVERS=${KAFKA_SERVERS:-`get_server_list KAFKA ":$KAFKA_PORT "`}
 
 read -r -d '' sandesh_client_config << EOM
 [SANDESH]
@@ -115,57 +114,3 @@ sandesh_certfile=${SANDESH_CERTFILE:-/etc/contrail/ssl/certs/server.pem}
 sandesh_ca_cert=${SANDESH_CA_CERT:-/etc/contrail/ssl/certs/ca-cert.pem}
 EOM
 
-
-function set_third_party_auth_config(){
-  if [[ $AUTH_MODE == "keystone" ]]; then
-    cat > /etc/contrail/contrail-keystone-auth.conf << EOM
-[KEYSTONE]
-#memcache_servers=127.0.0.1:11211
-admin_password = $KEYSTONE_AUTH_ADMIN_PASSWORD
-admin_tenant_name = $KEYSTONE_AUTH_ADMIN_TENANT
-admin_user = $KEYSTONE_AUTH_ADMIN_USER
-auth_host = $KEYSTONE_AUTH_HOST
-auth_port = $KEYSTONE_AUTH_ADMIN_PORT
-auth_protocol = $KEYSTONE_AUTH_PROTO
-insecure = false
-auth_url = $KEYSTONE_AUTH_PROTO://${KEYSTONE_AUTH_HOST}:${KEYSTONE_AUTH_ADMIN_PORT}${KEYSTONE_AUTH_URL_VERSION}
-auth_type = password
-EOM
-    if [[ "$KEYSTONE_AUTH_URL_VERSION" == '/v3' ]] ; then
-      cat >> /etc/contrail/contrail-keystone-auth.conf << EOM
-user_domain_name = $KEYSTONE_AUTH_USER_DOMAIN_NAME
-project_domain_name = $KEYSTONE_AUTH_PROJECT_DOMAIN_NAME
-EOM
-    fi
-  fi
-}
-
-function set_vnc_api_lib_ini(){
-# TODO: set WEB_SERVER to VIP
-  cat > /etc/contrail/vnc_api_lib.ini << EOM
-[global]
-WEB_SERVER = $CONFIG_NODES
-WEB_PORT = ${CONFIG_API_PORT:-8082}
-BASE_URL = /
-EOM
-
-  if [[ $AUTH_MODE == "keystone" ]]; then
-    cat >> /etc/contrail/vnc_api_lib.ini << EOM
-
-; Authentication settings (optional)
-[auth]
-AUTHN_TYPE = keystone
-AUTHN_PROTOCOL = $KEYSTONE_AUTH_PROTO
-AUTHN_SERVER = $KEYSTONE_AUTH_HOST
-AUTHN_PORT = $KEYSTONE_AUTH_ADMIN_PORT
-AUTHN_URL = $KEYSTONE_AUTH_URL_TOKENS
-AUTHN_DOMAIN = $KEYSTONE_AUTH_PROJECT_DOMAIN_NAME
-;AUTHN_TOKEN_URL = http://127.0.0.1:35357/v2.0/tokens
-EOM
-  else
-    cat >> /etc/contrail/vnc_api_lib.ini << EOM
-[auth]
-AUTHN_TYPE = noauth
-EOM
-  fi
-}
