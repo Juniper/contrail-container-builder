@@ -61,6 +61,33 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: contrail-cassandra-starter
+  namespace: kube-system
+data:
+  contrail-entrypoint.sh: |-
+    #!/bin/bash
+
+    IFS=',' read -ra srv_list <<< "$CASSANDRA_SEEDS"
+    local_ips=$(ip addr | awk '/inet/ {print($2)}')
+    for srv in "${srv_list[@]}"; do
+      if [[ "$local_ips" =~ "$srv" ]] ; then
+        echo "INFO: found '$srv' in local IPs '$local_ips'"
+        my_ip=$srv
+        break
+      fi
+    done
+
+    if [ -z "$my_ip" ]; then
+      echo "ERROR: Cannot find self ips ('$local_ips') in Cassandra nodes ('$CASSANDRA_NODES')"
+      exit
+    fi
+
+    export CASSANDRA_LISTEN_ADDRESS=$my_ip
+    exec /docker-entrypoint.sh cassandra -f
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: contrail-zookeeper-starter
   namespace: kube-system
 data:
@@ -116,10 +143,6 @@ spec:
         image: "zookeeper:3.4.10"
         imagePullPolicy: ""
         env:
-        - name: POD_IP
-          valueFrom:
-            fieldRef:
-              fieldPath: status.podIP
         - name: ZOOKEEPER_NODES
           value: "{{ zookeeper_nodes }}"
         command: ["/bin/bash", "/opt/contrail/contrail-entrypoint.sh"]
@@ -204,10 +227,15 @@ spec:
         volumeMounts:
         - mountPath: /var/lib/cassandra
           name: analyticsdb-data
+        - mountPath: /opt/contrail
+          name: contrail-cassandra-starter
       volumes:
       - name: analyticsdb-data
         hostPath:
           path: /var/lib/analyticsdb
+      - name: contrail-cassandra-starter
+        configMap:
+          name: contrail-cassandra-starter
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -244,10 +272,15 @@ spec:
         volumeMounts:
         - mountPath: /var/lib/cassandra
           name: configdb-data
+        - mountPath: /opt/contrail
+          name: contrail-cassandra-starter
       volumes:
       - name: configdb-data
         hostPath:
           path: /var/lib/configdb
+      - name: contrail-cassandra-starter
+        configMap:
+          name: contrail-cassandra-starter
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
