@@ -80,7 +80,8 @@ LOG_DIR=${LOG_DIR:-"/var/log/contrail"}
 LOG_LEVEL=${LOG_LEVEL:-SYS_NOTICE}
 LOG_LOCAL=${LOG_LOCAL:-1}
 
-BGP_ASN=64512
+BGP_ASN=${BGP_ASN:-64512}
+RNDC_KEY=${RNDC_KEY:-"xvysmOR8lnUQRBcunkC6vg=="}
 
 KEYSTONE_AUTH_ADMIN_TENANT=${KEYSTONE_AUTH_ADMIN_TENANT:-admin}
 KEYSTONE_AUTH_ADMIN_USER=${KEYSTONE_AUTH_ADMIN_USER:-admin}
@@ -104,7 +105,6 @@ if [[ "$AUTH_MODE" == 'keystone' ]] ; then
   AUTH_PARAMS="--admin_password $KEYSTONE_AUTH_ADMIN_PASSWORD --admin_tenant_name $KEYSTONE_AUTH_ADMIN_TENANT --admin_user $KEYSTONE_AUTH_ADMIN_USER"
 fi
 
-RNDC_KEY="xvysmOR8lnUQRBcunkC6vg=="
 
 read -r -d '' sandesh_client_config << EOM
 [SANDESH]
