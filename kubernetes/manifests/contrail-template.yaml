@@ -5,6 +5,7 @@ metadata:
   name: env
   namespace: kube-system
 data:
+  LOG_LEVEL: {{ log_level }}
   CONTROLLER_NODES: {{ controller_nodes }}
   CONTROL_NODES: {{ control_nodes }}
   CONFIG_NODES: {{ config_nodes }}
@@ -78,7 +79,7 @@ data:
     done
 
     if [ -z "$my_ip" ]; then
-      echo "ERROR: Cannot find self ips ('$local_ips') in Cassandra nodes ('$CASSANDRA_NODES')"
+      echo "ERROR: Cannot find self ips ('$local_ips') in Cassandra nodes ('$CASSANDRA_SEEDS')"
       exit
     fi
 

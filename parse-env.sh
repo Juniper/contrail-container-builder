@@ -33,6 +33,8 @@ redis_nodes=${REDIS_NODES:-$analytics_nodes}
 analyticsdb_nodes=${ANALYTICSDB_NODES:-$controller_nodes}
 kafka_nodes=${KAFKA_NODES:-$analyticsdb_nodes}
 
+log_level=${LOG_LEVEL:-SYS_NOTICE}
+
 physical_interface=${PHYSICAL_INTERFACE:-`ip route show | grep "default via" | awk '{print $5}'`}
 
 default_registry_ip=${_CONTRAIL_REGISTRY_IP:-$host_ip}

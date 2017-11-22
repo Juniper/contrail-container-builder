@@ -5,6 +5,7 @@ metadata:
   name: env
   namespace: kube-system
 data:
+  LOG_LEVEL: {{ log_level }}
   CONTROLLER_NODES: {{controller_nodes}}
   PHYSICAL_INTERFACE: {{physical_interface}}
 ---
@@ -14,6 +15,7 @@ metadata:
   name: nodemgr-config
   namespace: kube-system
 data:
+  LOG_LEVEL: {{ log_level }}
   DOCKER_HOST: "unix://mnt/docker.sock"
   CONTROLLER_NODES: {{controller_nodes}}
 ---
@@ -295,7 +297,7 @@ spec:
             name: nodemgr-config
         env:
         - name: NODE_TYPE
-          value: analytics 
+          value: analytics
 
 # todo: there is type Socket in new kubernetes, it is possible to use full
 # path:
