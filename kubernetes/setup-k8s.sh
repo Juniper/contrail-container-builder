@@ -1,6 +1,24 @@
 #!/bin/bash
 
-export OHOME=$HOME
+nocasematch=`shopt | grep nocasematch | awk '{print $2}'`
+shopt -s nocasematch
+for key in "$@"; do
+  case $key in
+    develop)
+      develop_mode=true
+    ;;
+    jointo=*)
+      join_to="${key#*=}"
+    ;;
+    *)
+      echo ERROR: Unknown option $key
+      exit
+    ;;
+  esac
+done
+if [[ $nocasematch == "off" ]]; then
+  shopt -u nocasematch
+fi
 
 linux=$(awk -F"=" '/^ID=/{print $2}' /etc/os-release | tr -d '"')
 hostname=`cat /etc/hostname`
@@ -73,14 +91,24 @@ fi
 
 kubeadm init --kubernetes-version v1.7.4
 
-mkdir -p $OHOME/.kube
-cp -u /etc/kubernetes/admin.conf $OHOME/.kube/config
-chown -R $(id -u):$(id -g) $OHOME/.kube
+mkdir -p $HOME/.kube
+cp -u /etc/kubernetes/admin.conf $HOME/.kube/config
+chown -R $(id -u):$(id -g) $HOME/.kube
 
 EOS
 
 kubectl patch deploy/kube-dns --type json  -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/readinessProbe", "value": {"exec": {"command": ["wget", "-O", "-", "http://127.0.0.1:8081/readiness"]}}}]' -n kube-system
 kubectl patch deploy/kube-dns --type json  -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/livenessProbe", "value": {"exec": {"command": ["wget", "-O", "-", "http://127.0.0.1:10054/healthcheck/kubedns"]}}}]' -n kube-system && kubectl patch deploy/kube-dns --type json  -p='[{"op": "replace", "path": "/spec/template/spec/containers/1/livenessProbe", "value": {"exec": {"command": ["wget", "-O", "-", "http://127.0.0.1:10054/healthcheck/dnsmasq"]}}}]' -n kube-system && kubectl patch deploy/kube-dns --type json  -p='[{"op": "replace", "path": "/spec/template/spec/containers/2/livenessProbe", "value": {"exec": {"command": ["wget", "-O", "-", "http://127.0.0.1:10054/metrics"]}}}]' -n kube-system
+
+# Changing apiserver manifest results to restart apiserver, so we do this at the end to avoid waiting of apiserver is ready for other operations (e.g. kubectl patch)
+if [[ -n "$develop_mode" ]]; then
+  sudo grep "admission-control=.*AlwaysPullImages" /etc/kubernetes/manifests/kube-apiserver.yaml > /dev/null
+  r=$?
+  if (( $r == 1 )); then
+    echo Enable AlwaysPullImages control plug-in
+    sudo sed -i 's/- --admission-control=.*/&,AlwaysPullImages/' /etc/kubernetes/manifests/kube-apiserver.yaml
+  fi
+fi
 
 DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
