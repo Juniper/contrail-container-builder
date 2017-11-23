@@ -5,18 +5,19 @@ metadata:
   name: env
   namespace: kube-system
 data:
-  LOG_LEVEL: {{ log_level }}
-  CONTROLLER_NODES: {{ controller_nodes }}
-  CONTROL_NODES: {{ control_nodes }}
-  CONFIG_NODES: {{ config_nodes }}
-  ZOOKEEPER_NODES: {{ zookeeper_nodes }}
-  CONFIGDB_NODES: {{ configdb_nodes }}
-  RABBITMQ_NODES: {{rabbitmq_nodes}}
   ANALYTICS_NODES: {{ analytics_nodes }}
-  REDIS_NODES: {{ redis_nodes }}
   ANALYTICSDB_NODES: {{ analyticsdb_nodes }}
+  CONFIG_NODES: {{ config_nodes }}
+  CONFIGDB_NODES: {{ configdb_nodes }}
+  CONTROL_NODES: {{ control_nodes }}
+  CONTROLLER_NODES: {{ controller_nodes }}
   KAFKA_NODES: {{ kafka_nodes }}
+  LOG_LEVEL: {{ log_level }}
   PHYSICAL_INTERFACE: {{ physical_interface }}
+  RABBITMQ_NODES: {{rabbitmq_nodes}}
+  REDIS_NODES: {{ redis_nodes }}
+  WEBUI_NODES: {{ webui_nodes }}
+  ZOOKEEPER_NODES: {{ zookeeper_nodes }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -158,13 +159,18 @@ spec:
         command: ["/bin/bash", "/opt/contrail/contrail-entrypoint.sh"]
         volumeMounts:
         - mountPath: /var/lib/zookeeper
-          name: zookeeper-config-data
+          name: zookeeper-data
+        - mountPath: /var/log/zookeeper
+          name: zookeeper-logs
         - mountPath: /opt/contrail
           name: contrail-zookeeper-starter
       volumes:
-      - name: zookeeper-config-data
+      - name: zookeeper-data
         hostPath:
-          path: /var/lib/config_zookeeper_data
+          path: /var/lib/contrail/zookeeper
+      - name: zookeeper-logs
+        hostPath:
+          path: /var/log/contrail/zookeeper
       - name: contrail-zookeeper-starter
         configMap:
           name: contrail-zookeeper-starter
@@ -201,6 +207,13 @@ spec:
         envFrom:
         - configMapRef:
             name: env
+        volumeMounts:
+        - mountPath: /tmp/kafka-logs
+          name: kafka-logs
+      volumes:
+      - name: kafka-logs
+        hostPath:
+          path: /var/lib/contrail/kafka-logs
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -238,12 +251,17 @@ spec:
         volumeMounts:
         - mountPath: /var/lib/cassandra
           name: analyticsdb-data
+        - mountPath: /var/log/cassandra
+          name: analyticsdb-log
         - mountPath: /opt/contrail
           name: contrail-cassandra-starter
       volumes:
       - name: analyticsdb-data
         hostPath:
-          path: /var/lib/analyticsdb
+          path: /var/lib/contrail/analyticsdb
+      - name: analyticsdb-log
+        hostPath:
+          path: /var/log/contrail/analyticsdb
       - name: contrail-cassandra-starter
         configMap:
           name: contrail-cassandra-starter
@@ -284,12 +302,17 @@ spec:
         volumeMounts:
         - mountPath: /var/lib/cassandra
           name: configdb-data
+        - mountPath: /var/log/cassandra
+          name: configdb-log
         - mountPath: /opt/contrail
           name: contrail-cassandra-starter
       volumes:
       - name: configdb-data
         hostPath:
-          path: /var/lib/configdb
+          path: /var/lib/contrail/configdb
+      - name: configdb-log
+        hostPath:
+          path: /var/log/contrail/configdb
       - name: contrail-cassandra-starter
         configMap:
           name: contrail-cassandra-starter
@@ -326,36 +349,54 @@ spec:
         envFrom:
         - configMapRef:
             name: env
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: analytics-logs
       - name: contrail-analytics-collector
         image: "{{registry}}/contrail-analytics-collector:{{version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
             name: env
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: analytics-logs
       - name: contrail-analytics-alarm-gen
         image: "{{registry}}/contrail-analytics-alarm-gen:{{version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
             name: env
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: analytics-logs
       - name: contrail-analytics-query-engine
         image: "{{registry}}/contrail-analytics-query-engine:{{version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
             name: env
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: analytics-logs
       - name: contrail-analytics-snmp-collector
         image: "{{registry}}/contrail-analytics-snmp-collector:{{version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
             name: env
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: analytics-logs
       - name: contrail-analytics-topology
         image: "{{registry}}/contrail-analytics-topology:{{version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
             name: env
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: analytics-logs
       - name: contrail-analytics-nodemgr
         image: "{{registry}}/contrail-nodemgr:{{version}}"
         imagePullPolicy: ""
@@ -367,16 +408,20 @@ spec:
         env:
         - name: NODE_TYPE
           value: analytics
-
 # todo: there is type Socket in new kubernetes, it is possible to use full
 # path:
 # hostPath:
 #   path: /var/run/docker.sock and
 #   type: Socket
         volumeMounts:
+        - mountPath: /var/log/contrail
+          name: analytics-logs
         - mountPath: /mnt
           name: docker-unix-socket
       volumes:
+      - name: analytics-logs
+        hostPath:
+          path: /var/log/contrail/analytics
       - name: docker-unix-socket
         hostPath:
           path: /var/run
@@ -413,12 +458,18 @@ spec:
         envFrom:
         - configMapRef:
             name: env
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: control-logs
       - name: contrail-controller-control-dns
         image: "{{registry}}/contrail-controller-control-dns:{{version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
             name: env
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: control-logs
       - name: contrail-controller-control-named
         image: "{{registry}}/contrail-controller-control-named:{{version}}"
         imagePullPolicy: ""
@@ -427,6 +478,9 @@ spec:
             name: env
         securityContext:
           privileged: true
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: control-logs
       - name: contrail-controller-nodemgr
         image: "{{registry}}/contrail-nodemgr:{{version}}"
         imagePullPolicy: ""
@@ -444,9 +498,14 @@ spec:
 #   path: /var/run/docker.sock and
 #   type: Socket
         volumeMounts:
+        - mountPath: /var/log/contrail
+          name: control-logs
         - mountPath: /mnt
           name: docker-unix-socket
       volumes:
+      - name: control-logs
+        hostPath:
+          path: /var/log/contrail/control
       - name: docker-unix-socket
         hostPath:
           path: /var/run
@@ -483,24 +542,36 @@ spec:
         envFrom:
         - configMapRef:
             name: env
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: config-logs
       - name: contrail-controller-config-devicemgr
         image: "{{registry}}/contrail-controller-config-devicemgr:{{version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
             name: env
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: config-logs
       - name: contrail-controller-config-schema
         image: "{{registry}}/contrail-controller-config-schema:{{version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
             name: env
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: config-logs
       - name: contrail-controller-config-svcmonitor
         image: "{{registry}}/contrail-controller-config-svcmonitor:{{version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
             name: env
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: config-logs
       - name: contrail-controller-config-nodemgr
         image: "{{registry}}/contrail-nodemgr:{{version}}"
         imagePullPolicy: ""
@@ -518,9 +589,14 @@ spec:
 #   path: /var/run/docker.sock and
 #   type: Socket
         volumeMounts:
+        - mountPath: /var/log/contrail
+          name: config-logs
         - mountPath: /mnt
           name: docker-unix-socket
       volumes:
+      - name: config-logs
+        hostPath:
+          path: /var/log/contrail/config
       - name: docker-unix-socket
         hostPath:
           path: /var/run
@@ -557,12 +633,22 @@ spec:
         envFrom:
         - configMapRef:
             name: env
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: webui-logs
       - name: contrail-controller-webui-web
         image: "{{registry}}/contrail-controller-webui-web:{{version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
             name: env
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: webui-logs
+      volumes:
+      - name: webui-logs
+        hostPath:
+          path: /var/log/contrail/webui
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -593,6 +679,18 @@ spec:
       - name: redis
         image: "redis:4.0.2"
         imagePullPolicy: ""
+        volumeMounts:
+        - mountPath: /var/lib/redis
+          name: redis-data
+        - mountPath: /var/log/redis
+          name: redis-logs
+      volumes:
+      - name: redis-data
+        hostPath:
+          path: /var/lib/contrail/redis
+      - name: redis-logs
+        hostPath:
+          path: /var/log/contrail/redis
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -626,6 +724,18 @@ spec:
         env:
         - name: RABBITMQ_ERLANG_COOKIE
           value: "47EFF3BB-4786-46E0-A5BB-58455B3C2CB4"
+        volumeMounts:
+        - mountPath: /var/lib/rabbitmq
+          name: rabbitmq-data
+        - mountPath: /var/log/rabbitmq
+          name: rabbitmq-logs
+      volumes:
+      - name: rabbitmq-data
+        hostPath:
+          path: /var/lib/contrail/rabbitmq
+      - name: rabbitmq-logs
+        hostPath:
+          path: /var/log/contrail/rabbitmq
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -663,9 +773,14 @@ spec:
         - configMapRef:
             name: kube-manager-config
         volumeMounts:
+        - mountPath: /var/log/contrail
+          name: kube-manager-logs
         - mountPath: /tmp/serviceaccount
           name: pod-secret
       volumes:
+      - name: kube-manager-logs
+        hostPath:
+          path: /var/log/contrail/kube-manager
       - name: pod-secret
         secret:
           secretName: contrail-kube-manager-token
@@ -706,7 +821,7 @@ spec:
         - configMapRef:
             name: env
         volumeMounts:
-        - mountPath: /var/lib/contrail/
+        - mountPath: /var/lib/contrail
           name: var-lib-contrail
         - mountPath: /host/etc_cni
           name: etc-cni
@@ -714,6 +829,8 @@ spec:
           name: opt-cni-bin
         - mountPath: /var/log/contrail/cni
           name: var-log-contrail-cni
+        - mountPath: /var/log/contrail
+          name: agent-logs
       containers:
       - name: contrail-agent
         image: "{{registry}}/contrail-agent-vrouter:{{version}}"
@@ -724,11 +841,13 @@ spec:
         - configMapRef:
             name: env
         volumeMounts:
+        - mountPath: /var/log/contrail
+          name: agent-logs
         - mountPath: /usr/src
           name: usr-src
         - mountPath: /lib/modules
           name: lib-modules
-        - mountPath: /var/lib/contrail/
+        - mountPath: /var/lib/contrail
           name: var-lib-contrail
         - mountPath: /var/crashes
           name: var-crashes
@@ -758,6 +877,8 @@ spec:
 #   path: /var/run/docker.sock and
 #   type: Socket
         volumeMounts:
+        - mountPath: /var/log/contrail
+          name: agent-logs
         - mountPath: /mnt
           name: docker-unix-socket
       volumes:
@@ -775,10 +896,10 @@ spec:
           path: /lib/modules
       - name: var-lib-contrail
         hostPath:
-          path: /var/lib/contrail/
+          path: /var/lib/contrail
       - name: var-crashes
         hostPath:
-          path: /var/crashes/
+          path: /var/contrail/crashes
       - name: etc-cni
         hostPath:
           path: /etc/cni
@@ -787,7 +908,10 @@ spec:
           path: /opt/cni/bin
       - name: var-log-contrail-cni
         hostPath:
-          path: /var/log/contrail/cni/
+          path: /var/log/contrail/cni
+      - name: agent-logs
+        hostPath:
+          path: /var/log/contrail/agent
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1beta1
