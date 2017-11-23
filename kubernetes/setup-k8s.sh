@@ -1,5 +1,9 @@
 #!/bin/bash
 
+DIR="${BASH_SOURCE%/*}"
+if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
+source "$DIR/../parse-env.sh"
+
 nocasematch=`shopt | grep nocasematch | awk '{print $2}'`
 shopt -s nocasematch
 for key in "$@"; do
@@ -7,8 +11,8 @@ for key in "$@"; do
     develop)
       develop_mode=true
     ;;
-    jointo=*)
-      join_to="${key#*=}"
+    join-token=*)
+      join_token="${key#*=}"
     ;;
     *)
       echo ERROR: Unknown option $key
@@ -89,29 +93,36 @@ if [[ -n "$hostname" && "$hostname" != `hostname` ]]; then
   hostname $hostname
 fi
 
-kubeadm init --kubernetes-version v1.7.4
+if [[ -z "$join_token" ]]; then
+  kubeadm init --kubernetes-version v1.7.4
 
-mkdir -p $HOME/.kube
-cp -u /etc/kubernetes/admin.conf $HOME/.kube/config
-chown -R $(id -u):$(id -g) $HOME/.kube
+  mkdir -p $HOME/.kube
+  cp -u /etc/kubernetes/admin.conf $HOME/.kube/config
+  chown -R $(id -u):$(id -g) $HOME/.kube
+else
+  if [[ -z "$kubernetes_api_server" ]]; then
+    echo ERROR: Kubernetes master node IP is not specified in KUBERNETES_API_SERVER
+  fi
+  echo Join to $kubernetes_api_server:6443
+  kubeadm join --token $join_token $kubernetes_api_server:6443
+fi
 
 EOS
 
-kubectl patch deploy/kube-dns --type json  -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/readinessProbe", "value": {"exec": {"command": ["wget", "-O", "-", "http://127.0.0.1:8081/readiness"]}}}]' -n kube-system
-kubectl patch deploy/kube-dns --type json  -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/livenessProbe", "value": {"exec": {"command": ["wget", "-O", "-", "http://127.0.0.1:10054/healthcheck/kubedns"]}}}]' -n kube-system && kubectl patch deploy/kube-dns --type json  -p='[{"op": "replace", "path": "/spec/template/spec/containers/1/livenessProbe", "value": {"exec": {"command": ["wget", "-O", "-", "http://127.0.0.1:10054/healthcheck/dnsmasq"]}}}]' -n kube-system && kubectl patch deploy/kube-dns --type json  -p='[{"op": "replace", "path": "/spec/template/spec/containers/2/livenessProbe", "value": {"exec": {"command": ["wget", "-O", "-", "http://127.0.0.1:10054/metrics"]}}}]' -n kube-system
+if [[ -z "$join_token" ]]; then
+  kubectl patch deploy/kube-dns --type json  -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/readinessProbe", "value": {"exec": {"command": ["wget", "-O", "-", "http://127.0.0.1:8081/readiness"]}}}]' -n kube-system
+  kubectl patch deploy/kube-dns --type json  -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/livenessProbe", "value": {"exec": {"command": ["wget", "-O", "-", "http://127.0.0.1:10054/healthcheck/kubedns"]}}}]' -n kube-system && kubectl patch deploy/kube-dns --type json  -p='[{"op": "replace", "path": "/spec/template/spec/containers/1/livenessProbe", "value": {"exec": {"command": ["wget", "-O", "-", "http://127.0.0.1:10054/healthcheck/dnsmasq"]}}}]' -n kube-system && kubectl patch deploy/kube-dns --type json  -p='[{"op": "replace", "path": "/spec/template/spec/containers/2/livenessProbe", "value": {"exec": {"command": ["wget", "-O", "-", "http://127.0.0.1:10054/metrics"]}}}]' -n kube-system
 
-# Changing apiserver manifest results to restart apiserver, so we do this at the end to avoid waiting of apiserver is ready for other operations (e.g. kubectl patch)
-if [[ -n "$develop_mode" ]]; then
-  sudo grep "admission-control=.*AlwaysPullImages" /etc/kubernetes/manifests/kube-apiserver.yaml > /dev/null
-  r=$?
-  if (( $r == 1 )); then
-    echo Enable AlwaysPullImages control plug-in
-    sudo sed -i 's/- --admission-control=.*/&,AlwaysPullImages/' /etc/kubernetes/manifests/kube-apiserver.yaml
+  # Changing apiserver manifest results to restart apiserver, so we do this at the end to avoid waiting of apiserver is ready for other operations (e.g. kubectl patch)
+  if [[ -n "$develop_mode" ]]; then
+    sudo grep "admission-control=.*AlwaysPullImages" /etc/kubernetes/manifests/kube-apiserver.yaml > /dev/null
+    r=$?
+    if (( $r == 1 )); then
+      echo Enable AlwaysPullImages control plug-in
+      sudo sed -i 's/- --admission-control=.*/&,AlwaysPullImages/' /etc/kubernetes/manifests/kube-apiserver.yaml
+    fi
   fi
 fi
 
-DIR="${BASH_SOURCE%/*}"
-if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
-source "$DIR/../parse-env.sh"
 CONTRAIL_REGISTRY=$registry
 source "$DIR/../containers/config-docker.sh"
