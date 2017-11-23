@@ -35,6 +35,7 @@ data:
   CASSANDRA_SEEDS: {{ analyticsdb_nodes }}
   CASSANDRA_CLUSTER_NAME: Contrail
   CASSANDRA_START_RPC: "true"
+  CASSANDRA_LISTEN_ADDRESS: auto
   JVM_EXTRA_OPTS: >-
     -Dcassandra.rpc_port=9160
     -Dcassandra.native_transport_port=9042
@@ -50,6 +51,7 @@ data:
   CASSANDRA_SEEDS: {{ configdb_nodes }}
   CASSANDRA_CLUSTER_NAME: ContrailConfigDB
   CASSANDRA_START_RPC: "true"
+  CASSANDRA_LISTEN_ADDRESS: auto
   JVM_EXTRA_OPTS: >-
     -Dcassandra.rpc_port=9161
     -Dcassandra.native_transport_port=9041
@@ -229,8 +231,6 @@ spec:
       - name: contrail-analyticsdb
         image: "cassandra:2.2.10"
         imagePullPolicy: ""
-        securityContext:
-          privileged: true
         envFrom:
         - configMapRef:
             name: contrail-analyticsdb-config
