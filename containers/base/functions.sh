@@ -5,11 +5,6 @@ function wait_for_contrail_api() {
   IFS=',' read -ra config_node_list <<< "${CONFIG_NODES}"
 
   local port=$CONFIG_API_PORT
-  if [[ "$AUTH_MODE" == 'keystone' ]] ; then
-    # it is case when $CLOUD_ORCHESTRATOR == 'openstack' && $AAA_MODE != 'no-auth'
-    port=8095
-  fi
-
   local count=0
   for n in ${config_node_list[@]} ; do
     for (( i=0; i<120; i++)) ; do
