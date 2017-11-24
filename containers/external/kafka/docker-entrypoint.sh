@@ -4,27 +4,45 @@ set -e
 
 default_interface=`ip route show |grep "default via" |awk '{print $5}'`
 default_ip_address=`ip address show dev $default_interface |head -3 |tail -1 |tr "/" " " |awk '{print $2}'`
-: ${KAFKA_LISTEN_ADDRESS='auto'}
-if [ "$KAFKA_LISTEN_ADDRESS" = 'auto' ]; then
-        KAFKA_LISTEN_ADDRESS=${default_ip_address}
-fi
+local_ips=$(ip addr | awk '/inet/ {print($2)}')
+
 CONFIG="$KAFKA_CONF_DIR/server.properties"
-CONTROLLER_NODES=${CONTROLLER_NODES:-`hostname`}
+CONTROLLER_NODES=${CONTROLLER_NODES:-${default_ip_address}}
 ZOOKEEPER_NODES=${ZOOKEEPER_NODES:-${CONTROLLER_NODES}}
+KAFKA_NODES=${KAFKA_NODES:-${ANALYTICSDB_NODES:-${default_ip_address}}}
+
+: ${KAFKA_LISTEN_ADDRESS='auto'}
+my_index=1
+if [ "$KAFKA_LISTEN_ADDRESS" = 'auto' ]; then
+  IFS=',' read -ra server_list <<< "$KAFKA_NODES"
+  for server in "${server_list[@]}"; do
+    if [[ "$local_ips" =~ "$server" ]] ; then
+      echo "INFO: found '$server' in local IPs '$local_ips'"
+      my_ip=$server
+      break
+    fi
+    (( my_index+=1 ))
+  done
+
+  if [ -z "$my_ip" ]; then
+    echo "ERROR: Cannot find self ips ('$local_ips') in Cassandra nodes ('$KAFKA_NODES')"
+    exit -1
+  fi
+
+  export KAFKA_LISTEN_ADDRESS=$my_ip
+fi
+
 zk_server_list=''
-server_index=1
+zk_chroot_list=''
 IFS=',' read -ra server_list <<< "${ZOOKEEPER_NODES}"
 for server in "${server_list[@]}"; do
   zk_server_list+=${server}:2181,
   zk_chroot_list+=${server}:2181/kafka-root,
-  if [ ${default_ip_address} == $server ]; then
-    my_index=$server_index
-  fi
-  server_index=$((server_index+1))
 done
+
 bin/zookeeper-shell.sh "${zk_server_list::-1}" <<< "create /kafka-root []"
 zk_list="${zk_chroot_list::-1}"
-if [ `echo ${#server_list[@]}` -gt 1 ];then
+if [[ `echo ${#server_list[@]}` -gt 1 ]] ; then
   replication_factor=2
 else
   replication_factor=1
