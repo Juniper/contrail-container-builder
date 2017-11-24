@@ -804,7 +804,7 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: "node-role.opencontrail.org/compute"
+              - key: "node-role.opencontrail.org/agent"
                 operator: Exists
       #Enable tolerations for single node setup
       tolerations:
