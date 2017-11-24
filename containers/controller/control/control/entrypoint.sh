@@ -2,7 +2,7 @@
 
 source /common.sh
 
-listen_ip=${CONTROL_LISTEN_IP:-${DEFAULT_LOCAL_IP}}
+listen_ip=$(get_listen_ip_for_node CONTROL)
 hostname=${CONTROL_HOSTNAME:-`hostname`}
 
 cat > /etc/contrail/contrail-control.conf << EOM

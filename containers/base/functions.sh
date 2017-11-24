@@ -93,3 +93,26 @@ AUTHN_TYPE = noauth
 EOM
   fi
 }
+
+function get_default_nic() {
+  ip route show | grep 'default via' | awk '{print $5}'
+}
+
+function get_default_ip() {
+  local default_interface=$(get_default_nic)
+  ip address show dev $default_interface | head -3 | tail -1 | tr '/' ' ' | awk '{print $2}'
+}
+
+function get_listen_ip_for_node() {
+  local server_typ=$1_NODES
+  local server_list=''
+  IFS=',' read -ra server_list <<< "${!server_typ}"
+  local local_ips=$(ip addr | awk '/inet/ {print($2)}')
+  for server in "${server_list[@]}"; do
+    if [[ "$local_ips" =~ "$server" ]] ; then
+      echo $server
+      return
+    fi
+  done
+  get_default_ip
+}
