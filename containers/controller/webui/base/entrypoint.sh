@@ -8,6 +8,12 @@ function get_server_json_list(){
   echo "['"$srv_list"']"
 }
 
+orchestration_manager=$CLOUD_ORCHESTRATOR
+
+if [[ "$orchestration_manager" == 'kubernetes' ]] ; then
+  orchestration_manager='none'
+fi
+
 cat > /etc/contrail/config.global.js << EOM
 /*
  * Copyright (c) 2014 Juniper Networks, Inc. All rights reserved.
@@ -16,7 +22,7 @@ cat > /etc/contrail/config.global.js << EOM
 var config = {};
 
 config.orchestration = {};
-config.orchestration.Manager = "${CLOUD_ORCHESTRATOR}";
+config.orchestration.Manager = "${orchestration_manager}";
 
 config.serviceEndPointFromConfig = ${serviceEndPointFromConfig:-true};
 
