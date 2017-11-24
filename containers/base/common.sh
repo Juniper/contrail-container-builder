@@ -91,6 +91,12 @@ if [[ "$AUTH_MODE" == 'keystone' ]] ; then
   AUTH_PARAMS="--admin_password $KEYSTONE_AUTH_ADMIN_PASSWORD --admin_tenant_name $KEYSTONE_AUTH_ADMIN_TENANT --admin_user $KEYSTONE_AUTH_ADMIN_USER"
 fi
 
+IFS=',' read -ra node_list <<< "${ANALYTICS_NODES}"
+ANALYTICS_API_VIP=${ANALYTICS_API_VIP:-${node_list[0]}}
+IFS=',' read -ra node_list <<< "${CONFIG_NODES}"
+CONFIG_API_VIP=${CONFIG_API_VIP:-${node_list[0]}}
+WEBUI_VIP=${WEBUI_VIP:-${node_list[0]}}
+
 source /functions.sh
 
 CONFIG_SERVERS=${CONFIG_SERVERS:-`get_server_list CONFIG ":$CONFIG_API_PORT "`}

@@ -56,9 +56,7 @@ set_vnc_api_lib_ini
 
 wait_for_contrail_api
 
-IFS=',' read -ra config_node_list <<< "${CONFIG_NODES}"
-config_node=${config_node_list[0]}
 /opt/contrail/utils/provision_control.py --host_name ${hostname} --host_ip ${listen_ip} --router_asn ${BGP_ASN} \
-  --api_server_port $CONFIG_API_PORT --oper add $AUTH_PARAMS --api_server_ip ${config_node}
+  --api_server_port $CONFIG_API_PORT --oper add $AUTH_PARAMS --api_server_ip $CONFIG_API_VIP
 
 exec "$@"

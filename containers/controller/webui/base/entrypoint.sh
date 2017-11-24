@@ -86,8 +86,8 @@ config.cnfg.ca = ${cnfg_ca:-''};
 config.cnfg.statusURL = ${cnfg_statusURL:-'"/global-system-configs"'};
 
 config.analytics = {};
-config.analytics.server_ip = ${analytics_server_ip:-`get_server_json_list ANALYTICS`};
-config.analytics.server_port = ${analytics_server_port:-"'"$ANALYTICS_API_PORT"'"};
+config.analytics.server_ip = "$ANALYTICS_API_VIP";
+config.analytics.server_port = "$ANALYTICS_API_PORT";
 config.analytics.authProtocol = "${analytics_authProtocol:-http}";
 config.analytics.strictSSL = ${analytics_strictSSL:-false};
 config.analytics.ca = ${analytics_ca:-''};
