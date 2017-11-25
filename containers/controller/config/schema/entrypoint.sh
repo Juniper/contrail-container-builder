@@ -4,7 +4,7 @@ source /common.sh
 
 cat > /etc/contrail/contrail-schema.conf << EOM
 [DEFAULTS]
-api_server_ip=${CONFIG_API_ADDRESS:-${DEFAULT_LOCAL_IP}}
+api_server_ip=$CONFIG_API_VIP
 api_server_port=$CONFIG_API_PORT
 log_file=${CONFIG_SCHEMA_LOG_FILE:-"$LOG_DIR/contrail-schema.log"}
 log_level=${CONFIG_SCHEMA_LOG_LEVEL:-$LOG_LEVEL}
