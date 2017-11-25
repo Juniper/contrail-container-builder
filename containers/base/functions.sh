@@ -95,12 +95,17 @@ EOM
 }
 
 function get_default_nic() {
-  ip route show | grep 'default via' | awk '{print $5}'
+  ip route show | grep 'default via' | head -n 1 | awk '{print $5}'
 }
 
 function get_default_ip() {
   local default_interface=$(get_default_nic)
   ip address show dev $default_interface | head -3 | tail -1 | tr '/' ' ' | awk '{print $2}'
+}
+
+function get_default_gateway_for_nic() {
+  local nic=$1
+  ip route show dev $nic | grep default | awk '{print $3}'
 }
 
 function get_listen_ip_for_node() {

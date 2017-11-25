@@ -2,6 +2,8 @@
 
 source /common.sh
 
+hostip=$(get_listen_ip_for_node ANALYTICS)
+
 cat > /etc/contrail/contrail-collector.conf << EOM
 [DEFAULT]
 analytics_data_ttl=${ANALYTICS_DATA_TTL:-48}
@@ -9,8 +11,8 @@ analytics_config_audit_ttl=${ANALYTICS_CONFIG_AUDIT_TTL:-2160}
 analytics_statistics_ttl=${ANALYTICS_STATISTICS_TTL:-168}
 analytics_flow_ttl=${ANALYTICS_FLOW_TTL:-2}
 partitions=${ANALYTICS_UVE_PARTITIONS:-30}
-hostip=${COLLECTOR_LISTEN_IP:-${DEFAULT_LOCAL_IP}}
-# hostname= # Retrieved from gethostname() or `hostname -s` equivalent
+hostip=${hostip}
+hostname=${DEFAULT_HOSTNAME}
 http_server_port=${COLLECTOR_INTROSPECT_LISTEN_PORT:-$COLLECTOR_INTROSPECT_PORT}
 syslog_port=${COLLECTOR_SYSLOG_LISTEN_PORT:-$COLLECTOR_SYSLOG_PORT}
 sflow_port=${COLLECTOR_SFLOW_LISTEN_PORT:-$COLLECTOR_SFLOW_PORT}

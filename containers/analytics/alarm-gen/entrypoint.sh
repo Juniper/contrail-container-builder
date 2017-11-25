@@ -2,14 +2,16 @@
 
 source /common.sh
 
+host_ip=$(get_listen_ip_for_node ANALYTICS)
+
 cat > /etc/contrail/contrail-alarm-gen.conf << EOM
 [DEFAULTS]
-host_ip=${ALARMGEN_LISTEN_IP:-${DEFAULT_LOCAL_IP}}
+host_ip=${host_ip}
 partitions=${ALARMGEN_partitions:-30}
 http_server_port=${ALARMGEN_INTROSPECT_LISTEN_PORT:-$ALARMGEN_INTROSPECT_PORT}
 log_file=${ALARMGEN_LOG_FILE:-"$LOG_DIR/contrail-alarm-gen.log"}
 log_level=${ALARMGEN_LOG_LEVEL:-$LOG_LEVEL}
-#log_category = 
+#log_category =
 log_local=${ALARMGEN_LOG_LOCAL:-$LOG_LOCAL}
 collectors=$COLLECTOR_SERVERS
 kafka_broker_list=$KAFKA_SERVERS

@@ -2,8 +2,8 @@
 
 source /common.sh
 
-listen_ip=$(get_listen_ip_for_node CONTROL)
-hostname=${CONTROL_HOSTNAME:-`hostname`}
+hostip=$(get_listen_ip_for_node CONTROL)
+hostname=${DEFAULT_HOSTNAME}
 
 cat > /etc/contrail/contrail-control.conf << EOM
 [DEFAULT]
@@ -12,8 +12,8 @@ bgp_port=$BGP_PORT
 collectors=$COLLECTOR_SERVERS
 # gr_helper_bgp_disable=0
 # gr_helper_xmpp_disable=0
-hostip=$listen_ip
-hostname=$hostname
+hostip=${hostip}
+hostname=${hostname}
 http_server_port=${CONTROL_INTROSPECT_LISTEN_PORT:-$CONTROL_INTROSPECT_PORT}
 log_file=${CONTROL_LOG_FILE:-"$LOG_DIR/contrail-control.log"}
 log_level=${CONTROL_LOG_LEVEL:-$LOG_LEVEL}
@@ -56,7 +56,7 @@ set_vnc_api_lib_ini
 
 wait_for_contrail_api
 
-/opt/contrail/utils/provision_control.py --host_name ${hostname} --host_ip ${listen_ip} --router_asn ${BGP_ASN} \
+/opt/contrail/utils/provision_control.py --host_name ${hostname} --host_ip ${hostip} --router_asn ${BGP_ASN} \
   --api_server_port $CONFIG_API_PORT --oper add $AUTH_PARAMS --api_server_ip $CONFIG_API_VIP
 
 exec "$@"

@@ -29,13 +29,13 @@ analytics_nodes=${ANALYTICS_NODES:-$controller_nodes}
 analyticsdb_nodes=${ANALYTICSDB_NODES:-$controller_nodes}
 config_nodes=${CONFIG_NODES:-$controller_nodes}
 configdb_nodes=${CONFIGDB_NODES:-$config_nodes}
-control_nodes=${CONTROL_NODES:-$controller_nodes}
+control_nodes=${CONTROL_NODES:-$config_nodes}
 kafka_nodes=${KAFKA_NODES:-$analyticsdb_nodes}
 log_level=${LOG_LEVEL:-SYS_NOTICE}
 physical_interface=${PHYSICAL_INTERFACE:-`ip route show | grep "default via" | awk '{print $5}'`}
 rabbitmq_nodes=${RABBITMQ_NODES:-$config_nodes}
 redis_nodes=${REDIS_NODES:-$analytics_nodes}
-webui_nodes=${WEBUI_NODES:-$controller_nodes}
+webui_nodes=${WEBUI_NODES:-$config_nodes}
 zookeeper_nodes=${ZOOKEEPER_NODES:-$config_nodes}
 
 analytics_api_vip=${ANALYTICS_API_VIP:-$host_ip}

@@ -7,29 +7,23 @@ mkdir -p -m 777 /var/crashes
 
 ip address show
 PHYS_INT=${PHYSICAL_INTERFACE:-${DEFAULT_IFACE}}
-echo "INFO: Physical interface: $PHYS_INT"
+PHYS_INT_MAC=$(cat /sys/class/net/${PHYS_INT}/address)
+echo "INFO: Physical interface: $PHYS_INT, mac=$PHYS_INT_MAC"
 CUR_INT=$PHYS_INT
 if ip address show vhost0 | grep -q "inet " ; then
   CUR_INT='vhost0'
 fi
-echo "INFO: Current interface: $CUR_INT"
 VROUTER_CIDR=`ip address show ${CUR_INT} | grep "inet " | awk '{print $2}'`
 VROUTER_IP=${VROUTER_CIDR%/*}
 VROUTER_MASK=${VROUTER_CIDR#*/}
+VROUTER_GATEWAY=${VROUTER_GATEWAY:-`get_default_gateway_for_nic $CUR_INT`}
+VROUTER_HOSTNAME=${VROUTER_HOSTNAME:-${DEFAULT_HOSTNAME}}
 
-if ip address show ${CUR_INT} | grep -q "inet "; then
-  VROUTER_GATEWAY=''
-  if ip route show | grep default | grep ${CUR_INT} ; then
-    VROUTER_GATEWAY=`ip route show | grep default | grep ${CUR_INT} | awk '{print $3}'`
-  fi
-fi
-
-VROUTER_HOSTNAME=${VROUTER_HOSTNAME:-`hostname`}
-PHYS_INT_MAC=$(cat /sys/class/net/${PHYS_INT}/address)
+echo "INFO: nic $CUR_INT, cidr $VROUTER_IP/$VROUTER_MASK, gateway $VROUTER_GATEWAY"
 
 read -r -d '' contrail_vrouter_agent_config << EOM
 [CONTROL-NODE]
-servers=${XMPP_SERVERS:-`get_server_list CONTROLLER ":$XMPP_SERVER_PORT "`}
+servers=${XMPP_SERVERS:-`get_server_list CONTROL ":$XMPP_SERVER_PORT "`}
 
 [DEFAULT]
 collectors=$COLLECTOR_SERVERS
@@ -46,7 +40,7 @@ introspect_ssl_enable = False
 sandesh_ssl_enable = False
 
 [DNS]
-servers=${DNS_SERVERS:-`get_server_list CONTROLLER ":$DNS_SERVER_PORT "`}
+servers=${DNS_SERVERS:-`get_server_list CONTROL ":$DNS_SERVER_PORT "`}
 
 [METADATA]
 metadata_proxy_secret=contrail
