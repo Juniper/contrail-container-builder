@@ -56,7 +56,12 @@ set_vnc_api_lib_ini
 
 wait_for_contrail_api
 
-/opt/contrail/utils/provision_control.py --host_name ${hostname} --host_ip ${hostip} --router_asn ${BGP_ASN} \
-  --api_server_port $CONFIG_API_PORT --oper add $AUTH_PARAMS --api_server_ip $CONFIG_API_VIP
+if [[ "$BGP_AUTO_MESH" == 'true' ]] ; then
+  ibgp_auto_mesh_opt='--ibgp_auto_mesh'
+else
+  ibgp_auto_mesh_opt='--no_ibgp_auto_mesh'
+fi
+
+provision_node provision_control.py $hostip $hostname --router_asn ${BGP_ASN} $ibgp_auto_mesh_opt
 
 exec "$@"

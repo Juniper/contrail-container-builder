@@ -108,7 +108,7 @@ function get_default_gateway_for_nic() {
   ip route show dev $nic | grep default | awk '{print $3}'
 }
 
-function get_listen_ip_for_node() {
+function find_my_ip_for_node() {
   local server_typ=$1_NODES
   local server_list=''
   IFS=',' read -ra server_list <<< "${!server_typ}"
@@ -119,5 +119,50 @@ function get_listen_ip_for_node() {
       return
     fi
   done
-  get_default_ip
+}
+
+function get_vip_for_node() {
+  local ip=$(find_my_ip_for_node $1)
+  if [[ -z "$ip" ]] ; then
+    local server_typ=$1_NODES
+    ip=$(echo ${!server_typ} | cut -d',' -f 1)
+  fi
+  echo $ip
+}
+
+function get_listen_ip_for_node() {
+  local ip=$(find_my_ip_for_node $1)
+  if [[ -z "$ip" ]] ; then
+    ip=$(get_default_ip)
+  fi
+  echo $ip
+}
+
+function provision() {
+  local script=$1
+  shift 1
+  local rest_params="$@"
+  local retries=${PROVISION_RETRIES:-10}
+  local pause=${PROVISION_DELAY:-3}
+  for (( i=0 ; i < retries ; ++retries )) ; do
+      echo "Provisioning: $script $rest_params: $i/$retries"
+      if python /opt/contrail/utils/$script  \
+              $rest_params \
+              --api_server_ip $CONFIG_API_VIP \
+              --api_server_port $CONFIG_API_PORT \
+              $AUTH_PARAMS ; then
+          echo "Provisioning: $script $rest_params: succeeded"
+          break;
+      fi
+      sleep $pause
+  done
+}
+
+function provision_node() {
+  local script=$1
+  local host_ip=$2
+  local host_name=$3
+  shift 3
+  local rest_params="$@"
+  provision $script --oper add --host_name $host_name --host_ip $host_ip $rest_params
 }

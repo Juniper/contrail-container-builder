@@ -131,8 +131,6 @@ echo $PHYS_INT_MAC > /etc/contrail/default_pmac
 
 wait_for_contrail_api
 
-# Provision vrouter
-echo "Provisioning vrouter"
-/usr/share/contrail-utils/provision_vrouter.py  --api_server_ip $CONFIG_API_VIP --host_name $VROUTER_HOSTNAME --host_ip $VROUTER_IP $AUTH_PARAMS --oper add
+provision_node provision_vrouter.py $VROUTER_IP $VROUTER_HOSTNAME
 
 exec "$@"

@@ -39,4 +39,6 @@ set_vnc_api_lib_ini
 
 wait_for_contrail_api
 
+provision_node provision_analytics_node.py $host_ip $DEFAULT_HOSTNAME
+
 exec "$@"
