@@ -17,8 +17,9 @@ registry=${registry:-${CONTRAIL_REGISTRY:-'auto'}}
 repository=${repository:-${CONTRAIL_REPOSITORY:-'auto'}}
 
 host_ip=${HOST_IP:-'auto'}
+default_interface=`ip route show | grep "default via" | awk '{print $5}'`
+default_gateway=`ip route show dev $default_interface | grep default | awk '{print $3}'`
 if [ $host_ip == 'auto' ]; then
-  default_interface=`ip route show | grep "default via" | awk '{print $5}'`
   host_ip=`ip address show dev $default_interface | head -3 | tail -1 | tr "/" " " | awk '{print $2}'`
 fi
 
@@ -32,7 +33,8 @@ configdb_nodes=${CONFIGDB_NODES:-$config_nodes}
 control_nodes=${CONTROL_NODES:-$config_nodes}
 kafka_nodes=${KAFKA_NODES:-$analyticsdb_nodes}
 log_level=${LOG_LEVEL:-SYS_NOTICE}
-physical_interface=${PHYSICAL_INTERFACE:-`ip route show | grep "default via" | awk '{print $5}'`}
+physical_interface=${PHYSICAL_INTERFACE:-${default_interface}}
+vrouter_gateway=${VROUTER_GATEWAY:-${default_gateway}}
 rabbitmq_nodes=${RABBITMQ_NODES:-$config_nodes}
 redis_nodes=${REDIS_NODES:-$analytics_nodes}
 webui_nodes=${WEBUI_NODES:-$config_nodes}

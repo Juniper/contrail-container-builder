@@ -18,6 +18,7 @@ data:
   PHYSICAL_INTERFACE: {{ physical_interface }}
   RABBITMQ_NODES: {{rabbitmq_nodes}}
   REDIS_NODES: {{ redis_nodes }}
+  VROUTER_GATEWAY: {{ vrouter_gateway }}
   WEBUI_NODES: {{ webui_nodes }}
   WEBUI_VIP: {{ webui_vip }}
   ZOOKEEPER_NODES: {{ zookeeper_nodes }}
