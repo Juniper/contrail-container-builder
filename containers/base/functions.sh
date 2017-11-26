@@ -144,7 +144,7 @@ function provision() {
   local rest_params="$@"
   local retries=${PROVISION_RETRIES:-10}
   local pause=${PROVISION_DELAY:-3}
-  for (( i=0 ; i < retries ; ++retries )) ; do
+  for (( i=0 ; i < retries ; ++i )) ; do
       echo "Provisioning: $script $rest_params: $i/$retries"
       if python /opt/contrail/utils/$script  \
               $rest_params \
