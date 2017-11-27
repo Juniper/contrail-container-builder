@@ -17,7 +17,7 @@ export CONTRAIL_REPOSITORY=$repository
 package_root_dir="/var/www"
 
 source "$DIR/install-http-server.sh"
-if [[ "$BUILD_PACKAGES" == 'true' ]] ; then
+if [[ "$BUILD_PACKAGES" == 'false' ]] ; then
   source "$DIR/install-repository.sh"
 else
   echo "INFO: BUILD_PACKAGES is true - run build..."
