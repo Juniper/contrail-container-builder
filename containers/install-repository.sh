@@ -1,34 +1,5 @@
 #!/bin/bash
 
-export OUSER=$(id -u)
-export OGROUP=$(id -g)
-
-package_root_dir="/var/www"
-linux=$(awk -F"=" '/^ID=/{print $2}' /etc/os-release | tr -d '"')
-
-sudo -u root /bin/bash << EOS
-
-case "${linux}" in
-  "ubuntu" )
-    apt-get update
-    apt-get install -y lighttpd rpm2cpio
-    ln -s /etc/lighttpd/conf-available/10-dir-listing.conf /etc/lighttpd/conf-enabled/
-    ;;
-  "centos" | "rhel" )
-    # yum install -y epel-release
-    rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-    yum install -y lighttpd
-    sed -i 's/\(dir-listing.activate\)[ \t]*=.*/\1 = "enable"/' /etc/lighttpd/conf.d/dirlisting.conf
-    sed -i 's/server.use-ipv6.*=.*enable.*/server.use-ipv6 = "disable"/g' /etc/lighttpd/lighttpd.conf
-    ;;
-esac
-sed -i 's#\(server.document-root\)[ \t]*=.*#\1 = "'$package_root_dir'"#' /etc/lighttpd/lighttpd.conf
-service lighttpd restart
-chown -R $OUSER /var/www
-chgrp -R $OGROUP /var/www
-
-EOS
-
 contrail_version=${CONTRAIL_VERSION:-'4.0.2.0-35'}
 os_version=${OPENSTACK_VERSION:-newton}
 package_base_url=${CONTRAIL_INSTALL_PACKAGE_URL:-"https://s3-us-west-2.amazonaws.com/contrailrhel7"}

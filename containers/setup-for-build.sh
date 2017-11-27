@@ -13,6 +13,9 @@ OPENSTACK_VERSION=$os_version
 CONTRAIL_REGISTRY=$registry
 CONTRAIL_REPOSITORY=$repository
 
+package_root_dir="/var/www"
+
+source "$DIR/install-http-server.sh"
 source "$DIR/install-repository.sh"
 $DIR/validate-docker.sh
 source "$DIR/install-registry.sh"
