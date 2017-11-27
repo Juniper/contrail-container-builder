@@ -122,6 +122,38 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: contrail-rabbitmq-starter
+  namespace: kube-system
+data:
+  contrail-entrypoint.sh: |-
+    #!/bin/bash
+    cluster_nodes='{['
+    IFS="," read -ra srv_list <<< "$RABBITMQ_NODES"
+    local_ips=$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}')
+    for srv in "${srv_list[@]}"; do
+      node_name=node_$(echo $srv | tr '.' '_')
+      cluster_nodes+="'rabbit@$node_name',"
+      echo $srv $node_name >> /etc/hosts
+      if [[ "$local_ips" =~ "$srv" ]] ; then
+        echo "INFO: found '$srv' in local IPs '$local_ips'"
+        my_ip=$srv
+        my_node=$node_name
+      fi
+    done
+    cluster_nodes=${cluster_nodes::-1}'],disc}'
+    if [ -z "$my_ip" ]; then
+      echo "ERROR: Cannot find self ips ('$local_ips') in RabbitMQ nodes ('$RABBITMQ_NODES')"
+      exit
+    fi
+    export RABBITMQ_NODENAME=rabbit@node_$(echo $my_ip | tr '.' '_')
+    if (( ${#srv_list[@]} > 1 )); then
+      export RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS="-rabbit cluster_nodes $cluster_nodes"
+    fi
+    exec /docker-entrypoint.sh rabbitmq-server
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: kube-manager-config
   namespace: kube-system
 data:
@@ -731,11 +763,16 @@ spec:
         env:
         - name: RABBITMQ_ERLANG_COOKIE
           value: "47EFF3BB-4786-46E0-A5BB-58455B3C2CB4"
+        - name: RABBITMQ_NODES
+          value: "{{ rabbitmq_nodes }}"
+        command: ["/bin/bash", "/opt/contrail/contrail-entrypoint.sh"]
         volumeMounts:
         - mountPath: /var/lib/rabbitmq
           name: rabbitmq-data
         - mountPath: /var/log/rabbitmq
           name: rabbitmq-logs
+        - mountPath: /opt/contrail
+          name: contrail-rabbitmq-starter
       volumes:
       - name: rabbitmq-data
         hostPath:
@@ -743,6 +780,9 @@ spec:
       - name: rabbitmq-logs
         hostPath:
           path: /var/log/contrail/rabbitmq
+      - name: contrail-rabbitmq-starter
+        configMap:
+          name: contrail-rabbitmq-starter
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -957,3 +997,4 @@ metadata:
   annotations:
     kubernetes.io/service-account.name: contrail-kube-manager
 type: kubernetes.io/service-account-token
+
