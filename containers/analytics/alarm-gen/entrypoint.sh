@@ -29,7 +29,6 @@ api_server_list=$CONFIG_SERVERS
 api_server_use_ssl=${CONFIG_API_USE_SSL:-False}
 
 [REDIS]
-#redis_server_port=${ALARM_GEN_redis_server_port:-6379}
 redis_uve_list=$REDIS_SERVERS
 
 $sandesh_client_config

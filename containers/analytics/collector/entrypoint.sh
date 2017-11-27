@@ -74,9 +74,7 @@ high_watermark2.message_severity_level=${COLLECTOR_high_watermark2_message_sever
 low_watermark2.message_severity_level=${COLLECTOR_low_watermark2_message_severity_level:-INVALID}
 
 [REDIS]
-# Port to connect to for communicating with redis-server
-#port=${COLLECTOR_REDIS_port:-6379}
-# IP address of redis-server
+port=$REDIS_SERVER_PORT
 server=$REDIS_SERVER_IP
 
 $sandesh_client_config

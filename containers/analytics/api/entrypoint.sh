@@ -25,10 +25,7 @@ api_server=$CONFIG_SERVERS
 zk_list=${ZOOKEEPER_SERVERS:-`get_server_list ZOOKEEPER ":$ZOOKEEPER_PORT "`}
 
 [REDIS]
-#server=${ANALYTICS_redis_server:-127.0.0.1}
-#redis_server_port=${ANALYTICS_redis_server_port:-6379}
 redis_query_port=$REDIS_SERVER_PORT
-#redis_uve_list = 127.0.0.1:6379
 redis_uve_list=$REDIS_SERVERS
 
 $sandesh_client_config

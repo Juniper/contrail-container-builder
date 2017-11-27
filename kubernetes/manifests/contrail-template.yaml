@@ -672,7 +672,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: "node-role.opencontrail.org/redis"
+              - key: "node-role.opencontrail.org/analytics"
+                operator: Exists
+            - matchExpressions:
+              - key: "node-role.opencontrail.org/webui"
                 operator: Exists
       tolerations:
       - key: node-role.kubernetes.io/master

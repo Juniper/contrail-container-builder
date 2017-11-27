@@ -4,7 +4,7 @@ label_prefix="node-role.opencontrail.org/"
 
 declare -a pod_types=(
   config control webui analytics agent
-  configdb analyticsdb zookeeper kafka redis rabbitmq
+  configdb analyticsdb zookeeper kafka rabbitmq
 )
 
 manifest_dir="${BASH_SOURCE%/*}"
