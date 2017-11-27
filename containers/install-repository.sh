@@ -32,5 +32,5 @@ echo 'Extract packages to '$repo_dir
 mkdir $repo_dir
 tar -xvzf $package_dir'/opt/contrail/contrail_packages/contrail_rpms.tgz' -C $repo_dir
 
-m -rf $package_dir
+rm -rf $package_dir
 rm $package_fname
