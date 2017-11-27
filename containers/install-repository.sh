@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 contrail_version=${CONTRAIL_VERSION:-'4.0.2.0-35'}
 os_version=${OPENSTACK_VERSION:-newton}
@@ -32,12 +32,5 @@ echo 'Extract packages to '$repo_dir
 mkdir $repo_dir
 tar -xvzf $package_dir'/opt/contrail/contrail_packages/contrail_rpms.tgz' -C $repo_dir
 
-# unpack vrouter.ko
-pushd $package_dir
-rpm2cpio "$repo_dir/contrail-vrouter-${CONTRAIL_VERSION}.el7.x86_64.rpm" | cpio -idmv
-popd
-#TODO: detect directory name with kernel version
-cp "$package_dir/opt/contrail/vrouter-kernel-modules/3.10.0-327.10.1.el7.x86_64/vrouter.ko" "${repo_dir}/"
-
-rm -rf $package_dir
+m -rf $package_dir
 rm $package_fname

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 if [ -n "$CONTRAIL_REGISTRY" ]; then
   port=$(echo $CONTRAIL_REGISTRY | awk -F':' '{print $2}')

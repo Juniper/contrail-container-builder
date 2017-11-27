@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 export OUSER=$(id -u)
 export OGROUP=$(id -g)
