@@ -5,9 +5,23 @@ metadata:
   name: env
   namespace: kube-system
 data:
+  ANALYTICS_API_VIP: {{ analytics_api_vip }}
+  ANALYTICS_NODES: {{ analytics_nodes }}
+  ANALYTICSDB_NODES: {{ analyticsdb_nodes }}
+  CONFIG_API_VIP: {{ config_api_vip }}
+  CONFIG_NODES: {{ config_nodes }}
+  CONFIGDB_NODES: {{ configdb_nodes }}
+  CONTROL_NODES: {{ control_nodes }}
+  CONTROLLER_NODES: {{ controller_nodes }}
+  KAFKA_NODES: {{ kafka_nodes }}
   LOG_LEVEL: {{ log_level }}
-  CONTROLLER_NODES: {{controller_nodes}}
-  PHYSICAL_INTERFACE: {{physical_interface}}
+  PHYSICAL_INTERFACE: {{ physical_interface }}
+  RABBITMQ_NODES: {{rabbitmq_nodes}}
+  REDIS_NODES: {{ redis_nodes }}
+  VROUTER_GATEWAY: {{ vrouter_gateway }}
+  WEBUI_NODES: {{ webui_nodes }}
+  WEBUI_VIP: {{ webui_vip }}
+  ZOOKEEPER_NODES: {{ zookeeper_nodes }}
 ---
 apiVersion: v1
 kind: ConfigMap
