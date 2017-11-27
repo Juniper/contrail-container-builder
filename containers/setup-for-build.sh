@@ -14,8 +14,7 @@ export OPENSTACK_VERSION=$os_version
 export CONTRAIL_REGISTRY=$registry
 export CONTRAIL_REPOSITORY=$repository
 
-package_root_dir="/var/www"
-
+export package_root_dir="/var/www"
 source "$DIR/install-http-server.sh"
 if [[ "$BUILD_PACKAGES" == 'false' ]] ; then
   source "$DIR/install-repository.sh"
@@ -32,5 +31,6 @@ else
   popd
 fi
 $DIR/unpack-vrouter-module.sh
+
 $DIR/validate-docker.sh
 $DIR/install-registry.sh

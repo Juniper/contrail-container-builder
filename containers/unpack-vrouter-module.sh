@@ -1,9 +1,9 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 
 if [ -n $CONTRAIL_REPOSITORY ]; then
-  dir_prefix=$(echo $CONTRAIL_REPOSITORY | awk -F'/' '{print $4}' | sed 's/'$version'$//')
+  dir_prefix=$(echo $CONTRAIL_REPOSITORY | awk -F'/' '{print $4}' | sed 's/'$CONTRAIL_VERSION'$//')
 fi
-repo_dir="${package_root_dir}/${dir_prefix}${contrail_version}"
+repo_dir="${package_root_dir}/${dir_prefix}${CONTRAIL_VERSION}"
 
 tmp=$(mktemp -d)
 pushd $tmp
