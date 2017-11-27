@@ -40,9 +40,9 @@ redis_nodes=${REDIS_NODES:-$analytics_nodes}
 webui_nodes=${WEBUI_NODES:-$config_nodes}
 zookeeper_nodes=${ZOOKEEPER_NODES:-$config_nodes}
 
-analytics_api_vip=${ANALYTICS_API_VIP:-$host_ip}
-config_api_vip=${CONFIG_API_VIP:-$host_ip}
-webui_vip=${WEBUI_VIP:-$host_ip}
+analytics_api_vip=${ANALYTICS_API_VIP}
+config_api_vip=${CONFIG_API_VIP}
+webui_vip=${WEBUI_VIP}
 
 default_registry_ip=${_CONTRAIL_REGISTRY_IP:-$host_ip}
 

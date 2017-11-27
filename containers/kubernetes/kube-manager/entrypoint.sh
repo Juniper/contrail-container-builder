@@ -26,7 +26,7 @@ cluster_name=${KUBERNETES_CLUSTER_NAME:-"k8s-default"}
 
 [VNC]
 public_fip_pool=${KUBERNETES_public_fip_pool:-"{}"}
-vnc_endpoint_ip=$CONFIG_NODES
+vnc_endpoint_ip=$CONFIG_API_VIP
 vnc_endpoint_port=$CONFIG_API_PORT
 rabbit_server=$RABBITMQ_SERVERS
 rabbit_vhost=$RABBITMQ_VHOST
