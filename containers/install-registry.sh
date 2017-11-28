@@ -1,4 +1,5 @@
 #!/bin/bash -e
+# Internal script. Installs local docker registry. Takes CONTRAIL_REGISTRY from environment
 
 if [ -n "$CONTRAIL_REGISTRY" ]; then
   port=$(echo $CONTRAIL_REGISTRY | awk -F':' '{print $2}')
