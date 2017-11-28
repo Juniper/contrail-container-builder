@@ -10,7 +10,7 @@ sudo yum install -y createrepo
 cp $HOME/rpmbuild/RPMS/x86_64/*.rpm $repo_dir/
 cp $HOME/rpmbuild/RPMS/noarch/*.rpm $repo_dir/
 pushd $repo_dir
-wget https://s3-us-west-2.amazonaws.com/contrailrhel7/third-party-packages.tgz
+wget -nv https://s3-us-west-2.amazonaws.com/contrailrhel7/third-party-packages.tgz
 tar -xf third-party-packages.tgz
 rm third-party-packages.tgz
 sudo createrepo .
