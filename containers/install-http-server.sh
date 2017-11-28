@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 
 export OUSER=$(id -u)
 export OGROUP=$(id -g)
@@ -22,6 +22,5 @@ case "${linux}" in
 esac
 sed -i 's#\(server.document-root\)[ \t]*=.*#\1 = "'$package_root_dir'"#' /etc/lighttpd/lighttpd.conf
 service lighttpd restart
-chown -R $OUSER $package_root_dir
-chgrp -R $OGROUP $package_root_dir
+chown -R $OUSER:$OGROUP $package_root_dir
 EOS

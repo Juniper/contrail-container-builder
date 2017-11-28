@@ -26,7 +26,8 @@ if [ -d $repo_dir ]; then
   echo 'Remove existing packages in '$repo_dir
   rm -rf $repo_dir
 fi
-mkdir -p $repo_dir
+sudo mkdir -p $repo_dir
+sudo chown -R $USER $repo_dir
 
 # Run code
 
