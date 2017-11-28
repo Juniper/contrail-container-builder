@@ -1,4 +1,6 @@
 #!/bin/bash -ex
+# Internal script. Installs HTTP server for local packages repository. Takes package_root_dir from environment (/var/www by
+# default)
 
 export OUSER=$(id -u)
 export OGROUP=$(id -g)
