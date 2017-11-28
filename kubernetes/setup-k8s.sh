@@ -1,4 +1,13 @@
 #!/bin/bash
+# Sets up kubernetes on a node. Parameters are taken from common.env.
+# Can be used in a multi-node deployment. For all non-master kubernetes nodes this could be run: 
+# setup-k8s.sh join-token=<token>
+# Token can be found in output from setup-k8s.sh run on master node or from "sudo kubeadm token list"
+# For multi-node setup on non-master kubernetes nodes common.env should contain CONTRAIL_REGISTRY and KUBERNETES_API_SERVER
+# configured.
+# Parameters:
+# join-token: used on non-master nodes
+# develop: used for development on master node, automatically pull new images during each container run
 
 DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
