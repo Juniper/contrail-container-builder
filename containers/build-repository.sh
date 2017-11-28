@@ -1,4 +1,5 @@
 #!/bin/bash -e
+# Internal script, used to build packages from source-code. Used instead of install-repository.sh script by setup-for-build.sh
 
 echo "INFO: BUILD_PACKAGES is true - run build..."
 # all paths are hardcoded here...
