@@ -1,3 +1,4 @@
+# Configs section
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -63,6 +64,20 @@ data:
     -Dcassandra.ssl_storage_port=7011
     -Dcassandra.storage_port=7010
     -Dcassandra.jmx.local.port=7200
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kube-manager-config
+  namespace: kube-system
+data:
+  KUBERNETES_API_SERVER: {{ kubernetes_api_server }}
+  K8S_TOKEN_FILE: "/tmp/serviceaccount/token"
+
+# Starter entrypoint scripts
+# These scripts adds functionality which in fact should've been provided by the containers - some of the features like
+# clustering or multi-cards are not correctly supported by them currently. When these features are supported this starter
+# scripts will become unnecessary.
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -150,15 +165,8 @@ data:
       export RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS="-rabbit cluster_nodes $cluster_nodes"
     fi
     exec /docker-entrypoint.sh rabbitmq-server
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: kube-manager-config
-  namespace: kube-system
-data:
-  KUBERNETES_API_SERVER: {{ kubernetes_api_server }}
-  K8S_TOKEN_FILE: "/tmp/serviceaccount/token"
+
+# Containers section
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -959,6 +967,8 @@ spec:
       - name: agent-logs
         hostPath:
           path: /var/log/contrail/agent
+
+# Meta information section
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1beta1
