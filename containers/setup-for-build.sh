@@ -1,4 +1,5 @@
 #!/bin/bash -e
+# Sets up node for building containers. Parses common.env to get parameters or take them from environment.
 
 DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
