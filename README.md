@@ -23,7 +23,7 @@ Use this section if you want to deploy Contrail with Kubernetes without Helm
 
 For multi-node deployment on other kubernetes nodes:
 
-* Set KUBERNETES_API_SERVER and CONTRAIL_REGISTRY in environment or in common.env
+* Set KUBERNETES_API_SERVER and CONTRAIL_REGISTRY in environment or in ```common.env```
 * Run ```kubernetes/setup-k8s.sh join-token=<token>``` where token can be taken from output of setup-k8s.sh on master node or from ```sudo kubeadm token list```
 
 ## Provisioning Contrail and CNI in Kubernetes without Helm on a single node
@@ -41,6 +41,8 @@ For multi-node deployment on other kubernetes nodes:
 
 You'll have Contrail deployed in Kubernetes. Check WebUI in https://localhost:8143 (login:admin password:contrail123)
 This deployment will work with noauth authentication.
+
+You can use ```apply.sh``` and ```delete.sh``` helper scripts from ```kubernetes/manifests``` to apply and delete kubernetes deployments without manually manually using ```resolve-manifest.sh``` and ```kubectl apply```.
 
 ## Multi-node deployment
 
