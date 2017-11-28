@@ -9,26 +9,32 @@ echo 'OpenStack version: '$os_version
 echo 'Contrail registry: '$registry
 echo 'Contrail repository: '$repository
 
+# Define global variables
+
 export CONTRAIL_VERSION=$version
 export OPENSTACK_VERSION=$os_version
 export CONTRAIL_REGISTRY=$registry
 export CONTRAIL_REPOSITORY=$repository
 
 export package_root_dir="/var/www"
+
+if [ -n $CONTRAIL_REPOSITORY ]; then
+  dir_prefix=$(echo $CONTRAIL_REPOSITORY | awk -F'/' '{print $4}' | sed 's/'$version'$//')
+fi
+export repo_dir=$package_root_dir'/'$dir_prefix$contrail_version
+if [ -d $repo_dir ]; then
+  echo 'Remove existing packages in '$repo_dir
+  rm -rf $repo_dir
+fi
+mkdir -p $repo_dir
+
+# Run code
+
 source "$DIR/install-http-server.sh"
 if [[ "${BUILD_PACKAGES:-false}" == 'false' ]] ; then
-  source "$DIR/install-repository.sh"
+  $DIR/install-repository.sh
 else
-  echo "INFO: BUILD_PACKAGES is true - run build..."
-  # all paths are hardcoded here...
-  $HOME/contrail-build-poc/build.sh
-  sudo mkdir -p $package_root_dir/$CONTRAIL_VERSION
-  sudo cp $HOME/rpmbuild/RPMS/x86_64/*.rpm $package_root_dir/$CONTRAIL_VERSION/
-  sudo cp $HOME/rpmbuild/RPMS/noarch/*.rpm $package_root_dir/$CONTRAIL_VERSION/
-  pushd $package_root_dir/$CONTRAIL_VERSION/
-  sudo yum install -y createrepo
-  sudo createrepo .
-  popd
+  $DIR/build-repository.sh
 fi
 $DIR/unpack-vrouter-module.sh
 

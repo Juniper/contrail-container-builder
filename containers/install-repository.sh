@@ -20,16 +20,7 @@ pushd $package_dir
 rpm2cpio $package_fname | cpio -idmv
 popd
 
-if [ -n $CONTRAIL_REPOSITORY ]; then
-  dir_prefix=$(echo $CONTRAIL_REPOSITORY | awk -F'/' '{print $4}' | sed 's/'$version'$//')
-fi
-repo_dir=$package_root_dir'/'$dir_prefix$contrail_version
-if [ -d $repo_dir ]; then
-  echo 'Remove existing packages in '$repo_dir
-  rm -rf $repo_dir
-fi
 echo 'Extract packages to '$repo_dir
-mkdir $repo_dir
 tar -xvzf $package_dir'/opt/contrail/contrail_packages/contrail_rpms.tgz' -C $repo_dir
 
 rm -rf $package_dir
