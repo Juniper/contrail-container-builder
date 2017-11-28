@@ -7,7 +7,8 @@ repo_dir="${package_root_dir}/${dir_prefix}${CONTRAIL_VERSION}"
 
 tmp=$(mktemp -d)
 pushd $tmp
-rpm2cpio "$repo_dir/contrail-vrouter-${CONTRAIL_VERSION}.el7.x86_64.rpm" | cpio -idmv
+vrouter_rpm=`find "$repo_dir/" | grep "contrail-vrouter-${CONTRAIL_VERSION}.el7"`
+rpm2cpio "$vrouter_rpm" | cpio -idmv
 vrouter_ko=`find opt/contrail/vrouter-kernel-modules/ | grep vrouter.ko`
 cp $vrouter_ko "${repo_dir}/"
 popd
