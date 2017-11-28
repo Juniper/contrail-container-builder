@@ -1,4 +1,6 @@
 #!/bin/bash
+# Internal script for parsing common.env. Run by other executable scripts
+
 version=$CONTRAIL_VERSION
 os_version=$OPENSTACK_VERSION
 registry=$CONTRAIL_REGISTRY

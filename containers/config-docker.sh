@@ -1,4 +1,5 @@
 #!/bin/bash
+# Internal script. Configures docker. Takes CONTRAIL_REGISTRY from environment.
 
 if [ -n "$CONTRAIL_REGISTRY" ]; then
   address=$(echo $CONTRAIL_REGISTRY | awk -F':' '{print $1}')

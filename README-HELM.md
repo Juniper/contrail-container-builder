@@ -74,7 +74,7 @@ Use default VPC (make sure the ports are open - see below) or configure a new on
 ```
 * Run build:
 ```
-   cd docker-contrail-4/containers
+   cd contrail-container-builder/containers
    ./setup-for-build.sh
    sudo -E ./build.sh
 ```
@@ -135,7 +135,7 @@ Use default VPC (make sure the ports are open - see below) or configure a new on
 ```
 * Clone openstack-helm with new changes for microservices: 
 ```
-   git clone https://github.com/openstack/openstack-helm
+   git clone https://github.com/cloudscaling/openstack-helm
 ```
 * Change directory to it: 
 ```

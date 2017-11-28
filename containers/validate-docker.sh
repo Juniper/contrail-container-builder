@@ -1,4 +1,5 @@
 #!/bin/bash
+# Internal script. Validates docker deployment
 
 linux=$(awk -F"=" '/^ID=/{print $2}' /etc/os-release | tr -d '"')
 

@@ -1,4 +1,8 @@
 #!/bin/bash
+# Sets labels to kubernetes nodes accordingly nodes lists in common.env (CONTROLLER_NODES, AGENT_NODES, ...) - pods will be
+# assigned to correpondingly labeled nodes.
+# Looks to KUBERNETES_NODES_MAP from common.env if it's configured in case of multi-card nodes deployment to determine which
+# IP address to look for in nodes lists. If it's not configured the IPs to look for in nodes lists are taken from kubernetes.
 
 label_prefix="node-role.opencontrail.org/"
 

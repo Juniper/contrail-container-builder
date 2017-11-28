@@ -1,4 +1,7 @@
 #!/bin/bash
+# Instantiates yaml templates (like contrail-template.yaml) changing parameters to specific values taken from common.env.
+# Takes yaml as a first argument and writes result to output.
+# Usage example: resolve-manifest.sh contrail-template.yaml > contrail.yaml
 
 manifest_dir="${BASH_SOURCE%/*}"
 if [[ ! -d "$manifest_dir" ]]; then manifest_dir="$PWD"; fi

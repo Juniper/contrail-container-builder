@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/bin/bash -ex
+# Internal script. Installs HTTP server for local packages repository. Takes package_root_dir from environment (/var/www by
+# default)
 
 export OUSER=$(id -u)
 export OGROUP=$(id -g)
@@ -22,6 +24,5 @@ case "${linux}" in
 esac
 sed -i 's#\(server.document-root\)[ \t]*=.*#\1 = "'$package_root_dir'"#' /etc/lighttpd/lighttpd.conf
 service lighttpd restart
-chown -R $OUSER $package_root_dir
-chgrp -R $OGROUP $package_root_dir
+chown -R $OUSER:$OGROUP $package_root_dir
 EOS

@@ -1,4 +1,7 @@
-#!/bin/bash
+#!/bin/bash -e
+# Sets up node for building containers. Parses common.env to get parameters (CONTRAIL_VERSION, CONTRAIL_REGISTRY,
+# CONTRAIL_REPOSITORY, OPENSTACK_VERSION) or take them from environment.
+
 DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 source "$DIR/../parse-env.sh"
@@ -8,14 +11,35 @@ echo 'OpenStack version: '$os_version
 echo 'Contrail registry: '$registry
 echo 'Contrail repository: '$repository
 
-CONTRAIL_VERSION=$version
-OPENSTACK_VERSION=$os_version
-CONTRAIL_REGISTRY=$registry
-CONTRAIL_REPOSITORY=$repository
+# Define global variables
 
-package_root_dir="/var/www"
+export CONTRAIL_VERSION=$version
+export OPENSTACK_VERSION=$os_version
+export CONTRAIL_REGISTRY=$registry
+export CONTRAIL_REPOSITORY=$repository
+
+export package_root_dir="/var/www"
+
+if [ -n $CONTRAIL_REPOSITORY ]; then
+  dir_prefix=$(echo $CONTRAIL_REPOSITORY | awk -F'/' '{print $4}' | sed 's/'$version'$//')
+fi
+export repo_dir="${package_root_dir}/${dir_prefix}${CONTRAIL_VERSION}"
+if [ -d $repo_dir ]; then
+  echo 'Remove existing packages in '$repo_dir
+  rm -rf $repo_dir
+fi
+sudo mkdir -p $repo_dir
+sudo chown -R $USER $repo_dir
+
+# Run code
 
 source "$DIR/install-http-server.sh"
-source "$DIR/install-repository.sh"
+if [[ "${BUILD_PACKAGES:-false}" == 'false' ]] ; then
+  $DIR/install-repository.sh
+else
+  $DIR/build-repository.sh
+fi
+$DIR/unpack-vrouter-module.sh
+
 $DIR/validate-docker.sh
-source "$DIR/install-registry.sh"
+$DIR/install-registry.sh

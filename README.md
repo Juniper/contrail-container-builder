@@ -19,23 +19,40 @@ You can check them here: ```http://localhost:5000/v2/_catalog```
 
 Use this section if you want to deploy Contrail with Kubernetes without Helm
 
-* Run ```kubernetes/setup-k8s.sh``` (don't forget to ```cd ../``` if you're in ```containers```)
+* Run on a single or master-node ```kubernetes/setup-k8s.sh``` (don't forget to ```cd ../``` if you're in ```containers```)
 
-## Provisioning Contrail and CNI in Kubernetes without Helm
+For multi-node deployment on other kubernetes nodes:
+
+* Set KUBERNETES_API_SERVER and CONTRAIL_REGISTRY in environment or in ```common.env```
+* Run ```kubernetes/setup-k8s.sh join-token=<token>``` where token can be taken from output of setup-k8s.sh on master node or from ```sudo kubeadm token list```
+
+## Provisioning Contrail and CNI in Kubernetes without Helm on a single node
 
 * Configure ```common.env``` if it's not done previously (copy ```common.env.sample``` for that)
 * Create deployment yaml like this:
   ```
   cd kubernetes/manifests
-  ./resolve-manifest.sh contrail-micro.yaml.template > contrail-micro.yaml
+  ./resolve-manifest.sh contrail-template.yaml > contrail.yaml
   ```
 * Deploy Contrail:
-  ```kubectl apply -f contrail-micro.yaml```
+  ```kubectl apply -f contrail.yaml```
 * Check the deployment by:
   ```kubectl -n=kube-system get pods```
 
 You'll have Contrail deployed in Kubernetes. Check WebUI in https://localhost:8143 (login:admin password:contrail123)
 This deployment will work with noauth authentication.
+
+You can use ```apply.sh``` and ```delete.sh``` helper scripts from ```kubernetes/manifests``` to apply and delete kubernetes deployments without manually using ```resolve-manifest.sh``` and ```kubectl apply```.
+
+## Multi-node deployment
+
+* Configure ```common.env``` to contain lists of nodes for your deployment for CONTROLLER_NODES, AGENT_NODES, etc before Contrail deployment
+* Run ```kubernetes/manifest/set-node-labels.sh``` to allow kubernetes to apply labels according to ```common.env```.
+* Deploy Contrail on master kubernetes node as decribed in "Provisioning Contrail and CNI in Kubernetes without Helm on a single node"
+
+## Multi-card deployment
+
+* Configure ```common.env``` PHYSICAL_INTERFACE, VROUTER_GATEWAY and KUBERNETES_NODES_MAP parameters before Contrail deployment.
 
 ## Provisioning Contrail in Helm OpenStack
 
@@ -97,4 +114,5 @@ Please refer to the README-HELM.md
 36. Sort out with KUBERNETES_public_fip_pool
 36. Sort out with multiple NIC configiration - probably provision link local is needed since it set ip_fabric_ip.
 37. Consider to use K8S services to provide VIPs for Config, Analytics and WebUI.
+38. Split common.env to separate build.env and deployment.env
 
