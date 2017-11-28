@@ -1,6 +1,7 @@
 #!/bin/bash -ex
 # Internal script. Extracts vrouter.ko kernel module and puts it into www server root.
 # Takes CONTRAIL_VERSION and repo_dir from environment.
+
 tmp=$(mktemp -d)
 pushd $tmp
 vrouter_rpm=`find "$repo_dir/" | grep "contrail-vrouter-${CONTRAIL_VERSION}.el7"`
