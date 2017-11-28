@@ -97,4 +97,5 @@ Please refer to the README-HELM.md
 36. Sort out with KUBERNETES_public_fip_pool
 36. Sort out with multiple NIC configiration - probably provision link local is needed since it set ip_fabric_ip.
 37. Consider to use K8S services to provide VIPs for Config, Analytics and WebUI.
+38. Split common.env to separate build.env and deployment.env
 
