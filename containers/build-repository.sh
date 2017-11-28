@@ -13,5 +13,5 @@ pushd $repo_dir
 wget -nv https://s3-us-west-2.amazonaws.com/contrailrhel7/third-party-packages.tgz
 tar -xf third-party-packages.tgz
 rm third-party-packages.tgz
-sudo createrepo .
+createrepo .
 popd
