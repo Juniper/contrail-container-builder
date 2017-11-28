@@ -1,5 +1,6 @@
 #!/bin/bash
-# Builds containers
+# Builds containers. Parses common.env to take CONTRAIL_REGISTRY, CONTRAIL_REPOSITORY, CONTRAIL_VERSION or takes them from
+# environment.
 # Parameters:
 # path: path to module(s) for selective build, can be omitted to build all, "all" value can also be used
 # opts: extra parameters to pass to docker
