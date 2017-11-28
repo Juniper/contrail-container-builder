@@ -1,4 +1,5 @@
 #!/bin/bash
+# Instantiates yaml templates (like contrail-template.yaml) changing parameters to specific values taken from common.env.
 
 manifest_dir="${BASH_SOURCE%/*}"
 if [[ ! -d "$manifest_dir" ]]; then manifest_dir="$PWD"; fi
