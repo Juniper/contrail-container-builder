@@ -16,12 +16,6 @@ log_local=${ALARMGEN_LOG_LOCAL:-$LOG_LOCAL}
 collectors=$COLLECTOR_SERVERS
 kafka_broker_list=$KAFKA_SERVERS
 zk_list=${ZOOKEEPER_SERVERS:-`get_server_list ZOOKEEPER ":$ZOOKEEPER_PORT "`}
-rabbitmq_server_list=$RABBITMQ_NODES
-rabbitmq_port=$RABBITMQ_PORT
-rabbitmq_vhost=$RABBITMQ_VHOST
-rabbitmq_user=$RABBITMQ_USER
-rabbitmq_password=$RABBITMQ_PASSWORD
-rabbitmq_use_ssl=$RABBITMQ_USE_SSL
 
 [API_SERVER]
 # List of api-servers in ip:port format separated by space
@@ -30,6 +24,15 @@ api_server_use_ssl=${CONFIG_API_USE_SSL:-False}
 
 [REDIS]
 redis_uve_list=$REDIS_SERVERS
+
+[CONFIGDB]
+rabbitmq_server_list=$RABBITMQ_NODES
+rabbitmq_port=$RABBITMQ_PORT
+rabbitmq_vhost=$RABBITMQ_VHOST
+rabbitmq_user=$RABBITMQ_USER
+rabbitmq_password=$RABBITMQ_PASSWORD
+rabbitmq_use_ssl=$RABBITMQ_USE_SSL
+config_db_server_list=$CONFIGDB_SERVERS
 
 $sandesh_client_config
 EOM
