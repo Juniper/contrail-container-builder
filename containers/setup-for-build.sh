@@ -33,6 +33,9 @@ sudo chown -R $USER $repo_dir
 
 # Run code
 
+sudo setenforce 0
+sudo getenforce
+
 source "$DIR/install-http-server.sh"
 if [[ "${BUILD_PACKAGES:-false}" == 'false' ]] ; then
   $DIR/install-repository.sh
