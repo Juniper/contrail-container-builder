@@ -94,7 +94,7 @@ if [[ "$AUTH_MODE" == 'keystone' ]] ; then
   AUTH_PARAMS="--admin_password $KEYSTONE_AUTH_ADMIN_PASSWORD"
   AUTH_PARAMS+=" --admin_tenant_name $KEYSTONE_AUTH_ADMIN_TENANT"
   AUTH_PARAMS+=" --admin_user $KEYSTONE_AUTH_ADMIN_USER"
-  AUTH_PARAMS+=" --openstack_ip $KEYSTONE_AUTH_HOST"
+#  AUTH_PARAMS+=" --openstack_ip $KEYSTONE_AUTH_HOST"
 fi
 
 source /functions.sh
