@@ -3,6 +3,7 @@
 source /common.sh
 
 host_ip=$(get_listen_ip_for_node ANALYTICS)
+config_db_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
 
 cat > /etc/contrail/contrail-alarm-gen.conf << EOM
 [DEFAULTS]
@@ -32,7 +33,7 @@ rabbitmq_vhost=$RABBITMQ_VHOST
 rabbitmq_user=$RABBITMQ_USER
 rabbitmq_password=$RABBITMQ_PASSWORD
 rabbitmq_use_ssl=$RABBITMQ_USE_SSL
-config_db_server_list=$CONFIGDB_SERVERS
+config_db_server_list=$config_db_server_list
 
 $sandesh_client_config
 EOM

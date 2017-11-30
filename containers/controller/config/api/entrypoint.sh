@@ -3,6 +3,7 @@
 source /common.sh
 
 host_ip=$(get_listen_ip_for_node CONFIG)
+cassandra_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
 
 cat > /etc/contrail/contrail-api.conf << EOM
 [DEFAULTS]
@@ -14,7 +15,7 @@ log_level=${CONFIG_API_LOG_LEVEL:-$LOG_LEVEL}
 list_optimization_enabled=${CONFIG_API_LIST_OPTIMIZATION_ENABLED:-True}
 auth=$AUTH_MODE
 aaa_mode=$AAA_MODE
-cassandra_server_list=$CONFIGDB_SERVERS
+cassandra_server_list=$cassandra_server_list
 zk_server_ip=$ZOOKEEPER_SERVERS
 rabbit_server=$RABBITMQ_SERVERS
 rabbit_vhost=$RABBITMQ_VHOST

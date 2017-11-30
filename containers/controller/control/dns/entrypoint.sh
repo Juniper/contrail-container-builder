@@ -3,6 +3,8 @@
 source /common.sh
 
 hostip=$(get_listen_ip_for_node CONTROL)
+rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')
+configdb_cql_servers=$(echo $CONFIGDB_CQL_SERVERS | sed 's/,/ /g')
 
 cat > /etc/contrail/dns/contrail-rndc.conf << EOM
 key "rndc-key" {
@@ -50,7 +52,7 @@ xmpp_dns_auth_enable=${XMPP_DNS_AUTH_ENABLE:-False}
 
 [CONFIGDB]
 # AMQP related configs
-rabbitmq_server_list=$RABBITMQ_SERVERS
+rabbitmq_server_list=$rabbitmq_server_list
 rabbitmq_vhost=$RABBITMQ_VHOST
 rabbitmq_user=$RABBITMQ_USER
 rabbitmq_password=$RABBITMQ_PASSWORD
@@ -60,7 +62,7 @@ rabbitmq_use_ssl=$RABBITMQ_USE_SSL
 # rabbitmq_ssl_certfile=
 # rabbitmq_ssl_ca_certs=
 #
-config_db_server_list=$CONFIGDB_CQL_SERVERS
+config_db_server_list=$configdb_cql_servers
 # config_db_username=
 # config_db_password=
 

@@ -2,6 +2,9 @@
 
 source /common.sh
 
+rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')
+config_db_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
+
 cat > /etc/contrail/contrail-topology.conf << EOM
 [DEFAULTS]
 scan_frequency=${TOPOLOGY_SCAN_FREQUENCY:-600}
@@ -18,12 +21,12 @@ api_server_list=$CONFIG_SERVERS
 api_server_use_ssl=${CONFIG_API_USE_SSL:-False}
 
 [CONFIGDB]
-rabbitmq_server_list=$RABBITMQ_SERVERS
+rabbitmq_server_list=$rabbitmq_server_list
 rabbitmq_vhost=$RABBITMQ_VHOST
 rabbitmq_user=$RABBITMQ_USER
 rabbitmq_password=$RABBITMQ_PASSWORD
 rabbitmq_use_ssl=$RABBITMQ_USE_SSL
-config_db_server_list=$CONFIGDB_SERVERS
+config_db_server_list=$config_db_server_list
 
 $sandesh_client_config
 EOM

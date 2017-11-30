@@ -6,6 +6,8 @@ if [ $K8S_TOKEN_FILE ]; then
   K8S_TOKEN=$(cat $K8S_TOKEN_FILE)
 fi
 
+cassandra_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
+
 cat > /etc/contrail/contrail-kubernetes.conf << EOM
 [DEFAULTS]
 orchestrator=${CLOUD_ORCHESTRATOR}
@@ -32,7 +34,7 @@ rabbit_server=$RABBITMQ_SERVERS
 rabbit_vhost=$RABBITMQ_VHOST
 rabbit_user=$RABBITMQ_USER
 rabbit_password=$RABBITMQ_PASSWORD
-cassandra_server_list=$CONFIGDB_SERVERS
+cassandra_server_list=$cassandra_server_list
 collectors=$COLLECTOR_SERVERS
 EOM
 

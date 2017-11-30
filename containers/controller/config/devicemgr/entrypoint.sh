@@ -2,13 +2,15 @@
 
 source /common.sh
 
+cassandra_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
+
 cat > /etc/contrail/contrail-device-manager.conf << EOM
 [DEFAULTS]
 api_server_ip=$CONFIG_API_VIP
 api_server_port=$CONFIG_API_PORT
 log_file=${CONFIG_DEVICEMGR_LOG_FILE:-"$LOG_DIR/contrail-device-manager.log"}
 log_level=${CONFIG_DEVICEMGR_LOG_LEVEL:-$LOG_LEVEL}
-cassandra_server_list=$CONFIGDB_SERVERS
+cassandra_server_list=$cassandra_server_list
 zk_server_ip=$ZOOKEEPER_SERVERS
 rabbit_server=$RABBITMQ_SERVERS
 rabbit_vhost=$RABBITMQ_VHOST

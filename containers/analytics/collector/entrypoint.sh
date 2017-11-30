@@ -3,6 +3,8 @@
 source /common.sh
 
 hostip=$(get_listen_ip_for_node ANALYTICS)
+rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')
+configdb_cql_servers=$(echo $CONFIGDB_CQL_SERVERS | sed 's/,/ /g')
 
 cat > /etc/contrail/contrail-collector.conf << EOM
 [DEFAULT]
@@ -78,12 +80,12 @@ port=$REDIS_SERVER_PORT
 server=$REDIS_SERVER_IP
 
 [CONFIGDB]
-rabbitmq_server_list=$RABBITMQ_SERVERS
+rabbitmq_server_list=$rabbitmq_server_list
 rabbitmq_vhost=$RABBITMQ_VHOST
 rabbitmq_user=$RABBITMQ_USER
 rabbitmq_password=$RABBITMQ_PASSWORD
 rabbitmq_use_ssl=$RABBITMQ_USE_SSL
-config_db_server_list=$CONFIGDB_CQL_SERVERS
+config_db_server_list=$configdb_cql_servers
 
 $sandesh_client_config
 EOM

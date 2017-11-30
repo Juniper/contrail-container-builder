@@ -6,6 +6,7 @@ hostip=$(get_listen_ip_for_node CONTROL)
 hostname=${DEFAULT_HOSTNAME}
 
 rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')
+configdb_cql_servers=$(echo $CONFIGDB_CQL_SERVERS | sed 's/,/ /g')
 
 cat > /etc/contrail/contrail-control.conf << EOM
 [DEFAULT]
@@ -46,7 +47,7 @@ rabbitmq_use_ssl=$RABBITMQ_USE_SSL
 # rabbitmq_ssl_certfile=
 # rabbitmq_ssl_ca_certs=
 #
-config_db_server_list=$CONFIGDB_CQL_SERVERS
+config_db_server_list=$configdb_cql_servers
 # config_db_username=
 # config_db_password=
 
