@@ -5,6 +5,8 @@ source /common.sh
 hostip=$(get_listen_ip_for_node CONTROL)
 hostname=${DEFAULT_HOSTNAME}
 
+rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')
+
 cat > /etc/contrail/contrail-control.conf << EOM
 [DEFAULT]
 # bgp_config_file=bgp_config.xml
@@ -34,7 +36,7 @@ xmpp_auth_enable=${XMPP_AUTH_ENABLE:-False}
 
 [CONFIGDB]
 # AMQP related configs
-rabbitmq_server_list=$RABBITMQ_SERVERS
+rabbitmq_server_list=$rabbitmq_server_list
 rabbitmq_vhost=$RABBITMQ_VHOST
 rabbitmq_user=$RABBITMQ_USER
 rabbitmq_password=$RABBITMQ_PASSWORD
