@@ -112,6 +112,7 @@ if [[ "$CUR_INT" != "vhost0" ]] ; then
   echo "Inserting vrouter"
   insert_vrouter
 
+  # TODO: switch off dhcp on PHYS_INT
   echo "Changing physical interface to vhost in ip table"
   ip address delete $VROUTER_IP/$VROUTER_MASK dev ${PHYS_INT}
   ip address add $VROUTER_IP/$VROUTER_MASK dev vhost0
