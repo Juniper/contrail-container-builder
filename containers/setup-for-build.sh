@@ -35,9 +35,9 @@ sudo chown -R $USER $repo_dir
 
 sudo setenforce 0 || /bin/true
 if [[ -f /etc/selinux/config && -n `grep "^[ ]*SELINUX[ ]*=" /etc/selinux/config` ]]; then
-  sed -i 's/^[ ]*SELINUX[ ]*=/SELINUX=permissive/g' /etc/selinux/config
+  sudo sed -i 's/^[ ]*SELINUX[ ]*=/SELINUX=permissive/g' /etc/selinux/config
 else
-  echo "SELINUX=permissive" >> /etc/selinux/config
+  sudo bash -c "echo 'SELINUX=permissive' >> /etc/selinux/config"
 fi
 
 
