@@ -62,7 +62,7 @@ Use default VPC (make sure the ports are open - see below) or configure a new on
 ```
 * Set version: 
 ```
-   export CONTRAIL_VERSION=4.0.2.0-35
+   export CONTRAIL_VERSION=4.1.0.0-6
 ```
 * Install utilities: 
 ```
@@ -88,7 +88,7 @@ Use default VPC (make sure the ports are open - see below) or configure a new on
 * Go to machine for OpenStack Helm: 
 ```
    ssh -i ./my_key ec2-user@$HELM_IP
-   set version: export CONTRAIL_VERSION=4.0.2.0-35
+   set version: export CONTRAIL_VERSION=4.1.0.0-6
    set IP of machine where build was run: export REGISTRY_IP=$BUILD_IP
 ```
 * allow docker use own repository - create file /etc/docker/daemon.json with content: 

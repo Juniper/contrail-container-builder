@@ -13,7 +13,7 @@ if [ -f $env_file ]; then
   source $env_file
 fi
 
-version=${version:-${CONTRAIL_VERSION:-'4.0.2.0-35'}}
+version=${version:-${CONTRAIL_VERSION:-'4.1.0.0-6'}}
 os_version=${os_version:-${OPENSTACK_VERSION:-'newton'}}
 registry=${registry:-${CONTRAIL_REGISTRY:-'auto'}}
 repository=${repository:-${CONTRAIL_REPOSITORY:-'auto'}}

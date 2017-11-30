@@ -2,9 +2,8 @@
 # Internal script. Installs HTTP server for local packages repository. Takes package_root_dir from environment (/var/www by
 # default)
 
-export OUSER=$(id -u)
-export OGROUP=$(id -g)
-
+OUSER=$(id -u)
+OGROUP=$(id -g)
 linux=$(awk -F"=" '/^ID=/{print $2}' /etc/os-release | tr -d '"')
 
 sudo -u root /bin/bash << EOS

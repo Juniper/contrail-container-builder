@@ -17,6 +17,14 @@ zookeeper=$ZOOKEEPER_SERVERS
 api_server_list=$CONFIG_SERVERS
 api_server_use_ssl=${CONFIG_API_USE_SSL:-False}
 
+[CONFIGDB]
+rabbitmq_server_list=$RABBITMQ_SERVERS
+rabbitmq_vhost=$RABBITMQ_VHOST
+rabbitmq_user=$RABBITMQ_USER
+rabbitmq_password=$RABBITMQ_PASSWORD
+rabbitmq_use_ssl=$RABBITMQ_USE_SSL
+config_db_server_list=$CONFIGDB_SERVERS
+
 $sandesh_client_config
 EOM
 

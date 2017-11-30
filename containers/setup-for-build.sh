@@ -33,6 +33,14 @@ sudo chown -R $USER $repo_dir
 
 # Run code
 
+sudo setenforce 0 || /bin/true
+if [[ -f /etc/selinux/config && -n `grep "^[ ]*SELINUX[ ]*=" /etc/selinux/config` ]]; then
+  sudo sed -i 's/^[ ]*SELINUX[ ]*=/SELINUX=permissive/g' /etc/selinux/config
+else
+  sudo bash -c "echo 'SELINUX=permissive' >> /etc/selinux/config"
+fi
+
+
 source "$DIR/install-http-server.sh"
 if [[ "${BUILD_PACKAGES:-false}" == 'false' ]] ; then
   $DIR/install-repository.sh

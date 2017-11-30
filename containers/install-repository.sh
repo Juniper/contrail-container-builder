@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-contrail_version=${CONTRAIL_VERSION:-'4.0.2.0-35'}
+contrail_version=${CONTRAIL_VERSION:-'4.1.0.0-6'}
 os_version=${OPENSTACK_VERSION:-newton}
 package_base_url=${CONTRAIL_INSTALL_PACKAGE_URL:-"https://s3-us-west-2.amazonaws.com/contrailrhel7"}
 
