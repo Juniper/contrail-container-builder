@@ -83,7 +83,7 @@ rabbitmq_vhost=$RABBITMQ_VHOST
 rabbitmq_user=$RABBITMQ_USER
 rabbitmq_password=$RABBITMQ_PASSWORD
 rabbitmq_use_ssl=$RABBITMQ_USE_SSL
-config_db_server_list=$CONFIGDB_CQL_SERVER
+config_db_server_list=$CONFIGDB_CQL_SERVERS
 
 $sandesh_client_config
 EOM
