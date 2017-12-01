@@ -286,7 +286,7 @@ spec:
       hostNetwork: true
       containers:
       - name: contrail-analyticsdb
-        image: "cassandra:2.2.10"
+        image: "cassandra:3.11.1"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -337,7 +337,7 @@ spec:
       hostNetwork: true
       containers:
       - name: contrail-configdb
-        image: "cassandra:2.2.10"
+        image: "cassandra:3.11.1"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
