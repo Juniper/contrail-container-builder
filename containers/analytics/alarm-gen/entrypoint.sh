@@ -16,7 +16,7 @@ log_level=${ALARMGEN_LOG_LEVEL:-$LOG_LEVEL}
 log_local=${ALARMGEN_LOG_LOCAL:-$LOG_LOCAL}
 collectors=$COLLECTOR_SERVERS
 kafka_broker_list=$KAFKA_SERVERS
-zk_list=${ZOOKEEPER_SERVERS:-`get_server_list ZOOKEEPER ":$ZOOKEEPER_PORT "`}
+zk_list=$ZOOKEEPER_SERVERS_SPACE_DELIM
 
 [API_SERVER]
 # List of api-servers in ip:port format separated by space

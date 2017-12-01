@@ -22,7 +22,7 @@ log_local=${ANALYTICS_API_LOG_LOCAL:-$LOG_LOCAL}
 collectors=$COLLECTOR_SERVERS
 cassandra_server_list=$ANALYTICSDB_CQL_SERVERS
 api_server=$CONFIG_SERVERS
-zk_list=${ZOOKEEPER_SERVERS:-`get_server_list ZOOKEEPER ":$ZOOKEEPER_PORT "`}
+zk_list=$ZOOKEEPER_SERVERS_SPACE_DELIM
 
 [REDIS]
 redis_query_port=$REDIS_SERVER_PORT
