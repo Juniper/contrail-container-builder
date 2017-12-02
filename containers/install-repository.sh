@@ -11,7 +11,7 @@ if [[ "$PACKAGES_URL" =~ http[s]*:// ]] ; then
   fi
 
   temp_dir=$(mktemp -d)
-  pushd
+  pushd $temp_dir
   echo "Getting $PACKAGES_URL to $temp_dir"
   wget -nv $PACKAGES_URL
   # only one file will be there
