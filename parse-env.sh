@@ -18,6 +18,8 @@ os_version=${os_version:-${OPENSTACK_VERSION:-'newton'}}
 registry=${registry:-${CONTRAIL_REGISTRY:-'auto'}}
 repository=${repository:-${CONTRAIL_REPOSITORY:-'auto'}}
 
+packages_url=${CONTRAIL_INSTALL_PACKAGES_URL:-"https://s3-us-west-2.amazonaws.com/contrailrhel7/contrail-install-packages-$version~$os_version.el7.noarch.rpm"}
+
 host_ip=${HOST_IP:-'auto'}
 default_interface=`ip route show | grep "default via" | awk '{print $5}'`
 default_gateway=`ip route show dev $default_interface | grep default | awk '{print $3}'`

@@ -1,27 +1,39 @@
 #!/bin/bash -e
 
-contrail_version=${CONTRAIL_VERSION:-'4.1.0.0-6'}
-os_version=${OPENSTACK_VERSION:-newton}
-package_base_url=${CONTRAIL_INSTALL_PACKAGE_URL:-"https://s3-us-west-2.amazonaws.com/contrailrhel7"}
+paths_to_remove=""
 
-package_url=$package_base_url'/contrail-install-packages-'$contrail_version'~'$os_version'.el7.noarch.rpm'
-http_status=$(curl -Isw "%{http_code}" -o /dev/null $package_url)
-if [ $http_status != "200" ]; then
-  echo "No Contrail packages found for Contrail version '$contrail_version' and OpenStack version '$os_version'"
-  exit 1
+if [[ "$PACKAGES_URL" =~ http[s]*:// ]] ; then
+  http_status=$(curl -Isw "%{http_code}" -o /dev/null $PACKAGES_URL)
+  if [ $http_status != "200" ]; then
+    echo "No Contrail packages found at $PACKAGES_URL"
+    exit 1
+  fi
+
+  package_fname=$(mktemp)
+  echo "Getting $PACKAGES_URL to $package_fname"
+  wget -nv -O $package_fname $PACKAGES_URL
+  paths_to_remove="$paths_to_remove $package_fname"
+else
+  package_fname="$PACKAGES_URL"
 fi
 
-package_fname=$(mktemp)
-echo Getting $package_url to $package_fname
-curl -o $package_fname $package_url
+if [[ "$package_fname" == *rpm ]] ; then
+  # script awaits format of rpm file as at build server
+  package_dir=$(mktemp -d)
+  pushd $package_dir
+  rpm2cpio $package_fname | cpio -idmv
+  popd
+  echo 'Extract packages to '$repo_dir
+  tar -xvzf $package_dir'/opt/contrail/contrail_packages/contrail_rpms.tgz' -C $repo_dir
+  rm -rf $package_dir
+fi
 
-package_dir=$(mktemp -d)
-pushd $package_dir
-rpm2cpio $package_fname | cpio -idmv
+sudo yum install -y createrepo
+pushd $repo_dir
+rm -rf repodata
+createrepo .
 popd
 
-echo 'Extract packages to '$repo_dir
-tar -xvzf $package_dir'/opt/contrail/contrail_packages/contrail_rpms.tgz' -C $repo_dir
-
-rm -rf $package_dir
-rm $package_fname
+if [[ -n "$paths_to_remove" ]] ; then
+  rm -rf $paths_to_remove
+fi

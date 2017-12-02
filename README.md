@@ -81,7 +81,7 @@ Please refer to the README-HELM.md
 3. ~~Neutron, nova - revisit pluginization mechanism~~
 4. ~~Kubeagent - create new one~~
 5. All scripts - move to root dir
-6. Source rpm repo in setup, add parameter to take from non-S3
+6. ~~Source rpm repo in setup, add parameter to take from non-S3~~
 7. ~~Rename contrail-micro.yaml to contrail-micro.yaml.sample~~
 8. ~~Create README~~
 9. ~~Remove firewall during setup~~
