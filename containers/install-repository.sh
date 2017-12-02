@@ -9,7 +9,7 @@ if [[ "$PACKAGES_URL" =~ http[s]*:// ]] ; then
     exit 1
   fi
 
-  package_fname=$(mktemp)
+  package_fname=$(mktemp XXXXXX.rpm)
   echo "Getting $PACKAGES_URL to $package_fname"
   wget -nv -O $package_fname $PACKAGES_URL
   paths_to_remove="$paths_to_remove $package_fname"
