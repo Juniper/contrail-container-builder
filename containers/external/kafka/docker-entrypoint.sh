@@ -33,15 +33,16 @@ if [ "$KAFKA_LISTEN_ADDRESS" = 'auto' ]; then
 fi
 
 zk_server_list=''
-zk_chroot_list=''
+# zk_chroot_list=''
 IFS=',' read -ra server_list <<< "${ZOOKEEPER_NODES}"
 for server in "${server_list[@]}"; do
   zk_server_list+=${server}:2181,
-  zk_chroot_list+=${server}:2181/kafka-root,
+  # zk_chroot_list+=${server}:2181/kafka-root,
 done
 
-bin/zookeeper-shell.sh "${zk_server_list::-1}" <<< "create /kafka-root []"
-zk_list="${zk_chroot_list::-1}"
+# bin/zookeeper-shell.sh "${zk_server_list::-1}" <<< "create /kafka-root []"
+# zk_list="${zk_chroot_list::-1}"
+zk_list="${zk_server_list::-1}"
 if [[ `echo ${#server_list[@]}` -gt 1 ]] ; then
   replication_factor=2
 else
