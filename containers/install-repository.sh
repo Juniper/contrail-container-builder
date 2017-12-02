@@ -15,7 +15,7 @@ if [[ "$PACKAGES_URL" =~ http[s]*:// ]] ; then
   echo "Getting $PACKAGES_URL to $temp_dir"
   wget -nv $PACKAGES_URL
   # only one file will be there
-  package_fname=`ls`
+  package_fname="$temp_dir/`ls`"
   popd
   paths_to_remove="$paths_to_remove $temp_dir"
 else
