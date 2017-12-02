@@ -14,12 +14,11 @@ function wait_for_contrail_api() {
         break
       fi
       echo "INFO $(date): waiting for API server $n: $i / 120"
-      sleep 1
+      sleep 3
     done
   done
   if (( count == 0 )) ; then
-    echo "ERROR $(date): Config API servers  ${config_node_list[@]}  are not responding on port ${port}. Exiting..."
-    exit 1
+    echo "ERROR $(date): Config API servers  ${config_node_list[@]}  are not responding on port ${port}. Exiting..."    
   fi
   if (( count != ${#config_node_list[@]} )) ; then
     echo "WARNING $(date): Some of Config API servers  ${config_node_list[@]}  are not responding on port ${port}."
