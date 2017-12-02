@@ -71,7 +71,7 @@ echo "log.cleanup.policy=${KAFKA_log_cleanup_policy}" >> ${CONFIG}
 echo "log.cleaner.threads=${KAFKA_log_cleaner_threads}" >> ${CONFIG}
 echo "log.cleaner.dedupe.buffer.size=${KAFKA_log_cleaner_dedupe_buffer_size}" >> ${CONFIG}
 sed -i "s/^num.partitions=.*$/num.partitions=30/g" ${CONFIG}
-sed -i "s/^num.partitions=.*$/num.partitions=30/g" ${CONFIG}
 echo "default.replication.factor=$replication_factor" >> ${CONFIG}
+echo "reserved.broker.max.id: 100001" >> ${CONFIG}
 
 exec "$@"
