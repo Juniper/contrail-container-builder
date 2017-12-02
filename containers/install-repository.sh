@@ -3,6 +3,7 @@
 paths_to_remove=""
 
 if [[ "$PACKAGES_URL" =~ http[s]*:// ]] ; then
+  # download file if URL is not a local file path
   http_status=$(curl -Isw "%{http_code}" -o /dev/null $PACKAGES_URL)
   if [ $http_status != "200" ]; then
     echo "No Contrail packages found at $PACKAGES_URL"
@@ -18,15 +19,18 @@ else
 fi
 
 if [[ "$package_fname" == *rpm ]] ; then
+  # unpack packages archive from rpm 
   # script awaits format of rpm file as at build server
   package_dir=$(mktemp -d)
   pushd $package_dir
   rpm2cpio $package_fname | cpio -idmv
   popd
-  echo 'Extract packages to '$repo_dir
-  tar -xvzf $package_dir'/opt/contrail/contrail_packages/contrail_rpms.tgz' -C $repo_dir
-  rm -rf $package_dir
+  paths_to_remove="$paths_to_remove $package_dir"
+  package_fname="$package_dir/opt/contrail/contrail_packages/contrail_rpms.tgz"
 fi
+
+echo "Extract packages to $repo_dir"
+tar -xvzf "$package_fname" -C $repo_dir
 
 sudo yum install -y createrepo
 pushd $repo_dir
