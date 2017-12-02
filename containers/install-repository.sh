@@ -10,10 +10,14 @@ if [[ "$PACKAGES_URL" =~ http[s]*:// ]] ; then
     exit 1
   fi
 
-  package_fname=$(mktemp /tmp/XXXXXX.rpm)
-  echo "Getting $PACKAGES_URL to $package_fname"
-  wget -nv -O $package_fname $PACKAGES_URL
-  paths_to_remove="$paths_to_remove $package_fname"
+  temp_dir=$(mktemp -d)
+  pushd
+  echo "Getting $PACKAGES_URL to $temp_dir"
+  wget -nv $PACKAGES_URL
+  # only one file will be there
+  package_fname=`ls`
+  popd
+  paths_to_remove="$paths_to_remove $temp_dir"
 else
   package_fname="$PACKAGES_URL"
 fi
@@ -21,12 +25,12 @@ fi
 if [[ "$package_fname" == *rpm ]] ; then
   # unpack packages archive from rpm 
   # script awaits format of rpm file as at build server
-  package_dir=$(mktemp -d)
-  pushd $package_dir
+  temp_dir=$(mktemp -d)
+  pushd $temp_dir
   rpm2cpio $package_fname | cpio -idmv
   popd
-  paths_to_remove="$paths_to_remove $package_dir"
-  package_fname="$package_dir/opt/contrail/contrail_packages/contrail_rpms.tgz"
+  paths_to_remove="$paths_to_remove $temp_dir"
+  package_fname="$temp_dir/opt/contrail/contrail_packages/contrail_rpms.tgz"
 fi
 
 echo "Extract packages to $repo_dir"
