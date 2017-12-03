@@ -3,22 +3,22 @@
 function wait_for_contrail_api() {
   local config_node_list=''
   IFS=',' read -ra config_node_list <<< "${CONFIG_NODES}"
-
+  echo "INFO $(date): waiting for API servers: ${config_node_list[@]}"
   local port=$CONFIG_API_PORT
   local count=0
   for n in ${config_node_list[@]} ; do
     for (( i=0; i<120; i++)) ; do
+      echo "INFO $(date): waiting for API server $n: $i / 120"
+      sleep 3
       if curl -sI http://${n}:${port}/ | head -1 | grep -q 200 ; then
         echo "INFO $(date): API server $n is ready."
         (( count+=1 ))
         break
       fi
-      echo "INFO $(date): waiting for API server $n: $i / 120"
-      sleep 3
     done
   done
   if (( count == 0 )) ; then
-    echo "ERROR $(date): Config API servers  ${config_node_list[@]}  are not responding on port ${port}. Exiting..."    
+    echo "ERROR $(date): Config API servers  ${config_node_list[@]}  are not responding on port ${port}. Exiting..."
   fi
   if (( count != ${#config_node_list[@]} )) ; then
     echo "WARNING $(date): Some of Config API servers  ${config_node_list[@]}  are not responding on port ${port}."
