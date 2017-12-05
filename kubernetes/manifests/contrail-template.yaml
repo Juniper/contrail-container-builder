@@ -47,7 +47,7 @@ data:
     -Dcassandra.native_transport_port=9042
     -Dcassandra.ssl_storage_port=7001
     -Dcassandra.storage_port=7000
-    -Xms2g -Xmx4g
+    -Xms2g -Xmx2g
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -65,7 +65,7 @@ data:
     -Dcassandra.ssl_storage_port=7011
     -Dcassandra.storage_port=7010
     -Dcassandra.jmx.local.port=7200
-    -Xms1g -Xmx2g
+    -Xms2g -Xmx2g
 ---
 apiVersion: v1
 kind: ConfigMap
