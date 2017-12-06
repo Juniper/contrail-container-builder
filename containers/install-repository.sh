@@ -36,7 +36,6 @@ fi
 echo "Extract packages to $repo_dir"
 tar -xvzf "$package_fname" -C $repo_dir
 
-sudo yum install -y createrepo
 pushd $repo_dir
 rm -rf repodata
 createrepo .
