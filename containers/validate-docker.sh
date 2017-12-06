@@ -29,7 +29,7 @@ echo Installed docker version $docker_ver is smaller than the one required for p
 
 echo Load docker binaries
 tgz_file=$(mktemp)
-curl -o $tgz_file https://download.docker.com/linux/static/stable/x86_64/docker-17.06.2-ce.tgz
+curl -s -o $tgz_file https://download.docker.com/linux/static/stable/x86_64/docker-17.06.2-ce.tgz
 tmp_dir=$(mktemp -d)
 tar xzvf $tgz_file -C $tmp_dir
 
