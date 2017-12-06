@@ -2,15 +2,16 @@
 # Builds containers. Parses common.env to take CONTRAIL_REGISTRY, CONTRAIL_REPOSITORY, CONTRAIL_VERSION or takes them from
 # environment.
 # Parameters:
-# path: path to module(s) for selective build, can be omitted to build all, "all" value can also be used
+# path: relative path (from this directory) to module(s) for selective build, can be omitted to build all, "all" value can also be used. Example: controller/webui
 # opts: extra parameters to pass to docker
 
-containers_dir="${BASH_SOURCE%/*}"
-if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
-source "$containers_dir/../parse-env.sh"
+my_file="$(readlink -e "$0")"
+my_dir="$(dirname $my_file)"
+source "$my_dir/../parse-env.sh"
 
-path=$1
-opts=$2
+path="$1"
+shift
+opts="$@"
 
 echo 'Contrail version: '$version
 echo 'OpenStack version: '$os_version
@@ -83,9 +84,12 @@ build_dir () {
 }
 
 if [ -z $path ] || [ $path = 'all' ]; then
-  path=$containers_dir
+  path="."
 fi
+echo "INFO: starting build from $my_dir with relative path $path"
+pushd $my_dir
 build_dir $path
+popd
 if [ $was_errors -ne 0 ]; then
   echo 'Failed to build some containers, see log files'
 fi
