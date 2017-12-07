@@ -21,7 +21,7 @@ export PACKAGES_URL=$packages_url
 
 export package_root_dir="/var/www"
 
-if [ -n $CONTRAIL_REPOSITORY ]; then
+if [[ -n "$CONTRAIL_REPOSITORY" ]]; then
   dir_prefix=$(echo $CONTRAIL_REPOSITORY | awk -F'/' '{print $4}' | sed 's/'$version'$//')
 fi
 export repo_dir="${package_root_dir}/${dir_prefix}${CONTRAIL_VERSION}"
@@ -44,7 +44,10 @@ fi
 
 source "$DIR/install-http-server.sh"
 $DIR/install-repository.sh
-$DIR/unpack-vrouter-module.sh
+
+if [[ $TEST_MODE == 'true' ]] ; then
+  $DIR/unpack-vrouter-module.sh
+fi
 
 $DIR/validate-docker.sh
 $DIR/install-registry.sh
