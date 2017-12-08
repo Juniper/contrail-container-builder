@@ -107,21 +107,23 @@ function get_default_gateway_for_nic() {
   ip route show dev $nic | grep default | awk '{print $3}'
 }
 
-function find_my_ip_for_node() {
+function find_my_ip_and_order_for_node() {
   local server_typ=$1_NODES
   local server_list=''
   IFS=',' read -ra server_list <<< "${!server_typ}"
   local local_ips=$(ip addr | awk '/inet/ {print($2)}')
+  local ord=1
   for server in "${server_list[@]}"; do
     if [[ "$local_ips" =~ "$server" ]] ; then
-      echo $server
+      echo $server $ord
       return
     fi
+    (( ord+=1 ))
   done
 }
 
 function get_vip_for_node() {
-  local ip=$(find_my_ip_for_node $1)
+  local ip=$(find_my_ip_and_order_for_node $1 | cut -d ' ' -f 1)
   if [[ -z "$ip" ]] ; then
     local server_typ=$1_NODES
     ip=$(echo ${!server_typ} | cut -d',' -f 1)
@@ -130,11 +132,19 @@ function get_vip_for_node() {
 }
 
 function get_listen_ip_for_node() {
-  local ip=$(find_my_ip_for_node $1)
+  local ip=$(find_my_ip_and_order_for_node $1  | cut -d ' ' -f 1)
   if [[ -z "$ip" ]] ; then
     ip=$(get_default_ip)
   fi
   echo $ip
+}
+
+function get_order_for_node() {
+  local order=$(find_my_ip_and_order_for_node $1 | cut -d ' ' -f 2)
+  if [[ -z "$order" ]] ; then
+    order=1
+  fi
+  echo $order
 }
 
 function provision() {
