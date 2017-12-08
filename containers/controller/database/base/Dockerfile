@@ -1,6 +1,6 @@
-FROM centos:7.4.1708
-
-RUN yum install -y http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-11.noarch.rpm
+ARG CONTRAIL_VERSION=4.1.0.0-6
+ARG CONTRAIL_REGISTRY=localhost:5000
+FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_VERSION}
 
 RUN yum install -y iproute java && \
     yum clean all -y && \

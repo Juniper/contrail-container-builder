@@ -1,0 +1,9 @@
+ARG CONTRAIL_VERSION=4.1.0.0-6
+ARG CONTRAIL_REGISTRY=localhost:5000
+FROM ${CONTRAIL_REGISTRY}/contrail-controller-webui-base:${CONTRAIL_VERSION}
+
+RUN yum install -y redis
+
+COPY docker-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["redis-server","/etc/redis.conf"]

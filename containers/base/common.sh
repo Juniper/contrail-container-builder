@@ -1,7 +1,14 @@
 #!/bin/bash
-
-DEFAULT_IFACE=`ip -4 route list 0/0 | awk '{ print $5; exit }'`
-DEFAULT_LOCAL_IP=`ip addr | grep $DEFAULT_IFACE | grep 'inet ' | awk '{print $2}' | cut -d '/' -f 1`
+local_ips=$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}')
+IFS=',' read -ra server_list <<< "${CONTROLLER_NODES}"
+for server in ${server_list[@]}; do
+ if [[ "$local_ips" =~ "$server" ]]; then
+    LOCAL_IP=$server
+ fi
+done 
+LOCAL_IFACE=`ip route list |grep "link src ${LOCAL_IP}" |awk '{print $3}'`
+DEFAULT_IFACE=${LOCAL_IFACE:-`ip -4 route list 0/0 | awk '{ print $5; exit }'`}
+DEFAULT_LOCAL_IP=${LOCAL_IP:-`ip addr | grep $DEFAULT_IFACE | grep 'inet ' | awk '{print $2}' | cut -d '/' -f 1`}
 DEFAULT_HOSTNAME=`uname -n`
 
 CLOUD_ORCHESTRATOR=${CLOUD_ORCHESTRATOR:-none}

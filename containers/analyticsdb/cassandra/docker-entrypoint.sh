@@ -1,13 +1,15 @@
 #!/bin/bash
-set -e
+#set -e
 
-default_interface=`ip route show |grep "default via" |awk '{print $5}'`
-default_ip_address=`ip address show dev $default_interface |head -3 |tail -1 |tr "/" " " |awk '{print $2}'`
-: ${CASSANDRA_RPC_ADDRESS='0.0.0.0'}
+source /common.sh
+
+hostip=$(get_listen_ip_for_node ANALYTICSDB)
+DEFAULT_LOCAL_IP=${hostip:-'0.0.0.0'}
+: ${CASSANDRA_RPC_ADDRESS=${CASSANDRA_RPC_ADDRESS:-$DEFAULT_LOCAL_IP}}
 
 : ${CASSANDRA_LISTEN_ADDRESS='auto'}
 if [ "$CASSANDRA_LISTEN_ADDRESS" = 'auto' ]; then
-	CASSANDRA_LISTEN_ADDRESS=${default_ip_address}
+        CASSANDRA_LISTEN_ADDRESS=${DEFAULT_LOCAL_IP}
 fi
 
 : ${CASSANDRA_BROADCAST_ADDRESS="$CASSANDRA_LISTEN_ADDRESS"}

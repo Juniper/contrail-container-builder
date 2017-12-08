@@ -1,0 +1,12 @@
+#ARG CONTRAIL_VERSION=4.1.0.0-6
+#ARG CONTRAIL_REGISTRY=localhost:5000
+FROM 10.87.64.33:5043/contrail-controller-config-base:4.1.0.0-8
+
+COPY entrypoint.sh /
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/usr/bin/python","/usr/bin/contrail-device-manager","--conf_file","/etc/contrail/contrail-device-manager.conf","--conf_file","/etc/contrail/contrail-keystone-auth.conf"]
+
+LABEL net.juniper.nodemgr.filter.name=contrail-device-manager
+LABEL net.juniper.contrail=config
+LABEL net.juniper.node=controller

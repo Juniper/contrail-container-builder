@@ -1,5 +1,8 @@
 #!/bin/bash
 
+source /common.sh
+hostip=$(get_listen_ip_for_node RABBITMQ)
+listen_string=`echo [{\"${hostip}\", $RABBITMQ_PORT}]`
 # usage: file_env VAR [DEFAULT]
 #    ie: file_env 'XYZ_DB_PASSWORD' 'example'
 # (will allow for "$XYZ_DB_PASSWORD_FILE" to fill in the value of
@@ -12,12 +15,15 @@ RABBITMQ_NODES=${RABBITMQ_NODES:-${CONTROLLER_NODES}}
 IFS=',' read -ra server_list <<< "${RABBITMQ_NODES}"
 rabbit_node_list=''
 for server in ${server_list[@]}; do
-  host -4 $server
+  getent hosts $server
   if [ $? -eq 0 ]; then
-    server_hostname=`host -4 $server |cut -d" " -f5 |awk -F"." '{print $1}'`
-    server_hostname=${server_hostname::-1}
-  else
     server_hostname=`getent hosts $server |awk '{print $2}'| awk -F"." '{print $1}'`
+  else
+    host -4 $server
+    if [ $? -eq 0 ]; then
+      server_hostname=`host -4 $server |cut -d" " -f5 |awk '{print $1}'`
+      server_hostname=${server_hostname::-1}
+    fi
   fi
   rabbit_node_list+="'rabbit@${server_hostname}',"
   if [[ "$local_ips" =~ "$server" ]] ; then
@@ -363,7 +369,7 @@ if [ "$shouldWriteConfig" ]; then
 		)
 	else
 		rabbitConfig+=(
-			"{ tcp_listeners, $(rabbit_array 5672) }"
+			"{ tcp_listeners, ${listen_string} }"
 			"{ ssl_listeners, $(rabbit_array) }"
 		)
 	fi

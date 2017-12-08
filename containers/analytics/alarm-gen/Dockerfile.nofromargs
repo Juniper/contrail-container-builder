@@ -1,0 +1,12 @@
+#ARG CONTRAIL_VERSION=4.1.0.0-6
+#ARG CONTRAIL_REGISTRY=localhost:5000
+FROM 10.87.64.33:5043/contrail-analytics-base:4.1.0.0-8
+
+COPY entrypoint.sh /
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/usr/bin/python","/usr/bin/contrail-alarm-gen","-c","/etc/contrail/contrail-alarm-gen.conf"]
+
+LABEL net.juniper.nodemgr.filter.name=contrail-alarm-gen
+LABEL net.juniper.contrail=config
+LABEL net.juniper.node=controller
