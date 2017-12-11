@@ -1,1 +1,4 @@
 *.log
+.vscode
+Dockerfile.nofromargs
+common.env

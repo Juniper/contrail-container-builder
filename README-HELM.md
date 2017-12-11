@@ -74,6 +74,7 @@ Use default VPC (make sure the ports are open - see below) or configure a new on
 ```
 * Run build:
 ```
+   export TEST_MODE=true
    cd contrail-container-builder/containers
    ./setup-for-build.sh
    sudo -E ./build.sh

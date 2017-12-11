@@ -5,6 +5,7 @@ version=$CONTRAIL_VERSION
 os_version=$OPENSTACK_VERSION
 registry=$CONTRAIL_REGISTRY
 repository=$CONTRAIL_REPOSITORY
+packages_url=$CONTRAIL_INSTALL_PACKAGES_URL
 
 env_dir="${BASH_SOURCE%/*}"
 if [[ ! -d "$env_dir" ]]; then env_dir="$PWD"; fi
@@ -17,8 +18,7 @@ version=${version:-${CONTRAIL_VERSION:-'4.1.0.0-6'}}
 os_version=${os_version:-${OPENSTACK_VERSION:-'newton'}}
 registry=${registry:-${CONTRAIL_REGISTRY:-'auto'}}
 repository=${repository:-${CONTRAIL_REPOSITORY:-'auto'}}
-
-packages_url=${CONTRAIL_INSTALL_PACKAGES_URL:-"https://s3-us-west-2.amazonaws.com/contrailrhel7/contrail-install-packages-$version~$os_version.el7.noarch.rpm"}
+packages_url=${packages_url:-${CONTRAIL_INSTALL_PACKAGES_URL:-"https://s3-us-west-2.amazonaws.com/contrailrhel7/contrail-install-packages-$version~$os_version.el7.noarch.rpm"}}
 
 host_ip=${HOST_IP:-'auto'}
 default_interface=`ip route show | grep "default via" | awk '{print $5}'`

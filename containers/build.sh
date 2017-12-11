@@ -91,5 +91,6 @@ pushd $my_dir
 build_dir $path
 popd
 if [ $was_errors -ne 0 ]; then
-  echo 'Failed to build some containers, see log files'
+  echo 'ERROR: Failed to build some containers, see log files'
+  exit 1
 fi
