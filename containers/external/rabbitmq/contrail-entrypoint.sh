@@ -25,4 +25,4 @@ if (( ${#srv_list[@]} > 1 )); then
   export RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS="-rabbit cluster_nodes $cluster_nodes"
 fi
 
-exec "$@"
+exec /docker-entrypoint.sh "$@"
