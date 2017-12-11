@@ -18,4 +18,4 @@ fi
 # use first two servers as seeds
 export CASSANDRA_SEEDS=$(echo $CASSANDRA_SEEDS | cut -d ',' -f 1,2)
 export CASSANDRA_LISTEN_ADDRESS=$my_ip
-exec /docker-entrypoint.sh
+exec "$@"

@@ -17,4 +17,4 @@ if (( $ord < 1 || $ord > "${#srv_list[@]}" )); then
 fi
 
 export ZOO_MY_ID=$ord
-exec /docker-entrypoint.sh
+exec "$@"
