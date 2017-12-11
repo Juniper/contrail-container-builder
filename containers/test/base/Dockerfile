@@ -13,9 +13,6 @@ RUN yum install -y \
 RUN sudo pip install -U pip
 
 RUN mkdir -p /images
-COPY cirros-0.3.0-x86_64-disk.vmdk.gz /images
-COPY tinycore-in-network-nat.qcow2.gz /images
-COPY tinycore-in-network.qcow2.gz /images
 
 COPY entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]
