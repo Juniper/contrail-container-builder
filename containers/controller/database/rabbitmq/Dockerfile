@@ -1,4 +1,4 @@
-FROM ${CONTRAIL_REGISTRY}/contrail-controller-database-base:${CONTRAIL_VERSION}
+FROM ${CONTRAIL_REGISTRY}/contrail-controller-database-base:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}
 
 ARG RABBITMQ_VERSION=3.6.14-1
 

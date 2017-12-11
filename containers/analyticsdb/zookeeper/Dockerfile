@@ -1,4 +1,4 @@
-FROM ${CONTRAIL_REGISTRY}/contrail-controller-database-base:${CONTRAIL_VERSION}
+FROM ${CONTRAIL_REGISTRY}/contrail-controller-database-base:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}
 
 ENV ZOO_USER=zookeeper \
     ZOO_CONF_DIR=/conf \

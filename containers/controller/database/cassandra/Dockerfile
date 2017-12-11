@@ -1,5 +1,5 @@
 # vim:set ft=dockerfile:
-FROM ${CONTRAIL_REGISTRY}/contrail-controller-database-base:${CONTRAIL_VERSION}
+FROM ${CONTRAIL_REGISTRY}/contrail-controller-database-base:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}
 ARG CASSANDRA_VERSION=311x
 # explicitly set user/group IDs
 RUN groupadd -r cassandra && useradd -r -g cassandra cassandra
