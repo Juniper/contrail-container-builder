@@ -7,8 +7,8 @@ default_ip_address=`ip address show dev $default_interface |head -3 |tail -1 |tr
 local_ips=$(ip addr | awk '/inet/ {print($2)}')
 
 CONFIG="$KAFKA_CONF_DIR/server.properties"
-CONTROLLER_NODES=${CONTROLLER_NODES:-${default_ip_address}}
-ZOOKEEPER_NODES=${ZOOKEEPER_NODES:-${CONTROLLER_NODES}}
+CONFIG_NODES=${CONFIG_NODES:-${default_ip_address}}
+ZOOKEEPER_NODES=${ZOOKEEPER_NODES:-${CONFIG_NODES}}
 KAFKA_NODES=${KAFKA_NODES:-${ANALYTICSDB_NODES:-${default_ip_address}}}
 
 : ${KAFKA_LISTEN_ADDRESS='auto'}
