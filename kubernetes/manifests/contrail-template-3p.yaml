@@ -23,6 +23,7 @@ data:
   WEBUI_NODES: {{ webui_nodes }}
   WEBUI_VIP: {{ webui_vip }}
   ZOOKEEPER_NODES: {{ zookeeper_nodes }}
+  ZOOKEEPER_PORTS: {{ zookeeper_ports }}
 ---
 apiVersion: v1
 kind: ConfigMap
