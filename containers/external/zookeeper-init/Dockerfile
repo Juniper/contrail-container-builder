@@ -1,0 +1,8 @@
+ARG CONTRAIL_VERSION=4.1.0.0-6
+ARG CONTRAIL_REGISTRY=localhost:5000
+FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_VERSION}
+
+COPY entrypoint.sh /
+COPY contrail-entrypoint.sh /
+
+ENTRYPOINT ["/entrypoint.sh"]
