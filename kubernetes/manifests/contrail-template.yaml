@@ -17,7 +17,8 @@ data:
   KAFKA_NODES: {{ kafka_nodes }}
   LOG_LEVEL: {{ log_level }}
   PHYSICAL_INTERFACE: {{ physical_interface }}
-  RABBITMQ_NODES: {{rabbitmq_nodes}}
+  RABBITMQ_NODES: {{ rabbitmq_nodes }}
+  RABBITMQ_NODE_PORT: {{ rabbitmq_node_port }}
   REDIS_NODES: {{ redis_nodes }}
   VROUTER_GATEWAY: {{ vrouter_gateway }}
   WEBUI_NODES: {{ webui_nodes }}
@@ -76,6 +77,14 @@ metadata:
 data:
   KUBERNETES_API_SERVER: {{ kubernetes_api_server }}
   K8S_TOKEN_FILE: "/tmp/serviceaccount/token"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rabbitmq-config
+  namespace: kube-system
+data:
+  RABBITMQ_ERLANG_COOKIE: "47EFF3BB-4786-46E0-A5BB-58455B3C2CB4"
 
 # Starter entrypoint scripts
 # These scripts adds functionality which in fact should've been provided by the containers - some of the features like
@@ -163,7 +172,7 @@ data:
     local_ips=$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}')
     for srv in "${srv_list[@]}"; do
       node_name="node-"$(echo $srv | tr '.' '-')
-      cluster_nodes+="'rabbit@$node_name',"
+      cluster_nodes+="'contrail@$node_name',"
       echo $srv $node_name >> /etc/hosts
       if [[ "$local_ips" =~ "$srv" ]] ; then
         echo "INFO: found '$srv' in local IPs '$local_ips'"
@@ -176,7 +185,7 @@ data:
       echo "ERROR: Cannot find self ips ('$local_ips') in RabbitMQ nodes ('$RABBITMQ_NODES')"
       exit
     fi
-    export RABBITMQ_NODENAME=rabbit@$my_node
+    export RABBITMQ_NODENAME=contrail@$my_node
     if (( ${#srv_list[@]} > 1 )); then
       export RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS="-rabbit cluster_nodes $cluster_nodes"
     fi
@@ -784,11 +793,11 @@ spec:
       - name: rabbitmq
         image: "rabbitmq:3.6.10"
         imagePullPolicy: ""
-        env:
-        - name: RABBITMQ_ERLANG_COOKIE
-          value: "47EFF3BB-4786-46E0-A5BB-58455B3C2CB4"
-        - name: RABBITMQ_NODES
-          value: "{{ rabbitmq_nodes }}"
+        envFrom:
+        - configMapRef:
+            name: env
+        - configMapRef:
+            name: rabbitmq-config
         command: ["/bin/bash", "/opt/contrail/contrail-entrypoint.sh"]
         volumeMounts:
         - mountPath: /var/lib/rabbitmq
