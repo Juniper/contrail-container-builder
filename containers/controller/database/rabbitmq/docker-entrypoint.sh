@@ -3,6 +3,7 @@
 source /common.sh
 hostip=$(get_listen_ip_for_node RABBITMQ)
 listen_string=`echo [{\"${hostip}\", $RABBITMQ_PORT}]`
+export RABBITMQ_NODE_PORT=${RABBITMQ_PORT}
 # usage: file_env VAR [DEFAULT]
 #    ie: file_env 'XYZ_DB_PASSWORD' 'example'
 # (will allow for "$XYZ_DB_PASSWORD_FILE" to fill in the value of
@@ -25,7 +26,7 @@ for server in ${server_list[@]}; do
       server_hostname=${server_hostname::-1}
     fi
   fi
-  rabbit_node_list+="'rabbit@${server_hostname}',"
+  rabbit_node_list+="'contrail@${server_hostname}',"
   if [[ "$local_ips" =~ "$server" ]] ; then
     my_ip=$srv
     my_hostname=$server_hostname
@@ -33,7 +34,7 @@ for server in ${server_list[@]}; do
   fi
 done
 rabbit_node_list=${rabbit_node_list::-1}
-export RABBITMQ_NODENAME=rabbit@${my_hostname}
+export RABBITMQ_NODENAME=contrail@${my_hostname}
 file_env() {
 	local var="$1"
 	local fileVar="${var}_FILE"

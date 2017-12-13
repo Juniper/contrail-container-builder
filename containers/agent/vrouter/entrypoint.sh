@@ -39,6 +39,11 @@ physical_interface_mac = $PHYS_INT_MAC
 introspect_ssl_enable = False
 sandesh_ssl_enable = False
 
+[NETWORKS]
+# control-channel IP address used by WEB-UI to connect to vnswad to fetch
+# required information (Optional)
+control_network_ip=$VROUTER_IP
+
 [DNS]
 servers=${DNS_SERVERS:-`get_server_list CONTROL ":$DNS_SERVER_PORT "`}
 
