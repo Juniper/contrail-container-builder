@@ -29,7 +29,7 @@ redis_uve_list=$REDIS_SERVERS
 
 [CONFIGDB]
 rabbitmq_server_list=$RABBITMQ_NODES
-rabbitmq_port=$RABBITMQ_PORT
+rabbitmq_port=$RABBITMQ_NODE_PORT
 rabbitmq_vhost=$RABBITMQ_VHOST
 rabbitmq_user=$RABBITMQ_USER
 rabbitmq_password=$RABBITMQ_PASSWORD
