@@ -1,0 +1,15 @@
+FROM ${CONTRAIL_REGISTRY}/contrail-analyticsdb-base:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}
+
+ARG KAFKA_RELEASE=2.12
+ARG KAFKA_VERSION=0.11.0.2
+ARG DISTRO_NAME=kafka_$KAFKA_RELEASE-$KAFKA_VERSION
+ENV KAFKA_DIR=/opt/$DISTRO_NAME \
+    KAFKA_CONF_DIR=/opt/$DISTRO_NAME/config
+RUN curl -o kafka_$KAFKA_RELEASE-$KAFKA_VERSION.tgz http://www-us.apache.org/dist/kafka/$KAFKA_VERSION/kafka_$KAFKA_RELEASE-$KAFKA_VERSION.tgz
+RUN tar -xvf kafka_$KAFKA_RELEASE-$KAFKA_VERSION.tgz
+RUN mv kafka_$KAFKA_RELEASE-$KAFKA_VERSION /opt/kafka_$KAFKA_RELEASE-$KAFKA_VERSION
+WORKDIR /opt/kafka_$KAFKA_RELEASE-$KAFKA_VERSION
+
+COPY docker-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["bin/kafka-server-start.sh", "config/server.properties"]

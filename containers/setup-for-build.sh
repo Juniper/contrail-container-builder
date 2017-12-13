@@ -24,7 +24,7 @@ export package_root_dir="/var/www"
 if [[ -n "$CONTRAIL_REPOSITORY" ]]; then
   dir_prefix=$(echo $CONTRAIL_REPOSITORY | awk -F'/' '{print $4}' | sed 's/'$version'$//')
 fi
-export repo_dir="${package_root_dir}/${dir_prefix}${CONTRAIL_VERSION}"
+export repo_dir="${package_root_dir}/${dir_prefix}${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
 if [ -d $repo_dir ]; then
   echo 'Remove existing packages in '$repo_dir
   rm -rf $repo_dir
