@@ -93,18 +93,23 @@ EOM
   fi
 }
 
+function get_cidr_for_nic() {
+  local nic=$1
+  ip address show dev $nic | grep "inet " | awk '{print $2}'
+}
+
 function get_default_nic() {
   ip route show | grep 'default via' | head -n 1 | awk '{print $5}'
 }
 
 function get_default_ip() {
-  local default_interface=$(get_default_nic)
-  ip address show dev $default_interface | head -3 | tail -1 | tr '/' ' ' | awk '{print $2}'
+  local nic=$(get_default_nic)
+  get_cidr_for_nic $nic | awk -F '/' '{print($1)}'
 }
 
 function get_default_gateway_for_nic() {
   local nic=$1
-  ip route show dev $nic | grep default | awk '{print $3}'
+  ip route show dev $nic | grep default | head -n 1 | awk '{print $3}'
 }
 
 function find_my_ip_and_order_for_node() {
@@ -145,6 +150,15 @@ function get_order_for_node() {
     order=1
   fi
   echo $order
+}
+
+function get_vrouter_nic() {
+  echo ${PHYSICAL_INTERFACE:-${DEFAULT_IFACE}}
+}
+
+function get_vrouter_mac() {
+  local nic=$(get_vrouter_nic)
+  cat /sys/class/net/${nic}/address
 }
 
 function provision() {

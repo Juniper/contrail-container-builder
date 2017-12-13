@@ -2,7 +2,7 @@ ARG CONTRAIL_VERSION=4.1.0.0-6
 ARG CONTRAIL_REGISTRY=localhost:5000
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_VERSION}
 
-RUN yum install -y contrail-vrouter-agent contrail-vrouter contrail-vrouter-init && \
+RUN yum install -y contrail-vrouter-agent && \
     yum clean all && \
     rm -rf /var/cache/yum && \
     ldconfig

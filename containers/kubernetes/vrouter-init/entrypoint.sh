@@ -2,15 +2,6 @@
 
 source /common.sh
 
-# TODO: Rework determining vrouter ip. Should commonize it with agent's container
-PHYS_INT=${PHYSICAL_INTERFACE:-${DEFAULT_IFACE}}
-CUR_INT=$PHYS_INT
-if [[ `ip address show vhost0 |grep "inet "` ]]; then
-  CUR_INT=vhost0
-fi
-VROUTER_CIDR=`ip address show ${CUR_INT} |grep "inet "|awk '{print $2}'`
-cur_ip=${VROUTER_CIDR%/*}
-VROUTER_IP=${VROUTER_IP:-$cur_ip}
 VROUTER_PORT=${VROUTER_PORT:-9091}
 
 trap cleanup SIGHUP SIGINT SIGTERM
@@ -29,11 +20,14 @@ mkdir -p /var/lib/contrail/ports/vm
 cp /usr/bin/contrail-k8s-cni /host/opt_cni_bin
 chmod 0755 /host/opt_cni_bin/contrail-k8s-cni
 
-read -r -d '' contrail_cni_conf << EOM
+# Prepare config for CNI plugin
+# Note: Uses 127.0.0.1 as VROUTER_IP because it is always run on
+# the node with vrouter agent
+cat << EOM > /host/etc_cni/net.d/10-contrail.conf
 {
     "cniVersion": "0.2.0",
     "contrail" : {
-        "vrouter-ip"    : "$VROUTER_IP",
+        "vrouter-ip"    : "127.0.0.1",
         "vrouter-port"  : $VROUTER_PORT,
         "config-dir"    : "/var/lib/contrail/ports/vm",
         "poll-timeout"  : 5,
@@ -46,7 +40,5 @@ read -r -d '' contrail_cni_conf << EOM
     "type": "contrail-k8s-cni"
 }
 EOM
-
-echo "$contrail_cni_conf" > /host/etc_cni/net.d/10-contrail.conf
 
 exec "$@"

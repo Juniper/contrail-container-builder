@@ -815,6 +815,14 @@ spec:
       automountServiceAccountToken: false
       hostNetwork: true
       initContainers:
+      - name: contrail-agent-vrouter-init-kernel
+        image: "{{registry}}/contrail-agent-vrouter-init-kernel:{{version}}"
+        imagePullPolicy: ""
+        securityContext:
+          privileged: true
+        envFrom:
+        - configMapRef:
+            name: env
       - name: contrail-kubernetes-vrouter-init
         image: "{{registry}}/contrail-kubernetes-vrouter-init:{{version}}"
         imagePullPolicy: ""
@@ -828,7 +836,7 @@ spec:
           name: etc-cni
         - mountPath: /host/opt_cni_bin
           name: opt-cni-bin
-        - mountPath: /var/log/contrail/cni
+        - mountPath: /host/log_cni
           name: var-log-contrail-cni
         - mountPath: /var/log/contrail
           name: agent-logs
@@ -836,6 +844,10 @@ spec:
       - name: contrail-agent
         image: "{{registry}}/contrail-agent-vrouter:{{version}}"
         imagePullPolicy: ""
+        # TODO: Priveleged mode is requied because w/o it the device /dev/net/tun
+        # is not present in the container. The mounting it into container
+        # doesnt help because of permissions are not enough syscalls,
+        # e.g. https://github.com/Juniper/contrail-controller/blob/master/src/vnsw/agent/contrail/linux/pkt0_interface.cc: 48.
         securityContext:
           privileged: true
         envFrom:
@@ -852,13 +864,6 @@ spec:
           name: var-lib-contrail
         - mountPath: /var/crashes
           name: var-crashes
-        - mountPath: /host/etc_cni
-          name: etc-cni
-        - mountPath: /host/opt_cni_bin
-          name: opt-cni-bin
-        # This is a workaround just to make sure the directory is created on host
-        - mountPath: /var/log/contrail/cni
-          name: var-log-contrail-cni
         - mountPath: /tmp/serviceaccount
           name: pod-secret
       - name: contrail-agent-nodemgr
