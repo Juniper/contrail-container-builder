@@ -2,32 +2,36 @@
 
 source /common.sh
 
-PHYS_INT=$(get_vrouter_nic)
-PHYS_INT_MAC=$(get_vrouter_mac)
-if [[ -z "$PHYS_INT_MAC" ]] ; then
-    echo "ERROR: failed to read MAC for NIC '${PHYS_INT}'"
+HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'kvm'}
+VROUTER_HOSTNAME=${VROUTER_HOSTNAME:-${DEFAULT_HOSTNAME}}
+VROUTER_GATEWAY=${VROUTER_GATEWAY:-`get_default_gateway_for_nic vhost0`}
+
+phys_int=$(get_vrouter_nic)
+phys_int_mac=$(get_vrouter_mac)
+if [[ -z "$phys_int_mac" ]] ; then
+    echo "ERROR: failed to read MAC for NIC '${phys_int}'"
     exit -1
 fi
-echo "INFO: Physical interface: $PHYS_INT, mac=$PHYS_INT_MAC"
+echo "INFO: Physical interface: $phys_int, mac=$phys_int_mac"
 
 # It is expected that vhost0 is up and running here
-VROUTER_CIDR=$(get_cidr_for_nic vhost0)
-if [[ -z "$VROUTER_CIDR" ]] ; then
+vrouter_cidr=$(get_cidr_for_nic vhost0)
+if [[ -z "$vrouter_cidr" ]] ; then
     echo "ERROR: vhost0 interface is down or has no assigned IP"
     exit -1
 fi
+vrouter_ip=${vrouter_cidr%/*}
 
 # It is expected that default gateway is known here
-VROUTER_GATEWAY=${VROUTER_GATEWAY:-`get_default_gateway_for_nic vhost0`}
 if [[ -z "$VROUTER_GATEWAY" ]] ; then
     echo "ERROR: VROUTER_GATEWAY is empty or there is no default route for vhost0"
     exit -1
 fi
 
-echo "INFO: vhost0 cidr $VROUTER_CIDR, gateway $VROUTER_GATEWAY"
+echo "INFO: vhost0 cidr $vrouter_cidr, gateway $VROUTER_GATEWAY"
 
-HYPERVISOR_TYPE="${HYPERVISOR_TYPE:-kvm}"
 mkdir -p -m 777 /var/crashes
+
 
 # Prepare agent configs
 echo "INFO: Preparing /etc/contrail/contrail-vrouter-agent.conf"
@@ -43,11 +47,16 @@ log_local=${VROUTER_LOG_LOCAL:-$LOG_LOCAL}
 
 xmpp_dns_auth_enable = False
 xmpp_auth_enable = False
-physical_interface_mac = $PHYS_INT_MAC
+physical_interface_mac = $phys_int_mac
 
 [SANDESH]
 introspect_ssl_enable = False
 sandesh_ssl_enable = False
+
+[NETWORKS]
+# control-channel IP address used by WEB-UI to connect to vnswad to fetch
+# required information (Optional)
+control_network_ip=$vrouter_ip
 
 [DNS]
 servers=${DNS_SERVERS:-`get_server_list CONTROL ":$DNS_SERVER_PORT "`}
@@ -57,8 +66,8 @@ metadata_proxy_secret=contrail
 
 [VIRTUAL-HOST-INTERFACE]
 name=vhost0
-ip=$VROUTER_CIDR
-physical_interface=$PHYS_INT
+ip=$vrouter_cidr
+physical_interface=$phys_int
 gateway=$VROUTER_GATEWAY
 
 [SERVICE-INSTANCE]
@@ -72,12 +81,10 @@ EOM
 set_vnc_api_lib_ini
 
 # Prepare default_pmac
-echo $PHYS_INT_MAC > /etc/contrail/default_pmac
+echo $phys_int_mac > /etc/contrail/default_pmac
 
 wait_for_contrail_api
 
-vrouter_ip=${VROUTER_CIDR%/*}
-vrouter_name=${VROUTER_HOSTNAME:-${DEFAULT_HOSTNAME}}
-provision_node provision_vrouter.py $vrouter_ip $vrouter_name
+provision_node provision_vrouter.py $vrouter_ip $VROUTER_HOSTNAME
 
 exec "$@"
