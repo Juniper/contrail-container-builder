@@ -1,0 +1,26 @@
+FROM 10.87.64.33:5043/contrail-controller-database-base:4.1.0.0-8-ocata
+
+ARG RABBITMQ_VERSION=3.6.14-1
+
+RUN rpm --import https://www.rabbitmq.com/rabbitmq-release-signing-key.asc
+RUN yum install -y yum-plugin-priorities \
+    erlang \
+    https://dl.bintray.com/rabbitmq/rabbitmq-server-rpm/rabbitmq-server-$RABBITMQ_VERSION.el7.noarch.rpm \
+    bind-utils \
+    && yum clean all
+
+ENV PATH /usr/lib/rabbitmq/bin:$PATH
+ENV HOME /var/lib/rabbitmq
+
+RUN mkdir -p /var/lib/rabbitmq /etc/rabbitmq \
+    && chown -R rabbitmq:rabbitmq /var/lib/rabbitmq /etc/rabbitmq \
+    && chmod -R 777 /var/lib/rabbitmq /etc/rabbitmq
+VOLUME /var/lib/rabbitmq
+
+RUN ln -sf /var/lib/rabbitmq/.erlang.cookie /root/
+RUN ln -sf /usr/lib/rabbitmq/lib/rabbitmq_server-$RABBITMQ_VERSION/plugins /plugins
+
+
+COPY docker-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["/usr/lib/rabbitmq/bin/rabbitmq-server"]

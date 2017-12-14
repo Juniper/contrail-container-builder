@@ -1,0 +1,14 @@
+#ARG CONTRAIL_VERSION=4.1.0.0-6
+#ARG CONTRAIL_REGISTRY=localhost:5000
+FROM 10.87.64.33:5043/contrail-analytics-base:4.1.0.0-8-ocata
+
+COPY entrypoint.sh /
+
+RUN echo hallo
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/usr/bin/python","/usr/bin/contrail-analytics-api","-c","/etc/contrail/contrail-analytics-api.conf","-c","/etc/contrail/contrail-keystone-auth.conf"]
+
+LABEL net.juniper.nodemgr.filter.name=contrail-analytics-api
+LABEL net.juniper.contrail=config
+LABEL net.juniper.node=controller

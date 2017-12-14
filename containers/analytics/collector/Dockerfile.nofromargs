@@ -1,0 +1,12 @@
+#ARG CONTRAIL_VERSION=4.1.0.0-6
+#ARG CONTRAIL_REGISTRY=localhost:5000
+FROM 10.87.64.33:5043/contrail-analytics-base:4.1.0.0-8-ocata
+
+COPY entrypoint.sh /
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/usr/bin/contrail-collector"]
+
+LABEL net.juniper.nodemgr.filter.name=contrail-collector
+LABEL net.juniper.contrail=config
+LABEL net.juniper.node=controller

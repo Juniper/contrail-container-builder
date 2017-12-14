@@ -40,8 +40,6 @@ introspect_ssl_enable = False
 sandesh_ssl_enable = False
 
 [NETWORKS]
-# control-channel IP address used by WEB-UI to connect to vnswad to fetch
-# required information (Optional)
 control_network_ip=$VROUTER_IP
 
 [DNS]
