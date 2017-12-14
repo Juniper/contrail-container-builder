@@ -49,6 +49,10 @@ analytics_api_vip=${ANALYTICS_API_VIP}
 config_api_vip=${CONFIG_API_VIP}
 webui_vip=${WEBUI_VIP}
 
+aaa_mode=${AAA_MODE}
+auth_mode=${AUTH_MODE}
+cloud_orchestrator=${CLOUD_ORCHESTRATOR}
+
 default_registry_ip=${_CONTRAIL_REGISTRY_IP:-$host_ip}
 
 if [ $registry == 'auto' ]; then

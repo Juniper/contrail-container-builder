@@ -5,9 +5,9 @@ DEFAULT_LOCAL_IP=`ip addr | grep $DEFAULT_IFACE | grep 'inet ' | awk '{print $2}
 DEFAULT_HOSTNAME=`uname -n`
 
 CLOUD_ORCHESTRATOR=${CLOUD_ORCHESTRATOR:-none}
-AAA_MODE=${AAA_MODE:-no-auth}
-AUTH_MODE='noauth'
-if [[ $CLOUD_ORCHESTRATOR == 'openstack' && $AAA_MODE != 'no-auth' ]] ; then
+AAA_MODE=${AAA_MODE:-'no-auth'}
+AUTH_MODE=${AUTH_MODE:-'noauth'}
+if [[ $CLOUD_ORCHESTRATOR == 'openstack' ]] ; then
   AUTH_MODE='keystone'
 fi
 
