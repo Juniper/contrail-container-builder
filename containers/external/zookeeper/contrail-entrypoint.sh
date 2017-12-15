@@ -28,6 +28,8 @@ if [[ "$zoo_servers" != '' ]] ; then
   export ZOO_SERVERS=${zoo_servers::-1}
 fi
 
+
+export ZOO_PORT=${ZOOKEEPER_PORT}
 export ZOO_MY_ID=$my_ord
 
 echo "INFO: ZOO_MY_ID=$ZOO_MY_ID"

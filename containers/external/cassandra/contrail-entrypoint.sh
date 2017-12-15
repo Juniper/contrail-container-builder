@@ -19,6 +19,13 @@ fi
 export CASSANDRA_SEEDS=$(echo $CASSANDRA_SEEDS | cut -d ',' -f 1,2)
 export CASSANDRA_LISTEN_ADDRESS=$my_ip
 
+export JVM_EXTRA_OPTS="-Dcassandra.rpc_port=${CASSANDRA_PORT:-9160} \
+  -Dcassandra.native_transport_port=${CASSANDRA_CQL_PORT:-9042} \
+  -Dcassandra.ssl_storage_port=${CASSANDRA_SSL_STORAGE_PORT:-7011} \
+  -Dcassandra.storage_port=${CASSANDRA_STORAGE_PORT:-7010} \
+  -Dcassandra.jmx.local.port=${CASSANDRA_JMX_LOCAL_PORT:-7200} \
+  -Xms1g -Xmx2g"
+
 echo "INFO: CASSANDRA_SEEDS=$CASSANDRA_SEEDS CASSANDRA_LISTEN_ADDRESS=$CASSANDRA_LISTEN_ADDRESS"
 echo "INFO: exec /docker-entrypoint.sh $@"
 
