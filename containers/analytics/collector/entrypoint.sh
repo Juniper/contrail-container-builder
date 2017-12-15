@@ -28,7 +28,7 @@ log_local=${COLLECTOR_LOG_LOCAL:-$LOG_LOCAL}
 # sandesh_send_rate_limit=
 cassandra_server_list=$ANALYTICSDB_CQL_SERVERS
 kafka_broker_list=$KAFKA_SERVERS
-zookeeper_server_list=$ZOOKEEPER_SERVERS
+zookeeper_server_list=$ZOOKEEPER_ANALYTICS_SERVERS
 
 [COLLECTOR]
 port=${COLLECTOR_LISTEN_PORT:-$COLLECTOR_PORT}

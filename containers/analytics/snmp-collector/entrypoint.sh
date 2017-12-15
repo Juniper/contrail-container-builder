@@ -14,7 +14,7 @@ log_local=${SNMPCOLLECTOR_LOG_LOCAL:-$LOG_LOCAL}
 log_level=${SNMPCOLLECTOR_LOG_LEVEL:-$LOG_LEVEL}
 log_file=${SNMPCOLLECTOR_LOG_FILE:-"$LOG_DIR/contrail-snmp-collector.log"}
 collectors=$COLLECTOR_SERVERS
-zookeeper=$ZOOKEEPER_SERVERS
+zookeeper=$ZOOKEEPER_ANALYTICS_SERVERS
 
 [API_SERVER]
 api_server_list=$CONFIG_SERVERS
