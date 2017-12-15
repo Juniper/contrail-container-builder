@@ -64,7 +64,7 @@ if [ $registry == 'auto' ]; then
   registry=$default_registry_ip':5000'
 fi
 if [ $repository == 'auto' ]; then
-  repository='http://'$default_registry_ip'/'$version
+  repository='http://'$default_registry_ip'/'$version-$os_version
 fi
 
 kubernetes_api_server=${KUBERNETES_API_SERVER:-$host_ip}
