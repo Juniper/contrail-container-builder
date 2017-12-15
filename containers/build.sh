@@ -42,12 +42,12 @@ build_container () {
       -e 's/\(^ARG OPENSTACK_SUBVERSION=.*\)/#\1/' \
       -e "s/\$OPENSTACK_VERSION/$os_version/g" \
       -e "s/\$OPENSTACK_SUBVERSION/$os_subversion/g" \
-      -e 's|^FROM ${CONTRAIL_REGISTRY}/\([^:]*\):${CONTRAIL_VERSION}|FROM '$registry'/\1:'$version-$os_version'|' \
+      -e 's|^FROM ${CONTRAIL_REGISTRY}/\([^:]*\):${CONTRAIL_VERSION}-${OPENSTACK_VERSION}|FROM '${registry}'/\1:'${version}-${os_version}'|' \
       > $dir/Dockerfile.nofromargs
     int_opts="-f $dir/Dockerfile.nofromargs"
   fi
   local logfile='build-'$container_name'.log'
-    docker build -t ${registry}'/'${container_name}:${version}-${os_version} \
+  docker build -t ${registry}'/'${container_name}:${version}-${os_version} \
     --build-arg CONTRAIL_VERSION=${version} \
     --build-arg OPENSTACK_VERSION=${os_version} \
     --build-arg OPENSTACK_SUBVERSION=${os_subversion} \
