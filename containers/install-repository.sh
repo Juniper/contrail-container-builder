@@ -1,5 +1,12 @@
 #!/bin/bash -e
 
+# Internal script. Prepares RPM repository.
+# If $PACKAGES_URL is started from URL then it's downloaded to temporary dir.
+# If extension of file pointed by $PACKAGES_URL is rpm then it's treated as
+# package with .tgz file inside (structure of rpm package equals to Junper's one)
+# Then .tgz archive is unpacked by script to specific folder in /var/www/ directory.
+# In the specific folder repodata is built by the script.
+
 paths_to_remove=""
 
 if [[ "$PACKAGES_URL" =~ http[s]*:// ]] ; then
