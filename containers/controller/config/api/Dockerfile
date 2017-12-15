@@ -1,6 +1,7 @@
 ARG CONTRAIL_VERSION=4.1.0.0-6
 ARG CONTRAIL_REGISTRY=localhost:5000
-FROM ${CONTRAIL_REGISTRY}/contrail-controller-config-base:${CONTRAIL_VERSION}
+ARG OPENSTACK_VERSION=newton
+FROM ${CONTRAIL_REGISTRY}/contrail-controller-config-base:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}
 
 RUN yum install -y python-neutron-lib && \
     yum clean all -y && \

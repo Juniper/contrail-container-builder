@@ -2,3 +2,4 @@
 .vscode
 Dockerfile.nofromargs
 common.env
+my-contrail.yaml

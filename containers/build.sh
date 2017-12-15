@@ -15,16 +15,12 @@ opts="$@"
 
 echo 'Contrail version: '$version
 echo 'OpenStack version: '$os_version
+echo 'OpenStack subversion (minor package version): '$os_subversion
 echo 'Contrail registry: '$registry
 echo 'Contrail repository: '$repository
 if [ -n "$opts" ]; then
   echo 'Options: '$opts
 fi
-
-# TODO: rework or remove this
-declare -A os_subversions
-os_subversions=([newton]=5 [ocata]=3)
-export os_subversion="${os_subversions[$os_version]}"
 
 linux=$(awk -F"=" '/^ID=/{print $2}' /etc/os-release | tr -d '"')
 was_errors=0

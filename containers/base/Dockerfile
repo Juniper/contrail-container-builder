@@ -2,7 +2,7 @@ FROM centos:7.4.1708
 
 ARG REPOSITORY=http://10.0.2.15/contrail
 ARG OPENSTACK_VERSION=newton
-ARG OPENSTACK_SUBVERSION=3
+ARG OPENSTACK_SUBVERSION=5
 RUN printf "[contrail] \nname = Contrail repo \nbaseurl = $REPOSITORY \nenabled = 1 \ngpgcheck = 0\n" >> /etc/yum.repos.d/contrail.repo \
   && echo "export TERM=xterm" >> ~/.bashrc
 

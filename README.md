@@ -119,4 +119,7 @@ Please refer to the README-HELM.md
 40. Standardize configuration variables across all components in the system.
 41. Add provision-alarm.py (https://bugs.launchpad.net/juniperopenstack/+bug/1736279)
 42. Allow to configure JVM mem options for cassandra in contrail-template.yaml
+43. Try to remove code-duplication in starter scripts and init containers and own containers for rabbit, zookeeper, cassandra.
+44. Avoid changing /etc/hosts file (rabbitmq).
+
 

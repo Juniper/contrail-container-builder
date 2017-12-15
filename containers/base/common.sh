@@ -106,6 +106,7 @@ if [[ "$AUTH_MODE" == 'keystone' ]] ; then
 fi
 
 source /functions.sh
+source /contrail-functions.sh
 
 CONFIG_SERVERS=${CONFIG_SERVERS:-`get_server_list CONFIG ":$CONFIG_API_PORT "`}
 CONFIGDB_SERVERS=${CONFIGDB_SERVERS:-`get_server_list CONFIGDB ":$CONFIGDB_PORT "`}
