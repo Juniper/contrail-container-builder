@@ -15,16 +15,12 @@ opts="$@"
 
 echo 'Contrail version: '$version
 echo 'OpenStack version: '$os_version
+echo 'OpenStack subversion (minor package version): '$os_subversion
 echo 'Contrail registry: '$registry
 echo 'Contrail repository: '$repository
 if [ -n "$opts" ]; then
   echo 'Options: '$opts
 fi
-
-# TODO: rework or remove this
-declare -A os_subversions
-os_subversions=([newton]=5 [ocata]=3)
-export os_subversion="${os_subversions[$os_version]}"
 
 linux=$(awk -F"=" '/^ID=/{print $2}' /etc/os-release | tr -d '"')
 was_errors=0
@@ -42,12 +38,12 @@ build_container () {
       -e 's/\(^ARG OPENSTACK_SUBVERSION=.*\)/#\1/' \
       -e "s/\$OPENSTACK_VERSION/$os_version/g" \
       -e "s/\$OPENSTACK_SUBVERSION/$os_subversion/g" \
-      -e 's|^FROM ${CONTRAIL_REGISTRY}/\([^:]*\):${CONTRAIL_VERSION}|FROM '$registry'/\1:'$version'|' \
+      -e 's|^FROM ${CONTRAIL_REGISTRY}/\([^:]*\):${CONTRAIL_VERSION}-${OPENSTACK_VERSION}|FROM '${registry}'/\1:'${version}-${os_version}'|' \
       > $dir/Dockerfile.nofromargs
     int_opts="-f $dir/Dockerfile.nofromargs"
   fi
   local logfile='build-'$container_name'.log'
-  docker build -t ${registry}'/'${container_name}:${version} \
+  docker build -t ${registry}'/'${container_name}:${version}-${os_version} \
     --build-arg CONTRAIL_VERSION=${version} \
     --build-arg OPENSTACK_VERSION=${os_version} \
     --build-arg OPENSTACK_SUBVERSION=${os_subversion} \
@@ -55,7 +51,7 @@ build_container () {
     --build-arg REPOSITORY=${repository} \
     ${int_opts} ${opts} $dir |& tee $logfile
   if [ ${PIPESTATUS[0]} -eq 0 ]; then
-    docker push ${registry}'/'${container_name}:${version} |& tee -a $logfile
+    docker push ${registry}'/'${container_name}:${version}-${os_version} |& tee -a $logfile
     if [ ${PIPESTATUS[0]} -eq 0 ]; then
       rm $logfile
     fi
