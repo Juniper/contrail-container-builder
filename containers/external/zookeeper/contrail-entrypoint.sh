@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
 ord=1
+my_ord=0
 IFS=',' read -ra srv_list <<< "$ZOOKEEPER_NODES"
 local_ips=$(ip addr | awk '/inet/ {print($2)}')
 zoo_servers=''
@@ -8,17 +9,14 @@ for srv in "${srv_list[@]}"; do
   if [[ -z "$ZOO_SERVERS" && -n "$ZOOKEEPER_PORTS" ]] ; then
     zoo_servers+="server.${ord}=${srv}:${ZOOKEEPER_PORTS} "
   fi
-  ord=$((ord+1))
-done
-for srv in "${srv_list[@]}"; do
   if [[ "$local_ips" =~ "$srv" ]] ; then
     echo "INFO: found '$srv' in local IPs '$local_ips'"
-    my_ip=$srv
-    break
+    my_ord=$ord
   fi
+  ord=$((ord+1))
 done
 
-if [ -z "$my_ip" ]; then
+if (( $my_ord < 1 || $my_ord > "${#srv_list[@]}" )); then
   echo "ERROR: Cannot find self ips ('$local_ips') in Zookeeper nodes ('$ZOOKEEPER_NODES')"
   exit
 fi
@@ -29,8 +27,8 @@ fi
 if [[ "$zoo_servers" != '' ]] ; then
   export ZOO_SERVERS=${zoo_servers::-1}
 fi
-export ZOO_PORT=${ZOOKEEPER_PORT}
-export ZOO_MY_ID=$ord
+
+export ZOO_MY_ID=$my_ord
 
 echo "INFO: ZOO_MY_ID=$ZOO_MY_ID"
 echo "INFO: ZOO_SERVERS=$ZOO_SERVERS"
