@@ -67,6 +67,7 @@ name=vhost0
 ip=$vrouter_cidr
 physical_interface=$phys_int
 gateway=$VROUTER_GATEWAY
+compute_node_address=$vrouter_ip
 
 [SERVICE-INSTANCE]
 netns_command=/usr/bin/opencontrail-vrouter-netns
