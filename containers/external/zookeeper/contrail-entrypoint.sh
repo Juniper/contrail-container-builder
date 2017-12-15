@@ -8,11 +8,13 @@ for srv in "${srv_list[@]}"; do
   if [[ -z "$ZOO_SERVERS" && -n "$ZOOKEEPER_PORTS" ]] ; then
     zoo_servers+="server.${ord}=${srv}:${ZOOKEEPER_PORTS} "
   fi
+  ord=$((ord+1))
+done
+for srv in "${srv_list[@]}"; do
   if [[ "$local_ips" =~ "$srv" ]] ; then
     echo "INFO: found '$srv' in local IPs '$local_ips'"
     break
   fi
-  ord=$((ord+1))
 done
 
 if (( $ord < 1 || $ord > "${#srv_list[@]}" )); then
@@ -26,7 +28,7 @@ fi
 if [[ "$zoo_servers" != '' ]] ; then
   export ZOO_SERVERS=${zoo_servers::-1}
 fi
-
+export ZOO_PORT=${ZOOKEEPER_PORT}
 export ZOO_MY_ID=$ord
 
 echo "INFO: ZOO_MY_ID=$ZOO_MY_ID"

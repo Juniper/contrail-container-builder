@@ -10,6 +10,7 @@ CONFIG="$KAFKA_CONF_DIR/server.properties"
 CONFIG_NODES=${CONFIG_NODES:-${default_ip_address}}
 ZOOKEEPER_NODES=${ZOOKEEPER_NODES:-${CONFIG_NODES}}
 KAFKA_NODES=${KAFKA_NODES:-${ANALYTICSDB_NODES:-${default_ip_address}}}
+ZOOKEEPER_ANALYTICS_PORT=${ZOOKEEPER_ANALYTICS_PORT:-2182}
 
 : ${KAFKA_LISTEN_ADDRESS='auto'}
 my_index=1
@@ -36,8 +37,8 @@ zk_server_list=''
 # zk_chroot_list=''
 IFS=',' read -ra server_list <<< "${ZOOKEEPER_NODES}"
 for server in "${server_list[@]}"; do
-  zk_server_list+=${server}:2181,
-  # zk_chroot_list+=${server}:2181/kafka-root,
+  zk_server_list+=${server}:${ZOOKEEPER_ANALYTICS_PORT},
+  # zk_chroot_list+=${server}:${ZOOKEEPER_ANALYTICS_PORT}/kafka-root,
 done
 
 # bin/zookeeper-shell.sh "${zk_server_list::-1}" <<< "create /kafka-root []"
