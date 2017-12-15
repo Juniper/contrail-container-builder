@@ -24,7 +24,10 @@ export PACKAGES_URL=$packages_url
 export package_root_dir="/var/www"
 
 # TODO: do not download/install rpm repository if CONTRAIL_REPOSITORY is defined.
-export repo_dir="${package_root_dir}/${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+if [[ -n "$CONTRAIL_REPOSITORY" ]]; then
+  dir_prefix=$(echo $CONTRAIL_REPOSITORY | awk -F'/' '{print $4}' | sed 's/'$version-$os_version'$//')
+fi
+export repo_dir="${package_root_dir}/${dir_prefix}${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
 if [ -d $repo_dir ]; then
   echo 'Remove existing packages in '$repo_dir
   rm -rf $repo_dir
