@@ -47,8 +47,11 @@ vrouter_gateway=${VROUTER_GATEWAY:-${default_gateway}}
 rabbitmq_nodes=${RABBITMQ_NODES:-$config_nodes}
 redis_nodes=${REDIS_NODES:-$analytics_nodes}
 webui_nodes=${WEBUI_NODES:-$config_nodes}
+zookeeper_analytics_port=${ZOOKEEPER_ANALYTICS_PORT}
 zookeeper_nodes=${ZOOKEEPER_NODES:-$config_nodes}
-zookeeper_ports=${ZOOKEEPER_PORTS:-''}
+zookeeper_port=${ZOOKEEPER_PORT}
+zookeeper_ports=${ZOOKEEPER_PORTS}
+
 
 analytics_api_vip=${ANALYTICS_API_VIP}
 config_api_vip=${CONFIG_API_VIP}
