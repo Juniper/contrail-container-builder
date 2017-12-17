@@ -28,7 +28,7 @@ data:
   WEBUI_VIP: {{ webui_vip }}
   ZOOKEEPER_ANALYTICS_PORT: {{ zookeeper_analytics_port }}
   ZOOKEEPER_NODES: {{ zookeeper_nodes }}
-  ZOOKEEPER_PORT: {  zookeeper_port }}
+  ZOOKEEPER_PORT: {{ zookeeper_port }}
   ZOOKEEPER_PORTS: {{ zookeeper_ports }}
 ---
 apiVersion: v1
