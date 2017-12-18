@@ -6,8 +6,13 @@ echo "INFO: ip address show:"
 ip address show
 
 
-phys_int=$(get_vrouter_nic)
-phys_int_mac=$(get_vrouter_mac)
+if [[ -e /sys/class/net/vhost0 ]];then
+  vhost0_mac=`cat /sys/class/net/vhost0/address`
+  phys_int=`vif --list |grep "Type:Physical HWaddr:${vhost0_mac}" -B1 |head -1 |awk '{print $3}'`
+  phys_int_mac=`cat /sys/class/net/${phys_int}/address`
+fi
+phys_int=${phys_int:-$(get_vrouter_nic)}
+phys_int_mac=${phys_int_mac:-$(get_vrouter_mac)}
 if [[ -z "$phys_int_mac" ]] ; then
     echo "ERROR: failed to read MAC for NIC '${phys_int}'"
     exit -1
@@ -78,7 +83,30 @@ if ! lsmod | grep -q vrouter; then
         exit 1
     fi
 else
-    echo "INFO: vrouter.ko already loaded in the system"
+    echo "INFO: vrouter.ko already loaded in the system trying to unload"
+    if [[ ! `ps -efa |grep /usr/bin/contrail-vrouter-agent |grep -v grep` && -n ${vhost0_mac} ]];then
+      ip link delete vhost0
+      echo "INFO: deleted vhost0:"
+      ip link sh
+      rmmod vrouter
+      echo "INFO: deleted vrouter kernel module:"
+      lsmod |grep vrouter
+      insmod $modfile
+      echo "INFO: inserted vrouter kernel module:"
+      lsmod |grep vrouter
+      if ! lsmod | grep -q vrouter ; then
+        echo "ERROR: Failed to insert vrouter kernel module"
+        exit 1
+      fi
+      insert_vrouter
+      ip address add $vrouter_cidr dev vhost0
+      if [[ $VROUTER_GATEWAY ]]; then
+        echo "INFO: set default gateway"
+        ip route add default via $VROUTER_GATEWAY
+      else
+        echo "WARNING: no default gateway"
+      fi
+    fi
 fi
 
 if [[ "$cur_int" != "vhost0" ]] ; then

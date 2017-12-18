@@ -6,8 +6,13 @@ HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'kvm'}
 VROUTER_HOSTNAME=${VROUTER_HOSTNAME:-${DEFAULT_HOSTNAME}}
 VROUTER_GATEWAY=${VROUTER_GATEWAY:-`get_default_gateway_for_nic vhost0`}
 
-phys_int=$(get_vrouter_nic)
-phys_int_mac=$(get_vrouter_mac)
+if [[ -e /sys/class/net/vhost0 ]];then
+  vhost0_mac=`cat /sys/class/net/vhost0/address`
+  phys_int=`vif --list |grep "Type:Physical HWaddr:${vhost0_mac}" -B1 |head -1 |awk '{print $3}'`
+  phys_int_mac=`cat /sys/class/net/${phys_int}/address`
+fi
+phys_int=${phys_int:-$(get_vrouter_nic)}
+phys_int_mac=${phys_int_mac:-$(get_vrouter_mac)}
 if [[ -z "$phys_int_mac" ]] ; then
     echo "ERROR: failed to read MAC for NIC '${phys_int}'"
     exit -1
