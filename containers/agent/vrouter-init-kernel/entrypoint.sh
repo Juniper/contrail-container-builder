@@ -5,7 +5,6 @@ source /common.sh
 echo "INFO: ip address show:"
 ip address show
 
-VROUTER_GATEWAY=${VROUTER_GATEWAY:-`get_default_gateway_for_nic $cur_int`}
 
 phys_int=$(get_vrouter_nic)
 phys_int_mac=$(get_vrouter_mac)
@@ -27,7 +26,7 @@ if [[ -z "$vrouter_cidr" ]] ; then
     exit -2
 fi
 
-
+VROUTER_GATEWAY=${VROUTER_GATEWAY:-`get_default_gateway_for_nic $cur_int`}
 echo "INFO: nic $cur_int, cidr $vrouter_cidr, gateway $VROUTER_GATEWAY"
 
 # VRouter specific code starts here

@@ -54,8 +54,6 @@ introspect_ssl_enable = False
 sandesh_ssl_enable = False
 
 [NETWORKS]
-# control-channel IP address used by WEB-UI to connect to vnswad to fetch
-# required information (Optional)
 control_network_ip=$vrouter_ip
 
 [DNS]
@@ -69,6 +67,7 @@ name=vhost0
 ip=$vrouter_cidr
 physical_interface=$phys_int
 gateway=$VROUTER_GATEWAY
+compute_node_address=$vrouter_ip
 
 [SERVICE-INSTANCE]
 netns_command=/usr/bin/opencontrail-vrouter-netns

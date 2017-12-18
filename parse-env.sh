@@ -20,6 +20,11 @@ registry=${registry:-${CONTRAIL_REGISTRY:-'auto'}}
 repository=${repository:-${CONTRAIL_REPOSITORY:-'auto'}}
 packages_url=${packages_url:-${CONTRAIL_INSTALL_PACKAGES_URL:-"https://s3-us-west-2.amazonaws.com/contrailrhel7/contrail-install-packages-$version~$os_version.el7.noarch.rpm"}}
 
+# Calculate OS subversion (minor package version)
+declare -A os_subversions
+os_subversions=([newton]=5 [ocata]=3)
+os_subversion="${os_subversions[$os_version]}"
+
 host_ip=${HOST_IP:-'auto'}
 default_interface=`ip route show | grep "default via" | awk '{print $5}'`
 default_gateway=`ip route show dev $default_interface | grep default | awk '{print $3}'`
@@ -42,12 +47,19 @@ vrouter_gateway=${VROUTER_GATEWAY:-${default_gateway}}
 rabbitmq_nodes=${RABBITMQ_NODES:-$config_nodes}
 redis_nodes=${REDIS_NODES:-$analytics_nodes}
 webui_nodes=${WEBUI_NODES:-$config_nodes}
+zookeeper_analytics_port=${ZOOKEEPER_ANALYTICS_PORT}
 zookeeper_nodes=${ZOOKEEPER_NODES:-$config_nodes}
-zookeeper_ports=${ZOOKEEPER_PORTS:-''}
+zookeeper_port=${ZOOKEEPER_PORT}
+zookeeper_ports=${ZOOKEEPER_PORTS}
+
 
 analytics_api_vip=${ANALYTICS_API_VIP}
 config_api_vip=${CONFIG_API_VIP}
 webui_vip=${WEBUI_VIP}
+
+aaa_mode=${AAA_MODE}
+auth_mode=${AUTH_MODE}
+cloud_orchestrator=${CLOUD_ORCHESTRATOR}
 
 default_registry_ip=${_CONTRAIL_REGISTRY_IP:-$host_ip}
 
@@ -55,7 +67,7 @@ if [ $registry == 'auto' ]; then
   registry=$default_registry_ip':5000'
 fi
 if [ $repository == 'auto' ]; then
-  repository='http://'$default_registry_ip'/'$version
+  repository='http://'$default_registry_ip'/'$version-$os_version
 fi
 
 kubernetes_api_server=${KUBERNETES_API_SERVER:-$host_ip}

@@ -1,6 +1,8 @@
 #!/bin/bash -e
 # Sets up node for building containers. Parses common.env to get parameters (CONTRAIL_VERSION, CONTRAIL_REGISTRY,
 # CONTRAIL_REPOSITORY, OPENSTACK_VERSION) or take them from environment.
+# It installs http server, creates directory with rpm packages taken from PAKAGES_URL, install docker,
+# installs docker-registry.
 
 DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
@@ -21,10 +23,11 @@ export PACKAGES_URL=$packages_url
 
 export package_root_dir="/var/www"
 
+# TODO: do not download/install rpm repository if CONTRAIL_REPOSITORY is defined.
 if [[ -n "$CONTRAIL_REPOSITORY" ]]; then
-  dir_prefix=$(echo $CONTRAIL_REPOSITORY | awk -F'/' '{print $4}' | sed 's/'$version'$//')
+  dir_prefix=$(echo $CONTRAIL_REPOSITORY | awk -F'/' '{print $4}' | sed 's/'$version-$os_version'$//')
 fi
-export repo_dir="${package_root_dir}/${dir_prefix}${CONTRAIL_VERSION}"
+export repo_dir="${package_root_dir}/${dir_prefix}${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
 if [ -d $repo_dir ]; then
   echo 'Remove existing packages in '$repo_dir
   rm -rf $repo_dir
@@ -50,4 +53,6 @@ if [[ $TEST_MODE == 'true' ]] ; then
 fi
 
 $DIR/validate-docker.sh
+
+# TODO: do not installs local registry if external is provided.
 $DIR/install-registry.sh

@@ -6,9 +6,12 @@ metadata:
   name: env
   namespace: kube-system
 data:
+  AAA_MODE: {{ aaa_mode }}
   ANALYTICS_API_VIP: {{ analytics_api_vip }}
   ANALYTICS_NODES: {{ analytics_nodes }}
   ANALYTICSDB_NODES: {{ analyticsdb_nodes }}
+  AUTH_MODE: {{ auth_mode }}
+  CLOUD_ORCHESTRATOR: {{ cloud_orchestrator }}
   CONFIG_API_VIP: {{ config_api_vip }}
   CONFIG_NODES: {{ config_nodes }}
   CONFIGDB_NODES: {{ configdb_nodes }}
@@ -22,7 +25,9 @@ data:
   VROUTER_GATEWAY: {{ vrouter_gateway }}
   WEBUI_NODES: {{ webui_nodes }}
   WEBUI_VIP: {{ webui_vip }}
+  ZOOKEEPER_ANALYTICS_PORT: {{ zookeeper_analytics_port }}
   ZOOKEEPER_NODES: {{ zookeeper_nodes }}
+  ZOOKEEPER_PORT: {{  zookeeper_port }}
   ZOOKEEPER_PORTS: {{ zookeeper_ports }}
 ---
 apiVersion: v1
@@ -113,7 +118,7 @@ spec:
       hostNetwork: true
       initContainers:
       - name: contrail-zookeeper-init
-        image: "{{registry}}/contrail-external-zookeeper-init:{{version}}"
+        image: "{{registry}}/contrail-external-zookeeper-init:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -173,7 +178,7 @@ spec:
       hostNetwork: true
       containers:
       - name: kafka
-        image: "{{registry}}/contrail-external-kafka:{{version}}"
+        image: "{{registry}}/contrail-external-kafka:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -213,7 +218,7 @@ spec:
       hostNetwork: true
       initContainers:
       - name: contrail-cassandra-init
-        image: "{{registry}}/contrail-external-cassandra-init:{{version}}"
+        image: "{{registry}}/contrail-external-cassandra-init:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -273,7 +278,7 @@ spec:
       hostNetwork: true
       initContainers:
       - name: contrail-cassandra-init
-        image: "{{registry}}/contrail-external-cassandra-init:{{version}}"
+        image: "{{registry}}/contrail-external-cassandra-init:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -333,7 +338,7 @@ spec:
       hostNetwork: true
       containers:
       - name: contrail-analytics-api
-        image: "{{registry}}/contrail-analytics-api:{{version}}"
+        image: "{{registry}}/contrail-analytics-api:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -342,7 +347,7 @@ spec:
         - mountPath: /var/log/contrail
           name: analytics-logs
       - name: contrail-analytics-collector
-        image: "{{registry}}/contrail-analytics-collector:{{version}}"
+        image: "{{registry}}/contrail-analytics-collector:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -351,7 +356,7 @@ spec:
         - mountPath: /var/log/contrail
           name: analytics-logs
       - name: contrail-analytics-alarm-gen
-        image: "{{registry}}/contrail-analytics-alarm-gen:{{version}}"
+        image: "{{registry}}/contrail-analytics-alarm-gen:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -360,7 +365,7 @@ spec:
         - mountPath: /var/log/contrail
           name: analytics-logs
       - name: contrail-analytics-query-engine
-        image: "{{registry}}/contrail-analytics-query-engine:{{version}}"
+        image: "{{registry}}/contrail-analytics-query-engine:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -369,7 +374,7 @@ spec:
         - mountPath: /var/log/contrail
           name: analytics-logs
       - name: contrail-analytics-snmp-collector
-        image: "{{registry}}/contrail-analytics-snmp-collector:{{version}}"
+        image: "{{registry}}/contrail-analytics-snmp-collector:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -378,7 +383,7 @@ spec:
         - mountPath: /var/log/contrail
           name: analytics-logs
       - name: contrail-analytics-topology
-        image: "{{registry}}/contrail-analytics-topology:{{version}}"
+        image: "{{registry}}/contrail-analytics-topology:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -387,7 +392,7 @@ spec:
         - mountPath: /var/log/contrail
           name: analytics-logs
       - name: contrail-analytics-nodemgr
-        image: "{{registry}}/contrail-nodemgr:{{version}}"
+        image: "{{registry}}/contrail-nodemgr:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -442,7 +447,7 @@ spec:
       hostNetwork: true
       containers:
       - name: contrail-controller-control
-        image: "{{registry}}/contrail-controller-control-control:{{version}}"
+        image: "{{registry}}/contrail-controller-control-control:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -451,7 +456,7 @@ spec:
         - mountPath: /var/log/contrail
           name: control-logs
       - name: contrail-controller-control-dns
-        image: "{{registry}}/contrail-controller-control-dns:{{version}}"
+        image: "{{registry}}/contrail-controller-control-dns:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -460,7 +465,7 @@ spec:
         - mountPath: /var/log/contrail
           name: control-logs
       - name: contrail-controller-control-named
-        image: "{{registry}}/contrail-controller-control-named:{{version}}"
+        image: "{{registry}}/contrail-controller-control-named:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -471,7 +476,7 @@ spec:
         - mountPath: /var/log/contrail
           name: control-logs
       - name: contrail-controller-nodemgr
-        image: "{{registry}}/contrail-nodemgr:{{version}}"
+        image: "{{registry}}/contrail-nodemgr:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -526,7 +531,7 @@ spec:
       hostNetwork: true
       containers:
       - name: contrail-controller-config-api
-        image: "{{registry}}/contrail-controller-config-api:{{version}}"
+        image: "{{registry}}/contrail-controller-config-api:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -535,7 +540,7 @@ spec:
         - mountPath: /var/log/contrail
           name: config-logs
       - name: contrail-controller-config-devicemgr
-        image: "{{registry}}/contrail-controller-config-devicemgr:{{version}}"
+        image: "{{registry}}/contrail-controller-config-devicemgr:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -544,7 +549,7 @@ spec:
         - mountPath: /var/log/contrail
           name: config-logs
       - name: contrail-controller-config-schema
-        image: "{{registry}}/contrail-controller-config-schema:{{version}}"
+        image: "{{registry}}/contrail-controller-config-schema:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -553,7 +558,7 @@ spec:
         - mountPath: /var/log/contrail
           name: config-logs
       - name: contrail-controller-config-svcmonitor
-        image: "{{registry}}/contrail-controller-config-svcmonitor:{{version}}"
+        image: "{{registry}}/contrail-controller-config-svcmonitor:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -562,7 +567,7 @@ spec:
         - mountPath: /var/log/contrail
           name: config-logs
       - name: contrail-controller-config-nodemgr
-        image: "{{registry}}/contrail-nodemgr:{{version}}"
+        image: "{{registry}}/contrail-nodemgr:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -617,7 +622,7 @@ spec:
       hostNetwork: true
       containers:
       - name: contrail-controller-webui-job
-        image: "{{registry}}/contrail-controller-webui-job:{{version}}"
+        image: "{{registry}}/contrail-controller-webui-job:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -626,7 +631,7 @@ spec:
         - mountPath: /var/log/contrail
           name: webui-logs
       - name: contrail-controller-webui-web
-        image: "{{registry}}/contrail-controller-webui-web:{{version}}"
+        image: "{{registry}}/contrail-controller-webui-web:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -711,7 +716,7 @@ spec:
       hostNetwork: true
       initContainers:
       - name: contrail-rabbitmq-init
-        image: "{{registry}}/contrail-external-rabbitmq-init:{{version}}"
+        image: "{{registry}}/contrail-external-rabbitmq-init:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -776,7 +781,7 @@ spec:
       hostNetwork: true
       containers:
       - name: contrail-kube-manager
-        image: "{{registry}}/contrail-kubernetes-kube-manager:{{version}}"
+        image: "{{registry}}/contrail-kubernetes-kube-manager:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -826,7 +831,7 @@ spec:
       hostNetwork: true
       initContainers:
       - name: contrail-agent-vrouter-init-kernel
-        image: "{{registry}}/contrail-agent-vrouter-init-kernel:{{version}}"
+        image: "{{registry}}/contrail-agent-vrouter-init-kernel:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         securityContext:
           privileged: true
@@ -834,7 +839,7 @@ spec:
         - configMapRef:
             name: env
       - name: contrail-kubernetes-vrouter-init
-        image: "{{registry}}/contrail-kubernetes-vrouter-init:{{version}}"
+        image: "{{registry}}/contrail-kubernetes-vrouter-init:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -852,7 +857,7 @@ spec:
           name: agent-logs
       containers:
       - name: contrail-agent
-        image: "{{registry}}/contrail-agent-vrouter:{{version}}"
+        image: "{{registry}}/contrail-agent-vrouter:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         # TODO: Priveleged mode is requied because w/o it the device /dev/net/tun
         # is not present in the container. The mounting it into container
@@ -877,7 +882,7 @@ spec:
         - mountPath: /tmp/serviceaccount
           name: pod-secret
       - name: contrail-agent-nodemgr
-        image: "{{registry}}/contrail-nodemgr:{{version}}"
+        image: "{{registry}}/contrail-nodemgr:{{version}}-{{os_version}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:

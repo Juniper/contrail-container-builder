@@ -87,7 +87,7 @@ Please refer to the README-HELM.md
 9. ~~Remove firewall during setup~~
 10. Deal with “cannot allocate memory” during kernel module loading
 11. **Complete vrouter container - add DPDK, VLAN, etc.**
-12. Create initContainer for vrouter compilation
+12. ~~Create initContainer for vrouter compilation~~
 13. Split charts to Contrail-only and the rest
 14. Remove all notions about OpenStack/Keystone/Kubernetes from Contrail containers and add separate containers (sidecars) bringing orchestrator-related functionality.
 15. Ubuntu version
@@ -112,11 +112,14 @@ Please refer to the README-HELM.md
 34. Optimize size
 35. Make CNI plugin log level configurable.
 36. Sort out with KUBERNETES_public_fip_pool
-36. Sort out with multiple NIC configiration - probably provision link local is needed since it set ip_fabric_ip.
+36. ~~Sort out with multiple NIC configiration - probably provision link local is needed since it set ip_fabric_ip.~~
 37. Consider to use K8S services to provide VIPs for Config, Analytics and WebUI.
 38. Split common.env to separate build.env and deployment.env
 39. Add switching of dhcp on phys_int after inserting vhost0
 40. Standardize configuration variables across all components in the system.
 41. Add provision-alarm.py (https://bugs.launchpad.net/juniperopenstack/+bug/1736279)
 42. Allow to configure JVM mem options for cassandra in contrail-template.yaml
+43. Try to remove code-duplication in starter scripts and init containers and own containers for rabbit, zookeeper, cassandra.
+44. Avoid changing /etc/hosts file (rabbitmq).
+
 
