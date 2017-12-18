@@ -1,4 +1,8 @@
 # Configs section
+# Note: using ".." for ports, because in v1 there is a bug
+# which leads to an error
+# "..rror unmarshaling JSON: json: cannot unmarshal number into Go value of type string.."
+# (https://github.com/kubernetes/kubernetes/issues/2763)
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -21,14 +25,14 @@ data:
   LOG_LEVEL: {{ log_level }}
   PHYSICAL_INTERFACE: {{ physical_interface }}
   RABBITMQ_NODES: {{ rabbitmq_nodes }}
-  RABBITMQ_NODE_PORT: {{ rabbitmq_node_port }}
+  RABBITMQ_NODE_PORT: "{{ rabbitmq_node_port }}"
   REDIS_NODES: {{ redis_nodes }}
   VROUTER_GATEWAY: {{ vrouter_gateway }}
   WEBUI_NODES: {{ webui_nodes }}
   WEBUI_VIP: {{ webui_vip }}
-  ZOOKEEPER_ANALYTICS_PORT: {{ zookeeper_analytics_port }}
+  ZOOKEEPER_ANALYTICS_PORT: "{{ zookeeper_analytics_port }}"
   ZOOKEEPER_NODES: {{ zookeeper_nodes }}
-  ZOOKEEPER_PORT: {{ zookeeper_port }}
+  ZOOKEEPER_PORT: "{{ zookeeper_port }}"
   ZOOKEEPER_PORTS: {{ zookeeper_ports }}
 ---
 apiVersion: v1

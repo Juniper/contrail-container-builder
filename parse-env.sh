@@ -45,6 +45,7 @@ log_level=${LOG_LEVEL:-SYS_NOTICE}
 physical_interface=${PHYSICAL_INTERFACE:-${default_interface}}
 vrouter_gateway=${VROUTER_GATEWAY:-${default_gateway}}
 rabbitmq_nodes=${RABBITMQ_NODES:-$config_nodes}
+rabbitmq_node_port=${RABBITMQ_NODE_PORT}
 redis_nodes=${REDIS_NODES:-$analytics_nodes}
 webui_nodes=${WEBUI_NODES:-$config_nodes}
 zookeeper_analytics_port=${ZOOKEEPER_ANALYTICS_PORT}
