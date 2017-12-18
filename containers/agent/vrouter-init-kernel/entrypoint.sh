@@ -5,29 +5,27 @@ source /common.sh
 echo "INFO: ip address show:"
 ip address show
 
-
-phys_int=$(get_vrouter_nic)
-phys_int_mac=$(get_vrouter_mac)
-if [[ -z "$phys_int_mac" ]] ; then
-    echo "ERROR: failed to read MAC for NIC '${phys_int}'"
-    exit -1
-fi
+IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
 echo "INFO: Physical interface: $phys_int, mac=$phys_int_mac"
 
-# Probe vhost0 and get CIDR for phys nic
-cur_int='vhost0'
-vrouter_cidr=$(get_cidr_for_nic $cur_int)
-if [[ -z "$vrouter_cidr" ]] ; then
-    cur_int=$phys_int
-    vrouter_cidr=$(get_cidr_for_nic $cur_int)
-fi
-if [[ -z "$vrouter_cidr" ]] ; then
-    echo "ERROR: There is no IP address on NIC '$cur_int'"
-    exit -2
-fi
+# Probe vhost0
+vrouter_cidr="$(get_cidr_for_nic vhost0)"
 
-VROUTER_GATEWAY=${VROUTER_GATEWAY:-`get_default_gateway_for_nic $cur_int`}
-echo "INFO: nic $cur_int, cidr $vrouter_cidr, gateway $VROUTER_GATEWAY"
+# Load kernel module
+kver=`uname -r | awk -F "-" '{print $1}'`
+echo "INFO: Load kernel module for kver=$kver"
+modfile=`ls -1rt /opt/contrail/vrouter-kernel-modules/$kver-*/vrouter.ko | tail -1`
+if ! lsmod | grep -q vrouter; then
+    echo "INFO: Modprobing vrouter "$modfile
+    insmod $modfile
+    if ! lsmod | grep -q vrouter ; then
+        echo "ERROR: Failed to insert vrouter kernel module"
+        exit 1
+    fi
+else
+    echo "INFO: vrouter.ko already loaded in the system"
+    # TODO: handle upgrade
+fi
 
 # VRouter specific code starts here
 function pkt_setup () {
@@ -60,41 +58,28 @@ function insert_vrouter() {
         pkt_setup pkt3
     fi
     vif --create vhost0 --mac $phys_int_mac
-    vif --add ${phys_int} --mac $phys_int_mac --vrf 0 --vhost-phys --type physical
-    vif --add vhost0 --mac $phys_int_mac --vrf 0 --type vhost --xconnect ${phys_int}
+    vif --add $phys_int --mac $phys_int_mac --vrf 0 --vhost-phys --type physical
+    vif --add vhost0 --mac $phys_int_mac --vrf 0 --type vhost --xconnect $phys_int
     ip link set vhost0 up
     return 0
 }
 
-# Load kernel module
-kver=`uname -r | awk -F"-" '{print $1}'`
-echo "INFO: Load kernel module for kver=$kver"
-modfile=`ls -1rt /opt/contrail/vrouter-kernel-modules/$kver-*/vrouter.ko | tail -1`
-if ! lsmod | grep -q vrouter; then
-    echo "INFO: Modprobing vrouter "$modfile
-    insmod $modfile
-    if ! lsmod | grep -q vrouter ; then
-        echo "ERROR: Failed to insert vrouter kernel module"
-        exit 1
-    fi
-else
-    echo "INFO: vrouter.ko already loaded in the system"
-fi
-
-if [[ "$cur_int" != "vhost0" ]] ; then
-    echo "INFO: Inserting vrouter"
+if [[ "$vrouter_cidr" == '' ]] ; then
+    echo "INFO: creating vhost0"
+    vrouter_cidr=$(get_cidr_for_nic $phys_int)
+    VROUTER_GATEWAY=${VROUTER_GATEWAY:-$(get_default_gateway_for_nic $phys_int)}
     insert_vrouter
 
     # TODO: switch off dhcp on phys_int
     echo "INFO: Changing physical interface to vhost in ip table"
-    ip address delete $vrouter_cidr dev ${phys_int}
+    ip address delete $vrouter_cidr dev $phys_int
     ip address add $vrouter_cidr dev vhost0
     if [[ $VROUTER_GATEWAY ]]; then
         echo "INFO: set default gateway"
         ip route add default via $VROUTER_GATEWAY
-    else
-        echo "WARNING: no default gateway"
     fi
+else
+    echo "INFO: vhost0 is already up"
 fi
 
 exec "$@"

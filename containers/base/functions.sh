@@ -73,12 +73,12 @@ function get_order_for_node() {
   echo $order
 }
 
-function get_vrouter_nic() {
+function get_default_physical_iface() {
   echo ${PHYSICAL_INTERFACE:-${DEFAULT_IFACE}}
 }
 
-function get_vrouter_mac() {
-  local nic=$(get_vrouter_nic)
+function get_iface_mac() {
+  local nic=$1
   cat /sys/class/net/${nic}/address
 }
 
@@ -119,4 +119,33 @@ function get_hostname_by_ip() {
     name=$(generate_hostname_for_ip $ip)
   fi
   echo $name
+}
+
+function get_physical_nic_and_mac()
+{
+  local nic='vhost0'
+  local mac=$(get_iface_mac $nic)
+  if [[ -n "$mac" ]] ; then
+    # it means vhost0 iface is already up and running,
+    # so try to find physical nic by MAC (which should be
+    # the same as in vhost0)
+    nic=$(vif --list | grep "Type:Physical HWaddr:${mac}" -B1 | head -1 | awk '{print($3)}')
+    local _mac=$(get_iface_mac $nic)
+    if [[ -n "$_mac" ]] ; then
+        mac=$_mac
+    else
+        # TODO: remove it after checking DPDK case
+        echo "INFO: DPDK case: there is no appropriate net-device for $nic"
+    fi
+  else
+    # there is no vhost0 device, so set to default
+    nic=$(get_default_physical_iface)
+    mac=$(get_iface_mac $nic)
+  fi
+  # Ensure that nic & mac are not empty
+  if [[ "$nic" == '' || "$mac" == '' ]] ; then
+      echo "ERROR: either phys nic or mac is empty: phys_int='$nic' phys_int_mac='$mac'"
+      exit -1
+  fi
+  echo $nic $mac
 }

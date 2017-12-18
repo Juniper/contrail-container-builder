@@ -4,31 +4,26 @@ source /common.sh
 
 HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'kvm'}
 VROUTER_HOSTNAME=${VROUTER_HOSTNAME:-${DEFAULT_HOSTNAME}}
-VROUTER_GATEWAY=${VROUTER_GATEWAY:-`get_default_gateway_for_nic vhost0`}
 
-phys_int=$(get_vrouter_nic)
-phys_int_mac=$(get_vrouter_mac)
-if [[ -z "$phys_int_mac" ]] ; then
-    echo "ERROR: failed to read MAC for NIC '${phys_int}'"
-    exit -1
-fi
+IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
 echo "INFO: Physical interface: $phys_int, mac=$phys_int_mac"
 
 # It is expected that vhost0 is up and running here
+VROUTER_GATEWAY=${VROUTER_GATEWAY:-`get_default_gateway_for_nic vhost0`}
 vrouter_cidr=$(get_cidr_for_nic vhost0)
+echo "INFO: vhost0 cidr $vrouter_cidr, gateway $VROUTER_GATEWAY"
+
+# It is expected that vhost0 is up and running here
 if [[ -z "$vrouter_cidr" ]] ; then
     echo "ERROR: vhost0 interface is down or has no assigned IP"
     exit -1
 fi
 vrouter_ip=${vrouter_cidr%/*}
 
-# It is expected that default gateway is known here
 if [[ -z "$VROUTER_GATEWAY" ]] ; then
     echo "ERROR: VROUTER_GATEWAY is empty or there is no default route for vhost0"
     exit -1
 fi
-
-echo "INFO: vhost0 cidr $vrouter_cidr, gateway $VROUTER_GATEWAY"
 
 mkdir -p -m 777 /var/crashes
 
