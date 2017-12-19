@@ -29,12 +29,14 @@ if [ -z "$my_ip" ]; then
   exit
 fi
 export RABBITMQ_NODENAME=contrail@$my_node
-export RABBITMQ_NODE_PORT=${RABBITMQ_NODE_PORT}
+if [[ "$RABBITMQ_NODE_PORT" != '' ]] ; then
+  export RABBITMQ_NODE_PORT=${RABBITMQ_NODE_PORT}
+fi
 if (( ${#server_list[@]} > 1 )); then
   export RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS="-rabbit cluster_nodes $cluster_nodes"
 fi
 
-echo "INFO: RABBITMQ_NODENAME=$RABBITMQ_NODENAME"
+echo "INFO: RABBITMQ_NODENAME=$RABBITMQ_NODENAME, RABBITMQ_NODE_PORT=$RABBITMQ_NODE_PORT"
 echo "INFO: RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=$RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS"
 echo "INFO: /docker-entrypoint.sh $@"
 

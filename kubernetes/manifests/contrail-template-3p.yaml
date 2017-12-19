@@ -53,12 +53,11 @@ data:
   CASSANDRA_CLUSTER_NAME: Contrail
   CASSANDRA_START_RPC: "true"
   CASSANDRA_LISTEN_ADDRESS: auto
-  JVM_EXTRA_OPTS: >-
-    -Dcassandra.rpc_port=9160
-    -Dcassandra.native_transport_port=9042
-    -Dcassandra.ssl_storage_port=7001
-    -Dcassandra.storage_port=7000
-    -Xms2g -Xmx2g
+  CASSANDRA_PORT: "9160"
+  CASSANDRA_CQL_PORT: "9042"
+  CASSANDRA_SSL_STORAGE_PORT: "7001"
+  CASSANDRA_STORAGE_PORT: "7000"
+  CASSANDRA_JMX_LOCAL_PORT: "7200"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -70,13 +69,11 @@ data:
   CASSANDRA_CLUSTER_NAME: ContrailConfigDB
   CASSANDRA_START_RPC: "true"
   CASSANDRA_LISTEN_ADDRESS: auto
-  JVM_EXTRA_OPTS: >-
-    -Dcassandra.rpc_port=9161
-    -Dcassandra.native_transport_port=9041
-    -Dcassandra.ssl_storage_port=7011
-    -Dcassandra.storage_port=7010
-    -Dcassandra.jmx.local.port=7200
-    -Xms2g -Xmx2g
+  CASSANDRA_PORT: "9161"
+  CASSANDRA_CQL_PORT: "9041"
+  CASSANDRA_SSL_STORAGE_PORT: "7011"
+  CASSANDRA_STORAGE_PORT: "7010"
+  CASSANDRA_JMX_LOCAL_PORT: "7201"
 ---
 apiVersion: v1
 kind: ConfigMap
