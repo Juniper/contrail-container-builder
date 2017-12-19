@@ -51,7 +51,7 @@ webui_nodes=${WEBUI_NODES:-$config_nodes}
 zookeeper_analytics_port=${ZOOKEEPER_ANALYTICS_PORT}
 zookeeper_nodes=${ZOOKEEPER_NODES:-$config_nodes}
 zookeeper_port=${ZOOKEEPER_PORT}
-zookeeper_ports=${ZOOKEEPER_PORTS}
+zookeeper_ports=${ZOOKEEPER_PORTS:-'2888:3888'}
 
 
 analytics_api_vip=${ANALYTICS_API_VIP}
