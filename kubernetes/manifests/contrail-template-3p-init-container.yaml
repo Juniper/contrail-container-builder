@@ -464,6 +464,8 @@ spec:
         - configMapRef:
             name: env
         volumeMounts:
+        - mountPath: /etc/contrail
+          name: dns-config
         - mountPath: /var/log/contrail
           name: control-logs
       - name: contrail-controller-control-named
@@ -475,6 +477,8 @@ spec:
         securityContext:
           privileged: true
         volumeMounts:
+        - mountPath: /etc/contrail
+          name: dns-config
         - mountPath: /var/log/contrail
           name: control-logs
       - name: contrail-controller-nodemgr
@@ -505,6 +509,8 @@ spec:
       - name: docker-unix-socket
         hostPath:
           path: /var/run
+      - name: dns-config
+        emptyDir: {}
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet

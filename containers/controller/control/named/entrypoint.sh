@@ -2,13 +2,18 @@
 
 source /common.sh
 
-cat > /etc/contrail/dns/contrail-named.conf << EOM
+DNS_NAMED_CONFIG_FILE=${DNS_NAMED_CONFIG_FILE:-'contrail-named.conf'}
+DNS_NAMED_CONFIG_DIRECTORY=${DNS_NAMED_CONFIG_DIRECTORY:-'/etc/contrail/dns'}
+
+mkdir -p ${DNS_NAMED_CONFIG_DIRECTORY}
+
+cat > ${DNS_NAMED_CONFIG_DIRECTORY}/${DNS_NAMED_CONFIG_FILE} << EOM
 options {
-    directory "/etc/contrail/dns/";
-    managed-keys-directory "/etc/contrail/dns/";
+    directory "${DNS_NAMED_CONFIG_DIRECTORY}";
+    managed-keys-directory "${DNS_NAMED_CONFIG_DIRECTORY}";
     empty-zones-enable no;
-    pid-file "/etc/contrail/dns/contrail-named.pid";
-    session-keyfile "/etc/contrail/dns/session.key";
+    pid-file "${DNS_NAMED_CONFIG_DIRECTORY}/contrail-named.pid";
+    session-keyfile "${DNS_NAMED_CONFIG_DIRECTORY}/session.key";
     listen-on port 53 { any; };
     allow-query { any; };
     allow-recursion { any; };
@@ -43,7 +48,7 @@ logging {
 };
 EOM
 
-chown contrail:contrail /etc/contrail/dns/contrail-named.conf
+chown -R contrail:contrail ${DNS_NAMED_CONFIG_DIRECTORY}
 touch /var/log/contrail/contrail-named.log
 chown contrail:contrail /var/log/contrail/contrail-named.log
 chown contrail:contrail /var/log/contrail

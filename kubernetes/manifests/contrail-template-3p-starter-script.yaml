@@ -78,19 +78,167 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: rabbitmq-config
-  namespace: kube-system
-data:
-  RABBITMQ_ERLANG_COOKIE: "47EFF3BB-4786-46E0-A5BB-58455B3C2CB4"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
   name: kube-manager-config
   namespace: kube-system
 data:
   KUBERNETES_API_SERVER: {{ kubernetes_api_server }}
   K8S_TOKEN_FILE: "/tmp/serviceaccount/token"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rabbitmq-config
+  namespace: kube-system
+data:
+  RABBITMQ_ERLANG_COOKIE: "47EFF3BB-4786-46E0-A5BB-58455B3C2CB4"
+
+# Starter entrypoint scripts
+# These scripts adds functionality which in fact should've been provided by the containers - some of the features like
+# clustering or multi-cards are not correctly supported by them currently. When these features are supported this starter
+# scripts will become unnecessary.
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: contrail-cassandra-starter
+  namespace: kube-system
+data:
+  contrail-entrypoint.sh: |-
+    #!/bin/bash
+
+    IFS=',' read -ra srv_list <<< "$CASSANDRA_SEEDS"
+    local_ips=$(ip addr | awk '/inet/ {print($2)}')
+    for srv in "${srv_list[@]}"; do
+      if [[ "$local_ips" =~ "$srv" ]] ; then
+        echo "INFO: found '$srv' in local IPs '$local_ips'"
+        my_ip=$srv
+        break
+      fi
+    done
+
+    if [ -z "$my_ip" ]; then
+      echo "ERROR: Cannot find self ips ('$local_ips') in Cassandra nodes ('$CASSANDRA_SEEDS')"
+      exit
+    fi
+
+    # use first two servers as seeds
+    export CASSANDRA_SEEDS=$(echo $CASSANDRA_SEEDS | cut -d ',' -f 1,2)
+    export CASSANDRA_LISTEN_ADDRESS=$my_ip
+
+    export JVM_EXTRA_OPTS="-Dcassandra.rpc_port=${CASSANDRA_PORT:-9160} \
+      -Dcassandra.native_transport_port=${CASSANDRA_CQL_PORT:-9042} \
+      -Dcassandra.ssl_storage_port=${CASSANDRA_SSL_STORAGE_PORT:-7011} \
+      -Dcassandra.storage_port=${CASSANDRA_STORAGE_PORT:-7010} \
+      -Dcassandra.jmx.local.port=${CASSANDRA_JMX_LOCAL_PORT:-7200} \
+      -Xms1g -Xmx2g"
+
+    echo "INFO: CASSANDRA_SEEDS=$CASSANDRA_SEEDS CASSANDRA_LISTEN_ADDRESS=$CASSANDRA_LISTEN_ADDRESS"
+    echo "INFO: exec /docker-entrypoint.sh $@"
+
+    exec /docker-entrypoint.sh "$@"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: contrail-zookeeper-starter
+  namespace: kube-system
+data:
+  contrail-entrypoint.sh: |-
+    #!/bin/bash
+
+    ord=1
+    my_ord=0
+    IFS=',' read -ra srv_list <<< "$ZOOKEEPER_NODES"
+    local_ips=$(ip addr | awk '/inet/ {print($2)}')
+    ZOOKEEPER_PORTS=${ZOOKEEPER_PORTS:-'2888:3888'}
+    zoo_servers=''
+    for srv in "${srv_list[@]}"; do
+      if [[ -z "$ZOO_SERVERS" ]] ; then
+        zoo_servers+="server.${ord}=${srv}:${ZOOKEEPER_PORTS} "
+      fi
+      if [[ "$local_ips" =~ "$srv" ]] ; then
+        echo "INFO: found '$srv' in local IPs '$local_ips'"
+        my_ord=$ord
+      fi
+      ord=$((ord+1))
+    done
+
+    if (( $my_ord < 1 || $my_ord > "${#srv_list[@]}" )); then
+      echo "ERROR: Cannot find self ips ('$local_ips') in Zookeeper nodes ('$ZOOKEEPER_NODES')"
+      exit
+    fi
+
+    # If ZOO_SERVERS is provided then just use it, because it is an interface of
+    # the inherited zookeeper container, else define it in case if
+    # custome zookeeper ports are provided.
+    if [[ "$zoo_servers" != '' ]] ; then
+      export ZOO_SERVERS=${zoo_servers::-1}
+    fi
+
+    export ZOO_PORT=${ZOOKEEPER_PORT}
+    export ZOO_MY_ID=$my_ord
+
+    echo "INFO: ZOO_MY_ID=$ZOO_MY_ID, ZOO_PORT=$ZOO_PORT"
+    echo "INFO: ZOO_SERVERS=$ZOO_SERVERS"
+    echo "INFO: /docker-entrypoint.sh $@"
+
+    exec /docker-entrypoint.sh "$@"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: contrail-rabbitmq-starter
+  namespace: kube-system
+data:
+  contrail-entrypoint.sh: |-
+    #!/bin/bash -e
+
+    cluster_nodes='{['
+    local_ips=$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}')
+    IFS=',' read -ra server_list <<< "${RABBITMQ_NODES}"
+    my_ip=''
+    my_node=''
+    rabbit_node_list=''
+    for server in ${server_list[@]}; do
+      server_hostname=''
+      if getent hosts $server ; then
+        server_hostname=$(getent hosts $server | awk '{print $2}' | awk -F '.' '{print $1}')
+      else
+        if host -4 $server ; then
+          server_hostname=$(host -4 $server | cut -d" " -f5 | awk '{print $1}')
+          server_hostname=${server_hostname::-1}
+        fi
+      fi
+      if [[ "$server_hostname" == '' ]] ; then
+        echo "WARNING: hostname for $server is not resolved properly, cluster setup will not be functional."
+      fi
+      cluster_nodes+="'contrail@${server_hostname}',"
+      if [[ "$local_ips" =~ "$server" ]] ; then
+        my_ip=$server
+        my_node=$server_hostname
+        echo "INFO: my_ip=$server my_node=$server_hostname"
+      fi
+    done
+
+    cluster_nodes=${cluster_nodes::-1}'],disc}'
+    if [ -z "$my_ip" ] ; then
+      echo "ERROR: Cannot find self ips ('$local_ips') in RabbitMQ nodes ('$RABBITMQ_NODES')"
+      exit
+    fi
+
+    export RABBITMQ_NODENAME=contrail@$my_node
+    if [[ "$RABBITMQ_NODE_PORT" != '' ]] ; then
+      export RABBITMQ_NODE_PORT=${RABBITMQ_NODE_PORT}
+    fi
+    if (( ${#server_list[@]} > 1 )); then
+      export RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS="-rabbit cluster_nodes $cluster_nodes"
+    fi
+
+    echo "INFO: RABBITMQ_NODENAME=$RABBITMQ_NODENAME, RABBITMQ_NODE_PORT=$RABBITMQ_NODE_PORT"
+    echo "INFO: RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=$RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS"
+    echo "INFO: /docker-entrypoint.sh $@"
+
+    exec /docker-entrypoint.sh "$@"
 # Containers section
 ---
 apiVersion: extensions/v1beta1
@@ -120,16 +268,19 @@ spec:
       hostNetwork: true
       containers:
       - name: zookeeper
-        image: "{{registry}}/contrail-external-zookeeper:{{version}}-{{os_version}}"
+        image: "zookeeper:3.4.10"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
             name: env
+        command: ["/bin/bash", "/opt/contrail/contrail-entrypoint.sh", "zkServer.sh", "start-foreground"]
         volumeMounts:
         - mountPath: /var/lib/zookeeper
           name: zookeeper-data
         - mountPath: /var/log/zookeeper
           name: zookeeper-logs
+        - mountPath: /opt/contrail
+          name: contrail-zookeeper-starter
       volumes:
       - name: zookeeper-data
         hostPath:
@@ -137,6 +288,9 @@ spec:
       - name: zookeeper-logs
         hostPath:
           path: /var/log/contrail/zookeeper
+      - name: contrail-zookeeper-starter
+        configMap:
+          name: contrail-zookeeper-starter
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -205,16 +359,19 @@ spec:
       hostNetwork: true
       containers:
       - name: contrail-analyticsdb
-        image: "{{registry}}/contrail-external-cassandra:{{version}}-{{os_version}}"
+        image: "cassandra:3.11.1"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
             name: contrail-analyticsdb-config
+        command: ["/bin/bash", "/opt/contrail/contrail-entrypoint.sh", "cassandra", "-f"]
         volumeMounts:
         - mountPath: /var/lib/cassandra
           name: analyticsdb-data
         - mountPath: /var/log/cassandra
           name: analyticsdb-log
+        - mountPath: /opt/contrail
+          name: contrail-cassandra-starter
       volumes:
       - name: analyticsdb-data
         hostPath:
@@ -222,6 +379,9 @@ spec:
       - name: analyticsdb-log
         hostPath:
           path: /var/log/contrail/analyticsdb
+      - name: contrail-cassandra-starter
+        configMap:
+          name: contrail-cassandra-starter
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -250,16 +410,19 @@ spec:
       hostNetwork: true
       containers:
       - name: contrail-configdb
-        image: "{{registry}}/contrail-external-cassandra:{{version}}-{{os_version}}"
+        image: "cassandra:3.11.1"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
             name: contrail-configdb-config
+        command: ["/bin/bash", "/opt/contrail/contrail-entrypoint.sh", "cassandra", "-f"]
         volumeMounts:
         - mountPath: /var/lib/cassandra
           name: configdb-data
         - mountPath: /var/log/cassandra
           name: configdb-log
+        - mountPath: /opt/contrail
+          name: contrail-cassandra-starter
       volumes:
       - name: configdb-data
         hostPath:
@@ -267,6 +430,9 @@ spec:
       - name: configdb-log
         hostPath:
           path: /var/log/contrail/configdb
+      - name: contrail-cassandra-starter
+        configMap:
+          name: contrail-cassandra-starter
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -419,6 +585,8 @@ spec:
         - configMapRef:
             name: env
         volumeMounts:
+        - mountPath: /etc/contrail
+          name: dns-config
         - mountPath: /var/log/contrail
           name: control-logs
       - name: contrail-controller-control-named
@@ -430,6 +598,8 @@ spec:
         securityContext:
           privileged: true
         volumeMounts:
+        - mountPath: /etc/contrail
+          name: dns-config
         - mountPath: /var/log/contrail
           name: control-logs
       - name: contrail-controller-nodemgr
@@ -460,6 +630,8 @@ spec:
       - name: docker-unix-socket
         hostPath:
           path: /var/run
+      - name: dns-config
+        emptyDir: {}
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -673,18 +845,21 @@ spec:
       hostNetwork: true
       containers:
       - name: rabbitmq
-        image: "{{registry}}/contrail-external-rabbitmq:{{version}}-{{os_version}}"
+        image: "rabbitmq:3.6.10"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
             name: env
         - configMapRef:
             name: rabbitmq-config
+        command: ["/bin/bash", "/opt/contrail/contrail-entrypoint.sh", "rabbitmq-server"]
         volumeMounts:
         - mountPath: /var/lib/rabbitmq
           name: rabbitmq-data
         - mountPath: /var/log/rabbitmq
           name: rabbitmq-logs
+        - mountPath: /opt/contrail
+          name: contrail-rabbitmq-starter
       volumes:
       - name: rabbitmq-data
         hostPath:
@@ -692,6 +867,9 @@ spec:
       - name: rabbitmq-logs
         hostPath:
           path: /var/log/contrail/rabbitmq
+      - name: contrail-rabbitmq-starter
+        configMap:
+          name: contrail-rabbitmq-starter
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet

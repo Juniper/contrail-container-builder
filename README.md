@@ -120,6 +120,14 @@ Please refer to the README-HELM.md
 41. Add provision-alarm.py (https://bugs.launchpad.net/juniperopenstack/+bug/1736279)
 42. Allow to configure JVM mem options for cassandra in contrail-template.yaml
 43. Try to remove code-duplication in starter scripts and init containers and own containers for rabbit, zookeeper, cassandra.
-44. Avoid changing /etc/hosts file (rabbitmq).
-
-
+44. ~~Avoid changing /etc/hosts file (rabbitmq).~~
+45. Add some pre- and post- checks to help troubleshooting:
+  * Pre-checks:
+    - ping works
+    - ntp in sync
+    - docker is installed in the correct version
+  * Post-checks:
+    - rabbitmqctl cluster_status
+    - check zookeeper cluster
+    - check cassndra cluster
+    - check that all containers are up

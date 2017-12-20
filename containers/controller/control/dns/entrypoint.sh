@@ -6,7 +6,13 @@ hostip=$(get_listen_ip_for_node CONTROL)
 rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')
 configdb_cql_servers=$(echo $CONFIGDB_CQL_SERVERS | sed 's/,/ /g')
 
-cat > /etc/contrail/dns/contrail-rndc.conf << EOM
+DNS_NAMED_CONFIG_FILE=${DNS_NAMED_CONFIG_FILE:-'contrail-named.conf'}
+DNS_NAMED_CONFIG_DIRECTORY=${DNS_NAMED_CONFIG_DIRECTORY:-'/etc/contrail/dns'}
+DNS_RNDC_CONFIG_FILE=${DNS_RNDC_CONFIG_FILE:-'contrail-rndc.conf'}
+
+mkdir -p ${DNS_NAMED_CONFIG_DIRECTORY}
+
+cat > ${DNS_NAMED_CONFIG_DIRECTORY}/${DNS_RNDC_CONFIG_FILE} << EOM
 key "rndc-key" {
     algorithm hmac-md5;
     secret "$RNDC_KEY";
@@ -22,10 +28,10 @@ EOM
 cat > /etc/contrail/contrail-dns.conf << EOM
 [DEFAULT]
 collectors=$COLLECTOR_SERVERS
-named_config_file = ${DNS_NAMED_CONFIG_FILE:-contrail-named.conf}
-named_config_directory = ${DNS_NAMED_CONFIG_DIRECTORY:-/etc/contrail/dns}
+named_config_file = ${DNS_NAMED_CONFIG_FILE}
+named_config_directory = ${DNS_NAMED_CONFIG_DIRECTORY}
 named_log_file = ${DNS_NAMED_LOG_FILE:-"$LOG_DIR/contrail-named.log"}
-rndc_config_file = ${DNS_RNDC_CONFIG_FILE:-contrail-rndc.conf}
+rndc_config_file = ${DNS_RNDC_CONFIG_FILE}
 named_max_cache_size=${DNS_NAMED_MAX_CACHE_SIZE:-32M} # max-cache-size (bytes) per view, can be in K or M
 named_max_retransmissions=${DNS_NAMED_MAX_RETRANSMISSIONS:-12}
 named_retransmission_interval=${DNS_RETRANSMISSION_INTERVAL:-1000} # msec
