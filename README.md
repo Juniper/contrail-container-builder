@@ -131,4 +131,4 @@ Please refer to the README-HELM.md
     - check zookeeper cluster
     - check cassndra cluster
     - check that all containers are up
-46. vrouter agent entrypoint: add ability to configure metadata_proxy_secret=contrail in [METADATA]
+46. ~~vrouter agent entrypoint: add ability to configure metadata_proxy_secret=contrail in [METADATA]~~

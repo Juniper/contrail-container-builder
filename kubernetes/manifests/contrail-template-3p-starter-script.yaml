@@ -23,6 +23,7 @@ data:
   CONTROLLER_NODES: {{ controller_nodes }}
   KAFKA_NODES: {{ kafka_nodes }}
   LOG_LEVEL: {{ log_level }}
+  METADATA_PROXY_SECRET: {{ metadata_proxy_secret }}
   PHYSICAL_INTERFACE: {{ physical_interface }}
   RABBITMQ_NODES: {{ rabbitmq_nodes }}
   RABBITMQ_NODE_PORT: "{{ rabbitmq_node_port }}"

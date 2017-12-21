@@ -55,7 +55,7 @@ control_network_ip=$vrouter_ip
 servers=${DNS_SERVERS:-`get_server_list CONTROL ":$DNS_SERVER_PORT "`}
 
 [METADATA]
-metadata_proxy_secret=contrail
+metadata_proxy_secret=${METADATA_PROXY_SECRET}
 
 [VIRTUAL-HOST-INTERFACE]
 name=vhost0

@@ -42,6 +42,7 @@ configdb_nodes=${CONFIGDB_NODES:-$config_nodes}
 control_nodes=${CONTROL_NODES:-$config_nodes}
 kafka_nodes=${KAFKA_NODES:-$analyticsdb_nodes}
 log_level=${LOG_LEVEL:-SYS_NOTICE}
+metadata_proxy_secret=${METADATA_PROXY_SECRET:-'contrail'}
 physical_interface=${PHYSICAL_INTERFACE:-${default_interface}}
 vrouter_gateway=${VROUTER_GATEWAY:-${default_gateway}}
 rabbitmq_nodes=${RABBITMQ_NODES:-$config_nodes}
