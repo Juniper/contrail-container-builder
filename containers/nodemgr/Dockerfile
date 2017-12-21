@@ -7,7 +7,7 @@ RUN yum install -y contrail-nodemgr docker-python
 
 # TODO: remove this hack - installing git, and installing nodemgr from source
 RUN yum install -y git && \
-    git clone --depth 1 https://github.com/cloudscaling/contrail-controller.git && \
+    git clone --depth 1 https://github.com/juniper/contrail-controller.git && \
     /usr/bin/yes | cp -r /contrail-controller/src/nodemgr /usr/lib/python2.7/site-packages/ && \
     yum clean all -y && \
     rm -rf /var/cache/yum
