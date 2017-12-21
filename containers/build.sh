@@ -48,7 +48,6 @@ build_container () {
     --build-arg OPENSTACK_VERSION=${os_version} \
     --build-arg OPENSTACK_SUBVERSION=${os_subversion} \
     --build-arg CONTRAIL_REGISTRY=${registry} \
-    --build-arg REPOSITORY=${repository} \
     ${int_opts} ${opts} $dir |& tee $logfile
   if [ ${PIPESTATUS[0]} -eq 0 ]; then
     docker push ${registry}'/'${container_name}:${version}-${os_version} |& tee -a $logfile
@@ -82,7 +81,25 @@ build_dir () {
 if [ -z $path ] || [ $path = 'all' ]; then
   path="."
 fi
+
 echo "INFO: starting build from $my_dir with relative path $path"
+echo "INFO: prepare Contrail repo file in base image"
+repo_template=$(sed 's/\(.*\){{ *\(.*\) *}}\(.*\)/\1$\2\3/g' $my_dir/../contrail.repo.template)
+repo_content=$(eval "echo \"$repo_template\"")
+update_contrail_repo='true'
+if [[ -f base/contrail.repo && -f base/contrail.repo.md5 ]] ; then
+  echo "INFO: base/contrail.repo and its checksum are exist, check them"
+  new_repo_md5=$(echo "$repo_content" | md5sum | awk '{print($1)}')
+  old_repo_md5=$(cat base/contrail.repo.md5 | awk '{print($1)}')
+  if [[ "$old_repo_md5" == "$new_repo_md5" ]] ; then
+    echo "INFO: content of contrail.repo is not changed"
+    update_contrail_repo='false'
+  fi
+fi
+if [[ "$update_contrail_repo" == 'true' ]] ; then
+  echo "$repo_content" > base/contrail.repo
+  md5sum base/contrail.repo > base/contrail.repo.md5
+fi
 pushd $my_dir
 build_dir $path
 popd

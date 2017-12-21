@@ -3,3 +3,5 @@
 Dockerfile.nofromargs
 common.env
 my-contrail.yaml
+contrail.repo
+contrail.repo.md5
