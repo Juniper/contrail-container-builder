@@ -3,6 +3,9 @@ FROM centos:7.4.1708
 ARG OPENSTACK_VERSION=newton
 ARG OPENSTACK_SUBVERSION=5
 
+# this copy should be before yum install
+COPY *.repo /etc/yum.repos.d/
+
 # note: ldconfig looks strange. contrail-lib installs shared libraries but do not call it...
 RUN yum update -y && \
     yum install -y \
@@ -14,7 +17,6 @@ RUN yum update -y && \
     rm -rf /var/cache/yum && \
     ldconfig
 
-COPY *.repo /etc/yum.repos.d/
 COPY *.sh /
 
 CMD ["/usr/bin/tail","-f","/dev/null"]
