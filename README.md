@@ -96,7 +96,7 @@ Please refer to the README-HELM.md
 18. ~~Unnecessary packages should be removed from containers~~
 19. ~~Make DEBUG logging configurable~~
 20. ~~**Multi-node deployment**~~
-21. **Cluster-deployment for Contrail, Cassandra, etc (Helm POC chart has problem for Cassandra config)**
+21. ~~**Cluster-deployment for Contrail, Cassandra, etc **~~
 22. Rework Helm charts to reuse third-party charts instead of built-in sections
 23. ~~Add yum clean at the end of containers~~
 24. ~~Rename kubernetes/kube-agent to kubernetes/vrouter-init~~
