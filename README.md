@@ -90,13 +90,13 @@ Please refer to the README-HELM.md
 12. ~~Create initContainer for vrouter compilation~~
 13. Split charts to Contrail-only and the rest
 14. Remove all notions about OpenStack/Keystone/Kubernetes from Contrail containers and add separate containers (sidecars) bringing orchestrator-related functionality.
-15. Ubuntu version
+15. **Kernel module compilation for Ubuntu**
 16. Nested cni.conf (if needed)
 17. ~~/var/crashes folder should be created~~
 18. ~~Unnecessary packages should be removed from containers~~
 19. ~~Make DEBUG logging configurable~~
 20. ~~**Multi-node deployment**~~
-21. ~~**Cluster-deployment for Contrail, Cassandra, etc **~~
+21. ~~**Cluster-deployment for Contrail, Cassandra, etc**~~
 22. Rework Helm charts to reuse third-party charts instead of built-in sections
 23. ~~Add yum clean at the end of containers~~
 24. ~~Rename kubernetes/kube-agent to kubernetes/vrouter-init~~
@@ -120,3 +120,4 @@ Please refer to the README-HELM.md
 42. ~~Avoid changing /etc/hosts file (rabbitmq).~~
 43. ~~vrouter agent entrypoint: add ability to configure metadata_proxy_secret=contrail in [METADATA]~~
 44. Sort out with KUBERNETES_public_fip_pool
+45. Ubuntu containers
