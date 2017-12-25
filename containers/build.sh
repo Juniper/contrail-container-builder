@@ -2,8 +2,11 @@
 # Builds containers. Parses common.env to take CONTRAIL_REGISTRY, CONTRAIL_REPOSITORY, CONTRAIL_VERSION or takes them from
 # environment.
 # Parameters:
-# path: relative path (from this directory) to module(s) for selective build, can be omitted to build all, "all" value can also be used. Example: controller/webui
-# opts: extra parameters to pass to docker
+# path: relative path (from this directory) to module(s) for selective build. Example: ./build.sh controller/webui
+#   if it's omitted then script will build all
+#   "all" as argument means build all. It's needed if you want to build all and pass some docker opts (see below).
+#   "list" will list all relative paths for build in right order. It's needed for automation. Example: ./build.sh list | grep -v "^INFO:"
+# opts: extra parameters to pass to docker. If you want to pass docker opts you have to specify 'all' as first param (see 'path' argument above)
 
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
@@ -13,23 +16,28 @@ path="$1"
 shift
 opts="$@"
 
-echo 'Contrail version: '$version
-echo 'OpenStack version: '$os_version
-echo 'OpenStack subversion (minor package version): '$os_subversion
-echo 'Contrail registry: '$registry
-echo 'Contrail repository: '$repository
+echo "INFO: Contrail version: $version"
+echo "INFO: OpenStack version: $os_version"
+echo "INFO: OpenStack subversion (minor package version): $os_subversion"
+echo "INFO: Contrail registry: $registry"
+echo "INFO: Contrail repository: $repository"
 if [ -n "$opts" ]; then
-  echo 'Options: '$opts
+  echo "INFO: Options: $opts"
 fi
 
 linux=$(awk -F"=" '/^ID=/{print $2}' /etc/os-release | tr -d '"')
 was_errors=0
+op='build'
 
-build_container () {
+process_container () {
   local dir=${1%/}
+  if [[ $op == 'list' ]]; then
+    echo "${dir#"./"}"
+    return
+  fi
   local container_name=`echo ${dir#"./"} | tr "/" "-"`
-  local container_name='contrail-'${container_name}
-  echo 'Building '$container_name
+  local container_name="contrail-${container_name}"
+  echo "INFO: Building $container_name"
   if [ $linux == "centos" ]; then
     cat $dir/Dockerfile \
       | sed -e 's/\(^ARG CONTRAIL_REGISTRY=.*\)/#\1/' \
@@ -60,29 +68,36 @@ build_container () {
   fi
 }
 
-build_dir () {
+process_dir () {
   local dir=${1%/}
   if [ -f ${dir}/Dockerfile ]; then
-    build_container $dir
+    process_container $dir
     return
   fi
   for d in $(ls -d $dir/*/ 2>/dev/null); do
     if [[ $d != "./" && $d == */base* ]]; then
-      build_dir $d
+      process_dir $d
     fi
   done
   for d in $(ls -d $dir/*/ 2>/dev/null); do
     if [[ $d != "./" && $d != */base* ]]; then
-      build_dir $d
+      process_dir $d
     fi
   done
 }
+
+if [[ $path == 'list' ]] ; then
+  op='list'
+  path="."
+fi
 
 if [ -z $path ] || [ $path = 'all' ]; then
   path="."
 fi
 
 echo "INFO: starting build from $my_dir with relative path $path"
+pushd $my_dir &>/dev/null
+
 echo "INFO: prepare Contrail repo file in base image"
 repo_template=$(sed 's/\(.*\){{ *\(.*\) *}}\(.*\)/\1$\2\3/g' $my_dir/../contrail.repo.template)
 repo_content=$(eval "echo \"$repo_template\"")
@@ -100,10 +115,11 @@ if [[ "$update_contrail_repo" == 'true' ]] ; then
   echo "$repo_content" > base/contrail.repo
   md5sum base/contrail.repo > base/contrail.repo.md5
 fi
-pushd $my_dir
-build_dir $path
-popd
+process_dir $path
+
+popd &>/dev/null
+
 if [ $was_errors -ne 0 ]; then
-  echo 'ERROR: Failed to build some containers, see log files'
+  echo "ERROR: Failed to build some containers, see log files"
   exit 1
 fi
