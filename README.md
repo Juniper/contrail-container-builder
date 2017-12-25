@@ -95,10 +95,10 @@ Please refer to the README-HELM.md
 17. ~~/var/crashes folder should be created~~
 18. ~~Unnecessary packages should be removed from containers~~
 19. ~~Make DEBUG logging configurable~~
-20. **Multi-node deployment**
+20. ~~**Multi-node deployment**~~
 21. **Cluster-deployment for Contrail, Cassandra, etc (Helm POC chart has problem for Cassandra config)**
 22. Rework Helm charts to reuse third-party charts instead of built-in sections
-23. ~~Add yum clean at the end of containers ~~
+23. ~~Add yum clean at the end of containers~~
 24. ~~Rename kubernetes/kube-agent to kubernetes/vrouter-init~~
 25. ~~Move kube-manager to kubernetes folder~~
 26. ~~Add synchronization for containers (supposedly Cassandra and Zookeeper for controller should be run before contrail containers)~~
@@ -121,14 +121,4 @@ Please refer to the README-HELM.md
 42. Allow to configure JVM mem options for cassandra in contrail-template.yaml
 43. Try to remove code-duplication in starter scripts and init containers and own containers for rabbit, zookeeper, cassandra.
 44. ~~Avoid changing /etc/hosts file (rabbitmq).~~
-45. Add some pre- and post- checks to help troubleshooting:
-  * Pre-checks:
-    - ping works
-    - ntp in sync
-    - docker is installed in the correct version
-  * Post-checks:
-    - rabbitmqctl cluster_status
-    - check zookeeper cluster
-    - check cassndra cluster
-    - check that all containers are up
-46. ~~vrouter agent entrypoint: add ability to configure metadata_proxy_secret=contrail in [METADATA]~~
+45. ~~vrouter agent entrypoint: add ability to configure metadata_proxy_secret=contrail in [METADATA]~~
