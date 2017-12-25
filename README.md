@@ -105,20 +105,18 @@ Please refer to the README-HELM.md
 27. ~~Remove contrail-config section from yaml and remove all its remaining usages~~
 28. Add comments to each entrypoint.sh for interface ENV variables
 29. ~~Rework configuration passing in charts~~
-30. Improve provisioning scripts to work with existing docker repo and other features
+30. ~~Improve provisioning scripts to work with existing docker repo and other features~~
 31. Nodemgr - rework to use single conf and no env variables (everything is taken from conf)
 32. Nodemgr - fix known bugs
 33. Nodemgr - package correctly into rpm, now docker takes it by git clone
 34. Optimize size
 35. Make CNI plugin log level configurable.
-36. Sort out with KUBERNETES_public_fip_pool
 36. ~~Sort out with multiple NIC configiration - probably provision link local is needed since it set ip_fabric_ip.~~
 37. Consider to use K8S services to provide VIPs for Config, Analytics and WebUI.
 38. Split common.env to separate build.env and deployment.env
 39. Add switching of dhcp on phys_int after inserting vhost0
 40. Standardize configuration variables across all components in the system.
 41. Add provision-alarm.py (https://bugs.launchpad.net/juniperopenstack/+bug/1736279)
-42. Allow to configure JVM mem options for cassandra in contrail-template.yaml
-43. Try to remove code-duplication in starter scripts and init containers and own containers for rabbit, zookeeper, cassandra.
-44. ~~Avoid changing /etc/hosts file (rabbitmq).~~
-45. ~~vrouter agent entrypoint: add ability to configure metadata_proxy_secret=contrail in [METADATA]~~
+42. ~~Avoid changing /etc/hosts file (rabbitmq).~~
+43. ~~vrouter agent entrypoint: add ability to configure metadata_proxy_secret=contrail in [METADATA]~~
+44. Sort out with KUBERNETES_public_fip_pool
