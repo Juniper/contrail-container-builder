@@ -14,7 +14,7 @@ log_local=${VAR_PREFIX}_LOG_LOCAL
 log_level=${VAR_PREFIX}_LOG_LEVEL
 log_file=${VAR_PREFIX}_LOG_FILE
 
-hostip=$(get_listen_ip_for_node ${NODE_TYPE})
+hostip=$(get_listen_ip_for_node ${NODE_TYPE^^})
 
 cat > /etc/contrail/$NODEMGR_NAME.conf << EOM
 [DEFAULTS]

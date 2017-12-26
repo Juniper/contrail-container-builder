@@ -7,9 +7,12 @@ default_ip_address=`ip address show dev $default_interface |head -3 |tail -1 |tr
 local_ips=$(ip addr | awk '/inet/ {print($2)}')
 
 CONFIG="$KAFKA_CONF_DIR/server.properties"
-CONFIG_NODES=${CONFIG_NODES:-${default_ip_address}}
+
+CONTROLLER_NODES=${CONTROLLER_NODES:-${default_ip_address}}
+CONFIG_NODES=${CONFIG_NODES:-${CONTROLLER_NODES}}
 ZOOKEEPER_NODES=${ZOOKEEPER_NODES:-${CONFIG_NODES}}
-KAFKA_NODES=${KAFKA_NODES:-${ANALYTICSDB_NODES:-${default_ip_address}}}
+ANALYTICSDB_NODES=${ANALYTICSDB_NODES:-${CONTROLLER_NODES}}
+KAFKA_NODES=${KAFKA_NODES:-${ANALYTICSDB_NODES}}
 ZOOKEEPER_ANALYTICS_PORT=${ZOOKEEPER_ANALYTICS_PORT:-2182}
 
 : ${KAFKA_LISTEN_ADDRESS='auto'}
@@ -38,11 +41,8 @@ zk_server_list=''
 IFS=',' read -ra server_list <<< "${ZOOKEEPER_NODES}"
 for server in "${server_list[@]}"; do
   zk_server_list+=${server}:${ZOOKEEPER_ANALYTICS_PORT},
-  # zk_chroot_list+=${server}:${ZOOKEEPER_ANALYTICS_PORT}/kafka-root,
 done
 
-# bin/zookeeper-shell.sh "${zk_server_list::-1}" <<< "create /kafka-root []"
-# zk_list="${zk_chroot_list::-1}"
 zk_list="${zk_server_list::-1}"
 if [[ `echo ${#server_list[@]}` -gt 1 ]] ; then
   replication_factor=2

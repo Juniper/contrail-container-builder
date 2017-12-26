@@ -8,24 +8,17 @@ DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 source "$DIR/../parse-env.sh"
 
-echo 'Contrail version: '$version
-echo 'OpenStack version: '$os_version
-echo 'Contrail registry: '$registry
-echo 'Contrail repository: '$repository
+echo 'Contrail version: '$CONTRAIL_VERSION
+echo 'OpenStack version: '$OPENSTACK_VERSION
+echo 'Contrail registry: '$CONTRAIL_REGISTRY
+echo 'Contrail repository: '$CONTRAIL_REPOSITORY
 
 # Define global variables
-
-export CONTRAIL_VERSION=$version
-export OPENSTACK_VERSION=$os_version
-export CONTRAIL_REGISTRY=$registry
-export CONTRAIL_REPOSITORY=$repository
-export PACKAGES_URL=$packages_url
-
 export package_root_dir="/var/www"
 
 # TODO: do not download/install rpm repository if CONTRAIL_REPOSITORY is defined.
 if [[ -n "$CONTRAIL_REPOSITORY" ]]; then
-  dir_prefix=$(echo $CONTRAIL_REPOSITORY | awk -F'/' '{print $4}' | sed 's/'$version-$os_version'$//')
+  dir_prefix=$(echo $CONTRAIL_REPOSITORY | awk -F'/' '{print $4}' | sed 's/'$CONTRAIL_VERSION-$OPENSTACK_VERSION'$//')
 fi
 export repo_dir="${package_root_dir}/${dir_prefix}${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
 if [ -d $repo_dir ]; then

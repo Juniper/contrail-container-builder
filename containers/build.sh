@@ -16,11 +16,11 @@ path="$1"
 shift
 opts="$@"
 
-echo "INFO: Contrail version: $version"
-echo "INFO: OpenStack version: $os_version"
-echo "INFO: OpenStack subversion (minor package version): $os_subversion"
-echo "INFO: Contrail registry: $registry"
-echo "INFO: Contrail repository: $repository"
+echo "INFO: Contrail version: $CONTRAIL_VERSION"
+echo "INFO: OpenStack version: $OPENSTACK_VERSION"
+echo "INFO: OpenStack subversion (minor package version): $OS_SUBVERSION"
+echo "INFO: Contrail registry: $CONTRAIL_REGISTRY"
+echo "INFO: Contrail repository: $CONTRAIL_REPOSITORY"
 if [ -n "$opts" ]; then
   echo "INFO: Options: $opts"
 fi
@@ -44,21 +44,21 @@ process_container () {
       -e 's/\(^ARG CONTRAIL_VERSION=.*\)/#\1/' \
       -e 's/\(^ARG OPENSTACK_VERSION=.*\)/#\1/' \
       -e 's/\(^ARG OPENSTACK_SUBVERSION=.*\)/#\1/' \
-      -e "s/\$OPENSTACK_VERSION/$os_version/g" \
-      -e "s/\$OPENSTACK_SUBVERSION/$os_subversion/g" \
-      -e 's|^FROM ${CONTRAIL_REGISTRY}/\([^:]*\):${CONTRAIL_VERSION}-${OPENSTACK_VERSION}|FROM '${registry}'/\1:'${version}-${os_version}'|' \
+      -e "s/\$OPENSTACK_VERSION/$OPENSTACK_VERSION/g" \
+      -e "s/\$OPENSTACK_SUBVERSION/$OS_SUBVERSION/g" \
+      -e 's|^FROM ${CONTRAIL_REGISTRY}/\([^:]*\):${CONTRAIL_VERSION}-${OPENSTACK_VERSION}|FROM '${CONTRAIL_REGISTRY}'/\1:'${CONTRAIL_VERSION}-${OPENSTACK_VERSION}'|' \
       > $dir/Dockerfile.nofromargs
     int_opts="-f $dir/Dockerfile.nofromargs"
   fi
   local logfile='build-'$container_name'.log'
-  docker build -t ${registry}'/'${container_name}:${version}-${os_version} \
-    --build-arg CONTRAIL_VERSION=${version} \
-    --build-arg OPENSTACK_VERSION=${os_version} \
-    --build-arg OPENSTACK_SUBVERSION=${os_subversion} \
-    --build-arg CONTRAIL_REGISTRY=${registry} \
+  docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${CONTRAIL_VERSION}-${OPENSTACK_VERSION} \
+    --build-arg CONTRAIL_VERSION=${CONTRAIL_VERSION} \
+    --build-arg OPENSTACK_VERSION=${OPENSTACK_VERSION} \
+    --build-arg OPENSTACK_SUBVERSION=${OS_SUBVERSION} \
+    --build-arg CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY} \
     ${int_opts} ${opts} $dir |& tee $logfile
   if [ ${PIPESTATUS[0]} -eq 0 ]; then
-    docker push ${registry}'/'${container_name}:${version}-${os_version} |& tee -a $logfile
+    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${CONTRAIL_VERSION}-${OPENSTACK_VERSION} |& tee -a $logfile
     if [ ${PIPESTATUS[0]} -eq 0 ]; then
       rm $logfile
     fi

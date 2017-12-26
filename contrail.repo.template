@@ -1,5 +1,5 @@
 [contrail]
 name = Contrail repo
-baseurl = {{ repository }}
+baseurl = {{ CONTRAIL_REPOSITORY }}
 enabled = 1
 gpgcheck = 0

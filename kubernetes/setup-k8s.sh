@@ -1,6 +1,6 @@
 #!/bin/bash
 # Sets up kubernetes on a node. Parameters are taken from common.env.
-# Can be used in a multi-node deployment. For all non-master kubernetes nodes this could be run: 
+# Can be used in a multi-node deployment. For all non-master kubernetes nodes this could be run:
 # setup-k8s.sh join-token=<token>
 # Token can be found in output from setup-k8s.sh run on master node or from "sudo kubeadm token list"
 # For multi-node setup on non-master kubernetes nodes common.env should contain CONTRAIL_REGISTRY and KUBERNETES_API_SERVER
@@ -109,11 +109,11 @@ if [[ -z "$join_token" ]]; then
   cp -u /etc/kubernetes/admin.conf $HOME/.kube/config
   chown -R $(id -u):$(id -g) $HOME/.kube
 else
-  if [[ -z "$kubernetes_api_server" ]]; then
+  if [[ -z "$KUBERNETES_API_SERVER" ]]; then
     echo ERROR: Kubernetes master node IP is not specified in KUBERNETES_API_SERVER
   fi
-  echo Join to $kubernetes_api_server:6443
-  kubeadm join --token $join_token $kubernetes_api_server:6443
+  echo Join to $KUBERNETES_API_SERVER:6443
+  kubeadm join --token $join_token $KUBERNETES_API_SERVER:6443
 fi
 
 EOS
@@ -133,5 +133,4 @@ if [[ -z "$join_token" ]]; then
   fi
 fi
 
-CONTRAIL_REGISTRY=$registry
 source "$DIR/../containers/config-docker.sh"
