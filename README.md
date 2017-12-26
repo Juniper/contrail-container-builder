@@ -90,13 +90,13 @@ Please refer to the README-HELM.md
 12. ~~Create initContainer for vrouter compilation~~
 13. Split charts to Contrail-only and the rest
 14. Remove all notions about OpenStack/Keystone/Kubernetes from Contrail containers and add separate containers (sidecars) bringing orchestrator-related functionality.
-15. Ubuntu version
+15. **Kernel module compilation for Ubuntu**
 16. Nested cni.conf (if needed)
 17. ~~/var/crashes folder should be created~~
 18. ~~Unnecessary packages should be removed from containers~~
 19. ~~Make DEBUG logging configurable~~
 20. ~~**Multi-node deployment**~~
-21. **Cluster-deployment for Contrail, Cassandra, etc (Helm POC chart has problem for Cassandra config)**
+21. ~~**Cluster-deployment for Contrail, Cassandra, etc**~~
 22. Rework Helm charts to reuse third-party charts instead of built-in sections
 23. ~~Add yum clean at the end of containers~~
 24. ~~Rename kubernetes/kube-agent to kubernetes/vrouter-init~~
@@ -105,20 +105,19 @@ Please refer to the README-HELM.md
 27. ~~Remove contrail-config section from yaml and remove all its remaining usages~~
 28. Add comments to each entrypoint.sh for interface ENV variables
 29. ~~Rework configuration passing in charts~~
-30. Improve provisioning scripts to work with existing docker repo and other features
+30. ~~Improve provisioning scripts to work with existing docker repo and other features~~
 31. Nodemgr - rework to use single conf and no env variables (everything is taken from conf)
 32. Nodemgr - fix known bugs
 33. Nodemgr - package correctly into rpm, now docker takes it by git clone
 34. Optimize size
 35. Make CNI plugin log level configurable.
-36. Sort out with KUBERNETES_public_fip_pool
 36. ~~Sort out with multiple NIC configiration - probably provision link local is needed since it set ip_fabric_ip.~~
 37. Consider to use K8S services to provide VIPs for Config, Analytics and WebUI.
 38. Split common.env to separate build.env and deployment.env
 39. Add switching of dhcp on phys_int after inserting vhost0
 40. Standardize configuration variables across all components in the system.
 41. Add provision-alarm.py (https://bugs.launchpad.net/juniperopenstack/+bug/1736279)
-42. Allow to configure JVM mem options for cassandra in contrail-template.yaml
-43. Try to remove code-duplication in starter scripts and init containers and own containers for rabbit, zookeeper, cassandra.
-44. ~~Avoid changing /etc/hosts file (rabbitmq).~~
-45. ~~vrouter agent entrypoint: add ability to configure metadata_proxy_secret=contrail in [METADATA]~~
+42. ~~Avoid changing /etc/hosts file (rabbitmq).~~
+43. ~~vrouter agent entrypoint: add ability to configure metadata_proxy_secret=contrail in [METADATA]~~
+44. Sort out with KUBERNETES_public_fip_pool
+45. Ubuntu containers
