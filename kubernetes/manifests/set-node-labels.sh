@@ -39,25 +39,23 @@ else
 fi
 
 check_specified_ips() {
-  local _type=$1
-  local _nodes=${_type}_NODES
+  local _type=${1,,}
+  local _nodes=${_type^^}_NODES
   IFS="," read -ra _ips <<< "${!_nodes}"
   if [[ "${#_ips[@]}" == "0" ]]; then
-    _nodes=`echo $_nodes | tr 'a-z' 'A-Z'`
-    echo ERROR: No IP is specified for _type nodes in $_nodes
+    echo "ERROR: No IP is specified for $_type in var $_nodes = '${!_nodes}'"
   else
     for _ip in ${_ips[@]}; do
       if ! [[ "${node_ips[@]}" =~ "${_ip}" ]]; then
-        _nodes=`echo $_nodes | tr 'a-z' 'A-Z'`
-        echo ERROR: Cannot find Kubernetes node for $_ip specified in $_nodes
+        echo "ERROR: Cannot find Kubernetes node for $_ip specified in $_nodes = '${!_nodes}'"
       fi
     done
   fi
 }
 
 update_node_label() {
-  local _pod_type=$1
-  local _nodes=${_pod_type}_NODES
+  local _pod_type=${1,,}
+  local _nodes=${_pod_type^^}_NODES
   local _label=${label_prefix}${_pod_type}
   for _node in "${!node_ips[@]}"; do
     if [[ "${!_nodes}" =~ "${node_ips[${_node}]}" ]]; then
