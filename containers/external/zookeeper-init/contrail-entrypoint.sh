@@ -1,10 +1,12 @@
 #!/bin/bash -e
 
+ZOOKEEPER_PORT=${ZOOKEEPER_PORT:-2181}
+ZOOKEEPER_PORTS=${ZOOKEEPER_PORTS:-'2888:3888'}
+
 ord=1
 my_ord=0
 IFS=',' read -ra srv_list <<< "$ZOOKEEPER_NODES"
 local_ips=$(ip addr | awk '/inet/ {print($2)}')
-ZOOKEEPER_PORTS=${ZOOKEEPER_PORTS:-'2888:3888'}
 zoo_servers=''
 for srv in "${srv_list[@]}"; do
   if [[ -z "$ZOO_SERVERS" ]] ; then
