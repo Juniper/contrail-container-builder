@@ -116,7 +116,7 @@ Please refer to the README-HELM.md
 38. Split common.env to separate build.env and deployment.env
 39. Add switching of dhcp on phys_int after inserting vhost0
 40. Standardize configuration variables across all components in the system.
-41. Add provision-alarm.py (https://bugs.launchpad.net/juniperopenstack/+bug/1736279)
+41. ~~Add provision-alarm.py (https://bugs.launchpad.net/juniperopenstack/+bug/1736279)~~
 42. ~~Avoid changing /etc/hosts file (rabbitmq).~~
 43. ~~vrouter agent entrypoint: add ability to configure metadata_proxy_secret=contrail in [METADATA]~~
 44. Sort out with KUBERNETES_public_fip_pool

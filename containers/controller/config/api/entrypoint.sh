@@ -39,6 +39,7 @@ function wait_and_provision_self() {
     --linklocal_service_port $LINKLOCAL_SERVICE_PORT \
     --ipfabric_service_ip $IPFABRIC_SERVICE_IP \
     --ipfabric_service_port $IPFABRIC_SERVICE_PORT
+  provision provision_alarm.py
 }
 
 wait_and_provision_self &
