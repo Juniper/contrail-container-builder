@@ -1,0 +1,327 @@
+# Docker-compose Contrail application.
+#
+# The following environment variables are used in this file and
+# they are expected to be provided:
+#   - CONTRAIL_REGISTRY   (docker registry where contrail containers are)
+#   - CONTRAIL_VERSION    (Contrail release version, e.g. 4.1.0.0-6)
+#   - OPENSTACK_VERSION   (Openstack version, e.g. ocata)
+#   - ENV_FILE            (a file with env variables for Contrail services)
+#   - CONFIGDB_NODES      (comma separated list of IPs for config DB nodes)
+#   - ANALYTICSGDB_NODES  (comma separated list of IPs for config DB nodes)
+#   - ZOOKEEPER_NODES     (comma separated list of IPs for zookeeper nodes)
+#   - RABBITMQ_NODES      (comma separated list of IPs for rabbitmq nodes)
+#   (all other params for Contrail are to be provided via env file)
+# In case of using helping scripts (up.sh, down.sh, ..) from this directory
+# all these variables are defined automatically based on a provided info in
+# the common.env in root project folder. Full list of supported env variables
+# could be found in common.env.sample in the root project folder.
+---
+version: '2.1'
+services:
+  network:
+    image: docker.io/kubernetes/pause
+    network_mode: "host"
+    volumes:
+      - /etc/hosts:/etc/hosts
+
+  # ===
+  # common services
+  zookeeper:
+    image: "${CONTRAIL_REGISTRY}/contrail-external-zookeeper:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    environment:
+      - ZOOKEEPER_NODES
+    network_mode: "service:network"
+    depends_on:
+      - network
+    restart: on-failure
+  rabbitmq:
+    image: "${CONTRAIL_REGISTRY}/contrail-external-rabbitmq:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    environment:
+      - RABBITMQ_NODES
+      - RABBITMQ_ERLANG_COOKIE=${RABBITMQ_ERLANG_COOKIE:-'abcdefg'}
+    network_mode: "service:network"
+    depends_on:
+      - network
+    restart: on-failure
+  redis:
+    image: "redis:4.0.2"
+    env_file: ${ENV_FILE}
+    network_mode: "service:network"
+    depends_on:
+      - network
+    restart: on-failure
+
+  # ===
+  # config db services
+  configdb-cassandra:
+    image: "${CONTRAIL_REGISTRY}/contrail-external-cassandra:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    environment:
+      - CASSANDRA_SEEDS=${CONFIGDB_NODES}
+      - CASSANDRA_LISTEN_ADDRESS=auto
+      - CASSANDRA_START_RPC=true
+      - CASSANDRA_CLUSTER_NAME=contrail_database
+      - CASSANDRA_PORT=9161
+      - CASSANDRA_CQL_PORT=9041
+      - CASSANDRA_SSL_STORAGE_PORT=7011
+      - CASSANDRA_STORAGE_PORT=7010
+      - CASSANDRA_JMX_LOCAL_PORT=7201
+    network_mode: "service:network"
+    depends_on:
+      - network
+    restart: on-failure
+
+  # ===
+  # config services
+  config-nodemgr:
+    image: "${CONTRAIL_REGISTRY}/contrail-nodemgr:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    environment:
+      - NODE_TYPE=config
+    network_mode: "service:network"
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - network
+    restart: on-failure
+  api:
+    image: "${CONTRAIL_REGISTRY}/contrail-controller-config-api:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    network_mode: "service:network"
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+    depends_on:
+      - network
+    restart: on-failure
+  svcmonitor:
+    image: "${CONTRAIL_REGISTRY}/contrail-controller-config-svcmonitor:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    network_mode: "service:network"
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+    depends_on:
+      - network
+    restart: on-failure
+  schema:
+    image: "${CONTRAIL_REGISTRY}/contrail-controller-config-schema:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    network_mode: "service:network"
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+    depends_on:
+      - network
+    restart: on-failure
+  devicemgr:
+    image: "${CONTRAIL_REGISTRY}/contrail-controller-config-devicemgr:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    network_mode: "service:network"
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+    depends_on:
+      - network
+    restart: on-failure
+
+  # ===
+  # control services
+  control-nodemgr:
+    image: "${CONTRAIL_REGISTRY}/contrail-nodemgr:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    environment:
+      - NODE_TYPE=control
+    network_mode: "service:network"
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - network
+    restart: on-failure
+  control:
+    image: "${CONTRAIL_REGISTRY}/contrail-controller-control-control:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    network_mode: "service:network"
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+    depends_on:
+      - network
+    restart: on-failure
+  control-named:
+    image: "${CONTRAIL_REGISTRY}/contrail-controller-control-named:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    network_mode: "service:network"
+    privileged: true
+    volumes:
+     - /var/log/contrail:/var/log/contrail
+    volumes_from:
+      - control-dns
+    depends_on:
+      - network
+      - control-dns
+    restart: on-failure
+  control-dns:
+    image: "${CONTRAIL_REGISTRY}/contrail-controller-control-dns:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    network_mode: "service:network"
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+      - /etc/contrail
+    depends_on:
+      - network
+    restart: on-failure
+
+  # ===
+  # analytics db services
+  analyticsdb-kafka:
+    image: "${CONTRAIL_REGISTRY}/contrail-external-kafka:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    network_mode: "service:network"
+    depends_on:
+      - network
+    restart: on-failure
+  analyticsdb-cassandra:
+    image: "${CONTRAIL_REGISTRY}/contrail-external-cassandra:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    environment:
+      - CASSANDRA_SEEDS=${ANALYTICSDB_NODES}
+      - CASSANDRA_LISTEN_ADDRESS=auto
+      - CASSANDRA_START_RPC=true
+      - CASSANDRA_CLUSTER_NAME=contrail_analytics
+      - CASSANDRA_PORT=9160
+      - CASSANDRA_CQL_PORT=9042
+      - CASSANDRA_SSL_STORAGE_PORT=7001
+      - CASSANDRA_STORAGE_PORT=7000
+      - CASSANDRA_JMX_LOCAL_PORT=7200
+    network_mode: "service:network"
+    depends_on:
+      - network
+    restart: on-failure
+
+  # ===
+  # analytics services
+  analytics-nodemgr:
+    image: "${CONTRAIL_REGISTRY}/contrail-nodemgr:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    environment:
+      - NODE_TYPE=analytics
+    network_mode: "service:network"
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - network
+    restart: on-failure
+  analytics-api:
+    image: "${CONTRAIL_REGISTRY}/contrail-analytics-api:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    network_mode: "service:network"
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+    depends_on:
+      - network
+    restart: on-failure
+  analytics-collector:
+    image: "${CONTRAIL_REGISTRY}/contrail-analytics-collector:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    network_mode: "service:network"
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+    depends_on:
+      - network
+    restart: on-failure
+  analytics-query-engine:
+    image: "${CONTRAIL_REGISTRY}/contrail-analytics-query-engine:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    network_mode: "service:network"
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+    depends_on:
+      - network
+    restart: on-failure
+  analytics-alarm-gen:
+    image: "${CONTRAIL_REGISTRY}/contrail-analytics-alarm-gen:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    network_mode: "service:network"
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+    depends_on:
+      - network
+    restart: on-failure
+  analytics-snmp-collector:
+    image: "${CONTRAIL_REGISTRY}/contrail-analytics-snmp-collector:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    network_mode: "service:network"
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+    depends_on:
+      - network
+    restart: on-failure
+  analytics-topology:
+    image: "${CONTRAIL_REGISTRY}/contrail-analytics-topology:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    network_mode: "service:network"
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+    depends_on:
+      - network
+    restart: on-failure
+  analytics-redis:
+    env_file: ${ENV_FILE}
+    image: "redis:4.0.2"
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+    depends_on:
+      - network
+    restart: on-failure
+
+  # ===
+  # contrail web ui services
+  contrail-webui:
+    image: "${CONTRAIL_REGISTRY}/contrail-controller-webui-web:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    network_mode: "service:network"
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+    depends_on:
+      - network
+    restart: on-failure
+  contrail-webui-job:
+    image: "${CONTRAIL_REGISTRY}/contrail-controller-webui-job:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    network_mode: "service:network"
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+    depends_on:
+      - network
+    restart: on-failure
+
+  # ===
+  # vrouter services
+  vrouter-nodemgr:
+    image: "${CONTRAIL_REGISTRY}/contrail-nodemgr:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    environment:
+      - NODE_TYPE=vrouter
+    network_mode: host
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: on-failure
+  vrouter-init-kernel:
+    image: "${CONTRAIL_REGISTRY}/contrail-agent-vrouter-init-kernel:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    network_mode: host
+    privileged: true
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+  vrouter-agent:
+    image: "${CONTRAIL_REGISTRY}/contrail-agent-vrouter:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+    env_file: ${ENV_FILE}
+    network_mode: host
+    privileged: true
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+    restart: on-failure
+    depends_on:
+      - vrouter-init-kernel
