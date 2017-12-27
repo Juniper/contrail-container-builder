@@ -7,8 +7,8 @@
 label_prefix="node-role.opencontrail.org/"
 
 declare -a pod_types=(
-  config control webui analytics agent
-  configdb analyticsdb zookeeper kafka rabbitmq
+  CONFIG CONTROL WEBUI ANALYTICS AGENT
+  CONFIGDB ANALYTICSDB ZOOKEEPER KAFKA RABBITMQ
 )
 
 manifest_dir="${BASH_SOURCE%/*}"
@@ -40,7 +40,7 @@ fi
 
 check_specified_ips() {
   local _type=$1
-  local _nodes=${_type}_nodes
+  local _nodes=${_type}_NODES
   IFS="," read -ra _ips <<< "${!_nodes}"
   if [[ "${#_ips[@]}" == "0" ]]; then
     _nodes=`echo $_nodes | tr 'a-z' 'A-Z'`
@@ -57,7 +57,7 @@ check_specified_ips() {
 
 update_node_label() {
   local _pod_type=$1
-  local _nodes=${_pod_type}_nodes
+  local _nodes=${_pod_type}_NODES
   local _label=${label_prefix}${_pod_type}
   for _node in "${!node_ips[@]}"; do
     if [[ "${!_nodes}" =~ "${node_ips[${_node}]}" ]]; then
