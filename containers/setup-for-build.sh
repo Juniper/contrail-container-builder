@@ -23,7 +23,7 @@ fi
 export repo_dir="${package_root_dir}/${dir_prefix}${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
 if [ -d $repo_dir ]; then
   echo 'Remove existing packages in '$repo_dir
-  rm -rf $repo_dir
+  sudo rm -rf $repo_dir
 fi
 sudo mkdir -p $repo_dir
 sudo chown -R $USER $repo_dir
@@ -36,7 +36,6 @@ if [[ -f /etc/selinux/config && -n `grep "^[ ]*SELINUX[ ]*=" /etc/selinux/config
 else
   sudo bash -c "echo 'SELINUX=permissive' >> /etc/selinux/config"
 fi
-
 
 source "$DIR/install-http-server.sh"
 $DIR/install-repository.sh
