@@ -3,7 +3,8 @@ ARG CONTRAIL_REGISTRY=localhost:5000
 ARG OPENSTACK_VERSION=newton
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_VERSION}-${OPENSTACK_VERSION}
 
-RUN yum install -y contrail-vrouter-agent contrail-vrouter-utils && \
+RUN yum install -y contrail-vrouter-agent contrail-vrouter-utils \
+      sudo python-opencontrail-vrouter-netns python-contrail-vrouter-api && \
     yum clean all && \
     rm -rf /var/cache/yum && \
     ldconfig
