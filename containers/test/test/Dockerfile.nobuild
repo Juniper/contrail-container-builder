@@ -4,19 +4,19 @@ FROM ${CONTRAIL_REGISTRY}/contrail-test-base:latest
 ARG OPENSTACK_VERSION=ocata
 ARG OPENSTACK_SUBVERSION=3
 
+COPY *.repo /etc/yum.repos.d/
+
 RUN yum install -y \
       https://repos.fedorapeople.org/repos/openstack/openstack-$OPENSTACK_VERSION/rdo-release-$OPENSTACK_VERSION-$OPENSTACK_SUBVERSION.noarch.rpm && \
     yum clean all -y && \
     rm -rf /var/cache/yum && \
     ldconfig
 
-RUN pip uninstall -y requests
-
 RUN yum install -y \
       python-ceilometerclient python-cinderclient python-barbicanclient \
       python-glanceclient python-heatclient python-novaclient \
-      python-selenium python-kubernetes \
-      python-contrail contrail-test contrail-fabric-utils
+      python-selenium python-kubernetes python-contrail \
+      contrail-test contrail-fabric-utils
 
 RUN yum --setopt=obsoletes=0 install -y python-neutronclient
 RUN mkdir -p /contrail-test/images
