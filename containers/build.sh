@@ -86,6 +86,24 @@ process_dir () {
   done
 }
 
+update_contrail_repo () {
+    local dir=${1%/}
+    update_contrail_repo='true'
+    if [[ -f ${dir}/contrail.repo && -f ${dir}/contrail.repo.md5 ]] ; then
+      echo "INFO: ${dir}/contrail.repo and its checksum are exist, check them"
+      new_repo_md5=$(echo "$repo_content" | md5sum | awk '{print($1)}')
+      old_repo_md5=$(cat ${dir}/contrail.repo.md5 | awk '{print($1)}')
+      if [[ "$old_repo_md5" == "$new_repo_md5" ]] ; then
+        echo "INFO: content of contrail.repo is not changed"
+        update_contrail_repo='false'
+      fi
+    fi
+    if [[ "$update_contrail_repo" == 'true' ]] ; then
+      echo "$repo_content" > ${dir}/contrail.repo
+      md5sum ${dir}/contrail.repo > ${dir}/contrail.repo.md5
+    fi
+}
+
 if [[ $path == 'list' ]] ; then
   op='list'
   path="."
@@ -101,20 +119,8 @@ pushd $my_dir &>/dev/null
 echo "INFO: prepare Contrail repo file in base image"
 repo_template=$(sed 's/\(.*\){{ *\(.*\) *}}\(.*\)/\1$\2\3/g' $my_dir/../contrail.repo.template)
 repo_content=$(eval "echo \"$repo_template\"")
-update_contrail_repo='true'
-if [[ -f base/contrail.repo && -f base/contrail.repo.md5 ]] ; then
-  echo "INFO: base/contrail.repo and its checksum are exist, check them"
-  new_repo_md5=$(echo "$repo_content" | md5sum | awk '{print($1)}')
-  old_repo_md5=$(cat base/contrail.repo.md5 | awk '{print($1)}')
-  if [[ "$old_repo_md5" == "$new_repo_md5" ]] ; then
-    echo "INFO: content of contrail.repo is not changed"
-    update_contrail_repo='false'
-  fi
-fi
-if [[ "$update_contrail_repo" == 'true' ]] ; then
-  echo "$repo_content" > base/contrail.repo
-  md5sum base/contrail.repo > base/contrail.repo.md5
-fi
+update_contrail_repo base
+update_contrail_repo test/test
 process_dir $path
 
 popd &>/dev/null
