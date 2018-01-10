@@ -26,11 +26,15 @@ if [ -n "$opts" ]; then
   echo "INFO: Options: $opts"
 fi
 
+docker_ver=$(docker -v | awk -F' ' '{print $3}' | sed 's/,//g')
+echo "INFO: Docker version: $docker_ver"
+
 was_errors=0
 op='build'
 
 process_container () {
   local dir=${1%/}
+  local docker_file=$2
   if [[ $op == 'list' ]]; then
     echo "${dir#"./"}"
     return
@@ -38,11 +42,8 @@ process_container () {
   local container_name=`echo ${dir#"./"} | tr "/" "-"`
   local container_name="contrail-${container_name}"
   echo "INFO: Building $container_name"
-  docker_file="$dir/Dockerfile.${LINUX_DISTR}"
-  if [[ ! -f $docker_file ]] ; then
-    docker_file="$dir/Dockerfile"
-  fi
-  if [ $LINUX_ID == "centos" ]; then
+  local build_arg_opts=''
+  if [[ "$docker_ver" < '17.06' ]] ; then
     cat $docker_file \
       | sed -e 's/\(^ARG CONTRAIL_REGISTRY=.*\)/#\1/' \
       -e 's/\(^ARG CONTRAIL_VERSION=.*\)/#\1/' \
@@ -55,17 +56,18 @@ process_container () {
       -e 's|^FROM ${CONTRAIL_REGISTRY}/\([^:]*\):${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}|FROM '${CONTRAIL_REGISTRY}'/\1:'${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}'|' \
       > ${docker_file}.nofromargs
     docker_file="${docker_file}.nofromargs"
+  else
+    build_arg_opts+=" --build-arg CONTRAIL_VERSION=${CONTRAIL_VERSION}"
+    build_arg_opts+=" --build-arg OPENSTACK_VERSION=${OPENSTACK_VERSION}"
+    build_arg_opts+=" --build-arg OPENSTACK_SUBVERSION=${OS_SUBVERSION}"
+    build_arg_opts+=" --build-arg CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY}"
+    build_arg_opts+=" --build-arg LINUX_DISTR_VER=${LINUX_DISTR_VER}"
+    build_arg_opts+=" --build-arg LINUX_DISTR=${LINUX_DISTR}"
   fi
 
   local logfile='build-'$container_name'.log'
   docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION} \
-    --build-arg CONTRAIL_VERSION=${CONTRAIL_VERSION} \
-    --build-arg OPENSTACK_VERSION=${OPENSTACK_VERSION} \
-    --build-arg OPENSTACK_SUBVERSION=${OS_SUBVERSION} \
-    --build-arg CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY} \
-    --build-arg LINUX_DISTR_VER=${LINUX_DISTR_VER} \
-    --build-arg LINUX_DISTR=${LINUX_DISTR} \
-    -f $docker_file ${opts} $dir |& tee $logfile
+    ${build_arg_opts} -f $docker_file ${opts} $dir |& tee $logfile
   if [ ${PIPESTATUS[0]} -eq 0 ]; then
     docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION} |& tee -a $logfile
     if [ ${PIPESTATUS[0]} -eq 0 ]; then
@@ -79,8 +81,14 @@ process_container () {
 
 process_dir () {
   local dir=${1%/}
-  if [ -f ${dir}/Dockerfile ]; then
-    process_container $dir
+  local docker_file="$dir/Dockerfile"
+  local docker_file_ld="$docker_file.$LINUX_DISTR"
+  if [[ -f "$docker_file" || -f "$docker_file_ld" ]] ; then
+    local df=$docker_file_ld
+    if [[ ! -f "$df" ]] ; then
+      df=$docker_file
+    fi
+    process_container "$dir" "$df"
     return
   fi
   for d in $(ls -d $dir/*/ 2>/dev/null); do
