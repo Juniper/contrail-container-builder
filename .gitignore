@@ -1,7 +1,12 @@
 *.log
 .vscode
 Dockerfile.nofromargs
+Dockerfile.*.nofromargs
 common.env
 my-contrail.yaml
 contrail.repo
 contrail.repo.md5
+contrail.list
+contrail.list.md5
+contrail.gpg
+contrail.gpg.md5

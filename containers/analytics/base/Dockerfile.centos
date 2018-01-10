@@ -4,7 +4,9 @@ ARG OPENSTACK_VERSION=newton
 ARG LINUX_DISTR=centos
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}
 
-COPY entrypoint.sh /
-COPY contrail-entrypoint.sh /
+RUN yum install -y contrail-openstack-analytics python-sqlalchemy && \
+    yum clean all -y && \
+    rm -rf /var/cache/yum
 
-ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["/usr/bin/tail","-f","/dev/null"]

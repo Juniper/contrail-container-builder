@@ -16,6 +16,7 @@ path="$1"
 shift
 opts="$@"
 
+echo "INFO: Linux: $LINUX_DISTR:$LINUX_DISTR_VER"
 echo "INFO: Contrail version: $CONTRAIL_VERSION"
 echo "INFO: OpenStack version: $OPENSTACK_VERSION"
 echo "INFO: OpenStack subversion (minor package version): $OS_SUBVERSION"
@@ -25,7 +26,6 @@ if [ -n "$opts" ]; then
   echo "INFO: Options: $opts"
 fi
 
-linux=$(awk -F"=" '/^ID=/{print $2}' /etc/os-release | tr -d '"')
 was_errors=0
 op='build'
 
@@ -38,27 +38,36 @@ process_container () {
   local container_name=`echo ${dir#"./"} | tr "/" "-"`
   local container_name="contrail-${container_name}"
   echo "INFO: Building $container_name"
-  if [ $linux == "centos" ]; then
-    cat $dir/Dockerfile \
+  docker_file="$dir/Dockerfile.${LINUX_DISTR}"
+  if [[ ! -f $docker_file ]] ; then
+    docker_file="$dir/Dockerfile"
+  fi
+  if [ $LINUX_ID == "centos" ]; then
+    cat $docker_file \
       | sed -e 's/\(^ARG CONTRAIL_REGISTRY=.*\)/#\1/' \
       -e 's/\(^ARG CONTRAIL_VERSION=.*\)/#\1/' \
       -e 's/\(^ARG OPENSTACK_VERSION=.*\)/#\1/' \
       -e 's/\(^ARG OPENSTACK_SUBVERSION=.*\)/#\1/' \
       -e "s/\$OPENSTACK_VERSION/$OPENSTACK_VERSION/g" \
       -e "s/\$OPENSTACK_SUBVERSION/$OS_SUBVERSION/g" \
-      -e 's|^FROM ${CONTRAIL_REGISTRY}/\([^:]*\):${CONTRAIL_VERSION}-${OPENSTACK_VERSION}|FROM '${CONTRAIL_REGISTRY}'/\1:'${CONTRAIL_VERSION}-${OPENSTACK_VERSION}'|' \
-      > $dir/Dockerfile.nofromargs
-    int_opts="-f $dir/Dockerfile.nofromargs"
+      -e "s/\$LINUX_DISTR_VER/$LINUX_DISTR_VER/g" \
+      -e "s/\$LINUX_DISTR/$LINUX_DISTR/g" \
+      -e 's|^FROM ${CONTRAIL_REGISTRY}/\([^:]*\):${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}|FROM '${CONTRAIL_REGISTRY}'/\1:'${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}'|' \
+      > ${docker_file}.nofromargs
+    docker_file="${docker_file}.nofromargs"
   fi
+
   local logfile='build-'$container_name'.log'
-  docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${CONTRAIL_VERSION}-${OPENSTACK_VERSION} \
+  docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION} \
     --build-arg CONTRAIL_VERSION=${CONTRAIL_VERSION} \
     --build-arg OPENSTACK_VERSION=${OPENSTACK_VERSION} \
     --build-arg OPENSTACK_SUBVERSION=${OS_SUBVERSION} \
     --build-arg CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY} \
-    ${int_opts} ${opts} $dir |& tee $logfile
+    --build-arg LINUX_DISTR_VER=${LINUX_DISTR_VER} \
+    --build-arg LINUX_DISTR=${LINUX_DISTR} \
+    -f $docker_file ${opts} $dir |& tee $logfile
   if [ ${PIPESTATUS[0]} -eq 0 ]; then
-    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${CONTRAIL_VERSION}-${OPENSTACK_VERSION} |& tee -a $logfile
+    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION} |& tee -a $logfile
     if [ ${PIPESTATUS[0]} -eq 0 ]; then
       rm $logfile
     fi

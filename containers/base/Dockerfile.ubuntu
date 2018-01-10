@@ -1,0 +1,27 @@
+ARG LINUX_DISTR=ubuntu
+ARG LINUX_DISTR_VER=14.04
+
+FROM $LINUX_DISTR:$LINUX_DISTR_VER
+
+ARG OPENSTACK_VERSION=newton
+ARG OPENSTACK_SUBVERSION=5
+
+# this copy should be before apt-get install
+COPY *.list /etc/apt/sources.list.d/
+COPY *.gpg /etc/apt/trusted.gpg.d/
+
+# note: ldconfig looks strange. contrail-lib installs shared libraries but do not call it...
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
+    apt-get install -y software-properties-common && \
+    add-apt-repository -y cloud-archive:ocata && \
+    apt-get update && \
+    apt-get install -y iproute2 less contrail-lib contrail-setup contrail-utils python-contrail && \
+    apt-get autoremove && \
+    apt-get clean && \
+    rm -rf /var/cache/apt && \
+    ldconfig
+
+COPY *.sh /
+
+CMD ["/usr/bin/tail","-f","/dev/null"]

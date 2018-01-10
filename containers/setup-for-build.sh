@@ -28,14 +28,23 @@ fi
 sudo mkdir -p $repo_dir
 sudo chown -R $USER $repo_dir
 
-# Run code
-
-sudo setenforce 0 || /bin/true
-if [[ -f /etc/selinux/config && -n `grep "^[ ]*SELINUX[ ]*=" /etc/selinux/config` ]]; then
-  sudo sed -i 's/^[ ]*SELINUX[ ]*=/SELINUX=permissive/g' /etc/selinux/config
+if [[ "$LINUX_ID" != 'ubuntu' ]] ; then
+  # Disable selinux
+  sudo setenforce 0 || /bin/true
+  if [[ -f /etc/selinux/config && -n `grep "^[ ]*SELINUX[ ]*=" /etc/selinux/config` ]]; then
+    sudo sed -i 's/^[ ]*SELINUX[ ]*=/SELINUX=permissive/g' /etc/selinux/config
+  else
+    sudo bash -c "echo 'SELINUX=permissive' >> /etc/selinux/config"
+  fi
+  # Stop firewall
+  sudo service firewalld stop || /bin/true
+  sudo chkconfig firewalld off || /bin/true
 else
-  sudo bash -c "echo 'SELINUX=permissive' >> /etc/selinux/config"
+  # Stop firewall
+  sudo service ufw stop || /bin/true
+  sudo systemctl disable ufw || /bin/true
 fi
+sudo iptables -F || /bin/true
 
 source "$DIR/install-http-server.sh"
 $DIR/install-repository.sh

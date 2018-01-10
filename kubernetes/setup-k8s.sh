@@ -33,7 +33,6 @@ if [[ $nocasematch == "off" ]]; then
   shopt -u nocasematch
 fi
 
-linux=$(awk -F"=" '/^ID=/{print $2}' /etc/os-release | tr -d '"')
 hostname=`cat /etc/hostname`
 
 sudo -u root /bin/bash << EOS
@@ -86,11 +85,11 @@ EOF
   echo "net.bridge.bridge-nf-call-ip6tables=1" >> /etc/sysctl.conf
 }
 
-case "${linux}" in
+case "${LINUX_ID}" in
   "ubuntu" )
     install_for_ubuntu
     ;;
-  "centos" )
+  "centos" | "rhel" )
     install_for_centos
     ;;
 esac

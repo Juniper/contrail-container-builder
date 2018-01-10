@@ -11,7 +11,7 @@ fi
 registry_name="registry_${port}"
 if ! sudo docker ps --all | grep -q "${registry_name}" ; then
   echo "Start new Docker Registry on port $port"
-  sudo docker run -d --restart=always --name registry_$port \
+  sudo docker run -d --restart=always --name $registry_name\
     -v /opt:/var/lib/registry:Z \
     -e REGISTRY_HTTP_ADDR=0.0.0.0:$port -p $port:$port \
     registry:2

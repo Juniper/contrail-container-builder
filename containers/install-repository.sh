@@ -7,6 +7,9 @@
 # Then .tgz archive is unpacked by script to specific folder in /var/www/ directory.
 # In the specific folder repodata is built by the script.
 
+DIR="${BASH_SOURCE%/*}"
+if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
+
 paths_to_remove=""
 
 if [[ "$CONTRAIL_INSTALL_PACKAGES_URL" =~ http[s]*:// ]] ; then
@@ -29,24 +32,42 @@ else
   package_fname="$CONTRAIL_INSTALL_PACKAGES_URL"
 fi
 
-if [[ "$package_fname" == *rpm ]] ; then
-  # unpack packages archive from rpm
-  # script awaits format of rpm file as at build server
-  temp_dir=$(mktemp -d)
-  pushd $temp_dir
-  rpm2cpio $package_fname | cpio -idmv
-  popd
-  paths_to_remove="$paths_to_remove $temp_dir"
-  package_fname="$temp_dir/opt/contrail/contrail_packages/contrail_rpms.tgz"
-fi
+case $package_fname in
+  *rpm)
+    # unpack packages archive from rpm
+    # script awaits format of rpm file as at build server
+    temp_dir=$(mktemp -d)
+    pushd $temp_dir
+    rpm2cpio $package_fname | cpio -idmv
+    popd
+    paths_to_remove="$paths_to_remove $temp_dir"
+    package_fname="$temp_dir/opt/contrail/contrail_packages/contrail_rpms.tgz"
+    ;;
+  *deb)
+    echo "INFO: it is expected that for deb packages tgz archive is provided"
+    ;;
+esac
 
 echo "Extract packages to $repo_dir"
 tar -xvzf "$package_fname" -C $repo_dir
 
-pushd $repo_dir
-rm -rf repodata
-createrepo .
-popd
+# prepare repo
+case $LINUX_DISTR in
+  "centos" | "rhel" )
+    pushd $repo_dir
+    rm -rf repodata
+    createrepo .
+    popd
+    ;;
+  "ubuntu" )
+    ${DIR}/create-aptrepo.sh "$repo_dir"
+    ;;
+  *)
+    echo "ERROR: unsupported linux distr $LINUX_DISTR"
+    exit -1
+esac
+
+
 
 if [[ -n "$paths_to_remove" ]] ; then
   rm -rf $paths_to_remove

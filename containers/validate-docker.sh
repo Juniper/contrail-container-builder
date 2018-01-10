@@ -18,10 +18,14 @@ function install_docker () {
 
 hash docker 2>/dev/null || install_docker
 
-linux=$(awk -F"=" '/^ID=/{print $2}' /etc/os-release | tr -d '"')
 docker_ver=$(docker -v | awk -F' ' '{print $3}')
 
-if [[ "$linux" == "centos" || $docker_ver > "17.06" ]]; then
+if [[ $docker_ver > "17.06" ]] ; then
+  exit
+fi
+
+# TODO: The code of docker patching below (after 'if') makes docker broken on ubuntu 14.04
+if [[ "$LINUX_ID" != "ubuntu" || "$LINUX_VER_ID" > "14.04" ]] ; then
   exit
 fi
 
@@ -40,4 +44,3 @@ sudo service docker start
 
 rm $tgz_file
 rm -rf $tmp_dir
-

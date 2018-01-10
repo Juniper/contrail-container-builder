@@ -10,7 +10,8 @@ sudo -u root /bin/bash << EOS
 case "${linux}" in
   "ubuntu" )
     apt-get update
-    apt-get install -y lighttpd rpm2cpio createrepo
+    apt-get install -y lighttpd rpm2cpio createrepo reprepro rng-tools gnupg2
+    rm -f /etc/lighttpd/conf-enabled/10-dir-listing.conf
     ln -s /etc/lighttpd/conf-available/10-dir-listing.conf /etc/lighttpd/conf-enabled/
     ;;
   "centos" | "rhel" )
