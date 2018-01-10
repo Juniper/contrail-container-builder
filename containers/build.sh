@@ -49,6 +49,8 @@ process_container () {
       -e 's/\(^ARG CONTRAIL_VERSION=.*\)/#\1/' \
       -e 's/\(^ARG OPENSTACK_VERSION=.*\)/#\1/' \
       -e 's/\(^ARG OPENSTACK_SUBVERSION=.*\)/#\1/' \
+      -e 's/\(^ARG LINUX_DISTR_VER=.*\)/#\1/' \
+      -e 's/\(^ARG LINUX_DISTR=.*\)/#\1/' \
       -e "s/\$OPENSTACK_VERSION/$OPENSTACK_VERSION/g" \
       -e "s/\$OPENSTACK_SUBVERSION/$OS_SUBVERSION/g" \
       -e "s/\$LINUX_DISTR_VER/$LINUX_DISTR_VER/g" \
