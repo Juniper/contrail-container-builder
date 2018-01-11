@@ -1,12 +1,12 @@
 ARG CONTRAIL_VERSION=4.1.0.0-6
 ARG CONTRAIL_REGISTRY=localhost:5000
 ARG OPENSTACK_VERSION=newton
-ARG LINUX_DISTR=centos
+ARG LINUX_DISTR=ubuntu
 FROM ${CONTRAIL_REGISTRY}/contrail-controller-config-base:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}
 
-RUN yum install -y python-neutron-lib && \
-    yum clean all -y && \
-    rm -rf /var/cache/yum
+RUN apt-get install -y python-neutron-lib && \
+    apt-get clean && \
+    rm -rf /var/cache/apt
 
 COPY entrypoint.sh /
 
