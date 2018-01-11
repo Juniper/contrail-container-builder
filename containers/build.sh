@@ -154,7 +154,7 @@ else
   templ=$(cat $my_dir/../contrail.list.template)
   content=$(eval "echo \"$templ\"")
   update_file "base/contrail.list" "$content"
-  content=$(curl -s -S ${CONTRAIL_REPOSITORY}/${LINUX_DISTR}/${LINUX_DISTR_SERIES}/contrail.gpg | base64)
+  content=$(curl -s -S ${CONTRAIL_REPOSITORY}/${LINUX_DISTR}/contrail.gpg | base64)
   update_file "base/contrail.gpg" "$content" 'true'
 fi
 

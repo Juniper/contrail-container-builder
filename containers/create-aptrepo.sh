@@ -67,7 +67,7 @@ basedir .
 EOF
 
 for ff in \$(ls ../*.deb) ; do
-  echo "Adding $ff"
+  echo "Adding \$ff into $LINUX_DISTR_SERIES"
   reprepro includedeb $LINUX_DISTR_SERIES \$ff
   rm -f \$ff
 done
