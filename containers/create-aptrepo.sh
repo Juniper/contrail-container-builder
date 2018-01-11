@@ -15,12 +15,12 @@ assert_var CONTRAIL_INSTALL_PACKAGES_URL
 assert_var repo_dir
 
 # create gpg key for repository
-if ! output=$(gpg2 --list-keys contrail@juniper.net) ; then
+if ! output=$(gpg --list-keys contrail@juniper.net) ; then
   contrail_repo_key_cfg=$(mktemp)
   cat > $contrail_repo_key_cfg <<EOF
     %echo Generating a basic OpenPGP key
     Key-Type: default
-    Subkey-Type: ELG-E
+    Subkey-Type: default
     Subkey-Length: 1024
     Name-Real: Contrail
     Name-Comment: Contrail
@@ -34,8 +34,8 @@ EOF
   gpg2 --batch --gen-key $contrail_repo_key_cfg
 fi
 contrail_repo_key=$(mktemp)
-gpg2 --export -a contrail@juniper.net > $contrail_repo_key
-GPGKEYID=$(gpg2 --list-keys --keyid-format LONG contrail@juniper.net | grep "^pub" | awk '{print $2}' | cut -d / -f2)
+gpg --export -a contrail@juniper.net > $contrail_repo_key
+GPGKEYID=$(gpg --list-keys --keyid-format LONG contrail@juniper.net | grep "^pub" | awk '{print $2}' | cut -d / -f2)
 
 # setup repository
 whoami_user=$(whoami)
@@ -45,7 +45,7 @@ cd $repo_dir
 rm -rf ./ubuntu
 mkdir -p ./ubuntu/{conf,dists,incoming,indices,logs,pool,project,tmp}
 cp "$contrail_repo_key" ./ubuntu/contrail.key
-gpg2 --no-default-keyring --keyring ./ubuntu/contrail.gpg --import ./ubuntu/contrail.key
+gpg --no-default-keyring --keyring ./ubuntu/contrail.gpg --import ./ubuntu/contrail.key
 
 chown -R $whoami_user:$whoami_user ./ubuntu
 chmod -R a+r ./ubuntu
