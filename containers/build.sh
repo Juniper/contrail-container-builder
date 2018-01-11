@@ -44,9 +44,11 @@ process_container () {
       -e 's/\(^ARG CONTRAIL_VERSION=.*\)/#\1/' \
       -e 's/\(^ARG OPENSTACK_VERSION=.*\)/#\1/' \
       -e 's/\(^ARG OPENSTACK_SUBVERSION=.*\)/#\1/' \
+      -e 's/\(^ARG CONTRAIL_TEST_REGISTRY=.*\)/#\1/' \
       -e "s/\$OPENSTACK_VERSION/$OPENSTACK_VERSION/g" \
       -e "s/\$OPENSTACK_SUBVERSION/$OS_SUBVERSION/g" \
       -e 's|^FROM ${CONTRAIL_REGISTRY}/\([^:]*\):${CONTRAIL_VERSION}-${OPENSTACK_VERSION}|FROM '${CONTRAIL_REGISTRY}'/\1:'${CONTRAIL_VERSION}-${OPENSTACK_VERSION}'|' \
+      -e 's|^FROM ${CONTRAIL_TEST_REGISTRY}\(.*\)-${OPENSTACK_VERSION}|FROM '${CONTRAIL_TEST_REGISTRY}'\1-'${OPENSTACK_VERSION}'|' \
       > $dir/Dockerfile.nofromargs
     int_opts="-f $dir/Dockerfile.nofromargs"
   fi
