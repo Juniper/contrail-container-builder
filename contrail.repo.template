@@ -1,5 +1,5 @@
 [contrail]
 name = Contrail repo
-baseurl = {{ CONTRAIL_REPOSITORY }}
+baseurl = ${CONTRAIL_REPOSITORY}
 enabled = 1
 gpgcheck = 0

@@ -147,13 +147,15 @@ pushd $my_dir &>/dev/null
 
 echo "INFO: prepare Contrail repo file in base image"
 if [[ "$LINUX_DISTR" != 'ubuntu' ]] ; then
-  repo_template=$(sed 's/\(.*\){{ *\(.*\) *}}\(.*\)/\1$\2\3/g' $my_dir/../contrail.repo.template)
-  repo_content=$(eval "echo \"$repo_template\"")
-  update_file "base/contrail.repo" "$repo_content"
+  templ=$(cat $my_dir/../contrail.repo.template)
+  content=$(eval "echo \"$templ\"")
+  update_file "base/contrail.repo" "$content"
 else
-  # TODO:
-  echo TODO: not implemented
-  exit -1
+  templ=$(cat $my_dir/../contrail.list.template)
+  content=$(eval "echo \"$templ\"")
+  update_file "base/contrail.list" "$content"
+  content=$(curl -s -S ${CONTRAIL_REPOSITORY}/${LINUX_DISTR}/${LINUX_DISTR_SERIES}/contrail.gpg | base64)
+  update_file "base/contrail.gpg" "$content" 'true'
 fi
 
 process_dir $path
