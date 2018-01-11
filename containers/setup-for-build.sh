@@ -49,3 +49,4 @@ $DIR/validate-docker.sh
 
 # TODO: do not installs local registry if external is provided.
 $DIR/install-registry.sh
+$DIR/config-test-registry.sh
