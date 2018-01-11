@@ -105,6 +105,34 @@ process_dir () {
   done
 }
 
+update_file() {
+  local file=$1
+  local new_content=$2
+  local content_encoded=${3:-'false'}
+  local file_md5=${file}.md5
+  if [[ -f "$file" && -f "$file_md5" ]] ; then
+    echo "INFO: $file and it's checksum "$file_md5" are exist, check them"
+    local new_md5
+    if [[ "$content_encoded" == 'true' ]] ; then
+      new_md5=$(echo "$new_content" | base64 --decode | md5sum | awk '{print($1)}')
+    else
+      new_md5=$(echo "$new_content" | md5sum | awk '{print($1)}')
+    fi
+    local old_md5=$(cat "$file_md5" | awk '{print($1)}')
+    if [[ "$old_md5" == "$new_md5" ]] ; then
+      echo "INFO: content of $file is not changed"
+      return
+    fi
+  fi
+  echo "INFO: update $file and it's checksum $file_md5"
+  if [[ "$content_encoded" == 'true' ]] ; then
+    echo "$new_content" | base64 --decode > "$file"
+  else
+    echo "$new_content" > "$file"
+  fi
+  md5sum "$file" > "$file_md5"
+}
+
 if [[ $path == 'list' ]] ; then
   op='list'
   path="."
@@ -118,22 +146,16 @@ echo "INFO: starting build from $my_dir with relative path $path"
 pushd $my_dir &>/dev/null
 
 echo "INFO: prepare Contrail repo file in base image"
-repo_template=$(sed 's/\(.*\){{ *\(.*\) *}}\(.*\)/\1$\2\3/g' $my_dir/../contrail.repo.template)
-repo_content=$(eval "echo \"$repo_template\"")
-update_contrail_repo='true'
-if [[ -f base/contrail.repo && -f base/contrail.repo.md5 ]] ; then
-  echo "INFO: base/contrail.repo and its checksum are exist, check them"
-  new_repo_md5=$(echo "$repo_content" | md5sum | awk '{print($1)}')
-  old_repo_md5=$(cat base/contrail.repo.md5 | awk '{print($1)}')
-  if [[ "$old_repo_md5" == "$new_repo_md5" ]] ; then
-    echo "INFO: content of contrail.repo is not changed"
-    update_contrail_repo='false'
-  fi
+if [[ "$LINUX_DISTR" != 'ubuntu' ]] ; then
+  repo_template=$(sed 's/\(.*\){{ *\(.*\) *}}\(.*\)/\1$\2\3/g' $my_dir/../contrail.repo.template)
+  repo_content=$(eval "echo \"$repo_template\"")
+  update_file "base/contrail.repo" "$repo_content"
+else
+  # TODO:
+  echo TODO: not implemented
+  exit -1
 fi
-if [[ "$update_contrail_repo" == 'true' ]] ; then
-  echo "$repo_content" > base/contrail.repo
-  md5sum base/contrail.repo > base/contrail.repo.md5
-fi
+
 process_dir $path
 
 popd &>/dev/null
