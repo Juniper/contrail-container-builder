@@ -60,7 +60,7 @@ _linux_distr_ver_major=$(echo $LINUX_DISTR_VER | cut -d '.' -f 1)
 export CONTRAIL_CONTAINER_TAG="${CONTRAIL_VERSION}-${LINUX_DISTR}${_linux_distr_ver_major}-${OPENSTACK_VERSION}"
 
 default_packages_base_url="https://s3-us-west-2.amazonaws.com"
-case $LINUX_ID in
+case $LINUX_DISTR in
   ubuntu)
     default_packages_url="$default_packages_base_url/contrailpkgs/contrail-packages_${CONTRAIL_VERSION}-${OPENSTACK_VERSION}.tgz"
     ;;
