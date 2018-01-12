@@ -1,6 +1,8 @@
+ARG LINUX_DISTR=ubuntu
+ARG LINUX_DISTR_VER=16.04
+FROM $LINUX_DISTR:$LINUX_DISTR_VER
 
-
-ARG OPENSTACK_SUBVERSION=5
+ARG OPENSTACK_VERSION=newton
 
 # this copy should be before apt-get install
 COPY *.list /etc/apt/sources.list.d/
@@ -10,7 +12,7 @@ COPY *.gpg /etc/apt/trusted.gpg.d/
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get install -y software-properties-common && \
-    add-apt-repository -y cloud-archive:ocata && \
+    add-apt-repository -y cloud-archive:$OPENSTACK_VERSION && \
     apt-get update && \
     apt-get install -y iproute2 less contrail-lib contrail-setup contrail-utils python-contrail && \
     apt-get autoremove && \

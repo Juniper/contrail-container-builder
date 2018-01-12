@@ -22,6 +22,8 @@ echo "INFO: OpenStack version: $OPENSTACK_VERSION"
 echo "INFO: OpenStack subversion (minor package version): $OS_SUBVERSION"
 echo "INFO: Contrail registry: $CONTRAIL_REGISTRY"
 echo "INFO: Contrail repository: $CONTRAIL_REPOSITORY"
+echo "INFO: Contrail container tag: $CONTRAIL_CONTAINER_TAG"
+
 if [ -n "$opts" ]; then
   echo "INFO: Options: $opts"
 fi
@@ -44,13 +46,13 @@ process_container () {
   echo "INFO: Building $container_name"
   local build_arg_opts=''
   if [[ "$docker_ver" < '17.06' ]] ; then
-    cat $docker_file \
-      | sed -e 's/\(^ARG CONTRAIL_REGISTRY=.*\)/#\1/' \
-      -e 's/\(^ARG CONTRAIL_VERSION=.*\)/#\1/' \
+    cat $docker_file | sed \
+      -e 's/\(^ARG CONTRAIL_REGISTRY=.*\)/#\1/' \
       -e 's/\(^ARG OPENSTACK_VERSION=.*\)/#\1/' \
       -e 's/\(^ARG OPENSTACK_SUBVERSION=.*\)/#\1/' \
       -e 's/\(^ARG LINUX_DISTR_VER=.*\)/#\1/' \
       -e 's/\(^ARG LINUX_DISTR=.*\)/#\1/' \
+      -e 's/\(^ARG CONTRAIL_CONTAINER_TAG=.*\)/#\1/' \
       -e "s/\$OPENSTACK_VERSION/$OPENSTACK_VERSION/g" \
       -e "s/\$OPENSTACK_SUBVERSION/$OS_SUBVERSION/g" \
       -e "s/\$LINUX_DISTR_VER/$LINUX_DISTR_VER/g" \
@@ -59,12 +61,12 @@ process_container () {
       > ${docker_file}.nofromargs
     docker_file="${docker_file}.nofromargs"
   else
-    build_arg_opts+=" --build-arg CONTRAIL_VERSION=${CONTRAIL_VERSION}"
+    build_arg_opts+=" --build-arg CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY}"
     build_arg_opts+=" --build-arg OPENSTACK_VERSION=${OPENSTACK_VERSION}"
     build_arg_opts+=" --build-arg OPENSTACK_SUBVERSION=${OS_SUBVERSION}"
-    build_arg_opts+=" --build-arg CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY}"
     build_arg_opts+=" --build-arg LINUX_DISTR_VER=${LINUX_DISTR_VER}"
     build_arg_opts+=" --build-arg LINUX_DISTR=${LINUX_DISTR}"
+    build_arg_opts+=" --build-arg CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG}"
   fi
 
   local logfile='build-'$container_name'.log'
