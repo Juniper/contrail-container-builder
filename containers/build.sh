@@ -48,6 +48,7 @@ process_container () {
   if [[ "$docker_ver" < '17.06' ]] ; then
     cat $docker_file | sed \
       -e 's/\(^ARG CONTRAIL_REGISTRY=.*\)/#\1/' \
+      -e 's/\(^ARG CONTRAIL_TEST_REGISTRY=.*\)/#\1/' \
       -e 's/\(^ARG OPENSTACK_VERSION=.*\)/#\1/' \
       -e 's/\(^ARG OPENSTACK_SUBVERSION=.*\)/#\1/' \
       -e 's/\(^ARG LINUX_DISTR_VER=.*\)/#\1/' \
