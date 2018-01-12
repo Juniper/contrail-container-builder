@@ -50,7 +50,6 @@ process_container () {
       -e 's/\(^ARG CONTRAIL_REGISTRY=.*\)/#\1/' \
       -e 's/\(^ARG OPENSTACK_VERSION=.*\)/#\1/' \
       -e 's/\(^ARG OPENSTACK_SUBVERSION=.*\)/#\1/' \
-<<<<<<< HEAD
       -e 's/\(^ARG LINUX_DISTR_VER=.*\)/#\1/' \
       -e 's/\(^ARG LINUX_DISTR=.*\)/#\1/' \
       -e 's/\(^ARG CONTRAIL_CONTAINER_TAG=.*\)/#\1/' \
@@ -59,6 +58,7 @@ process_container () {
       -e "s/\$LINUX_DISTR_VER/$LINUX_DISTR_VER/g" \
       -e "s/\$LINUX_DISTR/$LINUX_DISTR/g" \
       -e 's|^FROM ${CONTRAIL_REGISTRY}/\([^:]*\):${CONTRAIL_CONTAINER_TAG}|FROM '${CONTRAIL_REGISTRY}'/\1:'${CONTRAIL_CONTAINER_TAG}'|' \
+      -e 's|^FROM ${CONTRAIL_TEST_REGISTRY}\(.*\)-${OPENSTACK_VERSION}|FROM '${CONTRAIL_TEST_REGISTRY}'\1-'${OPENSTACK_VERSION}'|' \
       > ${docker_file}.nofromargs
     docker_file="${docker_file}.nofromargs"
   else
@@ -68,15 +68,6 @@ process_container () {
     build_arg_opts+=" --build-arg LINUX_DISTR_VER=${LINUX_DISTR_VER}"
     build_arg_opts+=" --build-arg LINUX_DISTR=${LINUX_DISTR}"
     build_arg_opts+=" --build-arg CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG}"
-=======
-      -e 's/\(^ARG CONTRAIL_TEST_REGISTRY=.*\)/#\1/' \
-      -e "s/\$OPENSTACK_VERSION/$OPENSTACK_VERSION/g" \
-      -e "s/\$OPENSTACK_SUBVERSION/$OS_SUBVERSION/g" \
-      -e 's|^FROM ${CONTRAIL_REGISTRY}/\([^:]*\):${CONTRAIL_VERSION}-${OPENSTACK_VERSION}|FROM '${CONTRAIL_REGISTRY}'/\1:'${CONTRAIL_VERSION}-${OPENSTACK_VERSION}'|' \
-      -e 's|^FROM ${CONTRAIL_TEST_REGISTRY}\(.*\)-${OPENSTACK_VERSION}|FROM '${CONTRAIL_TEST_REGISTRY}'\1-'${OPENSTACK_VERSION}'|' \
-      > $dir/Dockerfile.nofromargs
-    int_opts="-f $dir/Dockerfile.nofromargs"
->>>>>>> a939a8b3ea265bdb069b266f5c3e87e59c1aa2cf
   fi
 
   local logfile='build-'$container_name'.log'
