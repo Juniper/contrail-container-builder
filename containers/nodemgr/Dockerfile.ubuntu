@@ -4,7 +4,8 @@ ARG OPENSTACK_VERSION=newton
 ARG LINUX_DISTR=ubuntu
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}
 
-RUN yum install -y contrail-nodemgr docker-python
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get install -y contrail-nodemgr python-docker
 
 # TODO: remove this hack - installing git, and installing nodemgr from source
 RUN export DEBIAN_FRONTEND=noninteractive && \
