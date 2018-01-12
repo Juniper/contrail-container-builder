@@ -1,8 +1,6 @@
-ARG CONTRAIL_VERSION=4.1.0.0-6
 ARG CONTRAIL_REGISTRY=localhost:5000
-ARG OPENSTACK_VERSION=newton
-ARG LINUX_DISTR=centos
-FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}
+ARG CONTRAIL_CONTAINER_TAG=4.1.0.0-6-centos7-newton
+FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 RUN yum install -y contrail-vrouter contrail-vrouter-utils && \
     yum clean all && \

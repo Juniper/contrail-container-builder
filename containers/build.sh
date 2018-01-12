@@ -55,7 +55,7 @@ process_container () {
       -e "s/\$OPENSTACK_SUBVERSION/$OS_SUBVERSION/g" \
       -e "s/\$LINUX_DISTR_VER/$LINUX_DISTR_VER/g" \
       -e "s/\$LINUX_DISTR/$LINUX_DISTR/g" \
-      -e 's|^FROM ${CONTRAIL_REGISTRY}/\([^:]*\):${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}|FROM '${CONTRAIL_REGISTRY}'/\1:'${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}'|' \
+      -e 's|^FROM ${CONTRAIL_REGISTRY}/\([^:]*\):${CONTRAIL_CONTAINER_TAG}|FROM '${CONTRAIL_REGISTRY}'/\1:'${CONTRAIL_CONTAINER_TAG}'|' \
       > ${docker_file}.nofromargs
     docker_file="${docker_file}.nofromargs"
   else
@@ -68,10 +68,10 @@ process_container () {
   fi
 
   local logfile='build-'$container_name'.log'
-  docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION} \
+  docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${CONTRAIL_CONTAINER_TAG} \
     ${build_arg_opts} -f $docker_file ${opts} $dir |& tee $logfile
   if [ ${PIPESTATUS[0]} -eq 0 ]; then
-    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION} |& tee -a $logfile
+    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${CONTRAIL_CONTAINER_TAG} |& tee -a $logfile
     if [ ${PIPESTATUS[0]} -eq 0 ]; then
       rm $logfile
     fi

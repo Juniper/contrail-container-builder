@@ -1,9 +1,5 @@
-ARG LINUX_DISTR=ubuntu
-ARG LINUX_DISTR_VER=14.04
 
-FROM $LINUX_DISTR:$LINUX_DISTR_VER
 
-ARG OPENSTACK_VERSION=newton
 ARG OPENSTACK_SUBVERSION=5
 
 # this copy should be before apt-get install

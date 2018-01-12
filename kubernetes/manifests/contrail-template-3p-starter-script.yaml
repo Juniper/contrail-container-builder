@@ -322,7 +322,7 @@ spec:
       hostNetwork: true
       containers:
       - name: kafka
-        image: "{{CONTRAIL_REGISTRY}}/contrail-external-kafka:{{CONTRAIL_VERSION}}-{{LINUX_DISTR}}-{{OPENSTACK_VERSION}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-external-kafka:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -464,7 +464,7 @@ spec:
       hostNetwork: true
       containers:
       - name: contrail-analytics-api
-        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-api:{{CONTRAIL_VERSION}}-{{LINUX_DISTR}}-{{OPENSTACK_VERSION}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-api:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -473,7 +473,7 @@ spec:
         - mountPath: /var/log/contrail
           name: analytics-logs
       - name: contrail-analytics-collector
-        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-collector:{{CONTRAIL_VERSION}}-{{LINUX_DISTR}}-{{OPENSTACK_VERSION}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-collector:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -482,7 +482,7 @@ spec:
         - mountPath: /var/log/contrail
           name: analytics-logs
       - name: contrail-analytics-alarm-gen
-        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-alarm-gen:{{CONTRAIL_VERSION}}-{{LINUX_DISTR}}-{{OPENSTACK_VERSION}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-alarm-gen:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -491,7 +491,7 @@ spec:
         - mountPath: /var/log/contrail
           name: analytics-logs
       - name: contrail-analytics-query-engine
-        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-query-engine:{{CONTRAIL_VERSION}}-{{LINUX_DISTR}}-{{OPENSTACK_VERSION}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-query-engine:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -500,7 +500,7 @@ spec:
         - mountPath: /var/log/contrail
           name: analytics-logs
       - name: contrail-analytics-snmp-collector
-        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-snmp-collector:{{CONTRAIL_VERSION}}-{{LINUX_DISTR}}-{{OPENSTACK_VERSION}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-snmp-collector:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -509,7 +509,7 @@ spec:
         - mountPath: /var/log/contrail
           name: analytics-logs
       - name: contrail-analytics-topology
-        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-topology:{{CONTRAIL_VERSION}}-{{LINUX_DISTR}}-{{OPENSTACK_VERSION}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-topology:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -518,7 +518,7 @@ spec:
         - mountPath: /var/log/contrail
           name: analytics-logs
       - name: contrail-analytics-nodemgr
-        image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_VERSION}}-{{LINUX_DISTR}}-{{OPENSTACK_VERSION}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -573,7 +573,7 @@ spec:
       hostNetwork: true
       containers:
       - name: contrail-controller-control
-        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-control-control:{{CONTRAIL_VERSION}}-{{LINUX_DISTR}}-{{OPENSTACK_VERSION}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-control-control:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -582,7 +582,7 @@ spec:
         - mountPath: /var/log/contrail
           name: control-logs
       - name: contrail-controller-control-dns
-        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-control-dns:{{CONTRAIL_VERSION}}-{{LINUX_DISTR}}-{{OPENSTACK_VERSION}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-control-dns:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -593,7 +593,7 @@ spec:
         - mountPath: /var/log/contrail
           name: control-logs
       - name: contrail-controller-control-named
-        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-control-named:{{CONTRAIL_VERSION}}-{{LINUX_DISTR}}-{{OPENSTACK_VERSION}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-control-named:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -606,7 +606,7 @@ spec:
         - mountPath: /var/log/contrail
           name: control-logs
       - name: contrail-controller-nodemgr
-        image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_VERSION}}-{{LINUX_DISTR}}-{{OPENSTACK_VERSION}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -663,7 +663,7 @@ spec:
       hostNetwork: true
       containers:
       - name: contrail-controller-config-api
-        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-config-api:{{CONTRAIL_VERSION}}-{{LINUX_DISTR}}-{{OPENSTACK_VERSION}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-config-api:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -672,7 +672,7 @@ spec:
         - mountPath: /var/log/contrail
           name: config-logs
       - name: contrail-controller-config-devicemgr
-        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-config-devicemgr:{{CONTRAIL_VERSION}}-{{LINUX_DISTR}}-{{OPENSTACK_VERSION}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-config-devicemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -681,7 +681,7 @@ spec:
         - mountPath: /var/log/contrail
           name: config-logs
       - name: contrail-controller-config-schema
-        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-config-schema:{{CONTRAIL_VERSION}}-{{LINUX_DISTR}}-{{OPENSTACK_VERSION}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-config-schema:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -690,7 +690,7 @@ spec:
         - mountPath: /var/log/contrail
           name: config-logs
       - name: contrail-controller-config-svcmonitor
-        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-config-svcmonitor:{{CONTRAIL_VERSION}}-{{LINUX_DISTR}}-{{OPENSTACK_VERSION}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-config-svcmonitor:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -699,7 +699,7 @@ spec:
         - mountPath: /var/log/contrail
           name: config-logs
       - name: contrail-controller-config-nodemgr
-        image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_VERSION}}-{{LINUX_DISTR}}-{{OPENSTACK_VERSION}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -754,7 +754,7 @@ spec:
       hostNetwork: true
       containers:
       - name: contrail-controller-webui-job
-        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-webui-job:{{CONTRAIL_VERSION}}-{{LINUX_DISTR}}-{{OPENSTACK_VERSION}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-webui-job:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -763,7 +763,7 @@ spec:
         - mountPath: /var/log/contrail
           name: webui-logs
       - name: contrail-controller-webui-web
-        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-webui-web:{{CONTRAIL_VERSION}}-{{LINUX_DISTR}}-{{OPENSTACK_VERSION}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-webui-web:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -902,7 +902,7 @@ spec:
       hostNetwork: true
       containers:
       - name: contrail-kube-manager
-        image: "{{CONTRAIL_REGISTRY}}/contrail-kubernetes-kube-manager:{{CONTRAIL_VERSION}}-{{LINUX_DISTR}}-{{OPENSTACK_VERSION}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-kubernetes-kube-manager:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -952,7 +952,7 @@ spec:
       hostNetwork: true
       initContainers:
       - name: contrail-agent-vrouter-init-kernel
-        image: "{{CONTRAIL_REGISTRY}}/contrail-agent-vrouter-init-kernel:{{CONTRAIL_VERSION}}-{{LINUX_DISTR}}-{{OPENSTACK_VERSION}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-agent-vrouter-init-kernel:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         securityContext:
           privileged: true
@@ -960,7 +960,7 @@ spec:
         - configMapRef:
             name: env
       - name: contrail-kubernetes-vrouter-init
-        image: "{{CONTRAIL_REGISTRY}}/contrail-kubernetes-vrouter-init:{{CONTRAIL_VERSION}}-{{LINUX_DISTR}}-{{OPENSTACK_VERSION}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-kubernetes-vrouter-init:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -978,7 +978,7 @@ spec:
           name: agent-logs
       containers:
       - name: contrail-agent
-        image: "{{CONTRAIL_REGISTRY}}/contrail-agent-vrouter:{{CONTRAIL_VERSION}}-{{LINUX_DISTR}}-{{OPENSTACK_VERSION}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-agent-vrouter:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         # TODO: Priveleged mode is requied because w/o it the device /dev/net/tun
         # is not present in the container. The mounting it into container
@@ -1003,7 +1003,7 @@ spec:
         - mountPath: /tmp/serviceaccount
           name: pod-secret
       - name: contrail-agent-nodemgr
-        image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_VERSION}}-{{LINUX_DISTR}}-{{OPENSTACK_VERSION}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:

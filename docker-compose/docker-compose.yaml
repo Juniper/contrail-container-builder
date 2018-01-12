@@ -27,7 +27,7 @@ services:
   # ===
   # common services
   zookeeper:
-    image: "${CONTRAIL_REGISTRY}/contrail-external-zookeeper:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-external-zookeeper:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     environment:
       - ZOOKEEPER_NODES
@@ -36,7 +36,7 @@ services:
       - network
     restart: on-failure
   rabbitmq:
-    image: "${CONTRAIL_REGISTRY}/contrail-external-rabbitmq:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-external-rabbitmq:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     environment:
       - RABBITMQ_NODES
@@ -56,7 +56,7 @@ services:
   # ===
   # config db services
   configdb-cassandra:
-    image: "${CONTRAIL_REGISTRY}/contrail-external-cassandra:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-external-cassandra:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     environment:
       - CASSANDRA_SEEDS=${CONFIGDB_NODES}
@@ -76,7 +76,7 @@ services:
   # ===
   # config services
   config-nodemgr:
-    image: "${CONTRAIL_REGISTRY}/contrail-nodemgr:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-nodemgr:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     environment:
       - NODE_TYPE=config
@@ -88,7 +88,7 @@ services:
       - network
     restart: on-failure
   api:
-    image: "${CONTRAIL_REGISTRY}/contrail-controller-config-api:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-controller-config-api:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     network_mode: "service:network"
     volumes:
@@ -97,7 +97,7 @@ services:
       - network
     restart: on-failure
   svcmonitor:
-    image: "${CONTRAIL_REGISTRY}/contrail-controller-config-svcmonitor:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-controller-config-svcmonitor:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     network_mode: "service:network"
     volumes:
@@ -106,7 +106,7 @@ services:
       - network
     restart: on-failure
   schema:
-    image: "${CONTRAIL_REGISTRY}/contrail-controller-config-schema:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-controller-config-schema:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     network_mode: "service:network"
     volumes:
@@ -115,7 +115,7 @@ services:
       - network
     restart: on-failure
   devicemgr:
-    image: "${CONTRAIL_REGISTRY}/contrail-controller-config-devicemgr:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-controller-config-devicemgr:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     network_mode: "service:network"
     volumes:
@@ -127,7 +127,7 @@ services:
   # ===
   # control services
   control-nodemgr:
-    image: "${CONTRAIL_REGISTRY}/contrail-nodemgr:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-nodemgr:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     environment:
       - NODE_TYPE=control
@@ -139,7 +139,7 @@ services:
       - network
     restart: on-failure
   control:
-    image: "${CONTRAIL_REGISTRY}/contrail-controller-control-control:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-controller-control-control:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     network_mode: "service:network"
     volumes:
@@ -148,7 +148,7 @@ services:
       - network
     restart: on-failure
   control-named:
-    image: "${CONTRAIL_REGISTRY}/contrail-controller-control-named:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-controller-control-named:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     network_mode: "service:network"
     privileged: true
@@ -161,7 +161,7 @@ services:
       - control-dns
     restart: on-failure
   control-dns:
-    image: "${CONTRAIL_REGISTRY}/contrail-controller-control-dns:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-controller-control-dns:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     network_mode: "service:network"
     volumes:
@@ -174,14 +174,14 @@ services:
   # ===
   # analytics db services
   analyticsdb-kafka:
-    image: "${CONTRAIL_REGISTRY}/contrail-external-kafka:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-external-kafka:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     network_mode: "service:network"
     depends_on:
       - network
     restart: on-failure
   analyticsdb-cassandra:
-    image: "${CONTRAIL_REGISTRY}/contrail-external-cassandra:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-external-cassandra:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     environment:
       - CASSANDRA_SEEDS=${ANALYTICSDB_NODES}
@@ -201,7 +201,7 @@ services:
   # ===
   # analytics services
   analytics-nodemgr:
-    image: "${CONTRAIL_REGISTRY}/contrail-nodemgr:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-nodemgr:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     environment:
       - NODE_TYPE=analytics
@@ -213,7 +213,7 @@ services:
       - network
     restart: on-failure
   analytics-api:
-    image: "${CONTRAIL_REGISTRY}/contrail-analytics-api:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-analytics-api:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     network_mode: "service:network"
     volumes:
@@ -222,7 +222,7 @@ services:
       - network
     restart: on-failure
   analytics-collector:
-    image: "${CONTRAIL_REGISTRY}/contrail-analytics-collector:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-analytics-collector:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     network_mode: "service:network"
     volumes:
@@ -231,7 +231,7 @@ services:
       - network
     restart: on-failure
   analytics-query-engine:
-    image: "${CONTRAIL_REGISTRY}/contrail-analytics-query-engine:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-analytics-query-engine:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     network_mode: "service:network"
     volumes:
@@ -240,7 +240,7 @@ services:
       - network
     restart: on-failure
   analytics-alarm-gen:
-    image: "${CONTRAIL_REGISTRY}/contrail-analytics-alarm-gen:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-analytics-alarm-gen:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     network_mode: "service:network"
     volumes:
@@ -249,7 +249,7 @@ services:
       - network
     restart: on-failure
   analytics-snmp-collector:
-    image: "${CONTRAIL_REGISTRY}/contrail-analytics-snmp-collector:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-analytics-snmp-collector:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     network_mode: "service:network"
     volumes:
@@ -258,7 +258,7 @@ services:
       - network
     restart: on-failure
   analytics-topology:
-    image: "${CONTRAIL_REGISTRY}/contrail-analytics-topology:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-analytics-topology:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     network_mode: "service:network"
     volumes:
@@ -278,7 +278,7 @@ services:
   # ===
   # contrail web ui services
   contrail-webui:
-    image: "${CONTRAIL_REGISTRY}/contrail-controller-webui-web:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-controller-webui-web:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     network_mode: "service:network"
     volumes:
@@ -287,7 +287,7 @@ services:
       - network
     restart: on-failure
   contrail-webui-job:
-    image: "${CONTRAIL_REGISTRY}/contrail-controller-webui-job:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-controller-webui-job:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     network_mode: "service:network"
     volumes:
@@ -299,7 +299,7 @@ services:
   # ===
   # vrouter services
   vrouter-nodemgr:
-    image: "${CONTRAIL_REGISTRY}/contrail-nodemgr:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-nodemgr:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     environment:
       - NODE_TYPE=vrouter
@@ -309,14 +309,14 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: on-failure
   vrouter-init-kernel:
-    image: "${CONTRAIL_REGISTRY}/contrail-agent-vrouter-init-kernel:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-agent-vrouter-init-kernel:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     network_mode: host
     privileged: true
     volumes:
       - /var/log/contrail:/var/log/contrail
   vrouter-agent:
-    image: "${CONTRAIL_REGISTRY}/contrail-agent-vrouter:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}"
+    image: "${CONTRAIL_REGISTRY}/contrail-agent-vrouter:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     network_mode: host
     privileged: true
