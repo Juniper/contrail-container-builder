@@ -4,7 +4,8 @@ ARG OPENSTACK_VERSION=newton
 ARG LINUX_DISTR=ubuntu
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_VERSION}-${LINUX_DISTR}-${OPENSTACK_VERSION}
 
-RUN apt-get install -y nodejs-0.10.35-1contrail.el7 contrail-openstack-webui && \
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get install -y nodejs-0.10.35-1contrail.el7 contrail-openstack-webui && \
     apt-get clean && \
     rm -rf /var/cache/apt
 
