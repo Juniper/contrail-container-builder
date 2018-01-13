@@ -16,7 +16,7 @@ path="$1"
 shift
 opts="$@"
 
-echo "INFO: Linux: $LINUX_DISTR:$LINUX_DISTR_VER"
+echo "INFO: Target platform: $LINUX_DISTR:$LINUX_DISTR_VER"
 echo "INFO: Contrail version: $CONTRAIL_VERSION"
 echo "INFO: OpenStack version: $OPENSTACK_VERSION"
 echo "INFO: OpenStack subversion (minor package version): $OS_SUBVERSION"

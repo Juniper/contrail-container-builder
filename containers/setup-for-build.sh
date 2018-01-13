@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 # Sets up node for building containers. Parses common.env to get parameters (CONTRAIL_VERSION, CONTRAIL_REGISTRY,
 # CONTRAIL_REPOSITORY, OPENSTACK_VERSION) or take them from environment.
 # It installs http server, creates directory with rpm packages taken from PAKAGES_URL, install docker,

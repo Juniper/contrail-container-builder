@@ -14,7 +14,7 @@ default_gateway=`ip route show dev $default_interface | grep default | awk '{pri
 linux_id=$(awk -F"=" '/^ID=/{print $2}' /etc/os-release | tr -d '"')
 if [[ "$linux_id" == 'centos' ]] ; then
   # ver id is taken from available versions from docker.io
-  linux_ver_id=$(cat /etc/redhat-release | awk '{print($4)}')
+  linux_ver_id=`cat /etc/redhat-release | awk '{print($4)}'`
 else
   # for ubuntu ver id matchs 14.04, 16.04, etc from host system
   linux_ver_id=$(awk -F"=" '/^VERSION_ID=/{print $2}' /etc/os-release | tr -d '"')
