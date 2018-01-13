@@ -52,7 +52,7 @@ else
   # Disable selinux
   echo 'INFO: disable selinux'
   setenforce 0 || echo 'WARNING: setenforce 0 failed, selinux is probably already disabled'
-  if [[ -f /etc/selinux/config && -n `grep '^[ ]*SELINUX[ ]*=' /etc/selinux/config` ]]; then
+  if [[ -f /etc/selinux/config && -n `grep "^[ ]*SELINUX[ ]*=" /etc/selinux/config` ]]; then
     sed -i 's/^[ ]*SELINUX[ ]*=.*$/SELINUX=permissive/g' /etc/selinux/config
   else
     echo 'SELINUX=permissive' >> /etc/selinux/config
