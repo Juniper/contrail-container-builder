@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 # Sets up node for building containers. Parses common.env to get parameters (CONTRAIL_VERSION, CONTRAIL_REGISTRY,
 # CONTRAIL_REPOSITORY, OPENSTACK_VERSION) or take them from environment.
 # It installs http server, creates directory with rpm packages taken from PAKAGES_URL, install docker,
@@ -43,7 +43,12 @@ $DIR/validate-docker.sh
 $DIR/install-registry.sh
 
 sudo -u root /bin/bash << EOS
-if [[ "$LINUX_ID" != 'ubuntu' ]] ; then
+if [[ "$LINUX_ID" == 'ubuntu' ]] ; then
+  # Stop firewall
+  echo 'INFO: disable firewall'
+  service ufw stop || echo 'WARNING: failed to stop firewall service'
+  systemctl disable ufw || echo 'WARNING: failed to disable firewall'
+else
   # Disable selinux
   echo 'INFO: disable selinux'
   setenforce 0 || echo 'WARNING: setenforce 0 failed, selinux is probably already disabled'
@@ -56,11 +61,6 @@ if [[ "$LINUX_ID" != 'ubuntu' ]] ; then
   echo 'INFO: disable firewall'
   service firewalld stop || echo 'WARNING: failed to stop firewall service'
   chkconfig firewalld off || echo 'WARNING: failed to disable firewall'
-else
-  # Stop firewall
-  echo 'INFO: disable firewall'
-  service ufw stop || echo 'WARNING: failed to stop firewall service'
-  systemctl disable ufw || echo 'WARNING: failed to disable firewall'
 fi
 iptables -F || echo 'WARNING: failed to flush iptables rules'
 EOS
