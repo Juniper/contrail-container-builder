@@ -9,8 +9,8 @@ linux=$(awk -F"=" '/^ID=/{print $2}' /etc/os-release | tr -d '"')
 sudo -u root /bin/bash << EOS
 case "${linux}" in
   "ubuntu" )
-    apt-get update
-    apt-get install -y lighttpd rpm2cpio createrepo reprepro rng-tools gnupg2
+    apt-get -y update &>>$HOME/apt.log
+    apt-get install -y lighttpd rpm2cpio createrepo reprepro rng-tools gnupg2 &>>$HOME/apt.log
     rm -f /etc/lighttpd/conf-enabled/10-dir-listing.conf
     ln -s /etc/lighttpd/conf-available/10-dir-listing.conf /etc/lighttpd/conf-enabled/
     ;;
