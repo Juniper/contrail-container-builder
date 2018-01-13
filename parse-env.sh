@@ -64,9 +64,12 @@ case $LINUX_DISTR in
   ubuntu)
     default_packages_url="$default_packages_base_url/contrailpkgs/contrail-packages_${CONTRAIL_VERSION}-${OPENSTACK_VERSION}.tgz"
     ;;
-  centos,*)
+  centos)
     default_packages_url="$default_packages_base_url/contrailrhel7/contrail-install-packages-${CONTRAIL_VERSION}~${OPENSTACK_VERSION}.el7.noarch.rpm"
     ;;
+  *)
+    echo "ERROR: Unknown LINUX_DISTR: $LINUX_DISTR"
+    exit 1
 esac
 
 export CONTRAIL_INSTALL_PACKAGES_URL=${CONTRAIL_INSTALL_PACKAGES_URL:-$default_packages_url}
