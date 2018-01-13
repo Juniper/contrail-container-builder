@@ -17,7 +17,7 @@ if ! sudo docker ps --all | grep -q "${registry_name}" ; then
     registry:2
 else
   if ! sudo docker ps | grep -q "${registry_name}" ; then
-    id=$(sudo docker ps --all | grep "${registry_name}" | awk '{print($1)}')
+    id=`sudo docker ps --all | grep "${registry_name}" | awk '{print($1)}'`
     echo "Docker Registry on port $port is already created but stopped, start it"
     sudo docker start $id
   else

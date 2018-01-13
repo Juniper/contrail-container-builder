@@ -42,9 +42,7 @@ $DIR/validate-docker.sh
 # TODO: do not installs local registry if external is provided.
 $DIR/install-registry.sh
 
-echo "1: $LINUX_ID"
-sudo -u root -E /bin/bash << EOS
-echo "2: $LINUX_ID"
+sudo -u root /bin/bash -x << EOS
 if [[ "$LINUX_ID" == 'ubuntu' ]] ; then
   # Stop firewall
   echo 'INFO: disable firewall'
