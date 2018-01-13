@@ -39,7 +39,7 @@ GPGKEYID=$(gpg --list-keys --keyid-format LONG contrail@juniper.net | grep "^pub
 
 # setup repository
 whoami_user=$(whoami)
-sudo -u root /bin/bash << EOS
+sudo -E -u root /bin/bash << EOS
 set -e
 cd $repo_dir
 rm -rf ./ubuntu
