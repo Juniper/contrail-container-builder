@@ -61,6 +61,7 @@ else
   echo 'INFO: disable firewall'
   service firewalld stop || echo 'WARNING: failed to stop firewall service'
   chkconfig firewalld off || echo 'WARNING: failed to disable firewall'
+  iptables -P FORWARD ACCEPT
 fi
 iptables -F || echo 'WARNING: failed to flush iptables rules'
 EOS
