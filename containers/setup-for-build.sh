@@ -33,7 +33,7 @@ sudo chown -R $USER $repo_dir
 source "$DIR/install-http-server.sh"
 $DIR/install-repository.sh
 
-if [[ $TEST_MODE == 'true' ]] ; then
+if [[ $TEST_MODE == 'true' && "$LINUX_DISTR" == 'centos' ]] ; then
   $DIR/unpack-vrouter-module.sh
 fi
 
