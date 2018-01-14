@@ -55,14 +55,15 @@ export CONTRAIL_VERSION=${CONTRAIL_VERSION:-'4.1.0.0-8'}
 export OPENSTACK_VERSION=${OPENSTACK_VERSION:-'newton'}
 declare -A _os_subversions
 _os_subversions=([newton]=5 [ocata]=3)
-export OS_SUBVERSION=${OS_SUBVERSION:-"${_os_subversions[$OPENSTACK_VERSION]}"}
+_os_subversion="${_os_subversions[$OPENSTACK_VERSION]}"
+export OS_SUBVERSION=${OS_SUBVERSION:-"$_os_subversion"}
 _linux_distr_ver_major=$(echo $LINUX_DISTR_VER | cut -d '.' -f 1)
 export CONTRAIL_CONTAINER_TAG="${CONTRAIL_VERSION}-${LINUX_DISTR}${_linux_distr_ver_major}-${OPENSTACK_VERSION}"
 
 default_packages_base_url="https://s3-us-west-2.amazonaws.com"
 case $LINUX_DISTR in
   ubuntu)
-    default_packages_url="$default_packages_base_url/contrailpkgs/contrail-packages_${CONTRAIL_VERSION}-${OPENSTACK_VERSION}.tgz"
+    default_packages_url="$default_packages_base_url/contrailpkgs/contrail-install-packages_${CONTRAIL_VERSION}-${OPENSTACK_VERSION}.tgz"
     ;;
   centos)
     default_packages_url="$default_packages_base_url/contrailrhel7/contrail-install-packages-${CONTRAIL_VERSION}~${OPENSTACK_VERSION}.el7.noarch.rpm"

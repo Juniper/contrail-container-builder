@@ -118,11 +118,11 @@ update_file() {
     echo "INFO: $file and it's checksum "$file_md5" are exist, check them"
     local new_md5
     if [[ "$content_encoded" == 'true' ]] ; then
-      new_md5=$(echo "$new_content" | base64 --decode | md5sum | awk '{print($1)}')
+      new_md5=`echo "$new_content" | base64 --decode | md5sum | awk '{print($1)}'`
     else
-      new_md5=$(echo "$new_content" | md5sum | awk '{print($1)}')
+      new_md5=`echo "$new_content" | md5sum | awk '{print($1)}'`
     fi
-    local old_md5=$(cat "$file_md5" | awk '{print($1)}')
+    local old_md5=`cat "$file_md5" | awk '{print($1)}'`
     if [[ "$old_md5" == "$new_md5" ]] ; then
       echo "INFO: content of $file is not changed"
       return
