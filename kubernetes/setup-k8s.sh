@@ -44,12 +44,12 @@ install_for_ubuntu () {
   curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
   echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" >/etc/apt/sources.list.d/kubernetes.list
 
-  apt-get update -y
+  apt-get update -y &>>$HOME/apt.log
   apt-get install -y \
     docker.io \
     apt-transport-https \
     ca-certificates \
-    kubectl kubelet kubeadm
+    kubectl kubelet kubeadm &>>$HOME/apt.log
 }
 
 install_for_centos () {
@@ -69,7 +69,7 @@ EOF
 
   setenforce 0 || true
 
-  if [[ -f /etc/selinux/config && -n `grep "^[ ]*SELINUX[ ]*=" /etc/selinux/config` ]]; then
+  if [ -f /etc/selinux/config ] && grep "^[ ]*SELINUX[ ]*=" /etc/selinux/config ; then
     sed -i 's/^[ ]*SELINUX[ ]*=/SELINUX=permissive/g' /etc/selinux/config
   else
     echo "SELINUX=permissive" >> /etc/selinux/config
