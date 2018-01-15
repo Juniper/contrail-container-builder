@@ -106,10 +106,6 @@ if [[ "$AUTH_MODE" == 'keystone' ]] ; then
 #  AUTH_PARAMS+=" --openstack_ip $KEYSTONE_AUTH_HOST"
 fi
 
-DPDK_HUGE_PAGES=${DPDK_HUGE_PAGES:-'50'}
-DPDK_COREMASK=${DPDK_COREMASK:-'0xf'}
-DPDK_UIO_DRIVER=${DPDK_UIO_DRIVER:-'uio_pci_generic'}
-
 source /functions.sh
 source /contrail-functions.sh
 
