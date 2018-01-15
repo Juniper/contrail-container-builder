@@ -169,6 +169,7 @@ process_dir $path
 popd &>/dev/null
 
 if [ $was_errors -ne 0 ]; then
-  echo "ERROR: Failed to build some containers, see log files"
+  echo "ERROR: Failed to build some containers, see log files:"
+  ls -l "$my_dir/*.log"
   exit 1
 fi
