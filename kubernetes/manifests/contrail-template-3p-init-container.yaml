@@ -847,6 +847,11 @@ spec:
         envFrom:
         - configMapRef:
             name: env
+        volumeMounts:
+        - mountPath: /usr/src
+          name: usr-src
+        - mountPath: /lib/modules
+          name: lib-modules
       - name: contrail-kubernetes-vrouter-init
         image: "{{CONTRAIL_REGISTRY}}/contrail-kubernetes-vrouter-init:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
