@@ -9,7 +9,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -y git && \
     git clone --depth 1 https://github.com/juniper/contrail-controller.git && \
-    /usr/bin/yes | cp -r /contrail-controller/src/nodemgr /usr/lib/python2.7/site-packages/ && \
+    /usr/bin/yes | cp -r /contrail-controller/src/nodemgr /usr/lib/python2.7/dist-packages/ && \
     apt-get clean && \
     rm -rf /var/cache/apt
 
