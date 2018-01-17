@@ -314,6 +314,8 @@ services:
     network_mode: host
     privileged: true
     volumes:
+      - /usr/src:/usr/src
+      - /lib/modules:/lib/modules
       - /var/log/contrail:/var/log/contrail
   vrouter-agent:
     image: "${CONTRAIL_REGISTRY}/contrail-agent-vrouter:${CONTRAIL_CONTAINER_TAG}"

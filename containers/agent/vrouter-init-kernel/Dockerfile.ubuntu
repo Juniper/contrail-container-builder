@@ -2,8 +2,12 @@ ARG CONTRAIL_REGISTRY=localhost:5000
 ARG CONTRAIL_CONTAINER_TAG=4.1.0.0-6-ubuntu16-newton
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
+# container needs /usr/src and /lib/modules mounted from the host
+# so we need to move out all that packages can install there
+
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -y contrail-vrouter-dkms contrail-vrouter-utils && \
+    mkdir -p /opt/contrail/src && mv /usr/src/* /opt/contrail/src/ && \
     apt-get clean && \
     rm -rf /var/cache/apt
 
