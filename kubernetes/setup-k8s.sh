@@ -43,10 +43,13 @@ install_for_ubuntu () {
 
   curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
   echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" >/etc/apt/sources.list.d/kubernetes.list
+  # for latest kubernetes latest docer is needed
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+  add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
   apt-get update -y &>>$HOME/apt.log
   apt-get install -y \
-    docker.io \
+    docker-ce \
     apt-transport-https \
     ca-certificates \
     kubectl kubelet kubeadm &>>$HOME/apt.log
