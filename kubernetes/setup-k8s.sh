@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 # Sets up kubernetes on a node. Parameters are taken from common.env.
 # Can be used in a multi-node deployment. For all non-master kubernetes nodes this could be run:
 # setup-k8s.sh join-token=<token>
@@ -37,7 +37,7 @@ hostname=`cat /etc/hostname`
 
 sudo -u root /bin/bash << EOS
 
-install_for_ubuntu () {
+function install_for_ubuntu() {
   service ufw stop
   iptables -F
 
@@ -52,7 +52,7 @@ install_for_ubuntu () {
     kubectl kubelet kubeadm &>>$HOME/apt.log
 }
 
-install_for_centos () {
+function install_for_centos() {
   service firewalld stop
   iptables -F
 
@@ -93,7 +93,19 @@ case "${LINUX_ID}" in
     install_for_centos
     ;;
 esac
+EOS
 
+# assignment doesn't work under sudo
+case "${LINUX_ID}" in
+  "ubuntu" )
+    kube_ver="v$(kubectl version --short=true 2>/dev/null | sed 's/.* v//')"
+    ;;
+  "centos" | "rhel" )
+    kube_ver='1.7.4'
+    ;;
+esac
+
+sudo -u root /bin/bash << EOS
 # cloud-init of oficial AWS CentOS image at first boot dynamically changes hostname to short name while static name is full one.
 # This leads to the node register itself with the short name and cannot register after rebooting with full name.
 # Here we try to set hostname to static name if they differ.
@@ -102,7 +114,8 @@ if [[ -n "$hostname" && "$hostname" != `hostname` ]]; then
 fi
 
 if [[ -z "$join_token" ]]; then
-  kubeadm init --kubernetes-version v1.7.4
+  echo "INFO: kubectl version is $kube_ver"
+  kubeadm init --kubernetes-version $kube_ver
 
   mkdir -p $HOME/.kube
   cp -u /etc/kubernetes/admin.conf $HOME/.kube/config
