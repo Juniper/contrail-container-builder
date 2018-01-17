@@ -37,12 +37,17 @@ hostname=`cat /etc/hostname`
 
 sudo -u root /bin/bash << EOS
 
+kube_ver=''
+
 install_for_ubuntu () {
   service ufw stop
   iptables -F
 
   curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
   echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" >/etc/apt/sources.list.d/kubernetes.list
+  # for latest kubernetes latest docer is needed
+  #curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+  #add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
   apt-get update -y &>>$HOME/apt.log
   apt-get install -y \
@@ -50,6 +55,7 @@ install_for_ubuntu () {
     apt-transport-https \
     ca-certificates \
     kubectl kubelet kubeadm &>>$HOME/apt.log
+  kube_ver="v$(kubectl version --short=true 2>/dev/null | sed 's/.* v//')"
 }
 
 install_for_centos () {
@@ -83,6 +89,7 @@ EOF
   sysctl -w net.bridge.bridge-nf-call-ip6tables=1
   echo "net.bridge.bridge-nf-call-iptables=1" >> /etc/sysctl.conf
   echo "net.bridge.bridge-nf-call-ip6tables=1" >> /etc/sysctl.conf
+  kube_ver='1.7.4'
 }
 
 case "${LINUX_ID}" in
@@ -102,7 +109,7 @@ if [[ -n "$hostname" && "$hostname" != `hostname` ]]; then
 fi
 
 if [[ -z "$join_token" ]]; then
-  kubeadm init --kubernetes-version v1.7.4
+  kubeadm init --kubernetes-version $kube_ver
 
   mkdir -p $HOME/.kube
   cp -u /etc/kubernetes/admin.conf $HOME/.kube/config
