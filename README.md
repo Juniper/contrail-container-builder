@@ -114,10 +114,10 @@ Please refer to the README-HELM.md
 36. ~~Sort out with multiple NIC configiration - probably provision link local is needed since it set ip_fabric_ip.~~
 37. Consider to use K8S services to provide VIPs for Config, Analytics and WebUI.
 38. Split common.env to separate build.env and deployment.env
-39. Add switching of dhcp on phys_int after inserting vhost0
+39. Add switching off dhcp on phys_int after inserting vhost0
 40. Standardize configuration variables across all components in the system.
 41. ~~Add provision-alarm.py (https://bugs.launchpad.net/juniperopenstack/+bug/1736279)~~
 42. ~~Avoid changing /etc/hosts file (rabbitmq).~~
 43. ~~vrouter agent entrypoint: add ability to configure metadata_proxy_secret=contrail in [METADATA]~~
 44. Sort out with KUBERNETES_public_fip_pool
-45. Ubuntu containers
+45. ~~Ubuntu containers~~
