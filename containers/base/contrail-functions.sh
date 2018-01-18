@@ -20,6 +20,7 @@ EOM
       cat >> /etc/contrail/contrail-keystone-auth.conf << EOM
 user_domain_name = $KEYSTONE_AUTH_USER_DOMAIN_NAME
 project_domain_name = $KEYSTONE_AUTH_PROJECT_DOMAIN_NAME
+region_name = $KEYSTONE_AUTH_REGION_NAME
 EOM
     fi
   fi
