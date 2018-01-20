@@ -74,7 +74,6 @@ Use default VPC (make sure the ports are open - see below) or configure a new on
 ```
 * Run build:
 ```
-   export TEST_MODE=true
    cd contrail-container-builder/containers
    ./setup-for-build.sh
    sudo -E ./build.sh
@@ -128,10 +127,8 @@ Use default VPC (make sure the ports are open - see below) or configure a new on
 ```
    sudo yum install -y git wget ntp
 ```
-* To avoid problem with loading vrouter.ko in the middle of deployment process (cannot allocate memory) we recommend to insert kernel module before running Helm:
+* To avoid problem with loading vrouter.ko in the middle of deployment process (cannot allocate memory) we recommend to download vrouter.ko and insert it before running Helm:
 ```
-   wget -nv http://$REGISTRY_IP/$CONTRAIL_VERSION/vrouter.ko
-   chmod 755 vrouter.ko
    sudo insmod ./vrouter.ko
 ```
 * Clone openstack-helm with new changes for microservices: 
