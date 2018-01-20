@@ -90,7 +90,7 @@ Please refer to the README-HELM.md
 12. ~~Create initContainer for vrouter compilation~~
 13. Split charts to Contrail-only and the rest
 14. Remove all notions about OpenStack/Keystone/Kubernetes from Contrail containers and add separate containers (sidecars) bringing orchestrator-related functionality.
-15. **Kernel module compilation for Ubuntu**
+15. ~~Kernel module compilation for Ubuntu~~
 16. Nested cni.conf (if needed)
 17. ~~/var/crashes folder should be created~~
 18. ~~Unnecessary packages should be removed from containers~~
