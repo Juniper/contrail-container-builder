@@ -46,7 +46,7 @@ function install_for_ubuntu() {
 
   apt-get update -y &>>$HOME/apt.log
   apt-get install -y \
-    docker.io \
+    docker.io ntp \
     apt-transport-https \
     ca-certificates \
     kubectl kubelet kubeadm &>>$HOME/apt.log
@@ -75,9 +75,10 @@ EOF
     echo "SELINUX=permissive" >> /etc/selinux/config
   fi
 
-  yum install -y kubelet-1.7.4-0 kubeadm-1.7.4-0 kubectl-1.7.4-0 docker
+  yum install -y kubelet-1.7.4-0 kubeadm-1.7.4-0 kubectl-1.7.4-0 docker ntp
   systemctl enable docker && systemctl start docker
   systemctl enable kubelet && systemctl start kubelet
+  systemctl enable ntpd.service && systemctl start ntpd.service
 
   sysctl -w net.bridge.bridge-nf-call-iptables=1
   sysctl -w net.bridge.bridge-nf-call-ip6tables=1

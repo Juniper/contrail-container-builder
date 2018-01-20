@@ -52,7 +52,7 @@ if [[ $HOST_IP == 'auto' ]] ; then
 fi
 
 export CONTRAIL_VERSION=${CONTRAIL_VERSION:-'4.1.0.0-8'}
-export OPENSTACK_VERSION=${OPENSTACK_VERSION:-'newton'}
+export OPENSTACK_VERSION=${OPENSTACK_VERSION:-'ocata'}
 declare -A _os_subversions
 _os_subversions=([newton]=5 [ocata]=3)
 _os_subversion="${_os_subversions[$OPENSTACK_VERSION]}"

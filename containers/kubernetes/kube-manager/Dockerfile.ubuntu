@@ -3,7 +3,8 @@ ARG CONTRAIL_CONTAINER_TAG=4.1.0.0-6-ubuntu16-newton
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get install -y python-eventlet python-bitstring contrail-kube-manager python-enum34 && \
+    apt-get install -y python-eventlet python-bitstring contrail-kube-manager python-enum34 \
+        python-setuptools python-kazoo && \
     apt-get clean && \
     rm -rf /var/cache/apt
 
