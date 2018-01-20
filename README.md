@@ -1,19 +1,26 @@
 # Contrail containers based on microservices
 
-This is an alfa version of Contrail containers based on microservices. Checked on Kubernetes with CNI and in OpenStack Helm. Works with limitations and known issues.
-Everything is tested in CentOS 7.4 for deployment to run on one machine.
+This is an beta version of Contrail containers based on microservices.
+Checked on:
+  - Kubernetes with CNI
+  - Docker compose (via contrail-ansible-deployer)
+  - OpenStack Helm
+Works with limitations and known issues.
+Everything is tested in CentOS 7.4 / Ubuntu 16.04 for deployment to run on one/three machines.
 
 ## Building containers
 
 * Get Ubuntu 16 or Centos 7 with internet connection
 * Get the project sources (e.g. with ```git clone```)
 * Run ```cd containers```
-* Configure ```common.env``` (copy ```common.env.sample``` for that)
+* Configure ```common.env``` (copy ```common.env.sample``` for that and configure minimal set of parameters)
 * Run ```setup-for-build.sh```
 * Run ```sudo build.sh```
 
+If you have a problems with resolving DNS names in build process then you to fix your docker like this - https://development.robinwinslow.uk/2016/06/23/fix-docker-networking-dns/
+
 You'll get Docker registry running locally on port 5000 with the containers built.
-You can check them here: ```http://localhost:5000/v2/_catalog```
+You can check them here: ```http://localhost:5000/v2/_catalog``` or ```sudo docker images```
 
 ## Provisioning Kubernetes
 
@@ -90,7 +97,7 @@ Please refer to the README-HELM.md
 12. ~~Create initContainer for vrouter compilation~~
 13. Split charts to Contrail-only and the rest
 14. Remove all notions about OpenStack/Keystone/Kubernetes from Contrail containers and add separate containers (sidecars) bringing orchestrator-related functionality.
-15. **Kernel module compilation for Ubuntu**
+15. ~~Kernel module compilation for Ubuntu~~
 16. Nested cni.conf (if needed)
 17. ~~/var/crashes folder should be created~~
 18. ~~Unnecessary packages should be removed from containers~~
