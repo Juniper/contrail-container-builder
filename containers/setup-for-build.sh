@@ -33,10 +33,6 @@ sudo chown -R $USER $repo_dir
 source "$DIR/install-http-server.sh"
 $DIR/install-repository.sh
 
-if [[ $TEST_MODE == 'true' && "$LINUX_DISTR" == 'centos' ]] ; then
-  $DIR/unpack-vrouter-module.sh
-fi
-
 $DIR/validate-docker.sh
 
 # TODO: do not installs local registry if external is provided.
