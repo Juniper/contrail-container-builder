@@ -29,15 +29,15 @@ if [[ "$LINUX_ID" != "ubuntu" || "$LINUX_VER_ID" > "14.04" ]] ; then
   exit
 fi
 
-echo Installed docker version $docker_ver is smaller than the one required for parametrized Dockerfiles
+echo "Installed docker version $docker_ver is smaller than the one required for parametrized Dockerfiles"
 
-echo Load docker binaries
+echo "Load docker binaries"
 tgz_file=$(mktemp)
 curl -s -o $tgz_file https://download.docker.com/linux/static/stable/x86_64/docker-17.06.2-ce.tgz
 tmp_dir=$(mktemp -d)
 tar xzvf $tgz_file -C $tmp_dir
 
-echo Replace docker binaries
+echo "Replace docker binaries"
 sudo service docker stop
 sudo cp $tmp_dir/docker/* /usr/bin/
 sudo service docker start
