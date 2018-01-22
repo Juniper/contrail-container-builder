@@ -30,8 +30,7 @@ else
   echo "Allow docker to connect Contrail registry unsecurely"
   cat > /etc/docker/daemon.json << EOJ
 {
-  "insecure-registries": ["$remote_address"],
-  "dns": ["8.8.8.8"]
+  "insecure-registries": ["$remote_address"]
 }
 EOJ
 fi
