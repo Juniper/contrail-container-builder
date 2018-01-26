@@ -89,6 +89,10 @@ process_dir () {
   local dir=${1%/}
   local docker_file="$dir/Dockerfile"
   local docker_file_ld="$docker_file.$LINUX_DISTR"
+  if [[ $dir == *test* && $BUILD_TEST_CONTAINER -eq 0 ]] ; then
+     echo "INFO: BUILD_TEST_CONTAINER is not set. skipping test container build"
+     return
+  fi
   if [[ -f "$docker_file" || -f "$docker_file_ld" ]] ; then
     local df=$docker_file_ld
     if [[ ! -f "$df" ]] ; then

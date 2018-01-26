@@ -9,6 +9,7 @@ RUN yum clean all -y && \
     ldconfig
 
 RUN yum install -y python-contrail contrail-test contrail-fabric-utils
+RUN yum --setopt=obsoletes=0 install -y python-neutronclient
 
 RUN mkdir -p /contrail-test/images
 
