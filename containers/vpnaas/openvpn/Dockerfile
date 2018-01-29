@@ -1,0 +1,1 @@
+/home/pawel/juniper/vpnaas/contrail_vpnaas_ansible/roles/openvpn/build/files/Dockerfile
