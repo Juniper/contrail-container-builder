@@ -16,7 +16,7 @@ function get_server_list() {
 
 function get_cidr_for_nic() {
   local nic=$1
-  ip address show dev $nic | grep "inet " | awk '{print $2}'
+  ip addr show dev $nic | grep "inet " | grep -v "/32" | awk '{print $2}'
 }
 
 function get_default_nic() {
