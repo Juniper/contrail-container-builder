@@ -14,18 +14,18 @@ function get_server_list() {
   echo ${extended_list}
 }
 
-function get_cidr_for_nic() {
-  local nic=$1
-  ip address show dev $nic | grep "inet " | awk '{print $2}'
+function get_default_nic() {
+  ip route get 1 | grep -o "dev.*" | awk '{print $2}'
 }
 
-function get_default_nic() {
-  ip route show | grep 'default via' | head -n 1 | awk '{print $5}'
+function get_cidr_for_nic() {
+  local nic=$1
+  ip addr show dev $nic | grep "inet .*/.* brd " | awk '{print $2}'
 }
 
 function get_default_ip() {
   local nic=$(get_default_nic)
-  get_cidr_for_nic $nic | awk -F '/' '{print($1)}'
+  get_cidr_for_nic $nic | cut -d '/' -f 1
 }
 
 function get_default_gateway_for_nic() {
@@ -37,7 +37,7 @@ function find_my_ip_and_order_for_node() {
   local server_typ=$1_NODES
   local server_list=''
   IFS=',' read -ra server_list <<< "${!server_typ}"
-  local local_ips=$(ip addr | awk '/inet/ {print($2)}')
+  local local_ips=`ip addr | awk '/inet/ {print($2)}'`
   local ord=1
   for server in "${server_list[@]}"; do
     if [[ "$local_ips" =~ "$server" ]] ; then
@@ -129,7 +129,7 @@ function get_physical_nic_and_mac()
     # it means vhost0 iface is already up and running,
     # so try to find physical nic by MAC (which should be
     # the same as in vhost0)
-    nic=$(vif --list | grep "Type:Physical HWaddr:${mac}" -B1 | head -1 | awk '{print($3)}')
+    nic=`vif --list | grep "Type:Physical HWaddr:${mac}" -B1 | head -1 | awk '{print($3)}'`
     local _mac=$(get_iface_mac $nic)
     if [[ -n "$_mac" ]] ; then
         mac=$_mac
