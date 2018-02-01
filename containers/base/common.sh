@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DEFAULT_IFACE=`ip -4 route list 0/0 | awk '{ print $5; exit }'`
-DEFAULT_LOCAL_IP=`ip addr | grep $DEFAULT_IFACE | grep 'inet ' | awk '{print $2}' | cut -d '/' -f 1`
+DEFAULT_LOCAL_IP=`ifconfig $DEFAULT_IFACE | awk '/inet /{print $2}' | cut -d '/' -f 1`
 DEFAULT_HOSTNAME=`uname -n`
 
 CLOUD_ORCHESTRATOR=${CLOUD_ORCHESTRATOR:-none}
