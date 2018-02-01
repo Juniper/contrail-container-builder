@@ -104,12 +104,17 @@ process_dir () {
     return
   fi
   for d in $(ls -d $dir/*/ 2>/dev/null); do
+    if [[ $d != "./" && $d == */general-base* ]]; then
+      process_dir $d
+    fi
+  done
+  for d in $(ls -d $dir/*/ 2>/dev/null); do
     if [[ $d != "./" && $d == */base* ]]; then
       process_dir $d
     fi
   done
   for d in $(ls -d $dir/*/ 2>/dev/null); do
-    if [[ $d != "./" && $d != */base* ]]; then
+    if [[ $d != "./" && $d != *base* ]]; then
       process_dir $d
     fi
   done
@@ -155,19 +160,19 @@ fi
 echo "INFO: starting build from $my_dir with relative path $path"
 pushd $my_dir &>/dev/null
 
-echo "INFO: prepare Contrail repo file in base image"
-if [[ "$LINUX_DISTR" != 'ubuntu' ]] ; then
-  templ=$(cat $my_dir/../contrail.repo.template)
-  content=$(eval "echo \"$templ\"")
-  update_file "base/contrail.repo" "$content"
-  update_file "test/test/contrail.repo" "$content"
-else
-  templ=$(cat $my_dir/../contrail.list.template)
-  content=$(eval "echo \"$templ\"")
-  update_file "base/contrail.list" "$content"
-  update_file "test/test/contrail.list" "$content"
-  content=$(curl -s -S ${CONTRAIL_REPOSITORY}/${LINUX_DISTR}/contrail.gpg | base64)
-  update_file "base/contrail.gpg" "$content" 'true'
+if [[ "$op" == 'build' ]]; then
+  echo "INFO: prepare Contrail repo file in base image"
+  if [[ "$LINUX_DISTR" != 'ubuntu' ]] ; then
+    templ=$(cat $my_dir/../contrail.repo.template)
+    content=$(eval "echo \"$templ\"")
+    update_file "general-base/contrail.repo" "$content"
+  else
+    templ=$(cat $my_dir/../contrail.list.template)
+    content=$(eval "echo \"$templ\"")
+    update_file "general-base/contrail.list" "$content"
+    content=$(curl -s -S ${CONTRAIL_REPOSITORY}/${LINUX_DISTR}/contrail.gpg | base64)
+    update_file "general-base/contrail.gpg" "$content" 'true'
+  fi
 fi
 
 process_dir $path
