@@ -1,20 +1,18 @@
-ARG LINUX_DISTR=ubuntu
-ARG LINUX_DISTR_VER=16.04
-FROM $LINUX_DISTR:$LINUX_DISTR_VER
+# This is the base for contrail specific children
+
+ARG CONTRAIL_REGISTRY=localhost:5000
+ARG CONTRAIL_CONTAINER_TAG=4.1.0.0-6-ubuntu16-newton
+FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG OPENSTACK_VERSION=newton
 
-# this copy should be before apt-get install
-COPY *.list /etc/apt/sources.list.d/
-COPY *.gpg /etc/apt/trusted.gpg.d/
+COPY 99-apt-temp /etc/apt/apt.conf.d/
 
 # note: ldconfig looks strange. contrail-lib installs shared libraries but do not call it...
 RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get update && \
-    apt-get install -y software-properties-common && \
     add-apt-repository -y cloud-archive:$OPENSTACK_VERSION && \
     apt-get update && \
-    apt-get install -y iproute2 less contrail-lib contrail-setup contrail-utils python-contrail && \
+    apt-get install -y contrail-lib contrail-setup contrail-utils python-contrail && \
     apt-get autoremove && \
     apt-get clean && \
     rm -rf /var/cache/apt && \

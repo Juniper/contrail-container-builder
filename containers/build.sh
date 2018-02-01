@@ -34,7 +34,7 @@ echo "INFO: Docker version: $docker_ver"
 was_errors=0
 op='build'
 
-process_container () {
+function process_container() {
   local dir=${1%/}
   local docker_file=$2
   if [[ $op == 'list' ]]; then
@@ -85,7 +85,7 @@ process_container () {
   fi
 }
 
-process_dir () {
+function process_dir() {
   local dir=${1%/}
   local docker_file="$dir/Dockerfile"
   local docker_file_ld="$docker_file.$LINUX_DISTR"
@@ -104,18 +104,23 @@ process_dir () {
     return
   fi
   for d in $(ls -d $dir/*/ 2>/dev/null); do
+    if [[ $d != "./" && $d == */general-base* ]]; then
+      process_dir $d
+    fi
+  done
+  for d in $(ls -d $dir/*/ 2>/dev/null); do
     if [[ $d != "./" && $d == */base* ]]; then
       process_dir $d
     fi
   done
   for d in $(ls -d $dir/*/ 2>/dev/null); do
-    if [[ $d != "./" && $d != */base* ]]; then
+    if [[ $d != "./" && $d != *base* ]]; then
       process_dir $d
     fi
   done
 }
 
-update_file() {
+function update_file() {
   local file=$1
   local new_content=$2
   local content_encoded=${3:-'false'}
@@ -143,6 +148,16 @@ update_file() {
   md5sum "$file" > "$file_md5"
 }
 
+function update_repos() {
+  local repo_ext="$1"
+  for rfile in $(ls $my_dir/../*.${repo_ext}.template) ; do
+    templ=$(cat $rfile)
+    content=$(eval "echo \"$templ\"")
+    dfile=$(basename $rfile | sed 's/.template//')
+    update_file "general-base/$dfile" "$content"
+  done
+}
+
 if [[ $path == 'list' ]] ; then
   op='list'
   path="."
@@ -155,19 +170,13 @@ fi
 echo "INFO: starting build from $my_dir with relative path $path"
 pushd $my_dir &>/dev/null
 
-echo "INFO: prepare Contrail repo file in base image"
-if [[ "$LINUX_DISTR" != 'ubuntu' ]] ; then
-  templ=$(cat $my_dir/../contrail.repo.template)
-  content=$(eval "echo \"$templ\"")
-  update_file "base/contrail.repo" "$content"
-  update_file "test/test/contrail.repo" "$content"
-else
-  templ=$(cat $my_dir/../contrail.list.template)
-  content=$(eval "echo \"$templ\"")
-  update_file "base/contrail.list" "$content"
-  update_file "test/test/contrail.list" "$content"
-  content=$(curl -s -S ${CONTRAIL_REPOSITORY}/${LINUX_DISTR}/contrail.gpg | base64)
-  update_file "base/contrail.gpg" "$content" 'true'
+if [[ "$op" == 'build' ]]; then
+  echo "INFO: prepare Contrail repo file in base image"
+  if [[ "$LINUX_DISTR" == 'centos' ]] ; then
+    update_repos "repo"
+  elif [[ "$LINUX_DISTR" == 'ubuntu' ]] ; then
+    update_repos "list"
+  fi
 fi
 
 process_dir $path
