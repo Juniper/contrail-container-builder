@@ -37,7 +37,7 @@ function find_my_ip_and_order_for_node() {
   local server_typ=$1_NODES
   local server_list=''
   IFS=',' read -ra server_list <<< "${!server_typ}"
-  local local_ips=$(ip addr | awk '/inet/ {print($2)}')
+  local local_ips=$(ip addr | awk '/inet/ {print $2}')
   local ord=1
   for server in "${server_list[@]}"; do
     if [[ "$local_ips" =~ "$server" ]] ; then
