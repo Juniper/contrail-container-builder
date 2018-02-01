@@ -1,20 +1,14 @@
-ARG LINUX_DISTR=centos
-ARG LINUX_DISTR_VER=7.4.1708
-FROM $LINUX_DISTR:$LINUX_DISTR_VER
+ARG CONTRAIL_REGISTRY=localhost:5000
+ARG CONTRAIL_CONTAINER_TAG=4.1.0.0-6-centos7-newton
+FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG OPENSTACK_VERSION=newton
 ARG OPENSTACK_SUBVERSION=5
 
-# this copy should be before yum install
-COPY *.repo /etc/yum.repos.d/
-
 # note: ldconfig looks strange. contrail-lib installs shared libraries but do not call it...
 RUN yum update -y && \
-    yum install -y \
-      yum-plugin-priorities \
-      https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
-      https://repos.fedorapeople.org/repos/openstack/openstack-$OPENSTACK_VERSION/rdo-release-$OPENSTACK_VERSION-$OPENSTACK_SUBVERSION.noarch.rpm && \
-    yum install -y iproute less contrail-lib contrail-setup contrail-utils python-contrail && \
+    yum install -y https://repos.fedorapeople.org/repos/openstack/openstack-$OPENSTACK_VERSION/rdo-release-$OPENSTACK_VERSION-$OPENSTACK_SUBVERSION.noarch.rpm && \
+    yum install -y contrail-lib contrail-setup contrail-utils python-contrail && \
     yum clean all -y && \
     rm -rf /var/cache/yum && \
     ldconfig
