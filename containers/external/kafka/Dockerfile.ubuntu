@@ -1,11 +1,14 @@
-ARG LINUX_DISTR=ubuntu
-ARG LINUX_DISTR_VER=16.04
-FROM $LINUX_DISTR:$LINUX_DISTR_VER
+ARG CONTRAIL_REGISTRY=localhost:5000
+ARG CONTRAIL_CONTAINER_TAG=4.1.0.0-6-ubuntu16-newton
+FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG KAFKA_DISTRO_NAME=kafka_2.11-0.9.0.1
 
 ENV KAFKA_DIR=/opt/$KAFKA_DISTRO_NAME \
     KAFKA_CONF_DIR=/opt/$KAFKA_DISTRO_NAME/config
+
+COPY *.list /etc/apt/sources.list.d/
+COPY *.gpg /etc/apt/trusted.gpg.d/
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
