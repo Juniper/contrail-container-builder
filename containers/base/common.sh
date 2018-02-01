@@ -1,7 +1,10 @@
 #!/bin/bash
 
-DEFAULT_IFACE=`ip -4 route list 0/0 | awk '{ print $5; exit }'`
-DEFAULT_LOCAL_IP=`ip addr | grep $DEFAULT_IFACE | grep 'inet ' | awk '{print $2}' | cut -d '/' -f 1`
+source /functions.sh
+source /contrail-functions.sh
+
+DEFAULT_IFACE=$(get_default_nic)
+DEFAULT_LOCAL_IP=$(get_default_ip)
 DEFAULT_HOSTNAME=`uname -n`
 
 CLOUD_ORCHESTRATOR=${CLOUD_ORCHESTRATOR:-none}
@@ -106,9 +109,6 @@ if [[ "$AUTH_MODE" == 'keystone' ]] ; then
   AUTH_PARAMS+=" --admin_user $KEYSTONE_AUTH_ADMIN_USER"
 #  AUTH_PARAMS+=" --openstack_ip $KEYSTONE_AUTH_HOST"
 fi
-
-source /functions.sh
-source /contrail-functions.sh
 
 CONFIG_SERVERS=${CONFIG_SERVERS:-`get_server_list CONFIG ":$CONFIG_API_PORT "`}
 CONFIGDB_SERVERS=${CONFIGDB_SERVERS:-`get_server_list CONFIGDB ":$CONFIGDB_PORT "`}

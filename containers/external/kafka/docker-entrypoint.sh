@@ -2,8 +2,8 @@
 
 set -e
 
-default_interface=`ip route show |grep "default via" |awk '{print $5}'`
-default_ip_address=`ip address show dev $default_interface |head -3 |tail -1 |tr "/" " " |awk '{print $2}'`
+default_interface=`ip route get 1 | grep -o "dev.*" | awk '{print $2}'`
+default_ip_address=`ip addr show dev $default_interface | grep "inet .*/.* brd " | awk '{print $2}' | cut -d '/' -f 1`
 local_ips=$(ip addr | awk '/inet/ {print($2)}')
 
 CONFIG="$KAFKA_CONF_DIR/server.properties"
