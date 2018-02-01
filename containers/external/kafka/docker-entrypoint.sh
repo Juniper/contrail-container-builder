@@ -2,17 +2,19 @@
 
 set -e
 
-default_interface=`ip route show |grep "default via" |awk '{print $5}'`
-default_ip_address=`ip address show dev $default_interface |head -3 |tail -1 |tr "/" " " |awk '{print $2}'`
-local_ips=$(ip addr | awk '/inet/ {print($2)}')
+source /functions.sh
+
+default_interface=$(get_default_nic)
+default_ip_address=$(get_default_ip)
+local_ips=$(ip addr | awk '/inet/ {print $2}')
 
 CONFIG="$KAFKA_CONF_DIR/server.properties"
 
 CONTROLLER_NODES=${CONTROLLER_NODES:-${default_ip_address}}
-CONFIG_NODES=${CONFIG_NODES:-${CONTROLLER_NODES}}
-ZOOKEEPER_NODES=${ZOOKEEPER_NODES:-${CONFIG_NODES}}
-ANALYTICSDB_NODES=${ANALYTICSDB_NODES:-${CONTROLLER_NODES}}
+ANALYTICS_NODES=${ANALYTICS_NODES:-${CONTROLLER_NODES}}
+ANALYTICSDB_NODES=${ANALYTICSDB_NODES:-${ANALYTICS_NODES}}
 KAFKA_NODES=${KAFKA_NODES:-${ANALYTICSDB_NODES}}
+ZOOKEEPER_ANALYTICS_NODES=${ZOOKEEPER_ANALYTICS_NODES:-${ANALYTICSDB_NODES}}
 ZOOKEEPER_ANALYTICS_PORT=${ZOOKEEPER_ANALYTICS_PORT:-2182}
 
 : ${KAFKA_LISTEN_ADDRESS='auto'}
@@ -29,7 +31,7 @@ if [ "$KAFKA_LISTEN_ADDRESS" = 'auto' ]; then
   done
 
   if [ -z "$my_ip" ]; then
-    echo "ERROR: Cannot find self ips ('$local_ips') in Cassandra nodes ('$KAFKA_NODES')"
+    echo "ERROR: Cannot find self ips ('$local_ips') in Kafka nodes ('$KAFKA_NODES')"
     exit -1
   fi
 
@@ -38,7 +40,7 @@ fi
 
 zk_server_list=''
 # zk_chroot_list=''
-IFS=',' read -ra server_list <<< "${ZOOKEEPER_NODES}"
+IFS=',' read -ra server_list <<< "${ZOOKEEPER_ANALYTICS_NODES}"
 for server in "${server_list[@]}"; do
   zk_server_list+=${server}:${ZOOKEEPER_ANALYTICS_PORT},
 done
