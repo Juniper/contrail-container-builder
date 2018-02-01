@@ -103,18 +103,23 @@ vrouter_cidr="$(get_cidr_for_nic vhost0)"
 
 if [[ "$vrouter_cidr" == '' ]] ; then
     echo "INFO: creating vhost0"
-    vrouter_cidr=$(get_cidr_for_nic $phys_int)
+    addrs=$(ip addr show dev $phys_int | grep "inet " | grep -oP "[0-9\.]*/[0-9]* brd [0-9\.]*|[0-9\.]*/[0-9]*")
     VROUTER_GATEWAY=${VROUTER_GATEWAY:-$(get_default_gateway_for_nic $phys_int)}
     insert_vrouter
 
     # TODO: switch off dhcp on phys_int
     echo "INFO: Changing physical interface to vhost in ip table"
-    ip address delete $vrouter_cidr dev $phys_int
-    ip address add $vrouter_cidr dev vhost0
-    if [[ $VROUTER_GATEWAY ]]; then
-        echo "INFO: set default gateway"
-        ip route add default via $VROUTER_GATEWAY
-    fi
+    echo "$addrs" | while IFS= read -r line ; do
+        echo "Processing $line"
+        addr_to_del=`echo $line | cut -d ' ' -f 1`
+        addr_to_add=`echo $line | sed 's/brd/broadcast/'`
+        ip address delete $addr_to_del dev $phys_int
+        ip address add $addr_to_add dev vhost0
+        if [[ -n "$VROUTER_GATEWAY" ]]; then
+            echo "INFO: set default gateway"
+            ip route add default via $VROUTER_GATEWAY
+        fi
+    done
 else
     echo "INFO: vhost0 is already up"
 fi
