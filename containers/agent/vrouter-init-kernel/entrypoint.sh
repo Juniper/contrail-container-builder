@@ -111,19 +111,26 @@ if [[ -e /etc/sysconfig/network-scripts/ifcfg-${phys_int} && ! -e /etc/sysconfig
     ifup vhost0
 elif [[ "$vrouter_cidr" == '' ]] ; then
     echo "INFO: creating vhost0"
-    vrouter_cidr=$(get_cidr_for_nic $phys_int)
-    VROUTER_GATEWAY=${VROUTER_GATEWAY:-$(get_default_gateway_for_nic $phys_int)}
+    addrs=$(ip addr show dev $phys_int | grep "inet " | grep -oP "[0-9\.]*/[0-9]* brd [0-9\.]*|[0-9\.]*/[0-9]*")
+    default_gw=`ip route show dev $phys_int | grep default | head -n 1 | awk '{print $3}'`
+    default_gw_metric=`ip route show dev $phys_int | grep default | head -1 | grep -o "metric [0-9]*"`
+    VROUTER_GATEWAY=${VROUTER_GATEWAY:-"$default_gw $default_gw_metric"}
     insert_vrouter
 
     # TODO: switch off dhcp on phys_int
     echo "INFO: Changing physical interface to vhost in ip table"
     ip link set vhost0 up
-    ip address delete $vrouter_cidr dev $phys_int
-    ip address add $vrouter_cidr dev vhost0
-    if [[ $VROUTER_GATEWAY ]]; then
-        echo "INFO: set default gateway"
-        ip route add default via $VROUTER_GATEWAY
-    fi
+    echo "$addrs" | while IFS= read -r line ; do
+        echo "Processing $line"
+        addr_to_del=`echo $line | cut -d ' ' -f 1`
+        addr_to_add=`echo $line | sed 's/brd/broadcast/'`
+        ip address delete $addr_to_del dev $phys_int
+        ip address add $addr_to_add dev vhost0
+        if [[ -n "$VROUTER_GATEWAY" ]]; then
+            echo "INFO: set default gateway"
+            ip route add default via $VROUTER_GATEWAY
+        fi
+    done
 else
     echo "INFO: vhost0 is already up"
 fi
