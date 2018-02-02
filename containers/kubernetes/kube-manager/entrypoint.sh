@@ -23,7 +23,8 @@ kubernetes_api_secure_port=${KUBERNETES_API_SECURE_PORT:-6443}
 service_subnets=${KUBERNETES_SERVICE_SUBNETS:-"10.96.0.0/12"}
 pod_subnets=${KUBERNETES_POD_SUBNETS:-"10.32.0.0/12"}
 cluster_project=${KUBERNETES_CLUSTER_PROJECT:-"{'domain': 'default-domain', 'project': 'default'}"}
-cluster_name=${KUBERNETES_CLUSTER_NAME:-"k8s-default"}
+cluster_name=${KUBERNETES_CLUSTER_NAME:-"cluster"}
+ip_fabric_forwarding=${KUBERNETES_IP_FABRIC_FORWARDING:-"false"}
 ;cluster_network=${KUBERNETES_CLUSTER_NETWORK:-"{}"}
 
 [VNC]
