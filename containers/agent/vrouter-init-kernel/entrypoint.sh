@@ -88,7 +88,6 @@ function insert_vrouter() {
     vif --create vhost0 --mac $phys_int_mac
     vif --add $phys_int --mac $phys_int_mac --vrf 0 --vhost-phys --type physical
     vif --add vhost0 --mac $phys_int_mac --vrf 0 --type vhost --xconnect $phys_int
-    ip link set vhost0 up
     return 0
 }
 
@@ -101,7 +100,16 @@ echo "INFO: Physical interface: $phys_int, mac=$phys_int_mac"
 # Probe vhost0
 vrouter_cidr="$(get_cidr_for_nic vhost0)"
 
-if [[ "$vrouter_cidr" == '' ]] ; then
+if [[ -e /etc/sysconfig/network-scripts/ifcfg-${phys_int} && ! -e /etc/sysconfig/network-scripts/ifcfg-vhost0 ]]; then
+    echo "INFO: creating vhost0"
+    insert_vrouter
+    cp -f /etc/sysconfig/network-scripts/ifcfg-${phys_int} /etc/sysconfig/network-scripts/ifcfg-vhost0
+    sed -i "s/${phys_int}/vhost0/g" /etc/sysconfig/network-scripts/ifcfg-vhost0
+    sed -ri "/(DEVICE|ONBOOT)/! s/.*/#& commented by contrail/" /etc/sysconfig/network-scripts/ifcfg-${phys_int}
+    ifdown ${phys_int}
+    ifup ${phys_int}
+    ifup vhost0
+elif [[ "$vrouter_cidr" == '' ]] ; then
     echo "INFO: creating vhost0"
     vrouter_cidr=$(get_cidr_for_nic $phys_int)
     VROUTER_GATEWAY=${VROUTER_GATEWAY:-$(get_default_gateway_for_nic $phys_int)}
@@ -109,6 +117,7 @@ if [[ "$vrouter_cidr" == '' ]] ; then
 
     # TODO: switch off dhcp on phys_int
     echo "INFO: Changing physical interface to vhost in ip table"
+    ip link set vhost0 up
     ip address delete $vrouter_cidr dev $phys_int
     ip address add $vrouter_cidr dev vhost0
     if [[ $VROUTER_GATEWAY ]]; then
