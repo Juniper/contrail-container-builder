@@ -3,7 +3,7 @@ ARG CONTRAIL_CONTAINER_TAG=4.1.0.0-6-centos7-newton
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 RUN yum install -y ethtool \
-      contrail-vrouter-agent contrail-vrouter-utils \
+      contrail-vrouter-agent contrail-vrouter-utils haproxy \
       sudo python-opencontrail-vrouter-netns python-contrail-vrouter-api && \
     yum clean all && \
     rm -rf /var/cache/yum && \
