@@ -1,0 +1,18 @@
+ARG CONTRAIL_REGISTRY=localhost:5000
+ARG CONTRAIL_CONTAINER_TAG=4.1.0.0-6-ubuntu16-newton
+FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
+
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get install -y pciutils contrail-vrouter-utils contrail-vrouter-dpdk contrail-vrouter-dpdk-init && \
+        sudo python-opencontrail-vrouter-netns python-contrail-vrouter-api && \
+    apt-get clean && \
+    rm -rf /var/cache/apt && \
+    ldconfig
+
+COPY 10-core-pattern.conf /etc/sysctl.d/
+COPY entrypoint.sh /
+
+ENTRYPOINT ["/entrypoint.sh"]
+
+LABEL net.juniper.contrail=contrail-vrouter-agent-dpdk
+LABEL net.juniper.node=agent

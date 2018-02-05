@@ -114,3 +114,24 @@ function wait_for_rabbitmq() {
   local node=$1
   #TODO
 }
+
+function is_interface_vlan() {
+  local intf=$1
+  local vlan
+  vlan="$(sudo ip link show ${intf} | head -1 | cut -f2 -d':' | grep '@')"
+  return vlan
+}
+
+function get_physical_interface_of_vlan() {
+  local intf=$1
+  local dev
+  dev="$(sudo ip link show ${intf} | head -1 | cut -f2 -d':' | cut -f2 -d'@' | tr -d ' ')"
+  return dev
+}
+
+function get_pci_address_of_interface() {
+  local intf=$1
+  local DPDK_BIND="/opt/contrail/bin/dpdk_nic_bind.py"
+  pci_addr="$(${DPDK_BIND} --status grep -w intf | cut -d' ' -f 1)"
+  return pci_addr
+}
