@@ -274,6 +274,18 @@ services:
     depends_on:
       - network
     restart: on-failure
+  ironicnotifmgr:
+    image: "${CONTRAIL_REGISTRY}/contrail-ironicnotifmgr:${CONTRAIL_CONTAINER_TAG}"
+    env_file: ${ENV_FILE}
+    environment:
+      - RABBITMQ_NODES
+      - NODE_TYPE=analytics
+    network_mode: "service:network"
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+    depends_on:
+      - network
+    restart: on-failure
 
   # ===
   # contrail web ui services
