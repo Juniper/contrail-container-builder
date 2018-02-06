@@ -10,5 +10,5 @@ COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-LABEL net.juniper.contrail=vrouter-init-kernel
-LABEL net.juniper.node=agent
+LABEL net.juniper.contrail=kernel-init
+LABEL net.juniper.node=vrouter
