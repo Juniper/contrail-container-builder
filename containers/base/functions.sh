@@ -149,3 +149,24 @@ function get_physical_nic_and_mac()
   fi
   echo $nic $mac
 }
+
+function is_interface_vlan() {
+  local intf=$1
+  local vlan
+  vlan="$(ip link show $intf | head -1 | cut -f2 -d':' | grep '@')"
+  echo $vlan
+}
+
+function get_physical_interface_of_vlan() {
+  local intf=$1
+  local dev
+  dev="$(ip link show $intf | head -1 | cut -f2 -d':' | cut -f2 -d'@' | tr -d ' ')"
+  echo $dev
+}
+
+function get_pci_address_of_interface() {
+  local intf=$1
+  local DPDK_BIND="/opt/contrail/bin/dpdk_nic_bind.py"
+  pci_addr="$(${DPDK_BIND} --status | grep -w $intf | cut -d' ' -f 1)"
+  echo $pci_addr
+}
