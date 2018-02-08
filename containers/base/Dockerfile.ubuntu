@@ -11,9 +11,6 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     add-apt-repository -y cloud-archive:$OPENSTACK_VERSION && \
     apt-get update && \
     apt-get install -y contrail-lib contrail-setup contrail-utils python-contrail && \
-    apt-get autoremove && \
-    apt-get clean && \
-    rm -rf /var/cache/apt && \
     ldconfig
 
 COPY *.sh /

@@ -136,12 +136,30 @@ LINKLOCAL_SERVICE_IP=${LINKLOCAL_SERVICE_IP:-'169.254.169.254'}
 IPFABRIC_SERVICE_PORT=${IPFABRIC_SERVICE_PORT:-8775}
 IPFABRIC_SERVICE_IP=${IPFABRIC_SERVICE_IP:-${CONFIG_API_VIP}}
 
+SERVER_CERT=${XMPP_SERVER_CERT:-'/etc/contrail/ssl/certs/server.pem'}
+SERVER_KEY=${XMPP_SERVER_KEY:-'/etc/contrail/ssl/private/server-privkey.pem'}
+SERVER_CA_CERT=${XMPP_SERVER_CA_CERT:-'/etc/contrail/ssl/certs/ca-cert.pem'}
+
+XMPP_SSL_ENABLE=${XMPP_SSL_ENABLE:-False}
+XMPP_SERVER_CERT=${XMPP_SERVER_CERT:-${SERVER_CERT}}
+XMPP_SERVER_KEY=${XMPP_SERVER_KEY:-${SERVER_KEY}}
+XMPP_SERVER_CA_CERT=${XMPP_SERVER_CA_CERT:-${SERVER_CA_CERT}}
+
+SANDESH_SSL_ENABLE=${SANDESH_SSL_ENABLE:-False}
+INTROSPECT_SSL_ENABLE=${INTROSPECT_SSL_ENABLE:-False}
+SANDESH_KEYFILE=${SANDESH_KEYFILE:-${SERVER_KEY}}
+SANDESH_CERTFILE=${SANDESH_CERTFILE:-${SERVER_CERT}}
+SANDESH_CA_CERT=${SANDESH_CA_CERT:-${SERVER_CA_CERT}}
 read -r -d '' sandesh_client_config << EOM
 [SANDESH]
-sandesh_ssl_enable=${SANDESH_SSL_ENABLE:-False}
-introspect_ssl_enable=${INTROSPECT_SSL_ENABLE:-False}
-sandesh_keyfile=${SANDESH_KEYFILE:-/etc/contrail/ssl/private/server-privkey.pem}
-sandesh_certfile=${SANDESH_CERTFILE:-/etc/contrail/ssl/certs/server.pem}
-sandesh_ca_cert=${SANDESH_CA_CERT:-/etc/contrail/ssl/certs/ca-cert.pem}
+sandesh_ssl_enable=${SANDESH_SSL_ENABLE}
+introspect_ssl_enable=${INTROSPECT_SSL_ENABLE}
+sandesh_keyfile=${SANDESH_KEYFILE}
+sandesh_certfile=${SANDESH_CERTFILE}
+sandesh_ca_cert=${SANDESH_CA_CERT}
 EOM
 
+AGENT_MODE=${AGENT_MODE:-'vrouter'}
+DPDK_UIO_DRIVER=${DPDK_UIO_DRIVER:-'uio_pci_generic'}
+CPU_CORE_MASK=${CPU_CORE_MASK:-'0x01'}
+HUGE_PAGES=${HUGE_PAGES:-1024}
