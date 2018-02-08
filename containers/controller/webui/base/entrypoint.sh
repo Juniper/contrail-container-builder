@@ -178,6 +178,19 @@ config.jsonSchemaPath = "/usr/src/contrail/contrail-web-core/src/serverroot/conf
 module.exports = config;
 EOM
 
+cat > /etc/contrail/contrail-webui-userauth.js << EOM
+/*
+ * Copyright (c) 2014 Juniper Networks, Inc. All rights reserved.
+ */
+
+var auth = {};
+auth.admin_user = '$KEYSTONE_AUTH_ADMIN_USER';
+auth.admin_password = '$KEYSTONE_AUTH_ADMIN_PASSWORD';
+auth.admin_token = '';
+auth.admin_tenant_name = '$KEYSTONE_AUTH_ADMIN_TENANT';
+EOM
+
+
 set_vnc_api_lib_ini
 
 exec "$@"
