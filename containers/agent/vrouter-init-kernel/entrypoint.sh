@@ -103,12 +103,16 @@ vrouter_cidr="$(get_cidr_for_nic vhost0)"
 if [[ -e /etc/sysconfig/network-scripts/ifcfg-${phys_int} && ! -e /etc/sysconfig/network-scripts/ifcfg-vhost0 ]]; then
     echo "INFO: creating vhost0"
     insert_vrouter
+    ifdown ${phys_int}
     cp -f /etc/sysconfig/network-scripts/ifcfg-${phys_int} /etc/sysconfig/network-scripts/ifcfg-vhost0
     sed -i "s/${phys_int}/vhost0/g" /etc/sysconfig/network-scripts/ifcfg-vhost0
-    sed -ri "/(DEVICE|ONBOOT)/! s/.*/#& commented by contrail/" /etc/sysconfig/network-scripts/ifcfg-${phys_int}
-    ifdown ${phys_int}
+    sed -ri "/(DEVICE|ONBOOT|NM_CONTROLLED)/! s/.*/#commented_by_contrail& /" /etc/sysconfig/network-scripts/ifcfg-${phys_int}
     ifup ${phys_int}
     ifup vhost0
+    while IFS= read -r line
+    do
+      ip route del $line
+    done < <(ip route sh |grep ${phys_int})
 elif [[ "$vrouter_cidr" == '' ]] ; then
     echo "INFO: creating vhost0"
     vrouter_cidr=$(get_cidr_for_nic $phys_int)
