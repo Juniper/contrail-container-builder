@@ -21,7 +21,7 @@ echo "INFO: Contrail version: $CONTRAIL_VERSION"
 echo "INFO: OpenStack version: $OPENSTACK_VERSION"
 echo "INFO: OpenStack subversion (minor package version): $OS_SUBVERSION"
 echo "INFO: Contrail registry: $CONTRAIL_REGISTRY"
-echo "INFO: Contrail repository: $CONTRAIL_REPOSITORY"
+echo "INFO: Contrail repository: $CONTRAIL_REPOSITORY (signed: $CONTRAIL_REPOSITORY_SIGNED)""
 echo "INFO: Contrail container tag: $CONTRAIL_CONTAINER_TAG"
 
 if [ -n "$opts" ]; then
@@ -166,8 +166,10 @@ else
   content=$(eval "echo \"$templ\"")
   update_file "base/contrail.list" "$content"
   update_file "test/test/contrail.list" "$content"
-  content=$(curl -s -S ${CONTRAIL_REPOSITORY}/${LINUX_DISTR}/contrail.gpg | base64)
-  update_file "base/contrail.gpg" "$content" 'true'
+  if [[ "$CONTRAIL_REPOSITORY_SIGNED" == 'true' ]]; then
+    content=$(curl -s -S ${CONTRAIL_REPOSITORY}/${LINUX_DISTR}/contrail.gpg | base64)
+    update_file "base/contrail.gpg" "$content" 'true'
+  fi
 fi
 
 process_dir $path
