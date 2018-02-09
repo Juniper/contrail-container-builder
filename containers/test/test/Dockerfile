@@ -4,17 +4,13 @@ FROM ${CONTRAIL_TEST_REGISTRY}/contrail-test-${OPENSTACK_VERSION}:latest
 
 COPY *.repo /etc/yum.repos.d/
 
-RUN yum clean all -y && \
-    rm -rf /var/cache/yum && \
-    ldconfig
-
-RUN yum install -y python-contrail contrail-test contrail-fabric-utils
-RUN yum --setopt=obsoletes=0 install -y python-neutronclient
+RUN yum install -y python-contrail contrail-test contrail-fabric-utils && \
+    yum --setopt=obsoletes=0 install -y python-neutronclient && \
+    yum clean all -y && rm -rf /var/cache/yum
 
 RUN mkdir -p /contrail-test/images
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-LABEL net.juniper.nodemgr.filter.name=contrail-test
 LABEL net.juniper.contrail=test
 LABEL net.juniper.node=test

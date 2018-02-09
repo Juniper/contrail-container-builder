@@ -1,7 +1,5 @@
 FROM centos:7.4.1708
 
-RUN yum clean all -y && rm -rf /var/cache/yum
-
 # Setup Chrome Repo
 COPY google-chrome.repo /etc/yum.repos.d/google-chrome.repo
 
