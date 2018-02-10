@@ -66,6 +66,8 @@ function process_container() {
   fi
   build_arg_opts+=" --build-arg OPENSTACK_VERSION=${OPENSTACK_VERSION}"
   build_arg_opts+=" --build-arg OPENSTACK_SUBVERSION=${OS_SUBVERSION}"
+  build_arg_opts+=" --build-arg CONTRAIL_REPOSITORY=${CONTRAIL_REPOSITORY}"
+  build_arg_opts+=" --build-arg CONTRAIL_VERSION=${CONTRAIL_VERSION}"
 
   local logfile='build-'$container_name'.log'
   docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${CONTRAIL_CONTAINER_TAG} \
