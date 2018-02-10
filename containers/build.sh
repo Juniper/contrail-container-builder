@@ -24,6 +24,9 @@ echo "INFO: Contrail registry: $CONTRAIL_REGISTRY"
 echo "INFO: Contrail repository: $CONTRAIL_REPOSITORY"
 echo "INFO: Contrail container tag: $CONTRAIL_CONTAINER_TAG"
 
+repo_primary=`curl -Ls ${CONTRAIL_REPOSITORY}/repodata/repomd.xml | grep -o "[a-zA-Z0-9/-]*primary.xml[\.a-z]*" `
+echo "INFO: primary.xml for Contrail repository: $repo_primary"
+
 if [ -n "$opts" ]; then
   echo "INFO: Options: $opts"
 fi
@@ -66,6 +69,9 @@ function process_container() {
   fi
   build_arg_opts+=" --build-arg OPENSTACK_VERSION=${OPENSTACK_VERSION}"
   build_arg_opts+=" --build-arg OPENSTACK_SUBVERSION=${OS_SUBVERSION}"
+  build_arg_opts+=" --build-arg CONTRAIL_REPOSITORY=${CONTRAIL_REPOSITORY}"
+  build_arg_opts+=" --build-arg CONTRAIL_VERSION=${CONTRAIL_VERSION}"
+  build_arg_opts+=" --build-arg REPO_PRIMARY=${repo_primary}"
 
   local logfile='build-'$container_name'.log'
   docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${CONTRAIL_CONTAINER_TAG} \
