@@ -65,6 +65,8 @@ else
   ibgp_auto_mesh_opt='--no_ibgp_auto_mesh'
 fi
 
-provision_node provision_control.py $hostip $hostname --router_asn ${BGP_ASN} $ibgp_auto_mesh_opt
+provision_node provision_control.py $hostip $hostname \
+  --router_asn ${BGP_ASN} $ibgp_auto_mesh_opt \
+  --bgp_server_port ${BGP_PORT}
 
 exec "$@"
