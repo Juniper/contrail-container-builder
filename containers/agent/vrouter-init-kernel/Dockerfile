@@ -1,8 +1,8 @@
 ARG CONTRAIL_REGISTRY=localhost:5000
-ARG CONTRAIL_CONTAINER_TAG=4.1.0.0-6-centos7-newton
+ARG CONTRAIL_CONTAINER_TAG=4.1.0.0-6-newton
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
-RUN yum install -y contrail-vrouter contrail-vrouter-utils initscripts dhclient && \
+RUN yum install -y contrail-vrouter-utils initscripts dhclient && \
     yum clean all && \
     rm -rf /var/cache/yum
 
