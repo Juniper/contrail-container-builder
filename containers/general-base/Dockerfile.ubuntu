@@ -10,7 +10,7 @@ COPY *.gpg /etc/apt/trusted.gpg.d/
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
-    apt-get install -y software-properties-common iproute2 less && \
+    apt-get install -y software-properties-common iproute2 less gawk && \
     apt-get autoremove
 
 COPY *.sh /

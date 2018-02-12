@@ -139,4 +139,4 @@ else
     echo "INFO: vhost0 is already up"
 fi
 
-exec "$@"
+exec $@

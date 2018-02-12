@@ -4,6 +4,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-controller-config-base:${CONTRAIL_CONTAINER_T
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -y python-neutron-lib && \
+    apt-get autoremove && \
     apt-get clean && \
     rm -rf /var/cache/apt
 

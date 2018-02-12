@@ -1,5 +1,39 @@
 #!/bin/bash
 
+function get_linux_id() {
+    awk -F"=" '/^ID=/{print $2}' /etc/os-release | tr -d '"'
+}
+
+function get_linux_id_ver {
+    local id=`get_linux_id`
+    if [[ "$id" != 'ubuntu' ]] ; then
+        # for ubuntu ver id matchs 7.4.1708, etc from host system
+        awk '{print($4)}' /etc/redhat-release
+    else
+        # for ubuntu ver id matchs 14.04, 16.04, etc from host system
+        awk -F '=' '/^VERSION_ID=/{print $2}' /etc/os-release | tr -d '"'
+    fi
+}
+
+function is_centos() {
+    test "$(get_linux_id)" == 'centos'
+}
+
+function is_rhel() {
+    test "$(get_linux_id)" == 'rhel'
+}
+
+function is_ubuntu() {
+    test "$(get_linux_id)" == 'ubuntu'
+}
+
+function is_ubuntu_xenial() {
+    if ! is_ubuntu ; then
+        return 1
+    fi
+    grep -qi 'xenial' /etc/lsb-release 2>/dev/null
+}
+
 function get_server_list() {
   local server_typ=$1_NODES
   local port_with_delim=$2

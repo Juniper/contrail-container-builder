@@ -47,7 +47,7 @@ check_specified_ips() {
   else
     for _ip in ${_ips[@]}; do
       if ! [[ "${node_ips[@]}" =~ "${_ip}" ]]; then
-        echo "ERROR: Cannot find Kubernetes node for $_ip specified in $_nodes = '${!_nodes}'"
+        echo "ERROR: Cannot find Kubernetes node for $_ip specified in $_nodes = '${!_nodes}' (node_ips: ${node_ips[@]})"
       fi
     done
   fi
