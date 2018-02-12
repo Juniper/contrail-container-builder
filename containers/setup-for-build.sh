@@ -9,7 +9,6 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 source "$DIR/../parse-env.sh"
 
 echo 'Build platform: '$LINUX_ID:$LINUX_VER_ID
-echo 'Target platform: '$LINUX_DISTR:$LINUX_DISTR_VER
 echo 'Contrail version: '$CONTRAIL_VERSION
 echo 'OpenStack version: '$OPENSTACK_VERSION
 echo 'Contrail registry: '$CONTRAIL_REGISTRY

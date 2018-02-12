@@ -1,8 +1,6 @@
 # This is the general base for all: non-contrail specfic like external and for contrail specific
 
-ARG LINUX_DISTR=centos
-ARG LINUX_DISTR_VER=7.4.1708
-FROM $LINUX_DISTR:$LINUX_DISTR_VER
+FROM centos:7.4.1708
 
 # this copy should be before yum install
 COPY *.repo /etc/yum.repos.d/
