@@ -73,7 +73,10 @@ function process_container() {
   if [ ${PIPESTATUS[0]} -eq 0 ]; then
     docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${CONTRAIL_CONTAINER_TAG} |& tee -a $logfile
     if [ ${PIPESTATUS[0]} -eq 0 ]; then
-      rm $logfile
+      docker push ${CONTRAIL_REGISTRY}'/'${container_name}:latest |& tee -a $logfile
+      if [ ${PIPESTATUS[0]} -eq 0 ]; then
+        rm $logfile
+      fi
     fi
   fi
   if [ -f $logfile ]; then
