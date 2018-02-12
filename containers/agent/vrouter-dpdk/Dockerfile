@@ -1,9 +1,10 @@
 ARG CONTRAIL_REGISTRY=localhost:5000
-ARG CONTRAIL_CONTAINER_TAG=4.1.0.0-6-centos7-newton
+ARG CONTRAIL_CONTAINER_TAG=4.1.0.0-6-newton
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
-RUN yum install -y ethtool contrail-vrouter-agent contrail-vrouter-utils \
-      sudo python-opencontrail-vrouter-netns python-contrail-vrouter-api && \
+RUN yum install -y  ethtool pciutils sysvinit-tools \
+                    contrail-vrouter-dpdk contrail-vrouter-dpdk-init contrail-vrouter-utils \
+                    sudo python-opencontrail-vrouter-netns python-contrail-vrouter-api && \
     yum clean all && \
     rm -rf /var/cache/yum && \
     ldconfig
@@ -12,7 +13,7 @@ COPY 10-core-pattern.conf /etc/sysctl.d/
 COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/usr/bin/contrail-vrouter-agent"]
+CMD ["/usr/bin/contrail-vrouter-dpdk", "--no-daemon", "--socket-mem 1024"]
 
 LABEL net.juniper.nodemgr.filter.name=contrail-vrouter-agent
 LABEL net.juniper.contrail=agent

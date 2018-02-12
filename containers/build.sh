@@ -28,6 +28,8 @@ if [ -n "$opts" ]; then
   echo "INFO: Options: $opts"
 fi
 
+
+
 docker_ver=$(docker -v | awk -F' ' '{print $3}' | sed 's/,//g')
 echo "INFO: Docker version: $docker_ver"
 
@@ -49,19 +51,13 @@ function process_container() {
     cat $docker_file | sed \
       -e 's/\(^ARG CONTRAIL_REGISTRY=.*\)/#\1/' \
       -e 's/\(^ARG CONTRAIL_TEST_REGISTRY=.*\)/#\1/' \
-      -e 's/\(^ARG LINUX_DISTR_VER=.*\)/#\1/' \
-      -e 's/\(^ARG LINUX_DISTR=.*\)/#\1/' \
       -e 's/\(^ARG CONTRAIL_CONTAINER_TAG=.*\)/#\1/' \
-      -e "s/\$LINUX_DISTR_VER/$LINUX_DISTR_VER/g" \
-      -e "s/\$LINUX_DISTR/$LINUX_DISTR/g" \
       -e 's|^FROM ${CONTRAIL_REGISTRY}/\([^:]*\):${CONTRAIL_CONTAINER_TAG}|FROM '${CONTRAIL_REGISTRY}'/\1:'${CONTRAIL_CONTAINER_TAG}'|' \
       -e 's|^FROM ${CONTRAIL_TEST_REGISTRY}\(.*\)-${OPENSTACK_VERSION}|FROM '${CONTRAIL_TEST_REGISTRY}'\1-'${OPENSTACK_VERSION}'|' \
       > ${docker_file}.nofromargs
     docker_file="${docker_file}.nofromargs"
   else
     build_arg_opts+=" --build-arg CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY}"
-    build_arg_opts+=" --build-arg LINUX_DISTR_VER=${LINUX_DISTR_VER}"
-    build_arg_opts+=" --build-arg LINUX_DISTR=${LINUX_DISTR}"
     build_arg_opts+=" --build-arg CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG}"
   fi
   build_arg_opts+=" --build-arg OPENSTACK_VERSION=${OPENSTACK_VERSION}"
@@ -84,19 +80,14 @@ function process_container() {
 function process_dir() {
   local dir=${1%/}
   local docker_file="$dir/Dockerfile"
-  local docker_file_ld="$docker_file.$LINUX_DISTR"
   if [[ $dir == *test* && $BUILD_TEST_CONTAINER -eq 0 ]] ; then
      if [[ $op != 'list' ]]; then
         echo "INFO: BUILD_TEST_CONTAINER is not set. skipping test container build"
      fi
      return
   fi
-  if [[ -f "$docker_file" || -f "$docker_file_ld" ]] ; then
-    local df=$docker_file_ld
-    if [[ ! -f "$df" ]] ; then
-      df=$docker_file
-    fi
-    process_container "$dir" "$df"
+  if [[ -f "$docker_file" ]] ; then
+    process_container "$dir" "$docker_file"
     return
   fi
   for d in $(ls -d $dir/*/ 2>/dev/null); do
@@ -152,6 +143,8 @@ function update_repos() {
     dfile=$(basename $rfile | sed 's/.template//')
     update_file "general-base/$dfile" "$content"
     update_file "test/test/$dfile" "$content"
+    # this is special case - image derived directly from ubuntu image
+    update_file "agent/build-driver-init/$dfile" "$content"
   done
 }
 
@@ -169,14 +162,7 @@ pushd $my_dir &>/dev/null
 
 if [[ "$op" == 'build' ]]; then
   echo "INFO: prepare Contrail repo file in base image"
-  if [[ "$LINUX_DISTR" == 'centos' ]] ; then
-    update_repos "repo"
-  else
-    update_repos "list"
-    # TODO: rework this solution for Ubuntus' mirrors
-    content=$(curl -s -S ${CONTRAIL_REPOSITORY}/${LINUX_DISTR}/contrail.gpg | base64)
-    update_file "general-base/contrail.gpg" "$content" 'true'
-  fi
+  update_repos "repo"
 fi
 
 process_dir $path

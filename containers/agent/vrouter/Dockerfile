@@ -1,12 +1,11 @@
 ARG CONTRAIL_REGISTRY=localhost:5000
-ARG CONTRAIL_CONTAINER_TAG=4.1.0.0-6-ubuntu16-newton
+ARG CONTRAIL_CONTAINER_TAG=4.1.0.0-6-newton
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
-RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get install -y ethtool contrail-vrouter-agent contrail-vrouter-utils && \
-    apt-get autoremove && \
-    apt-get clean && \
-    rm -rf /var/cache/apt && \
+RUN yum install -y ethtool contrail-vrouter-agent contrail-vrouter-utils \
+      sudo python-opencontrail-vrouter-netns python-contrail-vrouter-api && \
+    yum clean all && \
+    rm -rf /var/cache/yum && \
     ldconfig
 
 COPY 10-core-pattern.conf /etc/sysctl.d/
