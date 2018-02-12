@@ -27,8 +27,6 @@ fi
 
 mkdir -p -m 777 /var/crashes
 
-
-# Prepare agent configs
 echo "INFO: Preparing /etc/contrail/contrail-vrouter-agent.conf"
 cat << EOM > /etc/contrail/contrail-vrouter-agent.conf
 [CONTROL-NODE]
@@ -40,13 +38,15 @@ log_file=${VROUTER_LOG_FILE:-"$LOG_DIR/contrail-vrouter-agent.log"}
 log_level=${VROUTER_LOG_LEVEL:-$LOG_LEVEL}
 log_local=${VROUTER_LOG_LOCAL:-$LOG_LOCAL}
 
-xmpp_dns_auth_enable = False
-xmpp_auth_enable = False
+xmpp_dns_auth_enable = $XMPP_SSL_ENABLE
+xmpp_auth_enable = $XMPP_SSL_ENABLE
+xmpp_server_cert=${XMPP_SERVER_CERT}
+xmpp_server_key=${XMPP_SERVER_KEY}
+xmpp_ca_cert=${XMPP_SERVER_CA_CERT}
+
 physical_interface_mac = $phys_int_mac
 
-[SANDESH]
-introspect_ssl_enable = False
-sandesh_ssl_enable = False
+$sandesh_client_config
 
 [NETWORKS]
 control_network_ip=$vrouter_ip
@@ -71,6 +71,8 @@ docker_command=/usr/bin/opencontrail-vrouter-docker
 [HYPERVISOR]
 type = $HYPERVISOR_TYPE
 EOM
+echo /etc/contrail/contrail-vrouter-agent.conf
+cat /etc/contrail/contrail-vrouter-agent.conf
 
 set_vnc_api_lib_ini
 

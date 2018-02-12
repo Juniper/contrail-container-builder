@@ -4,6 +4,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -y neutron-plugin-contrail python-neutron-lbaas && \
+    apt-get autoremove && \
     apt-get clean && \
     rm -rf /var/cache/apt
 

@@ -8,6 +8,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -y contrail-vrouter-dkms contrail-vrouter-utils && \
     mkdir -p /opt/contrail/src && mv /usr/src/* /opt/contrail/src/ && \
+    apt-get autoremove && \
     apt-get clean && \
     rm -rf /var/cache/apt
 

@@ -26,10 +26,10 @@ log_local=${CONTROL_LOG_LOCAL:-$LOG_LOCAL}
 # log_category= ${CONTROL_log_category:-""}
 # log_disable= ${CONTROL_log_disable:-0}
 xmpp_server_port=$XMPP_SERVER_PORT
-xmpp_auth_enable=${XMPP_AUTH_ENABLE:-False}
-# xmpp_server_cert=${CONTROL_xmpp_server_cert:-/etc/contrail/ssl/certs/server.pem}
-# xmpp_server_key=${CONTROL_xmpp_server_key:-/etc/contrail/ssl/private/server-privkey.pem}
-# xmpp_ca_cert=${CONTROL_xmpp_ca_cert:-/etc/contrail/ssl/certs/ca-cert.pem}
+xmpp_auth_enable=${XMPP_SSL_ENABLE}
+xmpp_server_cert=${XMPP_SERVER_CERT}
+xmpp_server_key=${XMPP_SERVER_KEY}
+xmpp_ca_cert=${XMPP_SERVER_CA_CERT}
 
 # Sandesh send rate limit can be used to throttle system logs transmitted per
 # second. System logs are dropped if the sending rate is exceeded
