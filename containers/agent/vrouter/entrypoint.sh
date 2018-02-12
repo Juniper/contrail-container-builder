@@ -5,24 +5,39 @@ source /common.sh
 HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'kvm'}
 VROUTER_HOSTNAME=${VROUTER_HOSTNAME:-${DEFAULT_HOSTNAME}}
 
+echo "INFO: agent started in $AGENT_MODE mode"
 IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
-echo "INFO: Physical interface: $phys_int, mac=$phys_int_mac"
+pci_address=$(get_pci_address_for_nic $phys_int)
+echo "INFO: Physical interface: $phys_int, mac=$phys_int_mac, pci=$pci_address"
 
-# It is expected that vhost0 is up and running here
-VROUTER_GATEWAY=${VROUTER_GATEWAY:-`get_default_gateway_for_nic vhost0`}
-vrouter_cidr=$(get_cidr_for_nic vhost0)
-echo "INFO: vhost0 cidr $vrouter_cidr, gateway $VROUTER_GATEWAY"
-
-# It is expected that vhost0 is up and running here
+# For dpdk case is is expected vhost0 is down here
+# but for regular case it shold be up
+if is_dpdk ; then
+    nic_to_read_net_parameters=$phys_int
+else
+    nic_to_read_net_parameters='vhost0'
+fi
+VROUTER_GATEWAY=${VROUTER_GATEWAY:-`get_default_gateway_for_nic $nic_to_read_net_parameters`}
+vrouter_cidr=$(get_cidr_for_nic $nic_to_read_net_parameters)
+echo "INFO: $nic_to_read_net_parameters cidr $vrouter_cidr, gateway $VROUTER_GATEWAY"
 if [[ -z "$vrouter_cidr" ]] ; then
-    echo "ERROR: vhost0 interface is down or has no assigned IP"
+    echo "ERROR: $nic_to_read_net_parameters interface is down or has no assigned IP"
     exit -1
 fi
 vrouter_ip=${vrouter_cidr%/*}
-
 if [[ -z "$VROUTER_GATEWAY" ]] ; then
-    echo "ERROR: VROUTER_GATEWAY is empty or there is no default route for vhost0"
+    echo "ERROR: VROUTER_GATEWAY is empty or there is no default route for $nic_to_read_net_parameters"
     exit -1
+fi
+
+agent_mode_options="physical_interface_mac = $phys_int_mac"
+if is_dpdk ; then
+    read -r -d '' agent_mode_options << EOM
+platform=${AGENT_MODE}
+physical_interface_mac = $phys_int_mac
+physical_interface_address = $pci_address
+physical_uio_driver=${DPDK_UIO_DRIVER}
+EOM
 fi
 
 mkdir -p -m 777 /var/crashes
@@ -44,7 +59,7 @@ xmpp_server_cert=${XMPP_SERVER_CERT}
 xmpp_server_key=${XMPP_SERVER_KEY}
 xmpp_ca_cert=${XMPP_SERVER_CA_CERT}
 
-physical_interface_mac = $phys_int_mac
+$agent_mode_options
 
 $sandesh_client_config
 
@@ -76,11 +91,11 @@ cat /etc/contrail/contrail-vrouter-agent.conf
 
 set_vnc_api_lib_ini
 
-# Prepare default_pmac
-echo $phys_int_mac > /etc/contrail/default_pmac
+function provision_node_background() {
+    wait_for_contrail_api
+    provision_node provision_vrouter.py $vrouter_ip $VROUTER_HOSTNAME
+}
 
-wait_for_contrail_api
-
-provision_node provision_vrouter.py $vrouter_ip $VROUTER_HOSTNAME
+provision_node_background &
 
 exec "$@"
