@@ -9,6 +9,7 @@ RUN yum install -y ethtool contrail-vrouter-agent contrail-vrouter-utils \
     ldconfig
 
 COPY 10-core-pattern.conf /etc/sysctl.d/
+COPY agent-functions /
 COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]

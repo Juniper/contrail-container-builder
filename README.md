@@ -129,3 +129,4 @@ Please refer to the README-HELM.md
 43. ~~vrouter agent entrypoint: add ability to configure metadata_proxy_secret=contrail in [METADATA]~~
 44. Sort out with KUBERNETES_public_fip_pool
 45. ~~Ubuntu containers~~
+46. Introduce base container for agent and move agent specific functions to it

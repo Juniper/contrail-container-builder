@@ -10,6 +10,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     ldconfig
 
 COPY 10-core-pattern.conf /etc/sysctl.d/
+COPY agent-functions /
 COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
