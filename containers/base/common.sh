@@ -159,7 +159,7 @@ sandesh_certfile=${SANDESH_CERTFILE}
 sandesh_ca_cert=${SANDESH_CA_CERT}
 EOM
 
-AGENT_MODE=${AGENT_MODE:-'vrouter'}
+AGENT_MODE=${AGENT_MODE:-'nic'}
 DPDK_UIO_DRIVER=${DPDK_UIO_DRIVER:-'uio_pci_generic'}
 CPU_CORE_MASK=${CPU_CORE_MASK:-'0x01'}
 HUGE_PAGES=${HUGE_PAGES:-1024}
