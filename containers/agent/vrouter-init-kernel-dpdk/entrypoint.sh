@@ -1,60 +1,15 @@
-#!/bin/bash -x
+#!/bin/bash
 
 source /common.sh
 
 HUGE_PAGES_DIR=${HUGE_PAGES_DIR:-'/dev/hugepages'}
-if [[ ! -d "$HUGE_PAGES_DIR" ]] ; then
-    echo "WARNING: There is no $HUGE_PAGES_DIR mounted from host. Try to create and mount hugetlbfs."
-    if ! mkdir -p $HUGE_PAGES_DIR ; then
-        echo "ERROR: failed to create $HUGE_PAGES_DIR"
-        exit -1
-    fi
-    if ! mount -t hugetlbfs hugetlbfs $HUGE_PAGES_DIR ; then
-        echo "ERROR: failed to mount hugetlbfs to $HUGE_PAGES_DIR"
-        exit -1
-    fi
-fi
-
-if [[ ! -d "$HUGE_PAGES_DIR" ]]  ; then
-    echo "ERROR: There is no $HUGE_PAGES_DIR. Probably HugeTables are anuvailable on the host."
-    exit -1
-fi
-
-function set_ctl() {
-    local var=$1
-    local value=$2
-    if grep -q "^$var" /etc/sysctl.conf ; then
-        sed -i "s/^$var.*=.*/$var=$value/g"  /etc/sysctl.conf
-    else
-        echo "$var=$value" >> /etc/sysctl.conf
-    fi
-}
+ensure_hugepages $HUGE_PAGES_DIR
 
 set_ctl vm.nr_hugepages ${HUGE_PAGES}
 set_ctl vm.max_map_count 128960
 set_ctl net.ipv4.tcp_keepalive_time 5
 set_ctl net.ipv4.tcp_keepalive_probes 5
 set_ctl net.ipv4.tcp_keepalive_intvl 1
-sysctl --system
-
-function load_kernel_module() {
-    local module=$1
-    shift 1
-    local opts=$@
-    echo "INFO: load $module kernel module"
-    if ! modprobe -v "$module" $opts ; then
-        echo "ERROR: failed to load $module driver"
-        exit -1
-    fi
-}
-
-function unload_kernel_module() {
-    local module=$1
-    echo "INFO: unload $module kernel module"
-    if ! rmmod $module ; then
-        echo "WARNING: Failed to unload $module driver"
-    fi
-}
 
 load_kernel_module uio
 load_kernel_module "$DPDK_UIO_DRIVER"
@@ -64,4 +19,31 @@ if ! is_ubuntu_xenial && ! is_centos; then
     load_kernel_module rte_kni kthread_mode=multiple
 fi
 
-exec "$@"
+echo "INFO: agent $AGENT_MODE mode"
+IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
+pci_address=$(get_pci_address_for_nic $phys_int)
+default_gw_metric=`get_default_gateway_for_nic_metric $phys_int`
+echo "INFO: Physical interface: $phys_int, mac=$phys_int_mac, pci=$pci_address"
+
+# save data for next usage in network init container
+# TODO: check that data valid for the case if container is re-run again by some reason
+addrs=$(get_ips_for_nic $phys_int)
+gateway=${VROUTER_GATEWAY:-"$default_gw_metric"}
+binding_data_dir='/var/run/vrouter'
+mkdir -p $binding_data_dir
+echo "INFO: addrs=[$addrs], gateway=$gateway"
+echo "$phys_int" > $binding_data_dir/${phys_int}_nic
+echo "$phys_int_mac" > $binding_data_dir/${phys_int}_mac
+echo "$pci_address" > $binding_data_dir/${phys_int}_pci
+echo "$addrs" > $binding_data_dir/${phys_int}_ip_addresses
+echo "$gateway" > $binding_data_dir/${phys_int}_gateway
+
+if [[ "$phys_int" == "vhost0" ]] ; then
+    echo "ERROR: it is not expected the vhost0 is up and running"
+    exit -1
+fi
+
+# bind iface to dpdk uio driver before start dpdk agent
+bind_devs_to_driver $DPDK_UIO_DRIVER $phys_int
+
+exec $@
