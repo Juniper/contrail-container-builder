@@ -52,22 +52,10 @@ echo "Extract packages to $repo_dir"
 tar -xvzf "$package_fname" -C $repo_dir
 
 # prepare repo
-case $LINUX_DISTR in
-  "centos" | "rhel" )
-    pushd $repo_dir
-    rm -rf repodata
-    createrepo .
-    popd
-    ;;
-  "ubuntu" )
-    ${DIR}/create-aptrepo.sh "$repo_dir"
-    ;;
-  *)
-    echo "ERROR: unsupported linux distr $LINUX_DISTR"
-    exit -1
-esac
-
-
+pushd $repo_dir
+rm -rf repodata
+createrepo .
+popd
 
 if [[ -n "$paths_to_remove" ]] ; then
   rm -rf $paths_to_remove

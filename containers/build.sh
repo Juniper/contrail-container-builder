@@ -44,6 +44,17 @@ function process_container() {
   local container_name=`echo ${dir#"./"} | tr "/" "-"`
   local container_name="contrail-${container_name}"
   echo "INFO: Building $container_name"
+
+  tag="${CONTRAIL_CONTAINER_TAG}"
+  if [[ -f "$dir/distro" ]]; then
+    local distro=$(cat "$dir/distro" | head -1)
+    local distro_tag='-'
+    if [[ -n "$distro" ]]; then
+      distro_tag="-${distro}-"
+    fi
+    tag=$(echo ${CONTRAIL_CONTAINER_TAG_WITH_DISTRO} | sed "s/{{distro}}/$distro_tag/")
+  fi
+
   local build_arg_opts=''
   if [[ "$docker_ver" < '17.06' ]] ; then
     cat $docker_file | sed \
@@ -54,7 +65,7 @@ function process_container() {
       -e 's/\(^ARG CONTRAIL_CONTAINER_TAG=.*\)/#\1/' \
       -e "s/\$LINUX_DISTR_VER/$LINUX_DISTR_VER/g" \
       -e "s/\$LINUX_DISTR/$LINUX_DISTR/g" \
-      -e 's|^FROM ${CONTRAIL_REGISTRY}/\([^:]*\):${CONTRAIL_CONTAINER_TAG}|FROM '${CONTRAIL_REGISTRY}'/\1:'${CONTRAIL_CONTAINER_TAG}'|' \
+      -e 's|^FROM ${CONTRAIL_REGISTRY}/\([^:]*\):${CONTRAIL_CONTAINER_TAG}|FROM '${CONTRAIL_REGISTRY}'/\1:'${tag}'|' \
       -e 's|^FROM ${CONTRAIL_TEST_REGISTRY}\(.*\)-${OPENSTACK_VERSION}|FROM '${CONTRAIL_TEST_REGISTRY}'\1-'${OPENSTACK_VERSION}'|' \
       > ${docker_file}.nofromargs
     docker_file="${docker_file}.nofromargs"
@@ -62,16 +73,16 @@ function process_container() {
     build_arg_opts+=" --build-arg CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY}"
     build_arg_opts+=" --build-arg LINUX_DISTR_VER=${LINUX_DISTR_VER}"
     build_arg_opts+=" --build-arg LINUX_DISTR=${LINUX_DISTR}"
-    build_arg_opts+=" --build-arg CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG}"
+    build_arg_opts+=" --build-arg CONTRAIL_CONTAINER_TAG=${tag}"
   fi
   build_arg_opts+=" --build-arg OPENSTACK_VERSION=${OPENSTACK_VERSION}"
   build_arg_opts+=" --build-arg OPENSTACK_SUBVERSION=${OS_SUBVERSION}"
 
   local logfile='build-'$container_name'.log'
-  docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${CONTRAIL_CONTAINER_TAG} \
+  docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} \
     ${build_arg_opts} -f $docker_file ${opts} $dir |& tee $logfile
   if [ ${PIPESTATUS[0]} -eq 0 ]; then
-    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${CONTRAIL_CONTAINER_TAG} |& tee -a $logfile
+    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} |& tee -a $logfile
     if [ ${PIPESTATUS[0]} -eq 0 ]; then
       rm $logfile
     fi
@@ -84,19 +95,14 @@ function process_container() {
 function process_dir() {
   local dir=${1%/}
   local docker_file="$dir/Dockerfile"
-  local docker_file_ld="$docker_file.$LINUX_DISTR"
   if [[ $dir == *test* && $BUILD_TEST_CONTAINER -eq 0 ]] ; then
      if [[ $op != 'list' ]]; then
         echo "INFO: BUILD_TEST_CONTAINER is not set. skipping test container build"
      fi
      return
   fi
-  if [[ -f "$docker_file" || -f "$docker_file_ld" ]] ; then
-    local df=$docker_file_ld
-    if [[ ! -f "$df" ]] ; then
-      df=$docker_file
-    fi
-    process_container "$dir" "$df"
+  if [[ -f "$docker_file" ]] ; then
+    process_container "$dir" "$docker_file"
     return
   fi
   for d in $(ls -d $dir/*/ 2>/dev/null); do
@@ -152,6 +158,8 @@ function update_repos() {
     dfile=$(basename $rfile | sed 's/.template//')
     update_file "general-base/$dfile" "$content"
     update_file "test/test/$dfile" "$content"
+    # this is special case - image derived directly from ubuntu image
+    update_file "agent/build-driver-init/$dfile" "$content"
   done
 }
 
@@ -169,14 +177,7 @@ pushd $my_dir &>/dev/null
 
 if [[ "$op" == 'build' ]]; then
   echo "INFO: prepare Contrail repo file in base image"
-  if [[ "$LINUX_DISTR" == 'centos' ]] ; then
-    update_repos "repo"
-  else
-    update_repos "list"
-    # TODO: rework this solution for Ubuntus' mirrors
-    content=$(curl -s -S ${CONTRAIL_REPOSITORY}/${LINUX_DISTR}/contrail.gpg | base64)
-    update_file "general-base/contrail.gpg" "$content" 'true'
-  fi
+  update_repos "repo"
 fi
 
 process_dir $path
