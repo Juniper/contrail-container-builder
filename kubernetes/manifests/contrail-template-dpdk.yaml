@@ -807,6 +807,37 @@ spec:
         - mountPath: /var/log/contrail
           name: agent-logs
       containers:
+      - name: contrail-agent-dpdk
+        image: "{{CONTRAIL_REGISTRY}}/contrail-agent-vrouter-dpdk:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        # TODO: Priveleged mode is requied because w/o it the device /dev/net/tun
+        # is not present in the container. The mounting it into container
+        # doesnt help because of permissions are not enough syscalls,
+        # e.g. https://github.com/Juniper/contrail-controller/blob/master/src/vnsw/agent/contrail/linux/pkt0_interface.cc: 48.
+        securityContext:
+          privileged: true
+        envFrom:
+        - configMapRef:
+            name: env
+        volumeMounts:
+        # TODO: need for hugepages & communication with agent
+        - mountPath: /dev
+          name: dev
+        # TODO: it is for lspci -vmmks <id>  works, since it uses libkmod
+        - mountPath: /lib/modules
+          name: lib-modules
+        # TODO: looks like a shared storage for agent and dpdk agent
+        # there are sockets and pci dev info
+        - mountPath: /var/run
+          name: var-run
+        - mountPath: /var/log/contrail
+          name: agent-logs
+        - mountPath: /var/lib/contrail
+          name: var-lib-contrail
+        - mountPath: /var/crashes
+          name: var-crashes
+        - mountPath: /tmp/serviceaccount
+          name: pod-secret
       - name: contrail-agent
         image: "{{CONTRAIL_REGISTRY}}/contrail-agent-vrouter:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -831,37 +862,6 @@ spec:
           name: var-run
         - mountPath: /usr/src
           name: usr-src
-        - mountPath: /var/log/contrail
-          name: agent-logs
-        - mountPath: /var/lib/contrail
-          name: var-lib-contrail
-        - mountPath: /var/crashes
-          name: var-crashes
-        - mountPath: /tmp/serviceaccount
-          name: pod-secret
-      - name: contrail-agent-dpdk
-        image: "{{CONTRAIL_REGISTRY}}/contrail-agent-vrouter-dpdk:{{CONTRAIL_CONTAINER_TAG}}"
-        imagePullPolicy: ""
-        # TODO: Priveleged mode is requied because w/o it the device /dev/net/tun
-        # is not present in the container. The mounting it into container
-        # doesnt help because of permissions are not enough syscalls,
-        # e.g. https://github.com/Juniper/contrail-controller/blob/master/src/vnsw/agent/contrail/linux/pkt0_interface.cc: 48.
-        securityContext:
-          privileged: true
-        envFrom:
-        - configMapRef:
-            name: env
-        volumeMounts:
-        # TODO: need for hugepages & communication with agent
-        - mountPath: /dev
-          name: dev
-        # TODO: it is for lspci -vmmks <id>  works, since it uses libkmod
-        - mountPath: /lib/modules
-          name: lib-modules
-        # TODO: looks like a shared storage for agent and dpdk agent
-        # there are sockets and pci dev info
-        - mountPath: /var/run
-          name: var-run
         - mountPath: /var/log/contrail
           name: agent-logs
         - mountPath: /var/lib/contrail
