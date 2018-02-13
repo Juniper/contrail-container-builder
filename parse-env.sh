@@ -11,6 +11,7 @@ fi
 
 default_interface=`ip route show | grep "default via" | awk '{print $5}'`
 default_gateway=`ip route show dev $default_interface | grep default | awk '{print $3}'`
+
 linux_id=$(awk -F"=" '/^ID=/{print $2}' /etc/os-release | tr -d '"')
 if [[ "$linux_id" == 'centos' ]] ; then
   # ver id is taken from available versions from docker.io
@@ -25,22 +26,6 @@ export LINUX_DISTR=${LINUX_DISTR:-$linux_id}
 declare -A _target_linux_ver_ids
 _target_linux_ver_ids=([centos]='7.4.1708' [ubuntu]=16.04)
 export LINUX_DISTR_VER=${LINUX_DISTR_VER:-${_target_linux_ver_ids[$LINUX_DISTR]}}
-if [[ "$LINUX_DISTR" == 'ubuntu' ]] ; then
-  case $LINUX_DISTR_VER in
-    14.04)
-      export LINUX_DISTR_SERIES='trusty'
-      ;;
-    16.04)
-      export LINUX_DISTR_SERIES='xenial'
-      ;;
-    17.04)
-      export LINUX_DISTR_SERIES='zesty'
-      ;;
-    *)
-      echo "ERROR: unsupported linux distr version $LINUX_DISTR_VER for $LINUX_DISTR"
-      exit -1
-  esac
-fi
 
 # build platform info
 export LINUX_ID=$linux_id
@@ -60,18 +45,7 @@ export OS_SUBVERSION=${OS_SUBVERSION:-"$_os_subversion"}
 _linux_distr_ver_major=$(echo $LINUX_DISTR_VER | cut -d '.' -f 1)
 export CONTRAIL_CONTAINER_TAG="${CONTRAIL_VERSION}-${LINUX_DISTR}${_linux_distr_ver_major}-${OPENSTACK_VERSION}"
 
-default_packages_base_url="https://s3-us-west-2.amazonaws.com"
-case $LINUX_DISTR in
-  ubuntu)
-    default_packages_url="$default_packages_base_url/contrailpkgs/contrail-install-packages_${CONTRAIL_VERSION}-${OPENSTACK_VERSION}.tgz"
-    ;;
-  centos)
-    default_packages_url="$default_packages_base_url/contrailrhel7/contrail-install-packages-${CONTRAIL_VERSION}~${OPENSTACK_VERSION}.el7.noarch.rpm"
-    ;;
-  *)
-    echo "ERROR: Unknown LINUX_DISTR: $LINUX_DISTR"
-    exit 1
-esac
+default_packages_url="https://s3-us-west-2.amazonaws.com/contrailrhel7/contrail-install-packages-${CONTRAIL_VERSION}~${OPENSTACK_VERSION}.el7.noarch.rpm"
 
 export BUILD_TEST_CONTAINER=${BUILD_TEST_CONTAINER:-0}
 export CONTRAIL_INSTALL_PACKAGES_URL=${CONTRAIL_INSTALL_PACKAGES_URL:-$default_packages_url}

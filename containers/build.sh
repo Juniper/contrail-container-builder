@@ -84,19 +84,14 @@ function process_container() {
 function process_dir() {
   local dir=${1%/}
   local docker_file="$dir/Dockerfile"
-  local docker_file_ld="$docker_file.$LINUX_DISTR"
   if [[ $dir == *test* && $BUILD_TEST_CONTAINER -eq 0 ]] ; then
      if [[ $op != 'list' ]]; then
         echo "INFO: BUILD_TEST_CONTAINER is not set. skipping test container build"
      fi
      return
   fi
-  if [[ -f "$docker_file" || -f "$docker_file_ld" ]] ; then
-    local df=$docker_file_ld
-    if [[ ! -f "$df" ]] ; then
-      df=$docker_file
-    fi
-    process_container "$dir" "$df"
+  if [[ -f "$docker_file" ]] ; then
+    process_container "$dir" "$docker_file"
     return
   fi
   for d in $(ls -d $dir/*/ 2>/dev/null); do
@@ -152,6 +147,8 @@ function update_repos() {
     dfile=$(basename $rfile | sed 's/.template//')
     update_file "general-base/$dfile" "$content"
     update_file "test/test/$dfile" "$content"
+    # this is special case - image derived directly from ubuntu image
+    update_file "agent/build-driver-init/$dfile" "$content"
   done
 }
 
@@ -169,14 +166,7 @@ pushd $my_dir &>/dev/null
 
 if [[ "$op" == 'build' ]]; then
   echo "INFO: prepare Contrail repo file in base image"
-  if [[ "$LINUX_DISTR" == 'centos' ]] ; then
-    update_repos "repo"
-  else
-    update_repos "list"
-    # TODO: rework this solution for Ubuntus' mirrors
-    content=$(curl -s -S ${CONTRAIL_REPOSITORY}/${LINUX_DISTR}/contrail.gpg | base64)
-    update_file "general-base/contrail.gpg" "$content" 'true'
-  fi
+  update_repos "repo"
 fi
 
 process_dir $path
