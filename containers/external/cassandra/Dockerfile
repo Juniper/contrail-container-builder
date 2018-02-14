@@ -1,4 +1,4 @@
-FROM cassandra:3.11.1
+FROM cassandra:3.11.0
 
 COPY contrail-entrypoint.sh /
 
