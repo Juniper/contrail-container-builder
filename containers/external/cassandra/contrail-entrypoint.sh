@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 IFS=',' read -ra srv_list <<< "$CASSANDRA_SEEDS"
-local_ips=$(ip addr | awk '/inet/ {print($2)}')
+local_ips=$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}')
 for srv in "${srv_list[@]}"; do
   if [[ "$local_ips" =~ "$srv" ]] ; then
     echo "INFO: found '$srv' in local IPs '$local_ips'"
