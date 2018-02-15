@@ -175,6 +175,12 @@ config.network.L2_enable = false;
 
 config.getDomainsFromApiServer = false;
 config.jsonSchemaPath = "/usr/src/contrail/contrail-web-core/src/serverroot/configJsonSchemas";
+
+config.server_options = {};
+config.server_options.key_file = '$WEBUI_SSL_KEY_FILE';
+config.server_options.cert_file = '$WEBUI_SSL_CERT_FILE';
+config.server_options.ciphers = '$WEBUI_SSL_CIPHERS';
+
 module.exports = config;
 EOM
 
