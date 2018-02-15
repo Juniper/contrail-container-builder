@@ -59,8 +59,11 @@ EOM
         fi
         pushd /etc/sysconfig/network-scripts/
         if [[ ! -f "ifcfg-${phys_int}.contrail.org" ]] ; then
-            cp -f ifcfg-${phys_int} ifcfg-${phys_int}.contrail.org
-            sed -ri "/(DEVICE|ONBOOT|NM_CONTROLLED)/! s/.*/#commented_by_contrail& /" ifcfg-${phys_int}
+            /bin/cp -f ifcfg-${phys_int} ifcfg-${phys_int}.contrail.org
+        fi
+        sed -ri "/(DEVICE|ONBOOT|NM_CONTROLLED)/! s/.*/#commented_by_contrail& /" ifcfg-${phys_int}
+        if [[ ! grep -q "^NM_CONTROLLED=no" ifcfg-${phys_int} ]]; then
+            echo 'NM_CONTROLLED="no"' >> ifcfg-${phys-int}
         fi
         if [[ ! -f ifcfg-vhost0 ]] ; then
             sed "s/${phys_int}/vhost0/g" ifcfg-${phys_int}.contrail.org > ifcfg-vhost0
@@ -93,5 +96,8 @@ EOM
             echo "INFO: set default gateway"
             ip route add default via $gateway
         fi
+    fi
+    if [ $(ps -efa | grep dhclient | grep -v grep | grep ${phys_int} |awk '{print $2}') ]; then
+        kill -9 `ps -efa | grep dhclient | grep -v grep | grep ${phys_int} | awk '{print $2}'`
     fi
 }
