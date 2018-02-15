@@ -76,10 +76,10 @@ function find_my_ip_and_order_for_node() {
   local server_typ=$1_NODES
   local server_list=''
   IFS=',' read -ra server_list <<< "${!server_typ}"
-  local local_ips=`ip addr | awk '/inet/ {print($2)}'`
+  local local_ips=",$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}' | tr '\n' ','),"
   local ord=1
   for server in "${server_list[@]}"; do
-    if [[ "$local_ips" =~ "$server" ]] ; then
+    if [[ "$local_ips" =~ ",$server," ]] ; then
       echo $server $ord
       return
     fi

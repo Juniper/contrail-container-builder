@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 cluster_nodes='{['
-local_ips=$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}')
+local_ips=",$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}' | tr '\n' ','),"
 IFS=',' read -ra server_list <<< "${RABBITMQ_NODES}"
 my_ip=''
 my_node=''
@@ -20,7 +20,7 @@ for server in ${server_list[@]}; do
     echo "WARNING: hostname for $server is not resolved properly, cluster setup will not be functional."
   fi
   cluster_nodes+="'contrail@${server_hostname}',"
-  if [[ "$local_ips" =~ "$server" ]] ; then
+  if [[ "$local_ips" =~ ",$server," ]] ; then
     my_ip=$server
     my_node=$server_hostname
     echo "INFO: my_ip=$server my_node=$server_hostname"

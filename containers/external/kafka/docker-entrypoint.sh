@@ -6,7 +6,7 @@ source /functions.sh
 
 default_interface=$(get_default_nic)
 default_ip_address=$(get_default_ip)
-local_ips=$(ip addr | awk '/inet/ {print $2}')
+local_ips=",$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}' | tr '\n' ','),"
 
 CONFIG="$KAFKA_CONF_DIR/server.properties"
 
@@ -22,7 +22,7 @@ my_index=1
 if [ "$KAFKA_LISTEN_ADDRESS" = 'auto' ]; then
   IFS=',' read -ra server_list <<< "$KAFKA_NODES"
   for server in "${server_list[@]}"; do
-    if [[ "$local_ips" =~ "$server" ]] ; then
+    if [[ "$local_ips" =~ ",$server," ]] ; then
       echo "INFO: found '$server' in local IPs '$local_ips'"
       my_ip=$server
       break

@@ -6,13 +6,13 @@ ZOOKEEPER_PORTS=${ZOOKEEPER_PORTS:-'2888:3888'}
 ord=1
 my_ord=0
 IFS=',' read -ra srv_list <<< "$ZOOKEEPER_NODES"
-local_ips=$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}')
+local_ips=",$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}' | tr '\n' ','),"
 zoo_servers=''
 for srv in "${srv_list[@]}"; do
   if [[ -z "$ZOO_SERVERS" ]] ; then
     zoo_servers+="server.${ord}=${srv}:${ZOOKEEPER_PORTS} "
   fi
-  if [[ "$local_ips" =~ "$srv" ]] ; then
+  if [[ "$local_ips" =~ ",$srv," ]] ; then
     echo "INFO: found '$srv' in local IPs '$local_ips'"
     my_ord=$ord
   fi

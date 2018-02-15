@@ -1,14 +1,15 @@
 #!/bin/bash -e
 
 IFS=',' read -ra srv_list <<< "$CASSANDRA_SEEDS"
-local_ips=$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}')
+local_ips=",$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}' | tr '\n' ','),"
 for srv in "${srv_list[@]}"; do
-  if [[ "$local_ips" =~ "$srv" ]] ; then
+  if [[ "$local_ips" =~ ",$srv," ]] ; then
     echo "INFO: found '$srv' in local IPs '$local_ips'"
     my_ip=$srv
     break
   fi
 done
+
 
 if [ -z "$my_ip" ]; then
   echo "ERROR: Cannot find self ips ('$local_ips') in Cassandra nodes ('$CASSANDRA_SEEDS')"
