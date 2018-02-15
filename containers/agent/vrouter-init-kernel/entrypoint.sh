@@ -100,11 +100,17 @@ echo "INFO: Physical interface: $phys_int, mac=$phys_int_mac"
 # Probe vhost0
 vrouter_cidr="$(get_cidr_for_nic vhost0)"
 
-if [[ -e /etc/sysconfig/network-scripts/ifcfg-${phys_int} && ! -e /etc/sysconfig/network-scripts/ifcfg-vhost0 ]]; then
+if [[ -e /etc/sysconfig/network-scripts/ifcfg-${phys_int} ]]; then
     echo "INFO: creating vhost0"
     insert_vrouter
     ifdown ${phys_int}
-    cp -f /etc/sysconfig/network-scripts/ifcfg-${phys_int} /etc/sysconfig/network-scripts/ifcfg-vhost0
+    if [ ! $(grep "^NM_CONTROLLED=no" /etc/sysconfig/network-scripts/ifcfg-${phys_int}) ]; then
+      echo "NM_CONTROLLED=no" >> /etc/sysconfig/network-scripts/ifcfg-${phys_int}
+    fi
+    if [ $(ps -efa |grep dhclient |grep ${phys_int} |awk '{print $2}') ]; then
+      kill -9 `ps -efa |grep dhclient |grep ${phys_int} |awk '{print $2}'`
+    fi
+    /bin/cp -f /etc/sysconfig/network-scripts/ifcfg-${phys_int} /etc/sysconfig/network-scripts/ifcfg-vhost0
     sed -i "s/${phys_int}/vhost0/g" /etc/sysconfig/network-scripts/ifcfg-vhost0
     sed -ri "/(DEVICE|ONBOOT|NM_CONTROLLED)/! s/.*/#commented_by_contrail& /" /etc/sysconfig/network-scripts/ifcfg-${phys_int}
     ifup ${phys_int}
