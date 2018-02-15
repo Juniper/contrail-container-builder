@@ -49,9 +49,11 @@ function process_container() {
     cat $docker_file | sed \
       -e 's/\(^ARG CONTRAIL_REGISTRY=.*\)/#\1/' \
       -e 's/\(^ARG CONTRAIL_TEST_REGISTRY=.*\)/#\1/' \
+      -e 's/\(^ARG OPENSTACK_VERSION=.*\)/#\1/' \
       -e 's/\(^ARG LINUX_DISTR_VER=.*\)/#\1/' \
       -e 's/\(^ARG LINUX_DISTR=.*\)/#\1/' \
       -e 's/\(^ARG CONTRAIL_CONTAINER_TAG=.*\)/#\1/' \
+      -e "s/\$OPENSTACK_VERSION/$OPENSTACK_VERSION/g" \
       -e "s/\$LINUX_DISTR_VER/$LINUX_DISTR_VER/g" \
       -e "s/\$LINUX_DISTR/$LINUX_DISTR/g" \
       -e 's|^FROM ${CONTRAIL_REGISTRY}/\([^:]*\):${CONTRAIL_CONTAINER_TAG}|FROM '${CONTRAIL_REGISTRY}'/\1:'${CONTRAIL_CONTAINER_TAG}'|' \
@@ -60,12 +62,12 @@ function process_container() {
     docker_file="${docker_file}.nofromargs"
   else
     build_arg_opts+=" --build-arg CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY}"
+    build_arg_opts+=" --build-arg OPENSTACK_VERSION=${OPENSTACK_VERSION}"
     build_arg_opts+=" --build-arg LINUX_DISTR_VER=${LINUX_DISTR_VER}"
     build_arg_opts+=" --build-arg LINUX_DISTR=${LINUX_DISTR}"
     build_arg_opts+=" --build-arg CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG}"
   fi
   build_arg_opts+=" --build-arg OPENSTACK_VERSION=${OPENSTACK_VERSION}"
-  build_arg_opts+=" --build-arg OPENSTACK_SUBVERSION=${OS_SUBVERSION}"
 
   local logfile='build-'$container_name'.log'
   docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${CONTRAIL_CONTAINER_TAG} \
