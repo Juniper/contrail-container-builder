@@ -1,5 +1,4 @@
 ARG CONTRAIL_TEST_REGISTRY=localhost:5000
-ARG OPENSTACK_VERSION=ocata
 FROM ${CONTRAIL_TEST_REGISTRY}/contrail-test-${OPENSTACK_VERSION}:latest
 
 COPY *.repo /etc/yum.repos.d/
