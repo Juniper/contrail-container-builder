@@ -162,7 +162,7 @@ function update_repos() {
     update_file "general-base/$dfile" "$content"
     update_file "test/test/$dfile" "$content"
     # this is special case - image derived directly from ubuntu image
-    update_file "agent/build-driver-init/$dfile" "$content"
+    update_file "vrouter/build-driver-init/$dfile" "$content"
   done
 }
 
