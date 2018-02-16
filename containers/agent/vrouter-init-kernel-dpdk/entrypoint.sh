@@ -13,10 +13,9 @@ set_ctl net.ipv4.tcp_keepalive_intvl 1
 
 load_kernel_module uio
 load_kernel_module "$DPDK_UIO_DRIVER"
-if ! is_ubuntu_xenial && ! is_centos; then
-    # multiple kthreads for port monitoring
-    # TODO: for centos if failes
-    load_kernel_module rte_kni kthread_mode=multiple
+# multiple kthreads for port monitoring
+if ! load_kernel_module rte_kni kthread_mode=multiple ; then
+  echo "WARNING: rte_ini kernel module is unavailable. Please install/insert it for Ubuntu 14.04 manually."
 fi
 
 echo "INFO: agent $AGENT_MODE mode"

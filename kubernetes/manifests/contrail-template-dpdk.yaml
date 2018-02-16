@@ -839,7 +839,7 @@ spec:
         - mountPath: /tmp/serviceaccount
           name: pod-secret
       - name: contrail-agent-net-watchdog
-        image: "{{CONTRAIL_REGISTRY}}/contrail-agent-vrouter:{{CONTRAIL_CONTAINER_TAG}}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-agent-net-watchdog:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         # TODO: Priveleged mode is requied because w/o it the device /dev/net/tun
         # is not present in the container. The mounting it into container

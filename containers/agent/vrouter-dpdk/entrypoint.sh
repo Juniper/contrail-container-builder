@@ -31,11 +31,7 @@ if [[ -n "$CPU_CORE_MASK" ]] ; then
     if [[ "${CPU_CORE_MASK}" =~ '[,-]' ]]; then
         taskset_param="-c $CPU_CORE_MASK"
     fi
-    if is_ubuntu ; then
-        real_cmd="/usr/bin/taskset $taskset_param $cmd"
-    else
-        real_cmd="/bin/taskset $taskset_param $cmd"
-    fi
+    real_cmd="/bin/taskset $taskset_param $cmd"
 fi
 
 mkdir -p -m 777 /var/crashes

@@ -314,7 +314,6 @@ services:
     network_mode: host
     privileged: true
     volumes:
-      - /etc:/etc
       - /dev:/dev
       - /lib/modules:/lib/modules
       - /var/log/contrail:/var/log/contrail
