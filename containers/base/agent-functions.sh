@@ -44,7 +44,8 @@ physical_uio_driver = ${DPDK_UIO_DRIVER}
 EOM
         if [[ "$vrouter_cidr" == '' ]] ; then
             addrs=`cat $binding_data_dir/${phys_int}_ip_addresses`
-            gateway=${VROUTER_GATEWAY:-"$(cat $binding_data_dir/${phys_int}_gateway)"}
+            default_gateway="$(cat $binding_data_dir/${phys_int}_gateway)"
+            gateway=${VROUTER_GATEWAY:-$default_gateway}
         fi
         echo "INFO: creating vhost0 for dpdk mode: nic: $phys_int, mac=$phys_int_mac"
         if ! create_vhost0_dpdk $phys_int $phys_int_mac ; then
@@ -58,9 +59,12 @@ EOM
             ifdown ${phys_int}
         fi
         pushd /etc/sysconfig/network-scripts/
-        if [[ ! -f "ifcfg-${phys_int}.contrail.org" ]] ; then
-            cp -f ifcfg-${phys_int} ifcfg-${phys_int}.contrail.org
-            sed -ri "/(DEVICE|ONBOOT|NM_CONTROLLED)/! s/.*/#commented_by_contrail& /" ifcfg-${phys_int}
+        if [ ! -f "ifcfg-${phys_int}.contrail.org" ] ; then
+            /bin/cp -f ifcfg-${phys_int} ifcfg-${phys_int}.contrail.org
+        fi
+        sed -ri "/(DEVICE|ONBOOT|NM_CONTROLLED)/! s/.*/#commented_by_contrail& /" ifcfg-${phys_int}
+        if ! grep -q "^NM_CONTROLLED=no" ifcfg-${phys_int} ; then
+            echo 'NM_CONTROLLED="no"' >> ifcfg-${phys-int}
         fi
         if [[ ! -f ifcfg-vhost0 ]] ; then
             sed "s/${phys_int}/vhost0/g" ifcfg-${phys_int}.contrail.org > ifcfg-vhost0
@@ -93,5 +97,8 @@ EOM
             echo "INFO: set default gateway"
             ip route add default via $gateway
         fi
+    fi
+    if [ $(ps -efa | grep dhclient | grep -v grep | grep ${phys_int} |awk '{print $2}') ]; then
+        kill -9 `ps -efa | grep dhclient | grep -v grep | grep ${phys_int} | awk '{print $2}'`
     fi
 }
