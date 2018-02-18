@@ -28,7 +28,7 @@ cmd="$@"
 real_cmd=$cmd
 if [[ -n "$CPU_CORE_MASK" ]] ; then
     taskset_param="$CPU_CORE_MASK"
-    if [[ "${CPU_CORE_MASK}" =~ '[,-]' ]]; then
+    if [[ "${CPU_CORE_MASK}" =~ [,-] ]]; then
         taskset_param="-c $CPU_CORE_MASK"
     fi
     real_cmd="/bin/taskset $taskset_param $cmd"
