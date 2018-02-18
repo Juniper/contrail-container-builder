@@ -62,12 +62,19 @@ EOM
             cp -f ifcfg-${phys_int} ifcfg-${phys_int}.contrail.org
             sed -ri "/(DEVICE|ONBOOT|NM_CONTROLLED)/! s/.*/#commented_by_contrail& /" ifcfg-${phys_int}
         fi
+        if [[ ! -f "route-${phys_int}.contrail.org" ]] ; then
+            cp -f route-${phys_int} route-${phys_int}.contrail.org
+            sed -ri "s/.*/#commented_by_contrail& /" route-${phys_int}
+        fi
         if [[ ! -f ifcfg-vhost0 ]] ; then
             sed "s/${phys_int}/vhost0/g" ifcfg-${phys_int}.contrail.org > ifcfg-vhost0
             if is_dpdk ; then
                 sed -ri "/NM_CONTROLLED/ s/.*/#commented_by_contrail& /" ifcfg-vhost0
                 echo 'NM_CONTROLLED="no"' >> ifcfg-vhost0
             fi
+        fi
+        if [[ ! -f route-vhost0 ]] ; then
+            /bin/cp -f route-${phys_int}.contrail.org route-vhost0
         fi
         popd
         if ! is_dpdk ; then
