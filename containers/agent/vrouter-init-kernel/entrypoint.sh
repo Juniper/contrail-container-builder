@@ -12,6 +12,12 @@ else
   kver=`uname -r | awk -F "-" '{print $1}'`
   echo "INFO: Load kernel module for kver=$kver"
   modfile=`ls -1rt /opt/contrail/vrouter-kernel-modules/$kver-*/vrouter.ko | tail -1`
+  for k_dir in `ls -d /lib/modules/*`
+  do
+    mkdir -p ${k_dir}/kernel/net/vrouter
+    cp ${modfile} ${k_dir}/kernel/net/vrouter
+  done
+  depmod -a
   echo "INFO: Modprobing vrouter $modfile"
   free -h && sync && echo 2 >/proc/sys/vm/drop_caches && free -h
   if ! insmod $modfile ; then

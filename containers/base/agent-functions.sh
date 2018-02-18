@@ -44,7 +44,8 @@ physical_uio_driver = ${DPDK_UIO_DRIVER}
 EOM
         if [[ "$vrouter_cidr" == '' ]] ; then
             addrs=`cat $binding_data_dir/${phys_int}_ip_addresses`
-            gateway=${VROUTER_GATEWAY:-"$(cat $binding_data_dir/${phys_int}_gateway)"}
+            default_gateway="$(cat $binding_data_dir/${phys_int}_gateway)"
+            gateway=${VROUTER_GATEWAY:-$default_gateway}
         fi
         echo "INFO: creating vhost0 for dpdk mode: nic: $phys_int, mac=$phys_int_mac"
         if ! create_vhost0_dpdk $phys_int $phys_int_mac ; then
@@ -56,27 +57,45 @@ EOM
         echo "INFO: creating ifcfg-vhost0 and initialize it via ifup"
         if ! is_dpdk ; then
             ifdown ${phys_int}
+            if [ $(ps -efa | grep dhclient | grep -v grep | grep ${phys_int} |awk '{print $2}') ]; then
+                kill -9 `ps -efa | grep dhclient | grep -v grep | grep ${phys_int} | awk '{print $2}'`
+            fi
         fi
         pushd /etc/sysconfig/network-scripts/
-        if [[ ! -f "ifcfg-${phys_int}.contrail.org" ]] ; then
-            cp -f ifcfg-${phys_int} ifcfg-${phys_int}.contrail.org
-            sed -ri "/(DEVICE|ONBOOT|NM_CONTROLLED)/! s/.*/#commented_by_contrail& /" ifcfg-${phys_int}
+      
+        if [ ! -f "contrail.org.ifcfg-${phys_int}" ] ; then
+            /bin/cp -f ifcfg-${phys_int} contrail.org.ifcfg-${phys_int}
         fi
-        if [[ ! -f "route-${phys_int}.contrail.org" ]] ; then
-            cp -f route-${phys_int} route-${phys_int}.contrail.org
-            sed -ri "s/.*/#commented_by_contrail& /" route-${phys_int}
+        sed -ri "/(DEVICE|ONBOOT|NM_CONTROLLED)/! s/.*/#commented_by_contrail& /" ifcfg-${phys_int}
+        if ! grep -q "^NM_CONTROLLED=no" ifcfg-${phys_int} ; then
+            echo 'NM_CONTROLLED="no"' >> ifcfg-${phys-int}
+        fi
+        if [[ ! -f "contrail.org.route-${phys_int}" ]] ; then
+            cp -f route-${phys_int} contrail.org.route-${phys_int}
         fi
         if [[ ! -f ifcfg-vhost0 ]] ; then
-            sed "s/${phys_int}/vhost0/g" ifcfg-${phys_int}.contrail.org > ifcfg-vhost0
+            sed "s/${phys_int}/vhost0/g" contrail.org.ifcfg-${phys_int} > ifcfg-vhost0
+            sed -i '/HWADDR=.*/d' ifcfg-vhost0
             if is_dpdk ; then
                 sed -ri "/NM_CONTROLLED/ s/.*/#commented_by_contrail& /" ifcfg-vhost0
                 echo 'NM_CONTROLLED="no"' >> ifcfg-vhost0
+                echo "TYPE=dpdk" >> ifcfg-vhost0
+            else
+                echo "TYPE=kernel_mode" >> ifcfg-vhost0
+                echo "BIND_INT=${phys_int}" >> ifcfg-vhost0
             fi
         fi
-        if [[ ! -f route-vhost0 ]] ; then
-            /bin/cp -f route-${phys_int}.contrail.org route-vhost0
+        if [[ ! -f route-vhost0 ]]; then
+            mv route-${phys_int} route-vhost0
         fi
         popd
+        if [[ ! -f /etc/sysconfig/network-scripts/ifup-vhost ]]; then
+          /bin/cp -f /ifup-vhost /etc/sysconfig/network-scripts
+          chmod +x /etc/sysconfig/network-scripts/ifup-vhost
+        fi
+        if [[ ! -f /host/bin/vif ]]; then
+          /bin/cp -f /bin/vif /host/bin/vif
+        fi
         if ! is_dpdk ; then
             ifup ${phys_int}
         fi
