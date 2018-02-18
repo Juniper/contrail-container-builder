@@ -23,9 +23,21 @@ function get_default_nic() {
   ip route get 1 | grep -o "dev.*" | awk '{print $2}'
 }
 
+function mask2cdr () {
+  local x=${1##*255.}
+  set -- 0^^^128^192^224^240^248^252^254^ $(( (${#1} - ${#x})*2 )) ${x%%.*}
+  x=${1%%$3*}
+  echo $(( $2 + (${#x}/4) ))
+}
+
 function get_cidr_for_nic() {
   local nic=$1
-  ip addr show dev $nic | grep "inet .*/.* brd " | awk '{print $2}'
+  ip=`ifconfig ${nic} |grep ${nic}: -A1 |tail -1 | awk '{print $2}'`
+  nm=`ifconfig ${nic} |grep ${nic}: -A1 |tail -1 | awk '{print $4}'`
+  cidr=`mask2cdr ${nm}`
+  if [[ ${ip} && ${cidr} -ne 0 ]]; then
+    echo ${ip}/${cidr}
+  fi
 }
 
 function get_ips_for_nic() {

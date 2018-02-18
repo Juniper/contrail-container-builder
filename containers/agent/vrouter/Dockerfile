@@ -4,7 +4,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 RUN yum install -y ethtool \
       contrail-vrouter-agent contrail-vrouter-utils \
-      sudo python-opencontrail-vrouter-netns python-contrail-vrouter-api && \
+      sudo python-opencontrail-vrouter-netns python-contrail-vrouter-api initscripts dhclient && \
     yum clean all && \
     rm -rf /var/cache/yum && \
     ldconfig
