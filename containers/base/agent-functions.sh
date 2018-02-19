@@ -49,10 +49,11 @@ EOM
         fi
         echo "INFO: creating vhost0 for dpdk mode: nic: $phys_int, mac=$phys_int_mac"
         if ! create_vhost0_dpdk $phys_int $phys_int_mac ; then
-            return
+            return 1
         fi
     fi
 
+    local ret=0
     if [[ -e /etc/sysconfig/network-scripts/ifcfg-${phys_int} ]]; then
         echo "INFO: creating ifcfg-vhost0 and initialize it via ifup"
         if ! is_dpdk ; then
@@ -93,9 +94,15 @@ EOM
         if ! is_dpdk ; then
             ifup ${phys_int}
         fi
-        ifup vhost0
+        if ! ifup vhost0 ; then
+            echo "ERROR: failed to up vhost0 iface"
+            ret=1
+        fi
         while IFS= read -r line ; do
-            ip route del $line
+            if ! ip route del $line ; then
+                echo "ERROR: route $line was not removed for iface ${phys_int}."
+                ret=1
+            fi
         done < <(ip route sh | grep ${phys_int})
     else
         echo "INFO: there is no ifcfg-$phys_int, so initialize vhost0 manually"
@@ -104,14 +111,27 @@ EOM
         echo "$addrs" | while IFS= read -r line ; do
             if ! is_dpdk ; then
                 addr_to_del=`echo $line | cut -d ' ' -f 1`
-                ip address delete $addr_to_del dev $phys_int
+                if ! ip address delete $addr_to_del dev $phys_int ; then
+                    echo "ERROR: address $addr_to_del was not removed from iface ${phys_int}."
+                    ret=1
+                fi
             fi
             local addr_to_add=`echo $line | sed 's/brd/broadcast/'`
-            ip address add $addr_to_add dev vhost0
+            if ! ip address add $addr_to_add dev vhost0 ; then
+                echo "ERROR: failed to assign address $addr_to_del to vhost0."
+                ret=1
+            fi
         done
         if [[ -n "$gateway" ]]; then
             echo "INFO: set default gateway"
-            ip route add default via $gateway
+            if ! ip route add default via $gateway ; then
+                echo "ERROR: failed to add default gateway $gateway"
+                ret=1
+            fi
         fi
     fi
+    if [ $(ps -efa | grep dhclient | grep -v grep | grep ${phys_int} |awk '{print $2}') ]; then
+        kill -9 `ps -efa | grep dhclient | grep -v grep | grep ${phys_int} | awk '{print $2}'`
+    fi
+    return $ret
 }
