@@ -207,6 +207,10 @@ function get_physical_nic_and_mac()
   echo $nic $mac
 }
 
+function is_tsn() {
+    test ($TSN_MODE) || ($TSN_EVPN_MODE)
+}
+
 function is_dpdk() {
     test "$AGENT_MODE" == 'dpdk'
 }
