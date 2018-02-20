@@ -174,7 +174,7 @@ function get_physical_nic_and_mac()
 }
 
 function is_tsn() {
-    test "$TSN_EVPN_MODE" == true
+    test "$TSN_EVPN_MODE" == 'True'
 }
 
 function is_dpdk() {
