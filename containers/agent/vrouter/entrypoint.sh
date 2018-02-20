@@ -64,6 +64,20 @@ physical_uio_driver = ${DPDK_UIO_DRIVER}
 EOM
 fi
 
+tsn_agent_mode=""
+if is_tsn ; then
+    TSN_AGENT_MODE="tsn-no-forwarding"
+    read -r -d '' tsn_agent_mode << EOM
+agent_mode = tsn-no-forwarding
+EOM
+fi
+
+tsn_server_list=""
+IFS=' ' read -ra TSN_SERVERS <<< "${TSN_NODES}"
+read -r -d '' tsn_server_list << EOM
+tsn_servers = ${TSN_SERVERS}
+EOM
+
 echo "INFO: Preparing /etc/contrail/contrail-vrouter-agent.conf"
 cat << EOM > /etc/contrail/contrail-vrouter-agent.conf
 [CONTROL-NODE]
@@ -82,6 +96,8 @@ xmpp_server_key=${XMPP_SERVER_KEY}
 xmpp_ca_cert=${XMPP_SERVER_CA_CERT}
 
 $agent_mode_options
+$tsn_agent_mode
+$tsn_server_list
 
 $sandesh_client_config
 
@@ -120,7 +136,11 @@ function provision_node_background() {
     if is_dpdk ; then
         params='--dpdk_enabled'
     fi
-    provision_node provision_vrouter.py $vrouter_ip $VROUTER_HOSTNAME $params
+    local tsn_params=''
+    if is_tsn ; then
+        tsn_params='--router_type tor-service-node --disable_vhost_vmi'
+    fi
+    provision_node provision_vrouter.py $vrouter_ip $VROUTER_HOSTNAME $params $tsn_params
 }
 
 mkdir -p -m 777 /var/crashes
