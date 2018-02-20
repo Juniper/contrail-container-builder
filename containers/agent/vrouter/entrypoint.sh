@@ -54,6 +54,7 @@ if [[ -z "$VROUTER_GATEWAY" ]] ; then
     exit -1
 fi
 
+vrouter_options=""
 agent_mode_options="physical_interface_mac = $phys_int_mac"
 if is_dpdk ; then
     read -r -d '' agent_mode_options << EOM
@@ -62,6 +63,14 @@ physical_interface_mac = $phys_int_mac
 physical_interface_address = $pci_address
 physical_uio_driver = ${DPDK_UIO_DRIVER}
 EOM
+fi
+if is_tsn ; then
+    chkconfig nova-compute off
+    read -r -d '' agent_mode_options << EOM
+agent_mode = ${TSN_AGENT_MODE}
+tsn_servers = ${TSN_SERVERS}
+EOM
+    vrouter_options="--router_type tor-service-node --disable_vhost_vmi"
 fi
 
 echo "INFO: Preparing /etc/contrail/contrail-vrouter-agent.conf"
@@ -116,7 +125,7 @@ set_vnc_api_lib_ini
 # TODO: move it to special provision container
 function provision_node_background() {
     wait_for_contrail_api
-    provision_node provision_vrouter.py $vrouter_ip $VROUTER_HOSTNAME
+    provision_node provision_vrouter.py $vrouter_ip $VROUTER_HOSTNAME $vrouter_options
 }
 
 mkdir -p -m 777 /var/crashes
