@@ -116,7 +116,11 @@ set_vnc_api_lib_ini
 # TODO: move it to special provision container
 function provision_node_background() {
     wait_for_contrail_api
-    provision_node provision_vrouter.py $vrouter_ip $VROUTER_HOSTNAME
+    local params=''
+    if is_dpdk ; then
+        params='--dpdk_enabled'
+    fi
+    provision_node provision_vrouter.py $vrouter_ip $VROUTER_HOSTNAME $params
 }
 
 mkdir -p -m 777 /var/crashes
