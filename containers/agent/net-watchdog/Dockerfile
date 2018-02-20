@@ -10,6 +10,7 @@ RUN yum install -y \
     ldconfig
 
 COPY entrypoint.sh /
+COPY ifup-vhost /
 
 ENTRYPOINT ["/entrypoint.sh"]
 
