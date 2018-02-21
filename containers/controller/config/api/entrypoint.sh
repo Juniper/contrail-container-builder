@@ -40,6 +40,7 @@ function wait_and_provision_self() {
     --ipfabric_service_ip $IPFABRIC_SERVICE_IP \
     --ipfabric_service_port $IPFABRIC_SERVICE_PORT
   provision provision_alarm.py
+  provision provision_encap.py --encap_priority $ENCAP_PRIORITY
 }
 
 wait_and_provision_self &
