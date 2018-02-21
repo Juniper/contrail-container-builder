@@ -116,7 +116,7 @@ Please refer to the README-HELM.md
 30. ~~Improve provisioning scripts to work with existing docker repo and other features~~
 31. Nodemgr - rework to use single conf and no env variables (everything is taken from conf)
 32. Nodemgr - fix known bugs
-33. Nodemgr - package correctly into rpm, now docker takes it by git clone
+33. ~~Nodemgr - package correctly into rpm, now docker takes it by git clone~~
 34. Optimize size
 35. Make CNI plugin log level configurable.
 36. ~~Sort out with multiple NIC configiration - probably provision link local is needed since it set ip_fabric_ip.~~
