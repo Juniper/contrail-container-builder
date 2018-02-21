@@ -1,16 +1,12 @@
 ARG CONTRAIL_REGISTRY=localhost:5000
 ARG CONTRAIL_CONTAINER_TAG=4.1.0.0-6-centos7-newton
-FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
+FROM ${CONTRAIL_REGISTRY}/contrail-agent-base:${CONTRAIL_CONTAINER_TAG}
 
-RUN yum install -y \
-        ethtool pciutils \
-        contrail-vrouter-dpdk contrail-vrouter-dpdk-init contrail-vrouter-utils \
-        sudo python-opencontrail-vrouter-netns python-contrail-vrouter-api && \
+RUN yum install -y contrail-vrouter-dpdk contrail-vrouter-dpdk-init && \
     yum clean all && \
     rm -rf /var/cache/yum && \
     ldconfig
 
-COPY 10-core-pattern.conf /etc/sysctl.d/
 COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
