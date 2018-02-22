@@ -48,10 +48,8 @@ export CONTRAIL_CONTAINER_TAG_WITH_DISTRO="${CONTRAIL_VERSION}{{distro}}${OPENST
 
 default_packages_url="https://s3-us-west-2.amazonaws.com/contrailrhel7/contrail-install-packages-${CONTRAIL_VERSION}~${OPENSTACK_VERSION}.el7.noarch.rpm"
 
-export BUILD_TEST_CONTAINER=${BUILD_TEST_CONTAINER:-0}
 export CONTRAIL_INSTALL_PACKAGES_URL=${CONTRAIL_INSTALL_PACKAGES_URL:-$default_packages_url}
 export CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY:-'auto'}
-export CONTRAIL_TEST_REGISTRY=${CONTRAIL_TEST_REGISTRY:-$CONTRAIL_REGISTRY}
 export CONTRAIL_REPOSITORY=${CONTRAIL_REPOSITORY:-'auto'}
 default_registry_ip=${_CONTRAIL_REGISTRY_IP:-${HOST_IP}}
 if [[ $CONTRAIL_REGISTRY == 'auto' ]] ; then
