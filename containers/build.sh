@@ -59,21 +59,16 @@ function process_container() {
   if [[ "$docker_ver" < '17.06' ]] ; then
     cat $docker_file | sed \
       -e 's/\(^ARG CONTRAIL_REGISTRY=.*\)/#\1/' \
-      -e 's/\(^ARG CONTRAIL_TEST_REGISTRY=.*\)/#\1/' \
-      -e 's/\(^ARG OPENSTACK_VERSION=.*\)/#\1/' \
       -e 's/\(^ARG LINUX_DISTR_VER=.*\)/#\1/' \
       -e 's/\(^ARG LINUX_DISTR=.*\)/#\1/' \
       -e 's/\(^ARG CONTRAIL_CONTAINER_TAG=.*\)/#\1/' \
-      -e "s/\$OPENSTACK_VERSION/$OPENSTACK_VERSION/g" \
       -e "s/\$LINUX_DISTR_VER/$LINUX_DISTR_VER/g" \
       -e "s/\$LINUX_DISTR/$LINUX_DISTR/g" \
       -e 's|^FROM ${CONTRAIL_REGISTRY}/\([^:]*\):${CONTRAIL_CONTAINER_TAG}|FROM '${CONTRAIL_REGISTRY}'/\1:'${tag}'|' \
-      -e 's|^FROM ${CONTRAIL_TEST_REGISTRY}\(.*\)-${OPENSTACK_VERSION}|FROM '${CONTRAIL_TEST_REGISTRY}'\1-'${OPENSTACK_VERSION}'|' \
       > ${docker_file}.nofromargs
     docker_file="${docker_file}.nofromargs"
   else
     build_arg_opts+=" --build-arg CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY}"
-    build_arg_opts+=" --build-arg OPENSTACK_VERSION=${OPENSTACK_VERSION}"
     build_arg_opts+=" --build-arg LINUX_DISTR_VER=${LINUX_DISTR_VER}"
     build_arg_opts+=" --build-arg LINUX_DISTR=${LINUX_DISTR}"
     build_arg_opts+=" --build-arg CONTRAIL_CONTAINER_TAG=${tag}"
@@ -98,12 +93,6 @@ function process_container() {
 function process_dir() {
   local dir=${1%/}
   local docker_file="$dir/Dockerfile"
-  if [[ $dir == *test* && $BUILD_TEST_CONTAINER -eq 0 ]] ; then
-     if [[ $op != 'list' ]]; then
-        echo "INFO: BUILD_TEST_CONTAINER is not set. skipping test container build"
-     fi
-     return
-  fi
   if [[ -f "$docker_file" ]] ; then
     process_container "$dir" "$docker_file"
     return
@@ -160,7 +149,6 @@ function update_repos() {
     content=$(eval "echo \"$templ\"")
     dfile=$(basename $rfile | sed 's/.template//')
     update_file "general-base/$dfile" "$content"
-    update_file "test/test/$dfile" "$content"
     # this is special case - image derived directly from ubuntu image
     update_file "agent/build-driver-init/$dfile" "$content"
   done
