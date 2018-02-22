@@ -20,12 +20,13 @@ log_file=${KUBEMANAGER_LOG_FILE:-"$LOG_DIR/contrail-kube-manager.log"}
 kubernetes_api_server=${KUBERNETES_API_SERVER:-${DEFAULT_LOCAL_IP}}
 kubernetes_api_port=${KUBERNETES_API_PORT:-8080}
 kubernetes_api_secure_port=${KUBERNETES_API_SECURE_PORT:-6443}
-service_subnets=${KUBERNETES_SERVICE_SUBNETS:-"10.96.0.0/12"}
-pod_subnets=${KUBERNETES_POD_SUBNETS:-"10.32.0.0/12"}
+cluster_name=${KUBERNETES_CLUSTER_NAME:-"k8s"}
 cluster_project=${KUBERNETES_CLUSTER_PROJECT:-"{'domain': 'default-domain', 'project': 'default'}"}
-cluster_name=${KUBERNETES_CLUSTER_NAME:-"cluster"}
-ip_fabric_forwarding=${KUBERNETES_IP_FABRIC_FORWARDING:-"false"}
 ;cluster_network=${KUBERNETES_CLUSTER_NETWORK:-"{}"}
+pod_subnets=${KUBERNETES_POD_SUBNETS:-"10.32.0.0/12"}
+ip_fabric_subnets=${KUBERNETES_IP_FABRIC_SUBNETS:-"10.64.0.0/12"}
+service_subnets=${KUBERNETES_SERVICE_SUBNETS:-"10.96.0.0/12"}
+ip_fabric_forwarding=${KUBERNETES_IP_FABRIC_FORWARDING:-"false"}
 
 [VNC]
 public_fip_pool=${KUBERNETES_public_fip_pool:-"{}"}
