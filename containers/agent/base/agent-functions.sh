@@ -41,7 +41,7 @@ function get_physical_nic_and_mac()
 }
 
 function is_tsn() {
-    test "$TSN_EVPN_MODE" == true
+    [[ $TSN_EVPN_MODE =~ ^[Tt][Rr][Uu][Ee]$ ]]
 }
 
 function is_dpdk() {
