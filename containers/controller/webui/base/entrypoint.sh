@@ -194,6 +194,8 @@ auth.admin_user = '$KEYSTONE_AUTH_ADMIN_USER';
 auth.admin_password = '$KEYSTONE_AUTH_ADMIN_PASSWORD';
 auth.admin_token = '';
 auth.admin_tenant_name = '$KEYSTONE_AUTH_ADMIN_TENANT';
+
+module.exports = auth;
 EOM
 
 
