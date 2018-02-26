@@ -3,6 +3,14 @@
 # these next folders must be mounted to compile vrouter.ko in ubuntu: /usr/src /lib/modules
 
 source /common.sh
+# copy ifup-vhost and vif util
+if [[ ! -f /etc/sysconfig/network-scripts/ifup-vhost && -d /etc/sysconfig/network-scripts ]]; then
+  /bin/cp -f /ifup-vhost /etc/sysconfig/network-scripts
+  chmod +x /etc/sysconfig/network-scripts/ifup-vhost
+fi
+if [[ ! -f /host/bin/vif ]]; then
+  /bin/cp -f /bin/vif /host/bin/vif
+fi
 
 # Load kernel module
 if lsmod | grep -q vrouter; then
