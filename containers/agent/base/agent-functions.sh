@@ -66,11 +66,11 @@ function wait_nic () {
     local probes=${2:-60}
     while (( probes > 0 )) ; do
         echo "INFO: Waiting for ${nic}... tries left $probes"
-        if [[ -L /sys/class/net/${nic} ]] ; then
+        if [[ `ifconfig ${nic} |grep inet |grep netmask` ]]; then
             return 0
         fi
         (( probes -= 1))
-        sleep 2
+        sleep 5
     done
     return 1
 }
