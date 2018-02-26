@@ -79,4 +79,6 @@ sed -i "s/^default.replication.factor=.*/default.replication.factor=$replication
 echo "offsets.topic.replication.factor=$replication_factor" >> ${CONFIG}
 echo "reserved.broker.max.id: 100001" >> ${CONFIG}
 
+ensure_log_dir /var/log/kafka
+
 exec "$@"

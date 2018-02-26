@@ -198,7 +198,7 @@ auth.admin_tenant_name = '$KEYSTONE_AUTH_ADMIN_TENANT';
 module.exports = auth;
 EOM
 
-
 set_vnc_api_lib_ini
+ensure_log_dir /var/log/contrail
 
 exec "$@"

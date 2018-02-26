@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+mkdir -p -m 755 /var/log/cassandra
+
 IFS=',' read -ra srv_list <<< "$CASSANDRA_SEEDS"
 local_ips=",$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}' | tr '\n' ','),"
 for srv in "${srv_list[@]}"; do

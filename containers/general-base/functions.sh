@@ -132,3 +132,8 @@ function get_hostname_by_ip() {
   fi
   echo $name
 }
+
+function ensure_log_dir() {
+  local log_dir="$1"
+  mkdir -p -m 755 $log_dir
+}

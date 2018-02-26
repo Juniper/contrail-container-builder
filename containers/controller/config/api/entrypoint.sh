@@ -29,6 +29,7 @@ EOM
 
 set_third_party_auth_config
 set_vnc_api_lib_ini
+ensure_log_dir /var/log/contrail
 
 function wait_and_provision_self() {
   wait_for_contrail_api

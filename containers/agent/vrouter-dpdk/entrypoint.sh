@@ -35,6 +35,7 @@ if [[ -n "$CPU_CORE_MASK" ]] ; then
 fi
 
 mkdir -p -m 777 /var/crashes
+ensure_log_dir /var/log/contrail
 
 # remove rte configuration file (for case if vRouter has crashed)
 # TODO: most probably not needed.. since crash means container re-created

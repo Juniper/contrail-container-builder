@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+mkdir -p -m 755 /var/log/cassandra
+
 IFS=',' read -ra srv_list <<< "$CASSANDRA_SEEDS"
 local_ips=",$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}' | tr '\n' ','),"
 for srv in "${srv_list[@]}"; do
@@ -9,7 +11,6 @@ for srv in "${srv_list[@]}"; do
     break
   fi
 done
-
 
 if [ -z "$my_ip" ]; then
   echo "ERROR: Cannot find self ips ('$local_ips') in Cassandra nodes ('$CASSANDRA_SEEDS')"

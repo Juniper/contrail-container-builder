@@ -21,7 +21,7 @@ while (true) ; do
         init_vhost0
     fi
     if ! wait_nic vhost0 ; then
-	sleep 2
+        sleep 2
         continue
     fi
 
@@ -128,6 +128,7 @@ echo "INFO: /etc/contrail/contrail-vrouter-agent.conf"
 cat /etc/contrail/contrail-vrouter-agent.conf
 
 set_vnc_api_lib_ini
+ensure_log_dir /var/log/contrail
 
 # TODO: move it to special provision container
 function provision_node_background() {

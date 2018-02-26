@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+mkdir -p -m 755 /var/log/zookeeper
+
 ZOOKEEPER_PORT=${ZOOKEEPER_PORT:-2181}
 ZOOKEEPER_PORTS=${ZOOKEEPER_PORTS:-'2888:3888'}
 

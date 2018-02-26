@@ -18,5 +18,7 @@ introspect_port = ${IRONIC_NOTIFICATION_MANAGER_INTROSPECT_PORT:-8110}
 EOM
 
 set_third_party_auth_config
+set_vnc_api_lib_ini
+ensure_log_dir /var/log/contrail
 
 exec "$@"

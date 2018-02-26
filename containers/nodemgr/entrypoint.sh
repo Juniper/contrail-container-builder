@@ -33,6 +33,7 @@ $sandesh_client_config
 EOM
 
 set_vnc_api_lib_ini
+ensure_log_dir /var/log/contrail
 
 exec "$@"
 

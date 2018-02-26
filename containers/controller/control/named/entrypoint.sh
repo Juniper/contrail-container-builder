@@ -55,6 +55,7 @@ chown contrail:contrail /var/log/contrail
 
 set_third_party_auth_config
 set_vnc_api_lib_ini
+ensure_log_dir /var/log/contrail
 
 wait_for_contrail_api
 

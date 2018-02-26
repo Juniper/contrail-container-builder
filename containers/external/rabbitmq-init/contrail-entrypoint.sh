@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+mkdir -p -m 755 /var/log/rabbitmq
+
 cluster_nodes='{['
 local_ips=",$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}' | tr '\n' ','),"
 IFS=',' read -ra server_list <<< "${RABBITMQ_NODES}"
