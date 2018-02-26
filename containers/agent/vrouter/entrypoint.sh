@@ -57,9 +57,9 @@ agent_mode_options="physical_interface_mac = $phys_int_mac"
 if is_dpdk ; then
     read -r -d '' agent_mode_options << EOM
 platform=${AGENT_MODE}
-physical_interface_mac = $phys_int_mac
-physical_interface_address = $pci_address
-physical_uio_driver = ${DPDK_UIO_DRIVER}
+physical_interface_mac=$phys_int_mac
+physical_interface_address=$pci_address
+physical_uio_driver=${DPDK_UIO_DRIVER}
 EOM
 fi
 

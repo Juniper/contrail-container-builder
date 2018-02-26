@@ -10,7 +10,7 @@ RUN yum install -y contrail-vrouter-dpdk contrail-vrouter-dpdk-init && \
 COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/usr/bin/contrail-vrouter-dpdk", "--no-daemon", "--socket-mem 1024"]
+CMD ["/usr/bin/contrail-vrouter-dpdk"]
 
 LABEL net.juniper.nodemgr.filter.name=contrail-vrouter-agent
 LABEL net.juniper.contrail=agent
