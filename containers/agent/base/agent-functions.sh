@@ -1,8 +1,127 @@
 #!/bin/bash
 
+function is_vlan() {
+    local dev=${1:-?}
+    [ -f "/proc/net/vlan/${dev}" ]
+}
+
+function get_vlan_parameters() {
+    local dev=${1:-?}
+    local vlan_file="/proc/net/vlan/${dev}"
+    local vlan_id=''
+    local vlan_parent=''
+    if [[ -f "${vlan_file}" ]] ; then
+        local vlan_data=$(cat "$vlan_file")
+        vlan_id=$(echo "$vlan_data" | grep 'VID:' | head -1 | awk '{print($3)}')
+        vlan_parent=$(echo "$vlan_data" | grep 'Device:' | head -1 | awk '{print($2)}')
+        if [[ -n "$vlan_parent" ]] ; then
+            dev=$vlan_parent
+        fi
+        echo $vlan_id $dev
+    fi
+}
+
+function is_bonding() {
+    local dev=${1:-?}
+    [ -d "/sys/class/net/${dev}/bonding" ]
+}
+
+function get_bonding_parameters() {
+    local dev=${1:-?}
+    local bond_dir="/sys/class/net/${dev}/bonding"
+    if [[ -d ${bond_dir} ]] ; then
+        local mode="$(cat ${bond_dir}/mode | awk '{print $2}')"
+        local policy="$(cat ${bond_dir}/xmit_hash_policy | awk '{print $1}')"
+        ## Map Linux values to DPDK
+        case "${policy}" in
+            "layer2") policy="l2";;
+            "layer3+4") policy="l34";;
+            "layer2+3") policy="l23";;
+            # DPDK 2.0 does not support inner packet hashing
+            "encap2+3") policy="l23";;
+            "encap3+4") policy="l34";;
+        esac
+
+        local slaves="$(cat ${bond_dir}/slaves | tr ' ' '\n' | sort | tr '\n' ',')"
+        slaves=${slaves%,}
+
+        local pci_addresses=''
+        local bond_numa=''
+        ## Bond Members
+        for slave in $(echo ${slaves} | tr ',' ' ') ; do
+            local slave_dir="/sys/class/net/${slave}"
+            local slave_pci=$(get_pci_address_for_nic $slave)
+            if [[ -n "${slave_pci}" ]] ; then
+                pci_addresses+=",${slave_pci}"
+            fi
+            if [ -z "${bond_numa}" ]; then
+                local slave_numa=$(cat ${slave_dir}/device/numa_node)
+                # DPDK EAL for bond interface interprets -1 as 255
+                if [[ -z "${slave_numa}" || "${slave_numa}" -eq -1 ]] ; then
+                    bond_numa=0
+                else
+                    bond_numa="${slave_numa}"
+                fi
+            fi
+        done
+        pci_addresses=${pci_addresses#,}
+
+        echo "$mode $policy $slaves $pci_addresses $bond_numa"
+    fi
+}
+
+function ifquery_list() {
+   grep --no-filename "DEVICE=" /etc/sysconfig/network-scripts/ifcfg-* | cut -c8- | tr -d '"' | sort | uniq
+}
+
+function ifquery_dev() {
+    local dev=${1:-?}
+    local if_file="/etc/sysconfig/network-scripts/ifcfg-$dev"
+    if [ -e "$if_file" ] ; then
+        if grep -q -e "^MASTER" -e "^SLAVE" "$if_file" ; then
+            sed 's/\<MASTER=/bond-master: /g' "$if_file"
+        else
+            cat "$if_file"
+        fi
+    fi
+}
+
+function wait_bonding_slaves() {
+    local dev=${1:-?}
+    local bond_dir="/sys/class/net/${dev}/bonding"
+    local ret=0
+    for iface in $(ifquery_list) ; do
+        if ifquery_dev $iface | grep "bond-master" | grep -q ${dev} ; then
+            # Wait upto 60 sec till the interface is enslaved
+            local i=0
+            for i in {1..60} ; do
+                if grep -q $iface "${bond_dir}/slaves" ; then
+                    echo "INFO: Slave interface $iface ready"
+                    i = 0
+                    break
+                fi
+                echo "Waiting for interface $iface to be ready... ${i}/60"
+                sleep 1
+            done
+            [ "$i" != '60' ] || { ret=1 && echo "ERROR: failed to wait $iface to be enslaved" ; }
+        fi
+    done
+    return $ret
+}
+
 function get_pci_address_for_nic() {
-  local nic=$1
-  ethtool -i ${nic} | grep bus-info | awk '{print $2}' | tr -d ' '
+    local nic=${1:-?}
+    if is_vlan $nic ; then
+        local vlan_id=''
+        local vlan_parent=''
+        IFS=' ' read -r vlan_id vlan_parent <<< $(get_vlan_parameters $nic)
+        nic=$vlan_parent
+    fi
+    if ! is_bonding $nic ; then
+        ethtool -i ${nic} | grep bus-info | awk '{print $2}' | tr -d ' '
+    else
+        echo '0000:00:00.0'
+    fi
 }
 
 function get_physical_nic_and_mac()
@@ -175,41 +294,95 @@ function create_vhost0_dpdk() {
 }
 
 function save_pci_info() {
-    local nic=$1
-    local pci_address=$2
+    local pci=$1
     local binding_data_dir='/var/run/vrouter'
     mkdir -p ${binding_data_dir}
-    local binding_data_file="${binding_data_dir}/${pci_address}"
+    local binding_data_file="${binding_data_dir}/${pci}"
     if [[ ! -e "$binding_data_file" ]] ; then
-        local pci_data=`lspci -vmmks ${pci_address}`
+        local pci_data=`lspci -vmmks ${pci}`
         echo "INFO: Add lspci data to ${binding_data_file}"
         echo "$pci_data"
         echo "$pci_data" > ${binding_data_file}
     else
-        echo "INFO: lspci data for $pci_address already exists"
+        echo "INFO: lspci data for $pci already exists"
     fi
 }
 
 function bind_devs_to_driver() {
     local driver=$1
     shift 1
-    local nics=( $@ )
+    local pci=( $@ )
     # bind physical device(s) to DPDK driver
     local ret=0
     local n=''
-    for n in ${nics[@]} ; do
+    for n in ${pci[@]} ; do
         echo "INFO: Binding device $n to driver $driver ..."
-        local pci_address=`get_pci_address_for_nic $n`
-        save_pci_info $n $pci_address
+        save_pci_info $n
         if ! /opt/contrail/bin/dpdk_nic_bind.py --force --bind="$driver" $n ; then
             echo "ERROR: Failed to bind $n to driver $driver"
-            exit -1
+            return 1
         fi
-        if ! wait_device_for_driver $driver $pci_address ; then
-            echo "ERROR: Failed to wait device $n ($pci_address) to appears for driver $driver"
-            exit -1
+        if ! wait_device_for_driver $driver $n ; then
+            echo "ERROR: Failed to wait device $n to appears for driver $driver"
+            return 1
         fi
     done
+}
+
+function prepare_phys_int_dpdk
+{
+    local phys_int=''
+    local phys_int_mac=''
+    IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
+    local nic=$phys_int
+    local addrs=$(get_ips_for_nic $phys_int)
+    local default_gw_metric=`get_default_gateway_for_nic_metric $phys_int`
+    local gateway=${VROUTER_GATEWAY:-"$default_gw_metric"}
+    local pci=$(get_pci_address_for_nic $phys_int)
+
+    echo "INFO: phys_int=$phys_int phys_int_mac=$phys_int_mac, pci=$pci, addrs=[$addrs], gateway=$gateway"
+    if [[ "$phys_int" == "vhost0" ]] ; then
+        echo "ERROR: it is not expected the vhost0 is up and running here"
+        return 1
+    fi
+
+    # save data for next usage in network init container
+    # TODO: check that data valid for the case if container is re-run again by some reason
+    local binding_data_dir='/var/run/vrouter'
+    mkdir -p $binding_data_dir
+
+    echo "$nic" > $binding_data_dir/${nic}_nic
+    echo "$phys_int_mac" > $binding_data_dir/${nic}_mac
+    echo "$pci" > $binding_data_dir/${nic}_pci
+    echo "$addrs" > $binding_data_dir/${nic}_ip_addresses
+    echo "$gateway" > $binding_data_dir/${nic}_gateway
+
+    if is_vlan $phys_int ; then
+        local vlan_id=''
+        local vlan_parent=''
+        IFS=' ' read -r vlan_id vlan_parent <<< $(get_vlan_parameters $phys_int)
+        echo "$vlan_id $vlan_parent" > $binding_data_dir/${nic}_vlan
+        # change device for detecting othe options like PCIs, etc
+        phys_int=$vlan_parent
+        echo "INFO: vlan: echo vlan_id=$vlan_id vlan_parent=$vlan_parent"
+    fi
+
+    local pci_addresses=$pci
+    if is_bonding $phys_int ; then
+        wait_bonding_slaves $phys_int
+        local mode=''
+        local policy=''
+        local slaves=''
+        local bond_numa=''
+        IFS=' ' read -r mode policy slaves pci_addresses bond_numa <<< $(get_bonding_parameters $phys_int)
+        echo "$mode $policy $slaves $pci_addresses $bond_numa" > $binding_data_dir/${nic}_bond
+        echo "INFO: bonding: $mode $policy $slaves $pci_addresses $bond_numa"
+        echo "INFO: bonding: removing bond interface from Linux..."
+        ifdown $phys_int
+        ip link del $phys_int
+    fi
+
+    bind_devs_to_driver $DPDK_UIO_DRIVER "${pci_addresses//,/ }"
 }
 
 function ensure_hugepages() {
