@@ -5,8 +5,12 @@
 echo "INFO: Compiling vrouter kernel module for ubuntu..."
 kver=`uname -r`
 echo "INFO: Detected kernel version is $kver"
-# TODO: pass or detect it here
-contrail_version="5.0.0"
+
+if [ ! -f "/contrail_version" ] ; then
+  echo "ERROR: There is no version specified in /contrail_version file. Exiting..."
+  exit 1
+fi
+contrail_version="$(cat /contrail_version)"
 echo "INFO: use vrouter version $contrail_version"
 
 if [ ! -d "/usr/src/linux-headers-$kver" ] ; then
