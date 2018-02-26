@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source /common.sh
+source /agent-functions.sh
 
 HUGE_PAGES_DIR=${HUGE_PAGES_DIR:-'/dev/hugepages'}
 ensure_hugepages $HUGE_PAGES_DIR
