@@ -21,7 +21,7 @@ while (true) ; do
         init_vhost0
     fi
     if ! wait_nic vhost0 ; then
-	sleep 2
+	sleep 20
         continue
     fi
 
