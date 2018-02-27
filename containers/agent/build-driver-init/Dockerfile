@@ -13,6 +13,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -y yum dkms && \
     yum install -y contrail-vrouter-source && \
     mkdir -p /opt/contrail/src && mv /usr/src/* /opt/contrail/src/ && \
+    rpm -q --qf "%{VERSION}" contrail-vrouter-source >> /contrail-version && \
     apt-get purge -y yum && \
     apt-get autoremove -y
 
