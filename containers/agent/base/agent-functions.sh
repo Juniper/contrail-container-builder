@@ -40,6 +40,10 @@ function get_physical_nic_and_mac()
   echo $nic $mac
 }
 
+function is_dist_snat() {
+    [[ $DIST_SNAT =~ ^[Tt][Rr][Uu][Ee]$ ]]
+}
+
 function is_tsn() {
     [[ $TSN_EVPN_MODE =~ ^[Tt][Rr][Uu][Ee]$ ]]
 }
