@@ -34,5 +34,9 @@ EOM
 
 set_vnc_api_lib_ini
 
+if [[ "$NODE_TYPE" == 'database' ]]; then
+  provision_node provision_database_node.py $hostip $DEFAULT_HOSTNAME
+fi
+
 exec "$@"
 
