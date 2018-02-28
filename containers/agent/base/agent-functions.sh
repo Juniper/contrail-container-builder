@@ -329,6 +329,10 @@ EOM
         if [ ! -f "contrail.org.ifcfg-${phys_int}" ] ; then
             /bin/cp -f ifcfg-${phys_int} contrail.org.ifcfg-${phys_int}
         fi
+        if [[ -f route-${phys_int} ]]; then
+          /bin/cp -f route-${phys_int} route-vhost0
+          mv route-${phys_int} contrail.org.route-${phys_int}
+        fi
         sed -ri "/(DEVICE|ONBOOT|NM_CONTROLLED)/! s/^[^#].*/#commented_by_contrail& /" ifcfg-${phys_int}
         if ! grep -q "^NM_CONTROLLED=no" ifcfg-${phys_int} ; then
             echo 'NM_CONTROLLED="no"' >> ifcfg-${phys-int}
@@ -345,11 +349,11 @@ EOM
                 echo "BIND_INT=${phys_int}" >> ifcfg-vhost0
             fi
         fi
-        popd
-        if [[ ! -f /etc/sysconfig/network-scripts/ifup-vhost ]]; then
-            /bin/cp -f /ifup-vhost /etc/sysconfig/network-scripts
-            chmod +x /etc/sysconfig/network-scripts/ifup-vhost
+        if [[ ! -f ifup-vhost ]]; then
+            /bin/cp -f /ifup-vhost ./
+            chmod +x ifup-vhost
         fi
+        popd
         if [[ -d /host/bin && ! -f /host/bin/vif ]]; then
             /bin/cp -f /bin/vif /host/bin/vif
         fi
