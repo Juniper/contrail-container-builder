@@ -329,6 +329,10 @@ EOM
         if [ ! -f "contrail.org.ifcfg-${phys_int}" ] ; then
             /bin/cp -f ifcfg-${phys_int} contrail.org.ifcfg-${phys_int}
         fi
+        if [[ -e /etc/sysconfig/network-scripts/route-${phys_int} ]]; then
+          /bin/cp -f /etc/sysconfig/network-scripts/route-${phys_int} /etc/sysconfig/network-scripts/route-vhost0
+          mv /etc/sysconfig/network-scripts/route-${phys_int} /etc/sysconfig/network-scripts/contrail.org.route-${phys_int}
+        fi
         sed -ri "/(DEVICE|ONBOOT|NM_CONTROLLED)/! s/^[^#].*/#commented_by_contrail& /" ifcfg-${phys_int}
         if ! grep -q "^NM_CONTROLLED=no" ifcfg-${phys_int} ; then
             echo 'NM_CONTROLLED="no"' >> ifcfg-${phys-int}
