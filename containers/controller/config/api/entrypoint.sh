@@ -41,6 +41,19 @@ function wait_and_provision_self() {
     --ipfabric_service_port $IPFABRIC_SERVICE_PORT
   provision provision_alarm.py
   provision provision_encap.py --encap_priority $ENCAP_PRIORITY
+
+  local dist_snat_params=''
+  if is_dist_snat ; then
+    if [[ -n "$PORT_COUNT" ]] ; then
+        dist_snat_params="--protocol ${SNAT_PROTOCOL} --port_count ${PORT_COUNT}"
+    elif [[ -n "$PORT_RANGE" ]] ; then
+        dist_snat_params="--protocol ${SNAT_PROTOCOL} --port_range ${PORT_RANGE}"
+    fi
+  fi
+  provision provision_global_vrouter_config.py --oper add \
+     --flow_export_rate $FLOW_EXPORT_RATE \
+     $dist_snat_params
+
 }
 
 wait_and_provision_self &
