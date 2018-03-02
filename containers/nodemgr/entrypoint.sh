@@ -3,7 +3,7 @@
 source /common.sh
 
 # Env variables:
-# NODE_TYPE = name of the component [vrouter, config, control, analytics, ....]
+# NODE_TYPE = name of the component [vrouter, config, control, analytics, database]
 
 VAR_PREFIX=${NODE_TYPE^^}NODEMGR
 # ToDo - decide how to resolve this for non-contrail parts
@@ -33,6 +33,8 @@ $sandesh_client_config
 EOM
 
 set_vnc_api_lib_ini
+
+/provision.sh
 
 exec "$@"
 

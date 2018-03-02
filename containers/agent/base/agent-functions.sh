@@ -40,14 +40,6 @@ function get_physical_nic_and_mac()
   echo $nic $mac
 }
 
-function is_tsn() {
-    [[ $TSN_EVPN_MODE =~ ^[Tt][Rr][Uu][Ee]$ ]]
-}
-
-function is_dpdk() {
-    test "$AGENT_MODE" == 'dpdk'
-}
-
 function enable_hugepages_to_coredump() {
     local name=$1
     local pid=$(pidof $name)

@@ -6,7 +6,7 @@ RUN yum install -y contrail-nodemgr docker-python && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 
-COPY entrypoint.sh /
+COPY *.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD /usr/bin/python /usr/bin/contrail-nodemgr --nodetype=${NODEMGR_TYPE}

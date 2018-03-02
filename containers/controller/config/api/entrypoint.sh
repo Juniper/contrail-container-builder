@@ -30,19 +30,4 @@ EOM
 set_third_party_auth_config
 set_vnc_api_lib_ini
 
-function wait_and_provision_self() {
-  wait_for_contrail_api
-  provision_node provision_config_node.py $host_ip $DEFAULT_HOSTNAME
-  provision provision_linklocal.py --oper add \
-    --linklocal_service_name $LINKLOCAL_SERVICE_NAME \
-    --linklocal_service_ip $LINKLOCAL_SERVICE_IP \
-    --linklocal_service_port $LINKLOCAL_SERVICE_PORT \
-    --ipfabric_service_ip $IPFABRIC_SERVICE_IP \
-    --ipfabric_service_port $IPFABRIC_SERVICE_PORT
-  provision provision_alarm.py
-  provision provision_encap.py --encap_priority $ENCAP_PRIORITY
-}
-
-wait_and_provision_self &
-
 exec "$@"
