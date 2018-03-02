@@ -3,7 +3,6 @@
 source /common.sh
 
 hostip=$(get_listen_ip_for_node CONTROL)
-hostname=${DEFAULT_HOSTNAME}
 
 rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')
 configdb_cql_servers=$(echo $CONFIGDB_CQL_SERVERS | sed 's/,/ /g')
@@ -16,7 +15,7 @@ collectors=$COLLECTOR_SERVERS
 # gr_helper_bgp_disable=0
 # gr_helper_xmpp_disable=0
 hostip=${hostip}
-hostname=${hostname}
+hostname=${DEFAULT_HOSTNAME}
 http_server_port=${CONTROL_INTROSPECT_LISTEN_PORT:-$CONTROL_INTROSPECT_PORT}
 log_file=${CONTROL_LOG_FILE:-"$LOG_DIR/contrail-control.log"}
 log_level=${CONTROL_LOG_LEVEL:-$LOG_LEVEL}
@@ -58,15 +57,5 @@ set_third_party_auth_config
 set_vnc_api_lib_ini
 
 wait_for_contrail_api
-
-if [[ "$BGP_AUTO_MESH" == 'true' ]] ; then
-  ibgp_auto_mesh_opt='--ibgp_auto_mesh'
-else
-  ibgp_auto_mesh_opt='--no_ibgp_auto_mesh'
-fi
-
-provision_node provision_control.py $hostip $hostname \
-  --router_asn ${BGP_ASN} $ibgp_auto_mesh_opt \
-  --bgp_server_port ${BGP_PORT}
 
 exec "$@"
