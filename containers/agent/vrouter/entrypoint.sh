@@ -4,7 +4,6 @@ source /common.sh
 source /agent-functions.sh
 
 HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'kvm'}
-VROUTER_HOSTNAME=${VROUTER_HOSTNAME:-${DEFAULT_HOSTNAME}}
 
 echo "INFO: agent started in $AGENT_MODE mode"
 
@@ -21,7 +20,7 @@ while (true) ; do
         init_vhost0
     fi
     if ! wait_nic vhost0 ; then
-	sleep 20
+        sleep 20
         continue
     fi
 
@@ -129,22 +128,6 @@ cat /etc/contrail/contrail-vrouter-agent.conf
 
 set_vnc_api_lib_ini
 
-# TODO: move it to special provision container
-function provision_node_background() {
-    wait_for_contrail_api
-    local params=''
-    if is_dpdk ; then
-        params='--dpdk_enabled'
-    fi
-    local tsn_params=''
-    if is_tsn ; then
-        tsn_params='--router_type tor-service-node --disable_vhost_vmi'
-    fi
-    provision_node provision_vrouter.py $vrouter_ip $VROUTER_HOSTNAME $params $tsn_params
-}
-
 mkdir -p -m 777 /var/crashes
-
-provision_node_background &
 
 exec $@
