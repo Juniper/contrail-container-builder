@@ -43,8 +43,10 @@ _os_subversions=([newton]=5 [ocata]=3 [pike]=1)
 _os_subversion="${_os_subversions[$OPENSTACK_VERSION]}"
 export OS_SUBVERSION=${OS_SUBVERSION:-"$_os_subversion"}
 _linux_distr_ver_major=$(echo $LINUX_DISTR_VER | cut -d '.' -f 1)
-export CONTRAIL_CONTAINER_TAG="${CONTRAIL_VERSION}-${LINUX_DISTR}${_linux_distr_ver_major}-${OPENSTACK_VERSION}"
-export CONTRAIL_CONTAINER_TAG_WITH_DISTRO="${CONTRAIL_VERSION}{{distro}}${OPENSTACK_VERSION}"
+export CONTRAIL_CONTAINER_TAG="${OPENSTACK_VERSION}-${CONTRAIL_VERSION}"
+# TODO: transitional change. remove it
+export CONTRAIL_CONTAINER_TAG_OLD="${CONTRAIL_VERSION}-${LINUX_DISTR}${_linux_distr_ver_major}-${OPENSTACK_VERSION}"
+export CONTRAIL_CONTAINER_TAG_OLD_WITH_DISTRO="${CONTRAIL_VERSION}{{distro}}${OPENSTACK_VERSION}"
 
 default_packages_url="https://s3-us-west-2.amazonaws.com/contrailrhel7/contrail-install-packages-${CONTRAIL_VERSION}~${OPENSTACK_VERSION}.el7.noarch.rpm"
 
