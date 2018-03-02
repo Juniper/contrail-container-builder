@@ -46,13 +46,15 @@ function process_container() {
   echo "INFO: Building $container_name"
 
   tag="${CONTRAIL_CONTAINER_TAG}"
+  # TODO: transitional change. remove it
+  tag_old="${CONTRAIL_CONTAINER_TAG_OLD}"
   if [[ -f "$dir/distro" ]]; then
     local distro=$(cat "$dir/distro" | head -1)
     local distro_tag='-'
     if [[ -n "$distro" ]]; then
       distro_tag="-${distro}-"
     fi
-    tag=$(echo ${CONTRAIL_CONTAINER_TAG_WITH_DISTRO} | sed "s/{{distro}}/$distro_tag/")
+    tag_old=$(echo ${CONTRAIL_CONTAINER_TAG_OLD_WITH_DISTRO} | sed "s/{{distro}}/$distro_tag/")
   fi
 
   local build_arg_opts=''
@@ -82,6 +84,8 @@ function process_container() {
   if [ ${PIPESTATUS[0]} -eq 0 ]; then
     docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} |& tee -a $logfile
     if [ ${PIPESTATUS[0]} -eq 0 ]; then
+      docker tag ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} ${CONTRAIL_REGISTRY}'/'${container_name}:${tag_old}
+      docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${tag_old}
       rm $logfile
     fi
   fi
