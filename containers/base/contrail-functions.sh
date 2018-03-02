@@ -1,5 +1,12 @@
 #!/bin/bash
 
+function is_tsn() {
+    [[ $TSN_EVPN_MODE =~ ^[Tt][Rr][Uu][Ee]$ ]]
+}
+
+function is_dpdk() {
+    test "$AGENT_MODE" == 'dpdk'
+}
 
 function set_third_party_auth_config(){
   if [[ $AUTH_MODE == "keystone" ]]; then
@@ -56,35 +63,6 @@ EOM
   fi
 }
 
-function provision() {
-  local script=$1
-  shift 1
-  local rest_params="$@"
-  local retries=${PROVISION_RETRIES:-10}
-  local pause=${PROVISION_DELAY:-3}
-  for (( i=0 ; i < retries ; ++i )) ; do
-      echo "Provisioning: $script $rest_params: $i/$retries"
-      if python /opt/contrail/utils/$script  \
-              $rest_params \
-              --api_server_ip $CONFIG_API_VIP \
-              --api_server_port $CONFIG_API_PORT \
-              $AUTH_PARAMS ; then
-          echo "Provisioning: $script $rest_params: succeeded"
-          break;
-      fi
-      sleep $pause
-  done
-}
-
-function provision_node() {
-  local script=$1
-  local host_ip=$2
-  local host_name=$3
-  shift 3
-  local rest_params="$@"
-  provision $script --oper add --host_name $host_name --host_ip $host_ip $rest_params
-}
-
 function wait_for_contrail_api() {
   local config_node_list=''
   IFS=',' read -ra config_node_list <<< "${CONFIG_NODES}"
@@ -110,7 +88,3 @@ function wait_for_contrail_api() {
   fi
 }
 
-function wait_for_rabbitmq() {
-  local node=$1
-  #TODO
-}
