@@ -25,11 +25,11 @@ function get_physical_nic_and_mac()
         fi
     else
         # DPDK case, nic name is not exist, so set it to default
-        nic=$(get_default_physical_iface)
+        nic=$(get_vrouter_physical_iface)
     fi
   else
-    # there is no vhost0 device, so set to default
-    nic=$(get_default_physical_iface)
+    # there is no vhost0 device, so then get vrouter physical interface
+    nic=$(get_vrouter_physical_iface)
     mac=$(get_iface_mac $nic)
   fi
   # Ensure that nic & mac are not empty
@@ -284,7 +284,7 @@ function init_vhost0() {
         if ! wait_dpdk_agent_start ; then
             return 1
         fi
-        phys_int=`get_default_physical_iface`
+        phys_int=`get_vrouter_physical_iface`
         local binding_data_dir='/var/run/vrouter'
         phys_int_mac=`cat $binding_data_dir/${phys_int}_mac`
         local pci_address=`cat $binding_data_dir/${phys_int}_pci`
