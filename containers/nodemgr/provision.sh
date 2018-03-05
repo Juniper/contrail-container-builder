@@ -43,6 +43,32 @@ config)
     --ipfabric_service_port $IPFABRIC_SERVICE_PORT
   provision provision_alarm.py
   provision provision_encap.py --encap_priority $ENCAP_PRIORITY
+  protocol_list_params=''
+  port_range_list_params=''
+  port_count_list_params=''
+  if is_dist_snat; then
+    proto_port_list=''
+    IFS=',' read -ra proto_port_list <<< "${DIST_SNAT_PROTO_PORT_LIST}"
+    for elem in "${proto_port_list[@]}"; do
+      protocol_list+="$(echo "${elem}" | cut -d ':' -f 1 | tr -d ' ') "
+      ports=$(echo "${elem}" | cut -d ':' -f 2 | tr -d ' ')
+      if [[ "${ports}" =~ [-] ]]; then
+        port_range_list+="$(echo "${ports}" | tr -d ' ') "
+        port_count_list+=" 0 "
+      else
+        port_count_list+="$(echo "${ports}" | cut -d '-' -f 2 | tr -d ' ') "
+        port_range_list+=" 0 "
+      fi
+      protocol_list_params="--protocol_list ${protocol_list}"
+      port_range_list_params="--port_range_list ${port_range_list}"
+      port_count_list_params="--port_count_list ${port_count_list}"
+    done
+  fi
+  provision provision_global_vrouter_config.py --oper add \
+    --flow_export_rate $FLOW_EXPORT_RATE \
+    ${protocol_list_params} \
+    ${port_range_list_params} \
+    ${port_count_list_params}
   ;;
 
 database)
