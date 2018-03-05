@@ -13,6 +13,7 @@ AUTH_MODE=${AUTH_MODE:-'noauth'}
 if [[ $CLOUD_ORCHESTRATOR == 'openstack' ]] ; then
   AUTH_MODE='keystone'
 fi
+CLOUD_ADMIN_ROLE=${CLOUD_ADMIN_ROLE:-admin}
 
 CONTROLLER_NODES=${CONTROLLER_NODES:-${DEFAULT_LOCAL_IP}}
 
