@@ -8,6 +8,10 @@ function is_dpdk() {
     test "$AGENT_MODE" == 'dpdk'
 }
 
+function is_dist_snat() {
+    [[ $DIST_SNAT =~ ^[Tt][Rr][Uu][Ee]$ ]]
+}
+
 function set_third_party_auth_config(){
   if [[ $AUTH_MODE == "keystone" ]]; then
     cat > /etc/contrail/contrail-keystone-auth.conf << EOM
