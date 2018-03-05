@@ -839,8 +839,8 @@ spec:
       automountServiceAccountToken: false
       hostNetwork: true
       initContainers:
-      - name: contrail-agent-vrouter-init-kernel
-        image: "{{CONTRAIL_REGISTRY}}/contrail-agent-vrouter-init-kernel:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: contrail-vrouter-kernel-init
+        image: "{{CONTRAIL_REGISTRY}}/contrail-vrouter-kernel-init:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         securityContext:
           privileged: true
@@ -852,8 +852,8 @@ spec:
           name: usr-src
         - mountPath: /lib/modules
           name: lib-modules
-      - name: contrail-kubernetes-vrouter-init
-        image: "{{CONTRAIL_REGISTRY}}/contrail-kubernetes-vrouter-init:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: contrail-kubernetes-cni-init
+        image: "{{CONTRAIL_REGISTRY}}/contrail-kubernetes-cni-init:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -870,8 +870,8 @@ spec:
         - mountPath: /var/log/contrail
           name: agent-logs
       containers:
-      - name: contrail-agent
-        image: "{{CONTRAIL_REGISTRY}}/contrail-agent-vrouter:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: contrail-vrouter-agent
+        image: "{{CONTRAIL_REGISTRY}}/contrail-vrouter-agent:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         # TODO: Priveleged mode is requied because w/o it the device /dev/net/tun
         # is not present in the container. The mounting it into container
