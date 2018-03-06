@@ -2,9 +2,16 @@ ARG CONTRAIL_REGISTRY=localhost:5000
 ARG CONTRAIL_CONTAINER_TAG=4.1.0.0-6-centos7-newton
 FROM ${CONTRAIL_REGISTRY}/contrail-controller-config-base:${CONTRAIL_CONTAINER_TAG}
 
+RUN yum install -y python-pip && \
+    pip install --upgrade pip
+
+RUN pip install "inflection>=0.3.1" "jxmlease>=1.0.1" "junos-eznc>=2.1.7"
+
 RUN yum install -y python-neutron-lib && \
     yum clean all -y && \
     rm -rf /var/cache/yum
+
+RUN ansible-galaxy install Juniper.junos
 
 COPY entrypoint.sh /
 
