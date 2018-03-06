@@ -63,6 +63,25 @@ EOM
   fi
 }
 
+function add_ini_params_from_env() {
+  local service_name=$1
+  local cfg_path=$2
+  local delim='__'
+  local vars=`( set -o posix ; set ) | grep "^${service_name}${delim}.*${delim}.*=.*$" | sort | cut -d '=' -f 1  | sed "s/^${service_name}${delim}//g"`
+  local section=''
+  for var in $vars ; do
+    local var_name="${service_name}${delim}${var}"
+    local val="${!var_name}"
+    local var_section=`echo $var | sed "s/^\(.*\)$delim.*$/\1/"`
+    if [[ "$section" != "$var_section" ]]; then
+      echo "[$var_section]" >> $cfg_path
+      section="$var_section"
+    fi
+    local var_param=`echo $var | sed "s/.*$delim\(.*\)$/\1/"`
+    echo "$var_param = $val" >> $cfg_path
+  done
+}
+
 function wait_for_contrail_api() {
   local config_node_list=''
   IFS=',' read -ra config_node_list <<< "${CONFIG_NODES}"
@@ -87,4 +106,3 @@ function wait_for_contrail_api() {
     echo "WARNING $(date): Some of Config API servers  ${config_node_list[@]}  are not responding on port ${port}."
   fi
 }
-

@@ -31,6 +31,8 @@ redis_uve_list=$REDIS_SERVERS
 $sandesh_client_config
 EOM
 
+add_ini_params_from_env ANALYTICS_API /etc/contrail/contrail-analytics-api.conf
+
 set_third_party_auth_config
 set_vnc_api_lib_ini
 

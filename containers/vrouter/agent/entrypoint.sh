@@ -123,6 +123,9 @@ docker_command=/usr/bin/opencontrail-vrouter-docker
 [HYPERVISOR]
 type = $HYPERVISOR_TYPE
 EOM
+
+add_ini_params_from_env VROUTER_AGENT /etc/contrail/contrail-vrouter-agent.conf
+
 echo "INFO: /etc/contrail/contrail-vrouter-agent.conf"
 cat /etc/contrail/contrail-vrouter-agent.conf
 

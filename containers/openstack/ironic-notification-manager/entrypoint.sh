@@ -14,9 +14,11 @@ rabbit_password = $RABBITMQ_PASSWORD
 notification_level = $IRONIC_NOTIFICATION_LEVEL
 collectors = $COLLECTOR_SERVERS
 introspect_port = ${IRONIC_NOTIFICATION_MANAGER_INTROSPECT_PORT:-8110}
-
 EOM
 
+add_ini_params_from_env IRONIC_NOTIFICATION_MANAGER /etc/contrail/ironic-notification-manager.conf
+
 set_third_party_auth_config
+set_vnc_api_lib_ini
 
 exec "$@"
