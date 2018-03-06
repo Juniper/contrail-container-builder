@@ -8,4 +8,5 @@ RUN yum install -y initscripts ethtool pciutils sudo contrail-vrouter-utils && \
 COPY 10-core-pattern.conf /etc/sysctl.d/
 COPY *.sh /
 
+LABEL net.juniper.contrail.pod=vrouter
 CMD ["/usr/bin/tail","-f","/dev/null"]

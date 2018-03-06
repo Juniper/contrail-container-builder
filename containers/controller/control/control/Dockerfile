@@ -8,5 +8,4 @@ ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/contrail-control"]
 
 LABEL net.juniper.nodemgr.filter.name=contrail-control
-LABEL net.juniper.contrail=config
-LABEL net.juniper.node=controller
+LABEL net.juniper.contrail.service=control

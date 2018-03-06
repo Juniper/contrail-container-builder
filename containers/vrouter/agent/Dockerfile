@@ -14,5 +14,4 @@ ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/contrail-vrouter-agent"]
 
 LABEL net.juniper.nodemgr.filter.name=contrail-vrouter-agent
-LABEL net.juniper.contrail=agent
-LABEL net.juniper.node=agent
+LABEL net.juniper.contrail.service=agent

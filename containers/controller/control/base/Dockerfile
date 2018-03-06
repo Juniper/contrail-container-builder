@@ -6,4 +6,5 @@ RUN yum install -y contrail-openstack-control && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 
+LABEL net.juniper.contrail.pod=control
 CMD ["/usr/bin/tail","-f","/dev/null"]

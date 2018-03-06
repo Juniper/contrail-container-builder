@@ -5,5 +5,5 @@ COPY contrail-entrypoint.sh /
 ENTRYPOINT ["/contrail-entrypoint.sh"]
 CMD ["rabbitmq-server"]
 
-LABEL net.juniper.contrail=rabbitmq
+LABEL net.juniper.contrail.service=rabbitmq
 LABEL net.juniper.node=controller

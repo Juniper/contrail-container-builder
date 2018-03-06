@@ -10,5 +10,7 @@ RUN yum install -y python-eventlet python-setuptools python-kazoo \
 
 COPY entrypoint.sh /
 
+LABEL net.juniper.contrail.pod=kubernetes
+LABEL net.juniper.contrail.service=kube-manager
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/python", "/usr/bin/contrail-kube-manager", "-c", "/etc/contrail/contrail-kubernetes.conf"]
