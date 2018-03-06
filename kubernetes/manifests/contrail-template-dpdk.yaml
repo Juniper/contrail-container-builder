@@ -773,8 +773,8 @@ spec:
       automountServiceAccountToken: false
       hostNetwork: true
       initContainers:
-      - name: contrail-agent-vrouter-init-kernel-dpdk
-        image: "{{CONTRAIL_REGISTRY}}/contrail-agent-vrouter-init-kernel-dpdk:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: contrail-vrouter-kernel-init-dpdk
+        image: "{{CONTRAIL_REGISTRY}}/contrail-vrouter-kernel-init-dpdk:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         securityContext:
           privileged: true
@@ -789,8 +789,8 @@ spec:
           name: etc
         - mountPath: /lib/modules
           name: lib-modules
-      - name: contrail-kubernetes-vrouter-init
-        image: "{{CONTRAIL_REGISTRY}}/contrail-kubernetes-vrouter-init:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: contrail-kubernetes-cni-init
+        image: "{{CONTRAIL_REGISTRY}}/contrail-kubernetes-cni-init:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -807,8 +807,8 @@ spec:
         - mountPath: /var/log/contrail
           name: agent-logs
       containers:
-      - name: contrail-agent-dpdk
-        image: "{{CONTRAIL_REGISTRY}}/contrail-agent-vrouter-dpdk:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: contrail-vrouter-agent-dpdk
+        image: "{{CONTRAIL_REGISTRY}}/contrail-vrouter-agent-dpdk:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         # TODO: Priveleged mode is requied because w/o it the device /dev/net/tun
         # is not present in the container. The mounting it into container
@@ -838,8 +838,8 @@ spec:
           name: var-crashes
         - mountPath: /tmp/serviceaccount
           name: pod-secret
-      - name: contrail-agent-net-watchdog
-        image: "{{CONTRAIL_REGISTRY}}/contrail-agent-net-watchdog:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: contrail-vrouter-net-watchdog
+        image: "{{CONTRAIL_REGISTRY}}/contrail-vrouter-net-watchdog:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         # TODO: Priveleged mode is requied because w/o it the device /dev/net/tun
         # is not present in the container. The mounting it into container
@@ -869,8 +869,8 @@ spec:
           name: var-crashes
         - mountPath: /tmp/serviceaccount
           name: pod-secret
-      - name: contrail-agent
-        image: "{{CONTRAIL_REGISTRY}}/contrail-agent-vrouter:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: contrail-vrouter-agent
+        image: "{{CONTRAIL_REGISTRY}}/contrail-vrouter-agent:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         # TODO: Priveleged mode is requied because w/o it the device /dev/net/tun
         # is not present in the container. The mounting it into container
