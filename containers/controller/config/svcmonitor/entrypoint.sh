@@ -33,6 +33,8 @@ aaa_mode = $AAA_MODE
 $sandesh_client_config
 EOM
 
+add_ini_params_from_env SVC_MONITOR /etc/contrail/contrail-svc-monitor.conf
+
 set_third_party_auth_config
 set_vnc_api_lib_ini
 

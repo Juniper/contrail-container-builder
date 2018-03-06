@@ -90,6 +90,8 @@ config_db_server_list=$configdb_cql_servers
 $sandesh_client_config
 EOM
 
+add_ini_params_from_env COLLECTOR /etc/contrail/contrail-collector.conf
+
 set_third_party_auth_config
 set_vnc_api_lib_ini
 

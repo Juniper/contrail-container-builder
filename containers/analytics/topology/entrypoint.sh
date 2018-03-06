@@ -31,6 +31,8 @@ config_db_server_list=$config_db_server_list
 $sandesh_client_config
 EOM
 
+add_ini_params_from_env TOPOLOGY /etc/contrail/contrail-topology.conf
+
 set_third_party_auth_config
 set_vnc_api_lib_ini
 
