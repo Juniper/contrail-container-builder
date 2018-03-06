@@ -91,33 +91,6 @@ function process_container() {
   fi
   if [ -f $logfile ]; then
     was_errors=1
-  else
-    #TODO: transitional change. remove this after changing other repos.
-    local old_name=''
-    case $container_name in
-    contrail-vrouter-kernel-build-init)
-      local old_name='contrail-agent-build-driver-init'
-      ;;
-    contrail-vrouter-net-watchdog)
-      local old_name='contrail-agent-net-watchdog'
-      ;;
-    contrail-vrouter-agent)
-      local old_name='contrail-agent-vrouter'
-      ;;
-    contrail-vrouter-agent-dpdk)
-      local old_name='contrail-agent-vrouter-dpdk'
-      ;;
-    contrail-vrouter-kernel-init)
-      local old_name='contrail-agent-vrouter-init-kernel'
-      ;;
-    contrail-vrouter-kernel-init-dpdk)
-      local old_name='contrail-agent-vrouter-init-kernel-dpdk'
-      ;;
-    esac
-    if [[ -n "$old_name" ]]; then
-      docker tag ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} ${CONTRAIL_REGISTRY}'/'${old_name}:${tag}
-      docker push ${CONTRAIL_REGISTRY}'/'${old_name}:${tag}
-    fi
   fi
 }
 
