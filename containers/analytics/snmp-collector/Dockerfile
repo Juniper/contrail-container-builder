@@ -8,5 +8,4 @@ ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/python","/usr/bin/contrail-snmp-collector","--device-config-file","/etc/contrail/device.ini"]
 
 LABEL net.juniper.nodemgr.filter.name=contrail-snmp-collector
-LABEL net.juniper.contrail=config
-LABEL net.juniper.node=controller
+LABEL net.juniper.contrail.service=snmp-collecto

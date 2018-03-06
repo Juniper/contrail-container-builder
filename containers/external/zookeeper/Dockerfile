@@ -5,5 +5,5 @@ COPY contrail-entrypoint.sh /
 ENTRYPOINT ["/contrail-entrypoint.sh"]
 CMD ["zkServer.sh", "start-foreground"]
 
-LABEL net.juniper.contrail=zookeeper
+LABEL net.juniper.contrail.service=zookeeper
 LABEL net.juniper.node=controller

@@ -8,5 +8,4 @@ ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/python","/usr/bin/contrail-topology"]
 
 LABEL net.juniper.nodemgr.filter.name=contrail-topology
-LABEL net.juniper.contrail=config
-LABEL net.juniper.node=controller
+LABEL net.juniper.contrail.service=topology

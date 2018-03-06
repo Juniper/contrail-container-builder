@@ -8,4 +8,5 @@ RUN yum install -y nodejs-0.10.35-1contrail.el7 contrail-openstack-webui && \
 
 COPY entrypoint.sh /
 
+LABEL net.juniper.contrail.pod=webui
 CMD ["/usr/bin/tail","-f","/dev/null"]
