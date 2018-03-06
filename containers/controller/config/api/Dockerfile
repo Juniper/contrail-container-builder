@@ -6,6 +6,11 @@ RUN yum install -y python-neutron-lib && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 
+RUN ansible-galaxy install Juniper.junos
+
+RUN yum install -y python-pip && \
+    pip install inflection>=0.3.1 jxmlease>=1.0.1 junos-eznc>=2.1.7
+
 COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
