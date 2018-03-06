@@ -37,6 +37,14 @@ hostname=`cat /etc/hostname`
 
 sudo -u root /bin/bash << EOS
 
+function disable_swap() {
+  echo disable swap
+  # todo: uncomment the unmount of tmpfs in case of swapoff hangs
+  #umount -a -t tmpfs
+  swapoff -a
+  sed -i.bak '/^[^#].*[ \t]\+swap[ \t]\+/ s/(.*\)/#\1/g' /etc/fstab
+}
+
 function install_for_ubuntu() {
   service ufw stop
   iptables -F
@@ -85,6 +93,8 @@ EOF
   echo "net.bridge.bridge-nf-call-iptables=1" >> /etc/sysctl.conf
   echo "net.bridge.bridge-nf-call-ip6tables=1" >> /etc/sysctl.conf
 }
+
+disable_swap
 
 case "${LINUX_ID}" in
   "ubuntu" )
