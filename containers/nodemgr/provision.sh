@@ -62,9 +62,13 @@ control)
   else
     ibgp_auto_mesh_opt='--no_ibgp_auto_mesh'
   fi
+  subcluster_option=''
+  if [[ -n ${SUBCLUSTER} ]]; then
+    subcluster_option="--sub_cluster_name ${SUBCLUSTER}"
+  fi
   provision_node provision_control.py $host_ip $DEFAULT_HOSTNAME \
     --router_asn ${BGP_ASN} $ibgp_auto_mesh_opt \
-    --bgp_server_port ${BGP_PORT}
+    --bgp_server_port ${BGP_PORT} ${subcluster_option}
   ;;
 
 vrouter)
@@ -75,6 +79,9 @@ vrouter)
   fi
   if is_tsn ; then
     params="$params --router_type tor-service-node --disable_vhost_vmi"
+  fi
+  if [[ -n ${SUBCLUSTER} ]]; then
+    params="$params --sub_cluster_name ${SUBCLUSTER}"
   fi
   provision_node provision_vrouter.py $host_ip ${VROUTER_HOSTNAME:-${DEFAULT_HOSTNAME}} $params
 
