@@ -37,9 +37,9 @@ if [[ $HOST_IP == 'auto' ]] ; then
 fi
 
 export CONTRAIL_VERSION=${CONTRAIL_VERSION:-'4.1.0.0-8'}
-export OPENSTACK_VERSION=${OPENSTACK_VERSION:-'ocata'}
+export OPENSTACK_VERSION=${OPENSTACK_VERSION:-'queens'}
 declare -A _os_subversions
-_os_subversions=([newton]=5 [ocata]=3 [pike]=1)
+_os_subversions=([newton]=5 [ocata]=3 [pike]=1 [queens]=0)
 _os_subversion="${_os_subversions[$OPENSTACK_VERSION]}"
 export OS_SUBVERSION=${OS_SUBVERSION:-"$_os_subversion"}
 _linux_distr_ver_major=$(echo $LINUX_DISTR_VER | cut -d '.' -f 1)
