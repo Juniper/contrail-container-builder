@@ -71,6 +71,13 @@ agent_mode = tsn-no-forwarding
 EOM
 fi
 
+subcluster_option=""
+if [[ -n ${SUBCLUSTER} ]]; then
+  read -r -d '' subcluster_option << EOM
+subcluster_name=${SUBCLUSTER}
+EOM
+fi
+
 tsn_server_list=""
 IFS=' ' read -ra TSN_SERVERS <<< "${TSN_NODES}"
 read -r -d '' tsn_server_list << EOM
@@ -81,6 +88,7 @@ echo "INFO: Preparing /etc/contrail/contrail-vrouter-agent.conf"
 cat << EOM > /etc/contrail/contrail-vrouter-agent.conf
 [CONTROL-NODE]
 servers=${XMPP_SERVERS:-`get_server_list CONTROL ":$XMPP_SERVER_PORT "`}
+$subcluster_option
 
 [DEFAULT]
 collectors=$COLLECTOR_SERVERS
@@ -104,7 +112,7 @@ $sandesh_client_config
 control_network_ip=$(get_default_ip)
 
 [DNS]
-servers=${DNS_SERVERS:-`get_server_list CONTROL ":$DNS_SERVER_PORT "`}
+servers=${DNS_SERVERS:-`get_server_list DNS ":$DNS_SERVER_PORT "`}
 
 [METADATA]
 metadata_proxy_secret=${METADATA_PROXY_SECRET}

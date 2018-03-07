@@ -29,6 +29,13 @@ function provision_node() {
   provision $script --oper add --host_name $host_name --host_ip $host_ip $rest_params
 }
 
+function provision_subcluster() {
+  local script=$1
+  shift 1
+  local rest_params="$@"
+  provision $script --oper add $rest_params
+}
+
 
 case $NODE_TYPE in
 
@@ -62,9 +69,15 @@ control)
   else
     ibgp_auto_mesh_opt='--no_ibgp_auto_mesh'
   fi
+  subcluster_name=''
+  if [[ -n ${SUBCLUSTER} ]]; then
+    subcluster_name="--sub_cluster_name ${SUBCLUSTER}"
+    subcluster_option="$subcluster_name --sub_cluster_asn ${BGP_ASN}"
+    provision_subcluster provision_sub_cluster.py ${subcluster_option}
+  fi
   provision_node provision_control.py $host_ip $DEFAULT_HOSTNAME \
     --router_asn ${BGP_ASN} $ibgp_auto_mesh_opt \
-    --bgp_server_port ${BGP_PORT}
+    --bgp_server_port ${BGP_PORT} ${subcluster_name}
   ;;
 
 vrouter)
@@ -75,6 +88,9 @@ vrouter)
   fi
   if is_tsn ; then
     params="$params --router_type tor-service-node --disable_vhost_vmi"
+  fi
+  if [[ -n ${SUBCLUSTER} ]]; then
+    params="$params --sub_cluster_name ${SUBCLUSTER}"
   fi
   provision_node provision_vrouter.py $host_ip ${VROUTER_HOSTNAME:-${DEFAULT_HOSTNAME}} $params
 
