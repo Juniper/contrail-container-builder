@@ -104,7 +104,7 @@ $sandesh_client_config
 control_network_ip=$(get_default_ip)
 
 [DNS]
-servers=${DNS_SERVERS:-`get_server_list CONTROL ":$DNS_SERVER_PORT "`}
+servers=${DNS_SERVERS:-`get_server_list DNS ":$DNS_SERVER_PORT "`}
 
 [METADATA]
 metadata_proxy_secret=${METADATA_PROXY_SECRET}
