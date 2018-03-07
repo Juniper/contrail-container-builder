@@ -6,5 +6,4 @@ ENTRYPOINT ["/entrypoint.sh"]
 WORKDIR /usr/src/contrail/contrail-web-core
 CMD ["/usr/bin/node","webServerStart.js"]
 
-LABEL net.juniper.contrail=config
-LABEL net.juniper.node=controller
+LABEL net.juniper.contrail.service=web
