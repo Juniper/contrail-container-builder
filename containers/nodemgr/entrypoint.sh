@@ -32,6 +32,8 @@ server_list=${COLLECTOR_SERVERS}
 $sandesh_client_config
 EOM
 
+add_ini_params_from_env ${NODE_TYPE^^}_NODEMGR /etc/contrail/$NODEMGR_NAME.conf
+
 set_vnc_api_lib_ini
 
 /provision.sh

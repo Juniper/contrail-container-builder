@@ -41,6 +41,8 @@ cassandra_server_list=$cassandra_server_list
 collectors=$COLLECTOR_SERVERS
 EOM
 
+add_ini_params_from_env KUBERNETES /etc/contrail/contrail-kubernetes.conf
+
 set_third_party_auth_config
 set_vnc_api_lib_ini
 
