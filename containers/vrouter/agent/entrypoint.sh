@@ -3,7 +3,19 @@
 source /common.sh
 source /agent-functions.sh
 
-HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'kvm'}
+orchestrator=$CLOUD_ORCHESTRATOR
+
+if [ "$CLOUD_ORCHESTRATOR" == "vcenter" ]
+    HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'vmware'}
+else
+    HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'kvm'}
+
+if [ "$CLOUD_ORCHESTRATOR" == "vcenter" ]; then
+    read -r -d '' vmware_options << EOM
+vmware_physical_interface = $int_name
+vmware_mode = vcenter
+EOM
+fi
 
 echo "INFO: agent started in $AGENT_MODE mode"
 
@@ -122,6 +134,7 @@ docker_command=/usr/bin/opencontrail-vrouter-docker
 
 [HYPERVISOR]
 type = $HYPERVISOR_TYPE
+$vmware_options
 EOM
 echo "INFO: /etc/contrail/contrail-vrouter-agent.conf"
 cat /etc/contrail/contrail-vrouter-agent.conf
