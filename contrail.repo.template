@@ -3,3 +3,8 @@ name = Contrail repo
 baseurl = ${CONTRAIL_REPOSITORY}
 enabled = 1
 gpgcheck = 0
+[opencontrail-tpc]
+name = opencontrail-tpc
+baseurl = http://10.84.5.81/pulp/repos/opencontrail-tpc
+enabled = 1
+gpgcheck = 0
