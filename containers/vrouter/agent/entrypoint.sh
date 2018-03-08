@@ -96,12 +96,7 @@ log_file=${VROUTER_LOG_FILE:-"$LOG_DIR/contrail-vrouter-agent.log"}
 log_level=${VROUTER_LOG_LEVEL:-$LOG_LEVEL}
 log_local=${VROUTER_LOG_LOCAL:-$LOG_LOCAL}
 
-xmpp_dns_auth_enable = $XMPP_SSL_ENABLE
-xmpp_auth_enable = $XMPP_SSL_ENABLE
-xmpp_server_cert=${XMPP_SERVER_CERT}
-xmpp_server_key=${XMPP_SERVER_KEY}
-xmpp_ca_cert=${XMPP_SERVER_CA_CERT}
-
+$xmpp_auth_config
 $agent_mode_options
 $tsn_agent_mode
 $tsn_server_list

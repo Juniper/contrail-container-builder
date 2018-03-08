@@ -14,6 +14,10 @@ if [[ "$orchestration_manager" == 'kubernetes' ]] ; then
   orchestration_manager='none'
 fi
 
+if [[ -n "$KEYSTONE_AUTH_URL_VERSION" ]] ; then
+  identityManager_apiVersion="['${KEYSTONE_AUTH_URL_VERSION#/}']"
+fi
+
 cat > /etc/contrail/config.global.js << EOM
 /*
  * Copyright (c) 2014 Juniper Networks, Inc. All rights reserved.
@@ -66,8 +70,8 @@ config.identityManager.ip = "$KEYSTONE_AUTH_HOST";
 config.identityManager.port = "$KEYSTONE_AUTH_PUBLIC_PORT";
 config.identityManager.authProtocol = "$KEYSTONE_AUTH_PROTO";
 config.identityManager.apiVersion = ${identityManager_apiVersion:-['v2.0', 'v3']};
-config.identityManager.strictSSL = ${identityManager_strictSSL:-false};
-config.identityManager.ca = "$identityManager_ca";
+config.identityManager.strictSSL = ${KEYSTONE_AUTH_INSECURE};
+config.identityManager.ca = "$KEYSTONE_AUTH_CA_CERTFILE";
 
 config.storageManager = {};
 config.storageManager.ip = "${storageManager_ip:-127.0.0.1}";
@@ -110,11 +114,11 @@ config.vcenter.wsdl = '/usr/src/contrail/contrail-web-core/webroot/js/vim.wsdl';
 
 config.introspect = {};
 config.introspect.ssl = {};
-config.introspect.ssl.enabled = false;
-config.introspect.ssl.key = '';
-config.introspect.ssl.cert = '';
-config.introspect.ssl.ca = '';
-config.introspect.ssl.strictSSL = false;
+config.introspect.ssl.enabled = ${INTROSPECT_SSL_ENABLE,,};
+config.introspect.ssl.key = '${INTROSPECT_KEYFILE}';
+config.introspect.ssl.cert = '${INTROSPECT_CERTFILE}';
+config.introspect.ssl.ca = '${INTROSPECT_CA_CERTFILE}';
+config.introspect.ssl.strictSSL = ${INTROSPECT_SSL_INSECURE,,};
 
 config.jobServer = {};
 config.jobServer.server_ip = '127.0.0.1';

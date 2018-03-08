@@ -33,10 +33,10 @@ ip_fabric_snat=${KUBERNETES_IP_FABRIC_SNAT:-"false"}
 public_fip_pool=${KUBERNETES_public_fip_pool:-"{}"}
 vnc_endpoint_ip=$CONFIG_API_VIP
 vnc_endpoint_port=$CONFIG_API_PORT
+
 rabbit_server=$RABBITMQ_SERVERS
-rabbit_vhost=$RABBITMQ_VHOST
-rabbit_user=$RABBITMQ_USER
-rabbit_password=$RABBITMQ_PASSWORD
+$rabbitmq_auth_config
+
 cassandra_server_list=$cassandra_server_list
 collectors=$COLLECTOR_SERVERS
 EOM
