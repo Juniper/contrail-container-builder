@@ -8,7 +8,8 @@ ARG OPENSTACK_VERSION=newton
 ARG OPENSTACK_SUBVERSION=5
 
 # note: ldconfig looks strange. contrail-lib installs shared libraries but do not call it...
-RUN yum update -y && \
+RUN mkdir -p -m 777 /var/crashes && \
+    yum update -y && \
     yum install -y https://repos.fedorapeople.org/repos/openstack/openstack-$OPENSTACK_VERSION/rdo-release-$OPENSTACK_VERSION-$OPENSTACK_SUBVERSION.noarch.rpm && \
     yum install -y contrail-lib contrail-setup contrail-utils python-contrail && \
     ldconfig
