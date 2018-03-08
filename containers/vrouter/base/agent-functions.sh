@@ -124,6 +124,39 @@ function get_pci_address_for_nic() {
     fi
 }
 
+function get_default_physical_iface() {
+  echo ${PHYSICAL_INTERFACE:-${DEFAULT_IFACE}}
+}
+
+function get_ctrl_data_iface() {
+  local ctrl_data_network=$1
+  local ctrl_data_nic=$(ip route get $ctrl_data_network | grep -oe "dev\s[[:alnum:]]*" | awk '{print $2}')
+  local default_nic=$(get_default_nic)
+
+  #check if ctrl_data_nic and default_nic are same
+  #if they are same nic then physical iface with ctrl_data_network does not exist
+
+  if [ "$ctrl_data_nic" == "$default_nic" ] ; then
+    return
+  fi
+  echo $ctrl_data_nic
+}
+
+function get_vrouter_physical_iface() {
+  if [[ ! -z "$CONTROL_DATA_NET_LIST" ]]; then
+    IFS=',' read -ra ctrl_data_net_list <<< "${CONTROL_DATA_NET_LIST}"
+    for ctrl_data_network in "${ctrl_data_net_list[@]}"; do
+      local ctrl_data_nic=$(get_ctrl_data_iface $ctrl_data_network)
+      if [[ ! -z "$ctrl_data_nic" ]]; then
+        echo $ctrl_data_nic
+        break
+      fi
+    done
+  else
+    get_default_physical_iface
+  fi
+}
+
 function get_physical_nic_and_mac()
 {
   local nic='vhost0'
