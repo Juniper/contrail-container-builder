@@ -1,5 +1,10 @@
 #!/bin/bash
 
+function is_enabled() {
+  local val=${1,,}
+  [[ "${val}" == 'true' || "${val}" == 'yes' || "${val}" == 'enabled' ]]
+}
+
 function get_server_list() {
   local server_typ=$1_NODES
   local port_with_delim=$2
@@ -45,11 +50,15 @@ function get_default_gateway_for_nic_metric() {
     echo "$default_gw $default_gw_metric"
 }
 
+function get_local_ips() {
+  cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}'
+}
+
 function find_my_ip_and_order_for_node() {
   local server_typ=$1_NODES
   local server_list=''
   IFS=',' read -ra server_list <<< "${!server_typ}"
-  local local_ips=",$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}' | tr '\n' ','),"
+  local local_ips=",$(get_local_ips | tr '\n' ','),"
   local ord=1
   for server in "${server_list[@]}"; do
     if [[ "$local_ips" =~ ",$server," ]] ; then
@@ -83,10 +92,6 @@ function get_order_for_node() {
     order=1
   fi
   echo $order
-}
-
-function get_default_physical_iface() {
-  echo ${PHYSICAL_INTERFACE:-${DEFAULT_IFACE}}
 }
 
 function get_iface_mac() {
@@ -131,34 +136,4 @@ function get_hostname_by_ip() {
     name=$(generate_hostname_for_ip $ip)
   fi
   echo $name
-}
-
-function get_ctrl_data_iface() {
-  local ctrl_data_network=$1
-  local ctrl_data_nic=$(ip route get $ctrl_data_network | grep -oe "dev\s[[:alnum:]]*" | awk '{print $2}')
-  local default_nic=$(get_default_nic)
-
-  #check if ctrl_data_nic and default_nic are same
-  #if they are same nic then physical iface with ctrl_data_network does not exist
-
-  if [ "$ctrl_data_nic" == "$default_nic" ] ; then
-    return
-  fi
-  echo $ctrl_data_nic
-
-}
-
-function get_vrouter_physical_iface() {
-  if [[ ! -z "$CONTROL_DATA_NET_LIST" ]]; then
-    IFS=',' read -ra ctrl_data_net_list <<< "${CONTROL_DATA_NET_LIST}"
-    for ctrl_data_network in "${ctrl_data_net_list[@]}"; do
-      local ctrl_data_nic=$(get_ctrl_data_iface $ctrl_data_network)
-      if [[ ! -z "$ctrl_data_nic" ]]; then
-        echo $ctrl_data_nic
-        break
-      fi
-    done
-  else
-    get_default_physical_iface
-  fi
 }
