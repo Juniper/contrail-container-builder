@@ -47,30 +47,19 @@ log_local=${DNS_LOG_LOCAL:-$LOG_LOCAL}
 # log_file_size=${CONTROL_log_file_size:-10485760} # 10MB
 # log_category= ${CONTROL_log_category:-""}
 # log_disable= ${CONTROL_log_disable:-0}
-xmpp_dns_auth_enable=${XMPP_SSL_ENABLE}
-xmpp_server_cert=${XMPP_SERVER_CERT}
-xmpp_server_key=${XMPP_SERVER_KEY}
-xmpp_ca_cert=${XMPP_SERVER_CA_CERT}
+$xmpp_auth_config
 
 # Sandesh send rate limit can be used to throttle system logs transmitted per
 # second. System logs are dropped if the sending rate is exceeded
 # sandesh_send_rate_limit=
 
 [CONFIGDB]
-# AMQP related configs
-rabbitmq_server_list=$rabbitmq_server_list
-rabbitmq_vhost=$RABBITMQ_VHOST
-rabbitmq_user=$RABBITMQ_USER
-rabbitmq_password=$RABBITMQ_PASSWORD
-rabbitmq_use_ssl=$RABBITMQ_USE_SSL
-# rabbitmq_ssl_version=
-# rabbitmq_ssl_keyfile=
-# rabbitmq_ssl_certfile=
-# rabbitmq_ssl_ca_certs=
-#
 config_db_server_list=$configdb_cql_servers
 # config_db_username=
 # config_db_password=
+
+rabbitmq_server_list=$rabbitmq_server_list
+$rabbitmq_auth_config
 
 $sandesh_client_config
 EOM

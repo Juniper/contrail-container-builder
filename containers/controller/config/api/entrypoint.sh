@@ -19,10 +19,10 @@ cloud_admin_role=$CLOUD_ADMIN_ROLE
 global_read_only_role=$GLOBAL_READ_ONLY_ROLE
 cassandra_server_list=$cassandra_server_list
 zk_server_ip=$ZOOKEEPER_SERVERS
+
 rabbit_server=$RABBITMQ_SERVERS
-rabbit_vhost=$RABBITMQ_VHOST
-rabbit_user=$RABBITMQ_USER
-rabbit_password=$RABBITMQ_PASSWORD
+$rabbitmq_auth_config
+
 redis_server=$REDIS_SERVER_IP
 collectors=$COLLECTOR_SERVERS
 

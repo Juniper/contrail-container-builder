@@ -19,7 +19,6 @@ admin_user = $KEYSTONE_AUTH_ADMIN_USER
 auth_host = $KEYSTONE_AUTH_HOST
 auth_port = $KEYSTONE_AUTH_ADMIN_PORT
 auth_protocol = $KEYSTONE_AUTH_PROTO
-insecure = false
 auth_url = $KEYSTONE_AUTH_PROTO://${KEYSTONE_AUTH_HOST}:${KEYSTONE_AUTH_ADMIN_PORT}${KEYSTONE_AUTH_URL_VERSION}
 auth_type = password
 EOM
@@ -30,6 +29,14 @@ project_domain_name = $KEYSTONE_AUTH_PROJECT_DOMAIN_NAME
 region_name = $KEYSTONE_AUTH_REGION_NAME
 EOM
     fi
+  fi
+  if [[ "$KEYSTONE_AUTH_PROTO" == 'https' ]] ; then
+      cat >> /etc/contrail/contrail-keystone-auth.conf << EOM
+insecure = ${KEYSTONE_AUTH_INSECURE,,}
+certfile = $KEYSTONE_AUTH_CERTFILE
+keyfile = $KEYSTONE_AUTH_KEYFILE
+cafile = $KEYSTONE_AUTH_CA_CERTFILE
+EOM
   fi
 }
 
@@ -54,6 +61,13 @@ AUTHN_PORT = $KEYSTONE_AUTH_ADMIN_PORT
 AUTHN_URL = $KEYSTONE_AUTH_URL_TOKENS
 AUTHN_DOMAIN = $KEYSTONE_AUTH_PROJECT_DOMAIN_NAME
 ;AUTHN_TOKEN_URL = http://127.0.0.1:35357/v2.0/tokens
+EOM
+  if [[ "$KEYSTONE_AUTH_PROTO" == 'https' ]] ; then
+      cat >> /etc/contrail/vnc_api_lib.ini << EOM
+insecure = ${KEYSTONE_AUTH_INSECURE,,}
+certfile = $KEYSTONE_AUTH_CERTFILE
+keyfile = $KEYSTONE_AUTH_KEYFILE
+cafile = $KEYSTONE_AUTH_CA_CERTFILE
 EOM
   else
     cat >> /etc/contrail/vnc_api_lib.ini << EOM
