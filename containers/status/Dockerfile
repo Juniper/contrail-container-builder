@@ -7,8 +7,10 @@ RUN yum install -y contrail-nodemgr python-pip && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 
-COPY contrail-status.py /usr/bin/
+COPY contrail-status.py /root
+COPY entrypoint.sh /
 
-CMD /usr/bin/python /usr/bin/contrail-status.py
+ENTRYPOINT ["/entrypoint.sh"]
+CMD /usr/bin/python /root/contrail-status.py
 
 LABEL net.juniper.contrail=contrail-status
