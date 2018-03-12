@@ -25,6 +25,8 @@ hostip=${hostip}
 #minimum_diskGB=4
 #log_category =
 log_file=${!log_file:-"$LOG_DIR/$NODEMGR_NAME.log"}
+db_port=${CASSANDRA_CQL_PORT}
+db_jmx_port=${CASSANDRA_JMX_LOCAL_PORT}
 
 [COLLECTOR]
 server_list=${COLLECTOR_SERVERS}

@@ -80,6 +80,8 @@ services:
     env_file: ${ENV_FILE}
     environment:
       - NODE_TYPE=config
+      - CASSANDRA_CQL_PORT=9041
+      - CASSANDRA_JMX_LOCAL_PORT=7201
     network_mode: "service:network"
     volumes:
       - /var/log/contrail:/var/log/contrail
@@ -173,6 +175,20 @@ services:
 
   # ===
   # analytics db services
+  analyticsdb-nodemgr:
+    image: "${CONTRAIL_REGISTRY}/contrail-nodemgr:${CONTRAIL_CONTAINER_TAG}"
+    env_file: ${ENV_FILE}
+    environment:
+      - NODE_TYPE=database
+      - CASSANDRA_CQL_PORT=9042
+      - CASSANDRA_JMX_LOCAL_PORT=7200
+    network_mode: "service:network"
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - network
+    restart: on-failure
   analyticsdb-kafka:
     image: "${CONTRAIL_REGISTRY}/contrail-external-kafka:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}

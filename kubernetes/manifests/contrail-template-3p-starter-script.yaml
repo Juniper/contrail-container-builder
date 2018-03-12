@@ -709,6 +709,10 @@ spec:
         env:
         - name: NODE_TYPE
           value: config
+        - name: CASSANDRA_CQL_PORT
+          value: 9041
+        - name: CASSANDRA_JMX_LOCAL_PORT
+          value: 7201
 # todo: there is type Socket in new kubernetes, it is possible to use full
 # path:
 # hostPath:
