@@ -80,12 +80,10 @@ port=$REDIS_SERVER_PORT
 server=$REDIS_SERVER_IP
 
 [CONFIGDB]
-rabbitmq_server_list=$rabbitmq_server_list
-rabbitmq_vhost=$RABBITMQ_VHOST
-rabbitmq_user=$RABBITMQ_USER
-rabbitmq_password=$RABBITMQ_PASSWORD
-rabbitmq_use_ssl=$RABBITMQ_USE_SSL
 config_db_server_list=$configdb_cql_servers
+
+rabbitmq_server_list=$rabbitmq_server_list
+$rabbitmq_auth_config
 
 $sandesh_client_config
 EOM

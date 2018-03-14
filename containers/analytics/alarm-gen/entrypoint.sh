@@ -28,13 +28,10 @@ redis_server_port=$REDIS_SERVER_PORT
 redis_uve_list=$REDIS_SERVERS
 
 [CONFIGDB]
-rabbitmq_server_list=$RABBITMQ_NODES
-rabbitmq_port=$RABBITMQ_NODE_PORT
-rabbitmq_vhost=$RABBITMQ_VHOST
-rabbitmq_user=$RABBITMQ_USER
-rabbitmq_password=$RABBITMQ_PASSWORD
-rabbitmq_use_ssl=$RABBITMQ_USE_SSL
 config_db_server_list=$config_db_server_list
+
+rabbitmq_server_list=$RABBITMQ_NODES
+$rabbitmq_auth_config
 
 $sandesh_client_config
 EOM
