@@ -4,9 +4,9 @@ source /common.sh
 
 cat > /etc/contrail/ironic-notification-manager.conf << EOM
 [DEFAULTS]
-log_file = ${IRONIC_NOTIFICATION_MANAGER_LOG_FILE:-"$LOG_DIR/ironic-notification-manager.log"}
-log_level = ${IRONIC_NOTIFICATION_MANAGER_LOG_LEVEL:-$LOG_LEVEL}
-log_local = 1
+log_file = "$LOG_DIR/ironic-notification-manager.log"
+log_level = $LOG_LEVEL
+log_local = $LOG_LOCAL
 
 rabbit_server = $RABBITMQ_SERVERS
 rabbit_port = $RABBITMQ_NODE_PORT

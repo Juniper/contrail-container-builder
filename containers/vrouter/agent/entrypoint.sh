@@ -92,9 +92,9 @@ $subcluster_option
 
 [DEFAULT]
 collectors=$COLLECTOR_SERVERS
-log_file=${VROUTER_LOG_FILE:-"$LOG_DIR/contrail-vrouter-agent.log"}
-log_level=${VROUTER_LOG_LEVEL:-$LOG_LEVEL}
-log_local=${VROUTER_LOG_LOCAL:-$LOG_LOCAL}
+log_file="$LOG_DIR/contrail-vrouter-agent.log"
+log_level=$LOG_LEVEL
+log_local=$LOG_LOCAL
 
 xmpp_dns_auth_enable=${XMPP_SSL_ENABLE}
 xmpp_auth_enable=${XMPP_SSL_ENABLE}
