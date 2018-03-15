@@ -12,9 +12,9 @@ cat > /etc/contrail/contrail-kubernetes.conf << EOM
 [DEFAULTS]
 orchestrator=${CLOUD_ORCHESTRATOR}
 token=$K8S_TOKEN
-log_local=${KUBEMANAGER_LOG_LOCAL:-$LOG_LOCAL}
-log_level=${KUBEMANAGER_LOG_LEVEL:-$LOG_LEVEL}
-log_file=${KUBEMANAGER_LOG_FILE:-"$LOG_DIR/contrail-kube-manager.log"}
+log_file="$LOG_DIR/contrail-kube-manager.log"
+log_level=$LOG_LEVEL
+log_local=$LOG_LOCAL
 
 [KUBERNETES]
 kubernetes_api_server=${KUBERNETES_API_SERVER:-${DEFAULT_LOCAL_IP}}

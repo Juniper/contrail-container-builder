@@ -10,21 +10,17 @@ VAR_PREFIX=${NODE_TYPE^^}NODEMGR
 export NODEMGR_TYPE=contrail-${NODE_TYPE}
 NODEMGR_NAME=${NODEMGR_TYPE}-nodemgr
 
-log_local=${VAR_PREFIX}_LOG_LOCAL
-log_level=${VAR_PREFIX}_LOG_LEVEL
-log_file=${VAR_PREFIX}_LOG_FILE
-
 hostip=$(get_listen_ip_for_node ${NODE_TYPE^^})
 
 cat > /etc/contrail/$NODEMGR_NAME.conf << EOM
 [DEFAULTS]
-log_local=${!log_local:-$LOG_LOCAL}
-log_level=${!log_level:-$LOG_LEVEL}
+log_file="$LOG_DIR/$NODEMGR_NAME.log"
+log_level=$LOG_LEVEL
+log_local=$LOG_LOCAL
 hostip=${hostip}
 #contrail_databases=config analytics
 #minimum_diskGB=4
 #log_category =
-log_file=${!log_file:-"$LOG_DIR/$NODEMGR_NAME.log"}
 db_port=${CASSANDRA_CQL_PORT}
 db_jmx_port=${CASSANDRA_JMX_LOCAL_PORT}
 
