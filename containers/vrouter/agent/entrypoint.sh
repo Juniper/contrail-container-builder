@@ -128,6 +128,9 @@ docker_command=/usr/bin/opencontrail-vrouter-docker
 
 [HYPERVISOR]
 type = $HYPERVISOR_TYPE
+
+[FLOWS]
+fabric_snat_hash_table_size = $FABRIC_SNAT_HASH_TABLE_SIZE
 EOM
 
 add_ini_params_from_env VROUTER_AGENT /etc/contrail/contrail-vrouter-agent.conf

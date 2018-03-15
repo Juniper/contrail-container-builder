@@ -50,6 +50,22 @@ config)
     --ipfabric_service_port $IPFABRIC_SERVICE_PORT
   provision provision_alarm.py
   provision provision_encap.py --encap_priority $ENCAP_PRIORITY
+  dist_snat_list=""
+  dist_snat_params=""
+  if [[ -n "${DIST_SNAT_PROTO_PORT_LIST}" ]]; then
+    proto_port_list=''
+    IFS=',' read -ra proto_port_list <<< "${DIST_SNAT_PROTO_PORT_LIST}"
+    for elem in "${proto_port_list[@]}"; do
+      dist_snat_list+="$(echo "${elem}") "
+    done
+  fi
+  if [[ -n "${dist_snat_list}" ]]; then
+    dist_snat_params="--snat_list ${dist_snat_list}"
+  fi
+
+  provision provision_global_vrouter_config.py --oper add \
+    --flow_export_rate $FLOW_EXPORT_RATE \
+    ${dist_snat_params}
   ;;
 
 database)
