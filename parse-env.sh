@@ -22,9 +22,9 @@ else
 fi
 
 # target platform info
-export LINUX_DISTR=${LINUX_DISTR:-$linux_id}
+export LINUX_DISTR=${LINUX_DISTR:-centos}
 declare -A _target_linux_ver_ids
-_target_linux_ver_ids=([centos]='7.4.1708' [ubuntu]=16.04)
+_target_linux_ver_ids=([centos]='7.4.1708')
 export LINUX_DISTR_VER=${LINUX_DISTR_VER:-${_target_linux_ver_ids[$LINUX_DISTR]}}
 
 # build platform info
@@ -42,7 +42,6 @@ declare -A _os_subversions
 _os_subversions=([newton]=5 [ocata]=3 [pike]=1 [queens]=0)
 _os_subversion="${_os_subversions[$OPENSTACK_VERSION]}"
 export OS_SUBVERSION=${OS_SUBVERSION:-"$_os_subversion"}
-_linux_distr_ver_major=$(echo $LINUX_DISTR_VER | cut -d '.' -f 1)
 export CONTRAIL_CONTAINER_TAG="${OPENSTACK_VERSION}-${CONTRAIL_VERSION}"
 
 default_packages_url="https://s3-us-west-2.amazonaws.com/contrailrhel7/contrail-install-packages-${CONTRAIL_VERSION}~${OPENSTACK_VERSION}.el7.noarch.rpm"
