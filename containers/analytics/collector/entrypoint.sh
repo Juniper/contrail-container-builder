@@ -83,7 +83,8 @@ server=$REDIS_SERVER_IP
 config_db_server_list=$configdb_cql_servers
 
 rabbitmq_server_list=$rabbitmq_server_list
-$rabbitmq_auth_config
+$rabbitmq_config
+$rabbitmq_ssl_config
 
 $sandesh_client_config
 EOM

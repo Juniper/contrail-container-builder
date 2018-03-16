@@ -22,7 +22,8 @@ cassandra_server_list=$cassandra_server_list
 zk_server_ip=$ZOOKEEPER_SERVERS
 
 rabbit_server=$RABBITMQ_SERVERS
-$rabbitmq_auth_config
+$rabbit_config
+$kombu_ssl_config
 
 redis_server=$REDIS_SERVER_IP
 collectors=$COLLECTOR_SERVERS
