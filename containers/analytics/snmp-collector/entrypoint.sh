@@ -10,9 +10,9 @@ cat > /etc/contrail/contrail-snmp-collector.conf << EOM
 scan_frequency=${SNMPCOLLECTOR_SCAN_FREQUENCY:-600}
 fast_scan_frequency=${SNMPCOLLECTOR_FAST_SCAN_FREQUENCY:-60}
 http_server_port=${SNMPCOLLECTOR_INTROSPECT_LISTEN_PORT:-$SNMPCOLLECTOR_INTROSPECT_PORT}
-log_local=${SNMPCOLLECTOR_LOG_LOCAL:-$LOG_LOCAL}
-log_level=${SNMPCOLLECTOR_LOG_LEVEL:-$LOG_LEVEL}
-log_file=${SNMPCOLLECTOR_LOG_FILE:-"$LOG_DIR/contrail-snmp-collector.log"}
+log_file=$LOG_DIR/contrail-snmp-collector.log
+log_level=$LOG_LEVEL
+log_local=$LOG_LOCAL
 collectors=$COLLECTOR_SERVERS
 zookeeper=$ZOOKEEPER_ANALYTICS_SERVERS
 

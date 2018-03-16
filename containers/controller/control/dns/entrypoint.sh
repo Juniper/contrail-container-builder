@@ -40,13 +40,13 @@ hostip=${hostip}
 hostname=${DEFAULT_HOSTNAME}
 http_server_port=${DNS_INTROSPECT_LISTEN_PORT:-$DNS_INTROSPECT_PORT}
 dns_server_port=$DNS_SERVER_PORT
-log_file=${DNS_LOG_FILE:-"$LOG_DIR/contrail-dns.log"}
-log_level=${DNS_LOG_LEVEL:-$LOG_LEVEL}
-log_local=${DNS_LOG_LOCAL:-$LOG_LOCAL}
-# log_files_count=${CONTROL_log_files_count:-10}
-# log_file_size=${CONTROL_log_file_size:-10485760} # 10MB
-# log_category= ${CONTROL_log_category:-""}
-# log_disable= ${CONTROL_log_disable:-0}
+log_file=$LOG_DIR/contrail-dns.log
+log_level=$LOG_LEVEL
+log_local=$LOG_LOCAL
+# log_files_count=${DNS__DEFAULT__log_files_count:-10}
+# log_file_size=${DNS__DEFAULT__log_file_size:-10485760} # 10MB
+# log_category=${DNS__DEFAULT__log_category:-""}
+# log_disable=${DNS__DEFAULT__log_disable:-0}
 
 xmpp_dns_auth_enable=${XMPP_SSL_ENABLE}
 $xmpp_certs_config

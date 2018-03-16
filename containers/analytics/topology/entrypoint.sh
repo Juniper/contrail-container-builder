@@ -9,9 +9,9 @@ cat > /etc/contrail/contrail-topology.conf << EOM
 [DEFAULTS]
 scan_frequency=${TOPOLOGY_SCAN_FREQUENCY:-600}
 http_server_port=${TOPOLOGY_INTROSPECT_LISTEN_PORT:-$TOPOLOGY_INTROSPECT_PORT}
-log_local=${TOPOLOGY_LOG_LOCAL:-$LOG_LOCAL}
-log_level=${TOPOLOGY_LOG_LEVEL:-$LOG_LEVEL}
-log_file=${TOPOLOGY_LOG_FILE:-"$LOG_DIR/contrail-topology.log"}
+log_file=$LOG_DIR/contrail-topology.log
+log_level=$LOG_LEVEL
+log_local=$LOG_LOCAL
 analytics_api=${TOPOLOGY_ANALYTICS_API_SERVERS:-127.0.0.1:$ANALYTICS_API_PORT}
 collectors=$COLLECTOR_SERVERS
 zookeeper=$ZOOKEEPER_ANALYTICS_SERVERS

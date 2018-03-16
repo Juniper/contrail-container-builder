@@ -8,8 +8,9 @@ cat > /etc/contrail/contrail-device-manager.conf << EOM
 [DEFAULTS]
 api_server_ip=$CONFIG_API_VIP
 api_server_port=$CONFIG_API_PORT
-log_file=${CONFIG_DEVICEMGR_LOG_FILE:-"$LOG_DIR/contrail-device-manager.log"}
-log_level=${CONFIG_DEVICEMGR_LOG_LEVEL:-$LOG_LEVEL}
+log_file=$LOG_DIR/contrail-device-manager.log
+log_level=$LOG_LEVEL
+log_local=$LOG_LOCAL
 cassandra_server_list=$cassandra_server_list
 zk_server_ip=$ZOOKEEPER_SERVERS
 

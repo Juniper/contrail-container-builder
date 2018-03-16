@@ -12,10 +12,9 @@ rest_api_port=${ANALYTICS_API_LISTEN_PORT:-$ANALYTICS_API_PORT}
 rest_api_ip=${ANALYTICS_API_LISTEN_IP:-0.0.0.0}
 partitions=${ANALYTICS_UVE_PARTITIONS:-30}
 aaa_mode=$AAA_MODE
-log_file=${ANALYTICS_API_LOG_FILE:-"$LOG_DIR/contrail-analytics-api.log"}
-log_level=${ANALYTICS_API_LOG_LEVEL:-$LOG_LEVEL}
-#log_category =
-log_local=${ANALYTICS_API_LOG_LOCAL:-$LOG_LOCAL}
+log_file=$LOG_DIR/contrail-analytics-api.log
+log_level=$LOG_LEVEL
+log_local=$LOG_LOCAL
 # Sandesh send rate limit can be used to throttle system logs transmitted per
 # second. System logs are dropped if the sending rate is exceeded
 #sandesh_send_rate_limit =
