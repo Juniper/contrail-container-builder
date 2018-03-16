@@ -39,6 +39,7 @@ $rabbitmq_auth_config
 
 cassandra_server_list=$cassandra_server_list
 collectors=$COLLECTOR_SERVERS
+zk_server_ip=$ZOOKEEPER_SERVERS
 EOM
 
 add_ini_params_from_env KUBERNETES /etc/contrail/contrail-kubernetes.conf
