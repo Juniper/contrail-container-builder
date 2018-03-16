@@ -35,7 +35,8 @@ vnc_endpoint_ip=$CONFIG_API_VIP
 vnc_endpoint_port=$CONFIG_API_PORT
 
 rabbit_server=$RABBITMQ_SERVERS
-$rabbitmq_auth_config
+$rabbit_config
+$rabbit_ssl_config
 
 cassandra_server_list=$cassandra_server_list
 collectors=$COLLECTOR_SERVERS

@@ -10,7 +10,8 @@ log_local = 1
 
 rabbit_server = $RABBITMQ_SERVERS
 rabbit_port = $RABBITMQ_NODE_PORT
-$rabbitmq_auth_config
+$rabbit_config
+$rabbit_ssl_config
 
 notification_level = $IRONIC_NOTIFICATION_LEVEL
 collectors = $COLLECTOR_SERVERS

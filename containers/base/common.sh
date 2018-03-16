@@ -202,26 +202,37 @@ RABBITMQ_SSL_VER=${RABBITMQ_SSL_VER:-''}
 RABBITMQ_CLIENT_SSL_CERTFILE=${RABBITMQ_CLIENT_SSL_CERTFILE:-${SERVER_CERTFILE}}
 RABBITMQ_CLIENT_SSL_KEYFILE=${RABBITMQ_CLIENT_SSL_KEYFILE:-${SERVER_KEYFILE}}
 RABBITMQ_CLIENT_SSL_CACERTFILE=${RABBITMQ_CLIENT_SSL_CACERTFILE:-${SERVER_CA_CERTFILE}}
-if is_enabled ${RABBITMQ_USE_SSL} ; then
-  read -r -d '' rabbitmq_auth_config << EOM
+
+# first group is used in analytics and control services
+# second group is used in config service, kubernetes_manager, ironic_notification_manager
+read -r -d '' rabbitmq_config << EOM
 rabbitmq_vhost=$RABBITMQ_VHOST
 rabbitmq_user=$RABBITMQ_USER
 rabbitmq_password=$RABBITMQ_PASSWORD
 rabbitmq_use_ssl=$RABBITMQ_USE_SSL
+EOM
+read -r -d '' rabbit_config << EOM
+rabbit_vhost=$RABBITMQ_VHOST
+rabbit_user=$RABBITMQ_USER
+rabbit_password=$RABBITMQ_PASSWORD
+rabbit_use_ssl=$RABBITMQ_USE_SSL
+EOM
+
+if is_enabled ${RABBITMQ_USE_SSL} ; then
+  read -r -d '' rabbitmq_ssl_config << EOM
 rabbitmq_ssl_version=$RABBITMQ_SSL_VER
 rabbitmq_ssl_keyfile=$RABBITMQ_CLIENT_SSL_KEYFILE
 rabbitmq_ssl_certfile=$RABBITMQ_CLIENT_SSL_CERTFILE
 rabbitmq_ssl_ca_certs=$RABBITMQ_CLIENT_SSL_CACERTFILE
 EOM
-else
-  read -r -d '' rabbitmq_auth_config << EOM
-rabbitmq_vhost=$RABBITMQ_VHOST
-rabbitmq_user=$RABBITMQ_USER
-rabbitmq_password=$RABBITMQ_PASSWORD
-rabbitmq_use_ssl=$RABBITMQ_USE_SSL
+  read -r -d '' rabbit_ssl_config << EOM
+kombu_ssl_certfile=$RABBITMQ_CLIENT_SSL_CERTFILE
+kombu_key_certfile=$RABBITMQ_CLIENT_SSL_KEYFILE
+kombu_ssl_ca_certs=$RABBITMQ_CLIENT_SSL_CACERTFILE
 EOM
 fi
 
+# Agent options
 AGENT_MODE=${AGENT_MODE:-'nic'}
 DPDK_UIO_DRIVER=${DPDK_UIO_DRIVER:-'uio_pci_generic'}
 CPU_CORE_MASK=${CPU_CORE_MASK:-'0x01'}
