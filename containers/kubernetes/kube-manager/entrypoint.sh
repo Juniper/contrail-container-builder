@@ -15,14 +15,15 @@ token=$K8S_TOKEN
 log_file=$LOG_DIR/contrail-kube-manager.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
+nested_mode=${KUBEMANAGER_NESTED_MODE:-"0"}
 
 [KUBERNETES]
 kubernetes_api_server=${KUBERNETES_API_SERVER:-${DEFAULT_LOCAL_IP}}
 kubernetes_api_port=${KUBERNETES_API_PORT:-8080}
 kubernetes_api_secure_port=${KUBERNETES_API_SECURE_PORT:-6443}
 cluster_name=${KUBERNETES_CLUSTER_NAME:-"k8s"}
-cluster_project=${KUBERNETES_CLUSTER_PROJECT:-"{'domain': 'default-domain', 'project': 'default'}"}
-;cluster_network=${KUBERNETES_CLUSTER_NETWORK:-"{}"}
+cluster_project=${KUBERNETES_CLUSTER_PROJECT:-"{}"}
+cluster_network=${KUBERNETES_CLUSTER_NETWORK:-"{}"}
 pod_subnets=${KUBERNETES_POD_SUBNETS:-"10.32.0.0/12"}
 ip_fabric_subnets=${KUBERNETES_IP_FABRIC_SUBNETS:-"10.64.0.0/12"}
 service_subnets=${KUBERNETES_SERVICE_SUBNETS:-"10.96.0.0/12"}
