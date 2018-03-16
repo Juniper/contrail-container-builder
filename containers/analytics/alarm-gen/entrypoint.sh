@@ -4,6 +4,7 @@ source /common.sh
 
 host_ip=$(get_listen_ip_for_node ANALYTICS)
 config_db_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
+rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')
 
 cat > /etc/contrail/contrail-alarm-gen.conf << EOM
 [DEFAULTS]
@@ -30,7 +31,7 @@ redis_uve_list=$REDIS_SERVERS
 [CONFIGDB]
 config_db_server_list=$config_db_server_list
 
-rabbitmq_server_list=$RABBITMQ_NODES
+rabbitmq_server_list=$rabbitmq_server_list
 $rabbitmq_auth_config
 
 $sandesh_client_config
