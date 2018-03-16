@@ -24,7 +24,8 @@ api_server_use_ssl=${CONFIG_API_USE_SSL:-False}
 config_db_server_list=$config_db_server_list
 
 rabbitmq_server_list=$rabbitmq_server_list
-$rabbitmq_auth_config
+$rabbitmq_config
+$rabbitmq_ssl_config
 
 $sandesh_client_config
 EOM

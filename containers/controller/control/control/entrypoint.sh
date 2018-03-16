@@ -39,7 +39,8 @@ config_db_server_list=$configdb_cql_servers
 # config_db_password=
 
 rabbitmq_server_list=$rabbitmq_server_list
-$rabbitmq_auth_config
+$rabbitmq_config
+$rabbitmq_ssl_config
 
 $sandesh_client_config
 EOM

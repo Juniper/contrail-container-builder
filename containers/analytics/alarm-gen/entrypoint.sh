@@ -31,7 +31,8 @@ redis_uve_list=$REDIS_SERVERS
 config_db_server_list=$config_db_server_list
 
 rabbitmq_server_list=$RABBITMQ_NODES
-$rabbitmq_auth_config
+$rabbitmq_config
+$kombu_ssl_config
 
 $sandesh_client_config
 EOM
