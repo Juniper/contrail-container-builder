@@ -145,9 +145,9 @@ config.cassandra.enable_edit = ${cassandra_enable_edit:-false};
 config.kue = {};
 config.kue.ui_port = '$KUE_UI_PORT'
 
-config.webui_addresses = ['0.0.0.0'];
+config.webui_addresses = [${WEBUI_LISTEN_ADDRESSES:-'0.0.0.0'}];
 
-config.insecure_access = false;
+config.insecure_access = ${WEBUI_INSECURE_ACCESS:-false};
 
 config.http_port = '$WEBUI_HTTP_LISTEN_PORT';
 
@@ -194,9 +194,14 @@ config.server_options = {};
 config.server_options.key_file = '$WEBUI_SSL_KEY_FILE';
 config.server_options.cert_file = '$WEBUI_SSL_CERT_FILE';
 config.server_options.ciphers = '$WEBUI_SSL_CIPHERS';
-
-module.exports = config;
 EOM
+
+if [[ -n "$WEBUI_CIPHERS" ]]; then
+  echo "config.server_options = {};" >> /etc/contrail/config.global.js
+  echo "config.server_options.ciphers = '$WEBUI_CIPHERS';" >> /etc/contrail/config.global.js
+fi
+
+echo "module.exports = config;" >> /etc/contrail/config.global.js
 
 cat > /etc/contrail/contrail-webui-userauth.js << EOM
 /*
