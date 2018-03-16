@@ -145,9 +145,9 @@ config.cassandra.enable_edit = ${cassandra_enable_edit:-false};
 config.kue = {};
 config.kue.ui_port = '$KUE_UI_PORT'
 
-config.webui_addresses = ['0.0.0.0'];
+config.webui_addresses = [${WEBUI_LISTEN_ADDRESSES:-'0.0.0.0'}];
 
-config.insecure_access = false;
+config.insecure_access = ${WEBUI_INSECURE_ACCESS:-false};
 
 config.http_port = '$WEBUI_HTTP_LISTEN_PORT';
 
