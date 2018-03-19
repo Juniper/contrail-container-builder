@@ -33,7 +33,7 @@ ip_fabric_forwarding=${KUBERNETES_IP_FABRIC_FORWARDING:-"false"}
 ip_fabric_snat=${KUBERNETES_IP_FABRIC_SNAT:-"false"}
 
 [VNC]
-public_fip_pool=${KUBERNETES_public_fip_pool:-"{}"}
+public_fip_pool=${KUBERNETES_PUBLIC_FIP_POOL:-"{}"}
 vnc_endpoint_ip=$CONFIG_NODES
 vnc_endpoint_port=$CONFIG_API_PORT
 
