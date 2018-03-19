@@ -308,12 +308,12 @@ function create_vhost0_dpdk() {
             return 1
         fi
     fi
-    if ! ip link set dev vhost0 address $phys_int_mac ; then
-        echo "ERROR: Failed to set vhost0 address $phys_int_mac"
-        return 1
-    fi
     if ! ip link set dev vhost0 up ; then
         echo "ERROR: Failed to up vhost0 interface"
+	return 1
+    fi
+    if ! ip link set dev vhost0 address $phys_int_mac ; then
+        echo "ERROR: Failed to set vhost0 address $phys_int_mac"
         return 1
     fi
 }
