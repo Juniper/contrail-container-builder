@@ -6,6 +6,8 @@ RUN yum install -y docker-python && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 
+ENV CONTAINER_REGISTRY=$CONTRAIL_REGISTRY
+ENV CONTRAIL_VERSION=$CONTRAIL_CONTAINER_TAG
 COPY contrail-status.py /root
 COPY entrypoint.sh /
 
