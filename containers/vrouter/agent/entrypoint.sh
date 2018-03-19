@@ -80,9 +80,34 @@ fi
 
 tsn_server_list=""
 IFS=' ' read -ra TSN_SERVERS <<< "${TSN_NODES}"
-read -r -d '' tsn_server_list << EOM
+  read -r -d '' tsn_server_list << EOM
 tsn_servers = ${TSN_SERVERS}
 EOM
+
+openstack_lbaas_auth=""
+if [[ -n ${OPENSTACK_LBAAS_AUTH} ]]; then
+  read -r -d '' openstack_lbaas_auth << EOM
+[BARBICAN]
+admin_tenant_name=service
+admin_user=${BARBICAN_USER}
+admin_password=${BARBICAN_PASSWORD}
+auth_url= $KEYSTONE_AUTH_PROTO://${KEYSTONE_AUTH_HOST}:${KEYSTONE_AUTH_ADMIN_PORT}${KEYSTONE_AUTH_URL_VERSION}
+region=$KEYSTONE_AUTH_REGION_NAME
+admin_user_domain = $KEYSTONE_AUTH_USER_DOMAIN_NAME
+admin_project_domain = $KEYSTONE_AUTH_PROJECT_DOMAIN_NAME
+EOM
+fi
+
+kubernetes_lbaas_auth=""
+if [[ -n ${KUBERNETES_LBAAS_AUTH} ]]; then
+  read -r -d '' kubernetes_lbaas_auth << EOM
+[KUBERNETES]
+kubernetes_token=$K8S_TOKEN
+kubernetes_api_server=${KUBERNETES_API_SERVER:-${DEFAULT_LOCAL_IP}}
+kubernetes_api_port=${KUBERNETES_API_PORT:-8080}
+kubernetes_api_secure_port=${KUBERNETES_API_SECURE_PORT:-6443}
+EOM
+fi
 
 echo "INFO: Preparing /etc/contrail/contrail-vrouter-agent.conf"
 cat << EOM > /etc/contrail/contrail-vrouter-agent.conf
@@ -131,6 +156,9 @@ type = $HYPERVISOR_TYPE
 
 [FLOWS]
 fabric_snat_hash_table_size = $FABRIC_SNAT_HASH_TABLE_SIZE
+
+$openstack_lbaas_auth
+$kubernetes_lbaas_auth
 EOM
 
 add_ini_params_from_env VROUTER_AGENT /etc/contrail/contrail-vrouter-agent.conf
