@@ -42,11 +42,18 @@ case $NODE_TYPE in
 config)
   host_ip=$(get_listen_ip_for_node CONFIG)
   provision_node provision_config_node.py $host_ip $DEFAULT_HOSTNAME
+
+  fabric_host_arg=''
+  if [[ $IPFABRIC_SERVICE_HOST =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    fabric_host_arg="--ipfabric_service_ip $IPFABRIC_SERVICE_HOST"
+  else
+    fabric_host_arg="--ipfabric_dns_service_name $IPFABRIC_SERVICE_HOST"
+  fi
   provision provision_linklocal.py --oper add \
     --linklocal_service_name $LINKLOCAL_SERVICE_NAME \
     --linklocal_service_ip $LINKLOCAL_SERVICE_IP \
     --linklocal_service_port $LINKLOCAL_SERVICE_PORT \
-    --ipfabric_service_ip $IPFABRIC_SERVICE_IP \
+    $fabric_host_arg \
     --ipfabric_service_port $IPFABRIC_SERVICE_PORT
   provision provision_alarm.py
   provision provision_encap.py --encap_priority $ENCAP_PRIORITY
