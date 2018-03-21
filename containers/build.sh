@@ -23,6 +23,9 @@ echo "INFO: OpenStack subversion (minor package version): $OS_SUBVERSION"
 echo "INFO: Contrail registry: $CONTRAIL_REGISTRY"
 echo "INFO: Contrail repository: $CONTRAIL_REPOSITORY"
 echo "INFO: Contrail container tag: $CONTRAIL_CONTAINER_TAG"
+echo "INFO: Contrail generic base extra rpms: $GENERAL_EXTRA_RPMS"
+echo "INFO: Contrail base extra rpms: $BASE_EXTRA_RPMS"
+echo "INFO: yum additional repos to enable: $YUM_ENABLE_REPOS"
 
 if [ -n "$opts" ]; then
   echo "INFO: Options: $opts"
@@ -64,8 +67,11 @@ function process_container() {
     build_arg_opts+=" --build-arg LINUX_DISTR=${LINUX_DISTR}"
     build_arg_opts+=" --build-arg CONTRAIL_CONTAINER_TAG=${tag}"
   fi
-  build_arg_opts+=" --build-arg OPENSTACK_VERSION=${OPENSTACK_VERSION}"
-  build_arg_opts+=" --build-arg OPENSTACK_SUBVERSION=${OS_SUBVERSION}"
+  build_arg_opts+=" --build-arg GENERAL_EXTRA_RPMS=\"${GENERAL_EXTRA_RPMS}\""
+  build_arg_opts+=" --build-arg BASE_EXTRA_RPMS=\"${BASE_EXTRA_RPMS}\""
+  build_arg_opts+=" --build-arg YUM_ENABLE_REPOS=\"$YUM_ENABLE_REPOS\""
+  [ -n "$PYTHON_PIP_RPM" ] && build_arg_opts+=" --build-arg PYTHON_PIP_RPM=$PYTHON_PIP_RPM"
+  [ -n "$PYTHON_PIP_VENV" ] && build_arg_opts+=" --build-arg PYTHON_PIP_VENV=$PYTHON_PIP_VENV"
 
   local logfile='build-'$container_name'.log'
   docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} \

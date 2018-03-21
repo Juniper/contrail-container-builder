@@ -15,6 +15,10 @@ echo 'OpenStack version: '$OPENSTACK_VERSION
 echo 'Contrail registry: '$CONTRAIL_REGISTRY
 echo 'Contrail repository: '$CONTRAIL_REPOSITORY
 
+if [[ "$LINUX_ID" == 'rhel' ]] ; then
+  sudo -E $DIR/rhel-prepare-system.sh
+fi
+
 # Define global variables
 export package_root_dir="/var/www"
 
