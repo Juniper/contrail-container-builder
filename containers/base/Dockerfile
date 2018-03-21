@@ -6,11 +6,15 @@ FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG OPENSTACK_VERSION=newton
 ARG OPENSTACK_SUBVERSION=5
+ARG BASE_EXTRA_RPMS="https://repos.fedorapeople.org/repos/openstack/openstack-$OPENSTACK_VERSION/rdo-release-$OPENSTACK_VERSION-$OPENSTACK_SUBVERSION.noarch.rpm"
 
 # note: ldconfig looks strange. contrail-lib installs shared libraries but do not call it...
 RUN mkdir -p -m 777 /var/crashes && \
-    yum update -y && \
-    yum install -y https://repos.fedorapeople.org/repos/openstack/openstack-$OPENSTACK_VERSION/rdo-release-$OPENSTACK_VERSION-$OPENSTACK_SUBVERSION.noarch.rpm && \
+    BASE_EXTRA_RPMS=$(echo $BASE_EXTRA_RPMS | tr -d '"' | tr ',' ' ') && \
+    if [[ -n "$BASE_EXTRA_RPMS" ]] ; then \
+        echo "INFO: contrail-base: install $BASE_EXTRA_RPMS" ; \
+        yum install -y $BASE_EXTRA_RPMS ; \
+    fi && \
     yum install -y contrail-lib contrail-setup contrail-utils python-contrail && \
     ldconfig
 
