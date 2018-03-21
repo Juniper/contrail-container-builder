@@ -57,6 +57,34 @@ if [[ $CONTRAIL_REPOSITORY == 'auto' ]] ; then
   export CONTRAIL_REPOSITORY="http://${default_registry_ip}/${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
 fi
 
+export DOCKER_REPO=${DOCKER_REPO:-'https://download.docker.com/linux/centos/docker-ce.repo'}
+if [[ "$LINUX_ID" == 'rhel' ]] ; then
+  rhel_os_repo_num=''
+  case "$OPENSTACK_VERSION" in
+    newton)
+      rhel_os_repo_num='10'
+      ;;
+    ocata)
+      rhel_os_repo_num='11'
+      ;;
+    pike)
+      rhel_os_repo_num='12'
+      ;;
+    queens)
+      rhel_os_repo_num='13'
+      ;;
+    *)
+      echo "ERROR: unsupported OS $OPENSTACK_VERSION for RHEL"
+      exit 1
+  esac
+  export RHEL_EXTRA_REPOS="$RHEL_EXTRA_REPOS rhel-7-server-openstack-${rhel_os_repo_num}-rpms rhel-7-server-openstack-${rhel_os_repo_num}-devtools-rpms"
+  export RHEL_USER_NAME=${RHEL_USER_NAME:-}
+  export RHEL_USER_PASSWORD=${RHEL_USER_PASSWORD:-}
+  export RHEL_POOL_ID=${RHEL_POOL_ID:-}
+  export RHEL_ORG=${RHEL_ORG:-}
+  export RHEL_ACTIVATION_KEY=${RHEL_ACTIVATION_KEY:-}
+fi
+
 export CONTROLLER_NODES=${CONTROLLER_NODES:-$HOST_IP}
 export AGENT_NODES=${AGENT_NODES:-$CONTROLLER_NODES}
 export ANALYTICS_NODES=${ANALYTICS_NODES:-$CONTROLLER_NODES}

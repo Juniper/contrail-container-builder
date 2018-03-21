@@ -66,6 +66,8 @@ function process_container() {
   fi
   build_arg_opts+=" --build-arg OPENSTACK_VERSION=${OPENSTACK_VERSION}"
   build_arg_opts+=" --build-arg OPENSTACK_SUBVERSION=${OS_SUBVERSION}"
+  [ -n "$GENERIC_EXTRA_RPMS" ] && build_arg_opts+=" --build-arg GENERIC_EXTRA_RPMS=${GENERIC_EXTRA_RPMS}"
+  [ -n "$BASE_EXTRA_RPMS" ] && build_arg_opts+=" --build-arg BASE_EXTRA_RPMS=${BASE_EXTRA_RPMS}"
 
   local logfile='build-'$container_name'.log'
   docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} \
