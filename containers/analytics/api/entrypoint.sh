@@ -2,6 +2,8 @@
 
 source /common.sh
 
+pre_start_init
+
 host_ip=$(get_listen_ip_for_node ANALYTICS)
 
 cat > /etc/contrail/contrail-analytics-api.conf << EOM

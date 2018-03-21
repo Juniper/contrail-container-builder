@@ -3,6 +3,8 @@
 source /common.sh
 source /agent-functions.sh
 
+pre_start_init
+
 HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'kvm'}
 
 echo "INFO: agent started in $AGENT_MODE mode"
@@ -163,6 +165,8 @@ EOM
 
 add_ini_params_from_env VROUTER_AGENT /etc/contrail/contrail-vrouter-agent.conf
 
+echo "INFO: check core pattern"
+sysctl kernel.core_pattern
 echo "INFO: /etc/contrail/contrail-vrouter-agent.conf"
 cat /etc/contrail/contrail-vrouter-agent.conf
 

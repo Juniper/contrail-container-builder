@@ -2,6 +2,8 @@
 
 source /common.sh
 
+pre_start_init
+
 if [ $K8S_TOKEN_FILE ]; then
   K8S_TOKEN=$(cat $K8S_TOKEN_FILE)
 fi

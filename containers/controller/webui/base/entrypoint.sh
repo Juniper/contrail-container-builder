@@ -2,6 +2,8 @@
 
 source /common.sh
 
+pre_start_init
+
 function get_server_json_list(){
   server_typ=$1_NODES
   srv_list=$(echo ${!server_typ} | sed 's/,/'\',\''/g')

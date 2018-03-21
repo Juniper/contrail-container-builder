@@ -2,6 +2,8 @@
 
 source /common.sh
 
+pre_start_init
+
 hostip=$(get_listen_ip_for_node ANALYTICS)
 
 cat > /etc/contrail/contrail-query-engine.conf << EOM

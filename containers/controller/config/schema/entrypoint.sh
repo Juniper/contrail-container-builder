@@ -2,6 +2,8 @@
 
 source /common.sh
 
+pre_start_init
+
 cassandra_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
 
 cat > /etc/contrail/contrail-schema.conf << EOM
