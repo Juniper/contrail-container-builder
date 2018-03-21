@@ -9,7 +9,27 @@ function install_docker () {
       sudo apt-get install -y docker.io
       ;;
     "centos" | "rhel" )
-      sudo yum install -y docker
+      sudo yum remove -y docker \
+        docker-client \
+        docker-client-latest \
+        docker-common \
+        docker-latest \
+        docker-latest-logrotate \
+        docker-logrotate \
+        docker-selinux \
+        docker-engine-selinux \
+        docker-engine || true
+      sudo yum install -y yum-utils lvm2 device-mapper-persistent-data \
+        device-mapper-libs device-mapper-event-libs
+      if [[ "$linux" == 'centos' ]] ; then
+        if [[ -n "$DOCKER_REPO" ]] ; then
+          sudo yum-config-manager --add-repo $DOCKER_REPO
+        fi
+        sudo yum install -y docker-ce
+      else
+        # install from rhel repos
+        sudo yum install -y docker
+      fi
       sudo systemctl enable docker
       sudo systemctl start docker
       ;;
