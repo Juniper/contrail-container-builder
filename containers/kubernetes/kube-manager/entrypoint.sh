@@ -33,7 +33,7 @@ ip_fabric_snat=${KUBERNETES_IP_FABRIC_SNAT:-"false"}
 
 [VNC]
 public_fip_pool=${KUBERNETES_public_fip_pool:-"{}"}
-vnc_endpoint_ip=$CONFIG_API_VIP
+vnc_endpoint_ip=$CONFIG_NODES
 vnc_endpoint_port=$CONFIG_API_PORT
 
 rabbit_server=$RABBITMQ_SERVERS
