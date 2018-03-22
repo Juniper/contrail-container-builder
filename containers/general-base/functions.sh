@@ -78,8 +78,28 @@ function get_vip_for_node() {
   echo $ip
 }
 
+function get_ctrl_data_listen_ip() {
+  if [[ ! -z "$CONTROL_DATA_NET_LIST" ]]; then
+    IFS=',' read -ra ctrl_data_net_list <<< "${CONTROL_DATA_NET_LIST}"
+    for ctrl_data_network in "${ctrl_data_net_list[@]}"; do
+      local ctrl_data_nic=$(ip route get $ctrl_data_network | grep -oe "dev\s[[:alnum:]]*" | awk '{print $2}')
+      local default_nic=$(get_default_nic)
+      if [ "$ctrl_data_nic" == "$default_nic" ] ; then
+        return
+      fi
+      if [[ ! -z "$ctrl_data_nic" ]]; then
+        get_ips_for_nic $ctrl_data_nic
+        break
+      fi
+    done
+  fi
+}
+
 function get_listen_ip_for_node() {
-  local ip=$(find_my_ip_and_order_for_node $1  | cut -d ' ' -f 1)
+  local ip=$(get_ctrl_data_listen_ip)
+  if [[ -z "$ip" ]] ; then
+    ip=$(find_my_ip_and_order_for_node $1  | cut -d ' ' -f 1)
+  fi
   if [[ -z "$ip" ]] ; then
     ip=$(get_default_ip)
   fi
