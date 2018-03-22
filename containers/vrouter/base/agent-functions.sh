@@ -375,7 +375,7 @@ function prepare_phys_int_dpdk
     local binding_data_dir='/var/run/vrouter'
     mkdir -p $binding_data_dir
 
-    echo "$nic" > $binding_data_dir/${nic}_nic
+    echo "$nic" > $binding_data_dir/nic
     echo "$phys_int_mac" > $binding_data_dir/${nic}_mac
     echo "$pci" > $binding_data_dir/${nic}_pci
     echo "$addrs" > $binding_data_dir/${nic}_ip_addresses
@@ -489,8 +489,8 @@ function init_vhost0() {
         if ! wait_dpdk_agent_start ; then
             return 1
         fi
-        phys_int=`get_vrouter_physical_iface`
         local binding_data_dir='/var/run/vrouter'
+        phys_int=`cat $binding_data_dir/nic`
         phys_int_mac=`cat $binding_data_dir/${phys_int}_mac`
         local pci_address=`cat $binding_data_dir/${phys_int}_pci`
             cat << EOM > /etc/contrail/contrail-vrouter-agent.conf

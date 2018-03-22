@@ -27,11 +27,12 @@ while (true) ; do
     fi
 
     # TODO: avoid duplication of reading parameters with init_vhost0
-    IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
     if ! is_dpdk ; then
+        IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
         pci_address=$(get_pci_address_for_nic $phys_int)
     else
         binding_data_dir='/var/run/vrouter'
+        phys_int=`cat $binding_data_dir/nic`
         pci_address=`cat $binding_data_dir/${phys_int}_pci`
     fi
 

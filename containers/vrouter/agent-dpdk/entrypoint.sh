@@ -26,8 +26,9 @@ function assert_file() {
     fi
 }
 
-phys_int=`get_vrouter_physical_iface`
 binding_data_dir='/var/run/vrouter'
+assert_file "$binding_data_dir/nic"
+phys_int=`cat "$binding_data_dir/nic"`
 assert_file "$binding_data_dir/${phys_int}_mac"
 phys_int_mac=`cat "$binding_data_dir/${phys_int}_mac"`
 assert_file "$binding_data_dir/${phys_int}_pci"
