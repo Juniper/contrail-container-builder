@@ -2,6 +2,8 @@
 
 source /common.sh
 
+pre_start_init
+
 rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')
 config_db_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
 

@@ -2,6 +2,8 @@
 
 source /common.sh
 
+pre_start_init
+
 hostip=$(get_listen_ip_for_node CONTROL)
 
 rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')

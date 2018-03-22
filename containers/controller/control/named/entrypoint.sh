@@ -53,9 +53,6 @@ touch /var/log/contrail/contrail-named.log
 chown contrail:contrail /var/log/contrail/contrail-named.log
 chown contrail:contrail /var/log/contrail
 
-set_third_party_auth_config
-set_vnc_api_lib_ini
-
 wait_for_contrail_api
 
 exec "$@"

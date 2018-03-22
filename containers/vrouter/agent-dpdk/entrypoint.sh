@@ -3,6 +3,8 @@
 source /common.sh
 source /agent-functions.sh
 
+pre_start_init
+
 DPDK_MEM_PER_SOCKET=${DPDK_MEM_PER_SOCKET:-1024}
 
 echo "INFO: agent started in $AGENT_MODE mode"
