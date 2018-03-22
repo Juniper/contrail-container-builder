@@ -1,0 +1,17 @@
+FROM centos:7.4.1708
+
+MAINTAINER michael henkel 
+
+RUN yum update -y && \
+    yum install -y yum-plugin-priorities https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
+    yum install -y python-pip && \
+    pip install ansible apache-libcloud gcloud boto
+
+COPY entrypoint.sh /    
+COPY provision_instances /bin
+COPY configure_instances /bin
+COPY install_instances /bin
+COPY deploy_contrail /bin
+ENTRYPOINT ["/entrypoint.sh"]
+# default command: display Ansible version
+CMD [ "/bin/deploy_contrail" ]
