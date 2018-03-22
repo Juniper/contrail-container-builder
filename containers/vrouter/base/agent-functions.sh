@@ -152,9 +152,8 @@ function get_vrouter_physical_iface() {
         break
       fi
     done
-  else
-    get_default_physical_iface
   fi
+  get_default_physical_iface
 }
 
 function get_physical_nic_and_mac()
