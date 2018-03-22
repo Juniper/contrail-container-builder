@@ -31,7 +31,7 @@ redis_uve_list=$REDIS_SERVERS
 [CONFIGDB]
 config_db_server_list=$config_db_server_list
 
-rabbitmq_server_list=$RABBITMQ_NODES
+rabbitmq_server_list=$RABBITMQ_SERVERS
 $rabbitmq_config
 $kombu_ssl_config
 
