@@ -3,6 +3,8 @@
 source /common.sh
 source /agent-functions.sh
 
+copy_agent_tools_to_host
+
 HUGE_PAGES_DIR=${HUGE_PAGES_DIR:-'/dev/hugepages'}
 ensure_hugepages $HUGE_PAGES_DIR
 
@@ -19,7 +21,9 @@ if ! load_kernel_module rte_kni kthread_mode=multiple ; then
   echo "WARNING: rte_ini kernel module is unavailable. Please install/insert it for Ubuntu 14.04 manually."
 fi
 
-echo "INFO: init kernel dpdk"
-prepare_phys_int_dpdk
+if ! prepare_phys_int_dpdk ; then
+  echo "FATAL: failed to initialize data for DPDK mode... exiting"
+  exit -1
+fi
 
 exec $@
