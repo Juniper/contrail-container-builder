@@ -5,7 +5,16 @@ source /agent-functions.sh
 
 pre_start_init
 
-HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'kvm'}
+if [ "$CLOUD_ORCHESTRATOR" == "vcenter" ]; then
+    HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'vmware'}
+    IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
+    read -r -d '' vmware_options << EOM
+vmware_physical_interface = $phys_int
+vmware_mode = vcenter
+EOM
+else
+    HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'kvm'}
+fi
 
 echo "INFO: agent started in $AGENT_MODE mode"
 
@@ -168,6 +177,7 @@ docker_command=/usr/bin/opencontrail-vrouter-docker
 
 [HYPERVISOR]
 type = $HYPERVISOR_TYPE
+$vmware_options
 
 [FLOWS]
 fabric_snat_hash_table_size = $FABRIC_SNAT_HASH_TABLE_SIZE
