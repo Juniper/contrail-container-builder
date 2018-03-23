@@ -64,6 +64,12 @@ CONTRAIL_SERVICES = {'vrouter' : {'nodemgr' : 'contrail-vrouter-nodemgr',
                                 'redis'],
                      'kubernetes' : {'kube-manager': 'contrail-kube-manager'},
                     }
+
+# define labels
+CONTRAIL_POD_LABEL = "net.juniper.contrail.pod"
+CONTRAIL_SVC_LABEL = "net.juniper.contrail.service"
+K8S_CONTAINER_NAME_LABEL = "io.kubernetes.container.name"
+
 # TODO: Include vcenter-plugin
 
 (distribution, os_version, os_id) = \
@@ -383,26 +389,98 @@ def get_svc_uve_info(svc_name, svc_status, debug, detail, timeout):
 client = docker.from_env()
 
 def container_status(pod,svc_name):
-   for container in client.containers():
-      container_properties = container.items()
-      for container_property in container_properties:
-         if container_property[0] == 'Labels':
-            if 'net.juniper.contrail.pod' in container_property[1].keys() and \
-               'net.juniper.contrail.service' in container_property[1].keys():
-                  if container_property[1]['net.juniper.contrail.pod'] == pod and \
-                     container_property[1]['net.juniper.contrail.service'] == svc_name:
-                        for container_property in container_properties:
-                           if container_property[0] == 'State' and container_property[1] == 'running':
-                              return 'active'
-   return 'inactive'
+
+   cont_label = {CONTRAIL_POD_LABEL: pod, CONTRAIL_SVC_LABEL: svc_name}
+   cont_filter = get_label_filter(cont_label)
+
+   containers = client.containers(filters=cont_filter)
+
+   if containers:
+      if len(containers) > 1:
+         error = "Error: %d instances of %s running" % (len(containers), svc_name)
+         return error
+      else:
+         contrail_container = containers.pop()
+         if contrail_container["State"] == "running":
+            return "active"
+         else:
+            return "inactive"
+   else:
+      # the below logic expects that contrail thirdparty resources which are running as
+      # k8s pods should follow below container naming format in manifests/helm charts
+      # pod-svc_name
+      #
+      # Few examples:
+      # config-database-cassandra
+      # config-database-zookeeper
+      # config-database-rabbitmq
+
+      # As redis container does not have any contrail svc labels
+      if svc_name == "redis":
+         svc_containers = client.containers()
+      else:
+         svc_label = {CONTRAIL_SVC_LABEL: svc_name}
+         svc_filter = get_label_filter(svc_label)
+         svc_containers = client.containers(filters=svc_filter)
+
+      for container in svc_containers:
+         cont_labels = container["Labels"]
+         for key, val in cont_labels.iteritems():
+            if key == K8S_CONTAINER_NAME_LABEL:
+               k8s_container_name = pod + "-" + svc_name
+               if val == k8s_container_name:
+                  if container["State"] == "running":
+                     return "active"
+                  else:
+                     return "inactive"
+
+   return "inactive"
+# end of container_status
+
+def get_label_filter(label_dict=None):
+
+   if not label_dict:
+      label_dict = {}
+
+   label_list = []
+   for key, value in label_dict.iteritems():
+      if not value:
+         label_list.append(key)
+      else:
+         filter = key + "=" + value
+         label_list.append(filter)
+
+   return {"label": label_list}
+
+# end of get_label_filter
 
 def is_pod_present(pod):
-   for container in client.containers():
-      container_properties = container.items()
-      if 'net.juniper.contrail.pod' in container_properties[3][1].keys():
-          if container_properties[3][1]['net.juniper.contrail.pod'] == pod:
-             return True
-   return False
+
+   pod_label = {CONTRAIL_POD_LABEL: pod}
+   pod_filter = get_label_filter(pod_label)
+
+   containers = client.containers(filters=pod_filter)
+
+   # If no container exists with regular labels
+   # then look for configdb and analyticsdb running as k8s pods
+   if not containers:
+      k8s_pod_label = {CONTRAIL_SVC_LABEL: None}
+      k8s_filter =  get_label_filter(k8s_pod_label)
+
+      containers = client.containers(filters=k8s_filter)
+      if not containers:
+         return False
+
+      for container in containers:
+         cont_labels = container["Labels"]
+         for key, val in cont_labels.iteritems():
+            if key == K8S_CONTAINER_NAME_LABEL:
+               if val.startswith(pod):
+                  return True
+      return False
+   else:
+      return True
+# end of is_pod_present
 
 def contrail_service_status(pod, options):
     ppod = pod.title()
