@@ -149,7 +149,7 @@ function get_vrouter_physical_iface() {
       local ctrl_data_nic=$(get_ctrl_data_iface $ctrl_data_network)
       if [[ ! -z "$ctrl_data_nic" ]]; then
         echo $ctrl_data_nic
-        break
+        return
       fi
     done
   fi
