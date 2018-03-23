@@ -3,6 +3,14 @@
 source /functions.sh
 source /contrail-functions.sh
 
+LOG_LEVEL=${LOG_LEVEL:-SYS_NOTICE}
+if [[ "${LOG_LEVEL}" == "SYS_DEBUG" ]] ; then
+  set -x
+fi
+
+LOG_DIR=${LOG_DIR:-"/var/log/contrail"}
+LOG_LOCAL=${LOG_LOCAL:-1}
+
 DEFAULT_IFACE=$(get_default_nic)
 DEFAULT_LOCAL_IP=$(get_default_ip)
 DEFAULT_HOSTNAME=`uname -n`
@@ -87,10 +95,6 @@ ENCAP_PRIORITY=${ENCAP_PRIORITY:-'MPLSoUDP,MPLSoGRE,VXLAN'}
 
 REDIS_SERVER_IP=${REDIS_SERVER_IP:-127.0.0.1}
 REDIS_SERVER_PASSWORD=${REDIS_SERVER_PASSWORD:-""}
-
-LOG_DIR=${LOG_DIR:-"/var/log/contrail"}
-LOG_LEVEL=${LOG_LEVEL:-SYS_NOTICE}
-LOG_LOCAL=${LOG_LOCAL:-1}
 
 BGP_ASN=${BGP_ASN:-64512}
 SUBCLUSTER=${SUBCLUSTER:-""}

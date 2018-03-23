@@ -1,5 +1,19 @@
 #!/bin/bash
 
+function copy_agent_tools_to_host() {
+    # copy ifup-vhost
+    local netscript_dir='/etc/sysconfig/network-scripts'
+    if [[ -d "$netscript_dir" ]] ; then
+        /bin/cp -f /ifup-vhost "${netscript_dir}/"
+        chmod +x "${netscript_dir}/ifup-vhost"
+    fi
+    # copy vif util
+    if [[ ! -f /host/bin/vif ]]; then
+        /bin/cp -f /bin/vif /host/bin/vif
+        chmod +x /host/bin/vif
+    fi
+}
+
 function is_vlan() {
     local dev=${1:-?}
     [ -f "/proc/net/vlan/${dev}" ]
@@ -139,8 +153,8 @@ function get_physical_nic_and_mac()
         if [[ -n "$_mac" ]] ; then
             mac=$_mac
         else
-            echo "ERROR: unsupported agent mode"
-            exit -1
+            echo "ERROR: unsupported agent mode" >&2
+            return 1
         fi
     else
         # DPDK case, nic name is not exist, so set it to default
@@ -153,8 +167,8 @@ function get_physical_nic_and_mac()
   fi
   # Ensure that nic & mac are not empty
   if [[ "$nic" == '' || "$mac" == '' ]] ; then
-      echo "ERROR: either phys nic or mac is empty: phys_int='$nic' phys_int_mac='$mac'"
-      exit -1
+      echo "ERROR: either phys nic or mac is empty: phys_int='$nic' phys_int_mac='$mac'" >&2
+      return 1
   fi
   echo $nic $mac
 }
@@ -172,16 +186,17 @@ function enable_hugepages_to_coredump() {
     echo $cdump_filter > "$coredump_filter"
 }
 
-function wait_nic () {
+function probe_nic () {
     local nic=$1
-    local probes=${2:-60}
+    local probes=${2:-1}
     while (( probes > 0 )) ; do
-        echo "INFO: Waiting for ${nic}... tries left $probes"
-        if [[ `ifconfig ${nic} |grep inet |grep netmask` ]]; then
+        echo "INFO: Probe ${nic}... tries left $probes"
+        local mac=$(get_iface_mac $nic)
+        if [[ -n "$mac" ]]; then
             return 0
         fi
         (( probes -= 1))
-        sleep 5
+        sleep 1
     done
     return 1
 }
@@ -259,21 +274,15 @@ function create_vhost0() {
 function create_vhost0_dpdk() {
     local phys_int=$1
     local phys_int_mac=$2
-    # Check nic is not configured by agent
-    if ! wait_nic vhost0 1 ; then
-        echo "INFO: interface vhost0 does not exist.. try tro create"
-        # vhost0 is not present, so create vhost0 and $dev
-        echo "INFO: Creating ${phys_int} interface with mac $phys_int_mac via vif utility..."
-        if ! vif --add 0 --mac ${phys_int_mac} --vrf 0 --vhost-phys --type physical --pmd --id 0 ; then
-            echo "ERROR: Failed to adding ${phys_int} interface"
-            return 1
-        fi
-        echo "INFO: Adding vhost0 interface with vif utility..."
-        # TODO: vif --xconnect seems does not work without --id parameter?
-        if ! vif --add vhost0 --mac ${phys_int_mac} --vrf 0 --type vhost --xconnect 0 --pmd --id 1 ; then
-            echo "ERROR: Failed to add vhost0 interface"
-            return 1
-        fi
+    echo "INFO: Creating ${phys_int} interface with mac $phys_int_mac via vif utility..."
+    if ! vif --add 0 --mac ${phys_int_mac} --vrf 0 --vhost-phys --type physical --pmd --id 0 ; then
+        echo "ERROR: Failed to adding ${phys_int} interface"
+        return 1
+    fi
+    echo "INFO: Adding vhost0 interface with vif utility..."
+    if ! vif --add vhost0 --mac ${phys_int_mac} --vrf 0 --type vhost --xconnect 0 --pmd --id 1 ; then
+        echo "ERROR: Failed to add vhost0 interface"
+        return 1
     fi
     if ! ip link set dev vhost0 up ; then
         echo "ERROR: Failed to up vhost0 interface"
@@ -328,6 +337,10 @@ function get_addrs_for_nic() {
 
 function prepare_phys_int_dpdk
 {
+    if probe_nic vhost0 ; then
+        echo "INFO: vhost device is already exist"
+        return 0
+    fi
     local phys_int=''
     local phys_int_mac=''
     IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
@@ -336,10 +349,9 @@ function prepare_phys_int_dpdk
     local default_gw_metric=`get_default_gateway_for_nic_metric $phys_int`
     local gateway=${VROUTER_GATEWAY:-"$default_gw_metric"}
     local pci=$(get_pci_address_for_nic $phys_int)
-
     echo "INFO: phys_int=$phys_int phys_int_mac=$phys_int_mac, pci=$pci, addrs=[$addrs], gateway=$gateway"
-    if [[ "$phys_int" == "vhost0" ]] ; then
-        echo "ERROR: it is not expected the vhost0 is up and running here"
+    if [[ -z "$phys_int" || -z "$phys_int_mac" || "$pci" || "$addrs" ]] ; then
+        echo "ERROR: failed to detect one of mandatory NIC parameters"
         return 1
     fi
 
@@ -439,7 +451,6 @@ function init_vhost0() {
         echo "INFO: vhost0 is already up"
         return 0
     fi
-
     local phys_int=''
     local phys_int_mac=''
     local addrs=''
@@ -466,7 +477,10 @@ function init_vhost0() {
         phys_int=`cat $binding_data_dir/nic`
         phys_int_mac=`cat $binding_data_dir/${phys_int}_mac`
         local pci_address=`cat $binding_data_dir/${phys_int}_pci`
-            cat << EOM > /etc/contrail/contrail-vrouter-agent.conf
+        # TODO: This part of config is needed for vif tool to work,
+        # later full config will be written.
+        # Maybe rework someow config pathching..
+        cat << EOM > /etc/contrail/contrail-vrouter-agent.conf
 [DEFAULT]
 platform=${AGENT_MODE}
 physical_interface_mac = $phys_int_mac
@@ -519,14 +533,7 @@ EOM
                 echo "BIND_INT=${phys_int}" >> ifcfg-vhost0
             fi
         fi
-        if [[ ! -f ifup-vhost ]]; then
-            /bin/cp -f /ifup-vhost ./
-            chmod +x ifup-vhost
-        fi
         popd
-        if [[ -d /host/bin && ! -f /host/bin/vif ]]; then
-            /bin/cp -f /bin/vif /host/bin/vif
-        fi
         if ! is_dpdk ; then
             ifup ${phys_int} || { echo "ERROR: failed to ifup $phys_int." && ret=1; }
         fi
