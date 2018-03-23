@@ -7,9 +7,9 @@ pre_start_init
 
 DPDK_MEM_PER_SOCKET=${DPDK_MEM_PER_SOCKET:-1024}
 
-echo "INFO: agent started in $AGENT_MODE mode"
-
-mkdir -p -m 777 /var/crashes
+echo "INFO: dpdk started"
+HUGE_PAGES_DIR=${HUGE_PAGES_DIR:-'/dev/hugepages'}
+ensure_hugepages $HUGE_PAGES_DIR
 
 # remove rte configuration file (for case if vRouter has crashed)
 # TODO: most probably not needed.. since crash means container re-created

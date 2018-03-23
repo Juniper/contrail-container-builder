@@ -7,7 +7,6 @@ RUN rpm -Uvh --nodeps $(repoquery --location contrail-vrouter contrail-vrouter-u
     rm -rf /var/cache/yum
 
 COPY entrypoint.sh /
-COPY ifup-vhost /
 
 ENTRYPOINT ["/entrypoint.sh"]
 
