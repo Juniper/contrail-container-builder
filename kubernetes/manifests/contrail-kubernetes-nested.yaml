@@ -1,0 +1,185 @@
+# Configs section
+# Note: using ".." for ports, because in v1 there is a bug
+# which leads to an error
+# "..error unmarshaling JSON: json: cannot unmarshal number into Go value of type string.."
+# (https://github.com/kubernetes/kubernetes/issues/2763)
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: env
+  namespace: kube-system
+data:
+  AUTH_MODE: {{ AUTH_MODE }}
+  KEYSTONE_AUTH_HOST: {{ KEYSTONE_AUTH_HOST }}
+  KEYSTONE_AUTH_ADMIN_TENANT: "{{ KEYSTONE_AUTH_ADMIN_TENANT }}"
+  KEYSTONE_AUTH_ADMIN_USER: "{{ KEYSTONE_AUTH_ADMIN_USER }}"
+  KEYSTONE_AUTH_ADMIN_PASSWORD: "{{ KEYSTONE_AUTH_ADMIN_PASSWORD }}"
+  KEYSTONE_AUTH_ADMIN_PORT: "{{ KEYSTONE_AUTH_ADMIN_PORT }}"
+  KEYSTONE_AUTH_URL_VERSION: "{{ KEYSTONE_AUTH_URL_VERSION }}"
+  CLOUD_ORCHESTRATOR: {{ CLOUD_ORCHESTRATOR }}
+  CONTROLLER_NODES: {{ CONTROLLER_NODES }}
+  CONFIG_NODES: {{ CONFIG_NODES }}
+  CONFIG_API_VIP: {{ CONFIG_API_VIP }}
+  LOG_LEVEL: {{ LOG_LEVEL }}
+  RABBITMQ_NODES: {{ RABBITMQ_NODES }}
+  RABBITMQ_NODE_PORT: "{{ RABBITMQ_NODE_PORT }}"
+  ZOOKEEPER_SERVERS: {{ ZOOKEEPER_NODES }}
+  KUBEMANAGER_NESTED_MODE: "{{ KUBEMANAGER_NESTED_MODE }}"
+  KUBERNETES_CLUSTER_NETWORK: "{{ KUBERNETES_CLUSTER_NETWORK }}"
+  KUBERNETES_CLUSTER_NAME: {{ KUBERNETES_CLUSTER_NAME }}
+  KUBERNETES_POD_SUBNETS: {{ KUBERNETES_POD_SUBNETS }}
+  KUBERNETES_IP_FABRIC_SUBNETS: {{ KUBERNETES_IP_FABRIC_SUBNETS }}
+  KUBERNETES_SERVICE_SUBNETS: {{ KUBERNETES_SERVICE_SUBNETS }}
+  KUBERNETES_IP_FABRIC_FORWARDING: "{{ KUBERNETES_IP_FABRIC_FORWARDING }}"
+  KUBERNETES_IP_FABRIC_SNAT: "{{ KUBERNETES_IP_FABRIC_SNAT }}"
+  KUBERNETES_public_fip_pool: "{{ KUBERNETES_public_fip_pool }}"
+  KUBERNESTES_NESTED_VROUTER_VIP: {{ KUBERNESTES_NESTED_VROUTER_VIP }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kube-manager-config
+  namespace: kube-system
+data:
+  KUBERNETES_API_SERVER: {{ KUBERNETES_API_SERVER }}
+  K8S_TOKEN_FILE: "/tmp/serviceaccount/token"
+# Containers section
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: contrail-kube-manager
+  namespace: kube-system
+  labels:
+    app: contrail-kube-manager
+spec:
+  template:
+    metadata:
+      labels:
+        app: contrail-kube-manager
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: "node-role.kubernetes.io/master"
+                operator: Exists
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      automountServiceAccountToken: false
+      hostNetwork: true
+      containers:
+      - name: contrail-kube-manager
+        image: "{{CONTRAIL_REGISTRY}}/contrail-kubernetes-kube-manager:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        envFrom:
+        - configMapRef:
+            name: env
+        - configMapRef:
+            name: kube-manager-config
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: kube-manager-logs
+        - mountPath: /tmp/serviceaccount
+          name: pod-secret
+      volumes:
+      - name: kube-manager-logs
+        hostPath:
+          path: /var/log/contrail/kube-manager
+      - name: pod-secret
+        secret:
+          secretName: contrail-kube-manager-token
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: contrail-kubernetes-cni-agent
+  namespace: kube-system
+  labels:
+    app: contrail-kubernetes-cni-agent
+spec:
+  template:
+    metadata:
+      labels:
+        app: contrail-agent
+    spec:
+      #Disable affinity for single node setup
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: "node-role.opencontrail.org/controller"
+                operator: NotIn
+                values:
+                - "true"
+      automountServiceAccountToken: false
+      hostNetwork: true
+      containers:
+      - name: contrail-kubernetes-cni-init
+        image: "{{CONTRAIL_REGISTRY}}/contrail-kubernetes-cni-init:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        securityContext:
+          privileged: true
+        envFrom:
+        - configMapRef:
+            name: env
+        volumeMounts:
+        - mountPath: /host/etc_cni
+          name: etc-cni
+        - mountPath: /host/opt_cni_bin
+          name: opt-cni-bin
+        - mountPath: /var/lib/contrail
+          name: var-lib-contrail
+      volumes:
+      - name: etc-cni
+        hostPath:
+          path: /etc/cni
+      - name: opt-cni-bin
+        hostPath:
+          path: /opt/cni/bin
+      - name: var-lib-contrail
+        hostPath:
+          path: /var/lib/contrail
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: contrail-kube-manager
+  namespace: kube-system
+rules:
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["*"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: contrail-kube-manager
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: contrail-kube-manager
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: contrail-kube-manager
+subjects:
+- kind: ServiceAccount
+  name: contrail-kube-manager
+  namespace: kube-system
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: contrail-kube-manager-token
+  namespace: kube-system
+  annotations:
+    kubernetes.io/service-account.name: contrail-kube-manager
+type: kubernetes.io/service-account-token
