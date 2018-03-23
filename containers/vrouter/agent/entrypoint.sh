@@ -9,43 +9,23 @@ HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'kvm'}
 
 echo "INFO: agent started in $AGENT_MODE mode"
 
-# wait vhost0
-while (true) ; do
-    # TODO: net-watchdog container does init for dpdk case,
-    # because vhost0 is re-created each time dpdk container
-    # restarted, so its initialization is needed at runtime,
-    # not only at init time. here is the TODO to remove
-    # that container after problem be solved at agent level.
-    # For Non dpdk case jsut init vhost here,
-    # because net-watchdog is not needed at all.
-    if ! is_dpdk ; then
-        init_vhost0
-    fi
-    if ! wait_nic vhost0 ; then
-        sleep 20
-        continue
-    fi
+init_vhost0
 
-    # TODO: avoid duplication of reading parameters with init_vhost0
-    if ! is_dpdk ; then
-        IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
-        pci_address=$(get_pci_address_for_nic $phys_int)
-    else
-        binding_data_dir='/var/run/vrouter'
-        phys_int=`cat $binding_data_dir/nic`
-        phys_int_mac=`cat $binding_data_dir/${phys_int}_mac`
-        pci_address=`cat $binding_data_dir/${phys_int}_pci`
-    fi
+# TODO: avoid duplication of reading parameters with init_vhost0
+if ! is_dpdk ; then
+    IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
+    pci_address=$(get_pci_address_for_nic $phys_int)
+else
+    binding_data_dir='/var/run/vrouter'
+    phys_int=`cat $binding_data_dir/nic`
+    phys_int_mac=`cat $binding_data_dir/${phys_int}_mac`
+    pci_address=`cat $binding_data_dir/${phys_int}_pci`
+fi
 
-    VROUTER_GATEWAY=${VROUTER_GATEWAY:-`get_default_gateway_for_nic 'vhost0'`}
-    vrouter_cidr=$(get_cidr_for_nic 'vhost0')
-    echo "INFO: Physical interface: $phys_int, mac=$phys_int_mac, pci=$pci_address"
-    echo "INFO: vhost0 cidr $vrouter_cidr, gateway $VROUTER_GATEWAY"
-
-    if [[ -n "$vrouter_cidr" ]] ; then
-        break
-    fi
-done
+VROUTER_GATEWAY=${VROUTER_GATEWAY:-`get_default_gateway_for_nic 'vhost0'`}
+vrouter_cidr=$(get_cidr_for_nic 'vhost0')
+echo "INFO: Physical interface: $phys_int, mac=$phys_int_mac, pci=$pci_address"
+echo "INFO: vhost0 cidr $vrouter_cidr, gateway $VROUTER_GATEWAY"
 
 if [[ -z "$vrouter_cidr" ]] ; then
     echo "ERROR: vhost0 interface is down or has no assigned IP"
@@ -175,13 +155,9 @@ EOM
 
 add_ini_params_from_env VROUTER_AGENT /etc/contrail/contrail-vrouter-agent.conf
 
-echo "INFO: check core pattern"
-sysctl kernel.core_pattern
 echo "INFO: /etc/contrail/contrail-vrouter-agent.conf"
 cat /etc/contrail/contrail-vrouter-agent.conf
 
 set_vnc_api_lib_ini
-
-mkdir -p -m 777 /var/crashes
 
 exec $@
