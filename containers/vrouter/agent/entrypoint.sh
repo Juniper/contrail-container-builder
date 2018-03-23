@@ -33,6 +33,7 @@ while (true) ; do
     else
         binding_data_dir='/var/run/vrouter'
         phys_int=`cat $binding_data_dir/nic`
+        phys_int_mac=`cat $binding_data_dir/${phys_int}_mac`
         pci_address=`cat $binding_data_dir/${phys_int}_pci`
     fi
 
