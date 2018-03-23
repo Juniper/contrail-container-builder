@@ -6,8 +6,9 @@ RUN yum install -y docker-python && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 
-ENV CONTAINER_REGISTRY=$CONTRAIL_REGISTRY
-ENV CONTRAIL_VERSION=$CONTRAIL_CONTAINER_TAG
+ARG CONTRAIL_REGISTRY=localhost:5000
+ARG CONTRAIL_CONTAINER_TAG=4.1.0.0-6-centos7-newton
+ENV CONTAINER_REGISTRY=$CONTRAIL_REGISTRY CONTRAIL_VERSION=$CONTRAIL_CONTAINER_TAG
 COPY contrail-status.py /root
 COPY entrypoint.sh /
 
