@@ -201,15 +201,15 @@ function wait_device_for_driver () {
 }
 
 # TODO: move to agent specific file
-function is_dpdk_agent_running() {
-    netstat -ntl | awk '{print($4)}' | grep -q ':20914'
+function is_dpdk_running() {
+    netstat -xl | grep -q  dpdk_netlink
 }
 
-function wait_dpdk_agent_start() {
+function wait_dpdk_start() {
     local i=0
     for i in {1..60} ; do
         echo "INFO: wait DPDK agent to run... $i"
-        if is_dpdk_agent_running ; then
+        if is_dpdk_running ; then
             return 0
         fi
         sleep 5
@@ -454,7 +454,7 @@ function init_vhost0() {
     else
         # DPDK case
         # TODO: rework someow config pathching..
-        if ! wait_dpdk_agent_start ; then
+        if ! wait_dpdk_start ; then
             return 1
         fi
         local binding_data_dir='/var/run/vrouter'
