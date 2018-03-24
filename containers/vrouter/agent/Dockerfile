@@ -5,6 +5,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-vrouter-base:${CONTRAIL_CONTAINER_TAG}
 RUN yum install -y contrail-vrouter-agent haproxy libvirt-client \
       python-opencontrail-vrouter-netns python-contrail-vrouter-api \
       python-keystoneclient python-barbicanclient && \
+      python-pyOpenSSL && \
     yum clean all && \
     rm -rf /var/cache/yum && \
     ldconfig
