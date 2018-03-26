@@ -824,6 +824,10 @@ spec:
           name: usr-src
         - mountPath: /lib/modules
           name: lib-modules
+        - mountPath: /etc/sysconfig/network-scripts
+          name: network-scripts
+        - mountPath: /host/bin
+          name: host-bin
       - name: contrail-kubernetes-cni-init
         image: "{{CONTRAIL_REGISTRY}}/contrail-kubernetes-cni-init:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -859,6 +863,8 @@ spec:
           name: dev
         - mountPath: /etc/sysconfig/network-scripts
           name: network-scripts
+        - mountPath: /host/bin
+          name: host-bin
         - mountPath: /var/log/contrail
           name: agent-logs
         - mountPath: /usr/src
@@ -899,6 +905,9 @@ spec:
       - name: network-scripts
         hostPath:
           path: /etc/sysconfig/network-scripts
+      - name: host-bin
+        hostPath:
+          path: /bin
       - name: docker-unix-socket
         hostPath:
           path: /var/run
@@ -929,6 +938,51 @@ spec:
       - name: agent-logs
         hostPath:
           path: /var/log/contrail/agent
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: contrail-status
+  namespace: kube-system
+  labels:
+    app: contrail-status
+spec:
+  template:
+    metadata:
+      labels:
+        app: contrail-status
+    spec:
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      automountServiceAccountToken: false
+      hostNetwork: true
+      hostPID: true
+      containers:
+      - name: contrail-status
+        image: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        securityContext:
+          privileged: true
+# todo: there is type Socket in new kubernetes, it is possible to use full
+# path:
+# hostPath:
+#   path: /var/run/docker.sock and
+#   type: Socket
+        volumeMounts:
+        - mountPath: /host/bin
+          name: host-bin
+        - mountPath: /mnt
+          name: docker-unix-socket
+      restartPolicy: Never
+      volumes:
+      - name: docker-unix-socket
+        hostPath:
+          path: /var/run
+      - name: host-bin
+        hostPath:
+          path: /bin
 
 # Meta information section
 ---
