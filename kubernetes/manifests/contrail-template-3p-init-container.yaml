@@ -991,6 +991,51 @@ spec:
       - name: agent-logs
         hostPath:
           path: /var/log/contrail/agent
+---
+apiVersion: extensions/v1beta1
+kind: Job
+metadata:
+  name: contrail-status
+  namespace: kube-system
+  labels:
+    app: contrail-status
+spec:
+  template:
+    metadata:
+      labels:
+        app: contrail-status
+    spec:
+      #Enable tolerations for single node setup
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      automountServiceAccountToken: false
+      hostNetwork: true
+      hostPID: true
+      containers:
+      - name: contrail-status
+        image: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        securityContext:
+          privileged: true
+# todo: there is type Socket in new kubernetes, it is possible to use full
+# path:
+# hostPath:
+#   path: /var/run/docker.sock and
+#   type: Socket
+        volumeMounts:
+        - mountPath: /host/bin
+          name: host-bin
+        - mountPath: /mnt
+          name: docker-unix-socket
+      volumes:
+      - name: docker-unix-socket
+        hostPath:
+          path: /var/run
+      - name: host-bin
+        hostPath:
+          path: /bin
 
 # Meta information section
 ---
