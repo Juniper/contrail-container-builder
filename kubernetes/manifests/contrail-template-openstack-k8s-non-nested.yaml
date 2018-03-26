@@ -17,15 +17,22 @@ data:
   KEYSTONE_AUTH_ADMIN_PASSWORD: "{{ KEYSTONE_AUTH_ADMIN_PASSWORD }}"
   KEYSTONE_AUTH_ADMIN_PORT: "{{ KEYSTONE_AUTH_ADMIN_PORT }}"
   KEYSTONE_AUTH_URL_VERSION: "{{ KEYSTONE_AUTH_URL_VERSION }}"
+  ANALYTICS_API_VIP: {{ ANALYTICS_API_VIP }}
+  ANALYTICS_NODES: {{ ANALYTICS_NODES }}
+  ANALYTICSDB_NODES: {{ ANALYTICSDB_NODES }}
   CLOUD_ORCHESTRATOR: {{ CLOUD_ORCHESTRATOR }}
-  CONTROLLER_NODES: {{ CONTROLLER_NODES }}
-  CONFIG_NODES: {{ CONFIG_NODES }}
   CONFIG_API_VIP: {{ CONFIG_API_VIP }}
+  CONFIG_NODES: {{ CONFIG_NODES }}
+  CONFIGDB_NODES: {{ CONFIGDB_NODES }}
+  CONTROL_NODES: {{ CONTROL_NODES }}
+  CONTROLLER_NODES: {{ CONTROLLER_NODES }}
   LOG_LEVEL: {{ LOG_LEVEL }}
+  METADATA_PROXY_SECRET: {{ METADATA_PROXY_SECRET }}
   RABBITMQ_NODES: {{ RABBITMQ_NODES }}
   RABBITMQ_NODE_PORT: "{{ RABBITMQ_NODE_PORT }}"
-  ZOOKEEPER_SERVERS: {{ ZOOKEEPER_NODES }}
-  KUBEMANAGER_NESTED_MODE: "{{ KUBEMANAGER_NESTED_MODE }}"
+  ZOOKEEPER_NODES: {{ ZOOKEEPER_NODES }}
+  ZOOKEEPER_PORTS: "{{ ZOOKEEPER_PORTS }}"
+  ZOOKEEPER_PORT: "{{ ZOOKEEPER_PORT }}"
   KUBERNETES_CLUSTER_NETWORK: "{{ KUBERNETES_CLUSTER_NETWORK }}"
   KUBERNETES_CLUSTER_NAME: {{ KUBERNETES_CLUSTER_NAME }}
   KUBERNETES_POD_SUBNETS: {{ KUBERNETES_POD_SUBNETS }}
@@ -34,7 +41,14 @@ data:
   KUBERNETES_IP_FABRIC_FORWARDING: "{{ KUBERNETES_IP_FABRIC_FORWARDING }}"
   KUBERNETES_IP_FABRIC_SNAT: "{{ KUBERNETES_IP_FABRIC_SNAT }}"
   KUBERNETES_PUBLIC_FIP_POOL: "{{ KUBERNETES_PUBLIC_FIP_POOL }}"
-  KUBERNESTES_NESTED_VROUTER_VIP: {{ KUBERNESTES_NESTED_VROUTER_VIP }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nodemgr-config
+  namespace: kube-system
+data:
+  DOCKER_HOST: "unix://mnt/docker.sock"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -97,10 +111,10 @@ spec:
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: contrail-kubernetes-cni-agent
+  name: contrail-agent
   namespace: kube-system
   labels:
-    app: contrail-kubernetes-cni-agent
+    app: contrail-agent
 spec:
   template:
     metadata:
@@ -119,9 +133,9 @@ spec:
                 - "true"
       automountServiceAccountToken: false
       hostNetwork: true
-      containers:
-      - name: contrail-kubernetes-cni-init
-        image: "{{CONTRAIL_REGISTRY}}/contrail-kubernetes-cni-init:{{CONTRAIL_CONTAINER_TAG}}"
+      initContainers:
+      - name: contrail-vrouter-kernel-init
+        image: "{{CONTRAIL_REGISTRY}}/contrail-vrouter-kernel-init:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         securityContext:
           privileged: true
@@ -129,22 +143,125 @@ spec:
         - configMapRef:
             name: env
         volumeMounts:
+        - mountPath: /usr/src
+          name: usr-src
+        - mountPath: /lib/modules
+          name: lib-modules
+        - mountPath: /host/bin
+          name: host-bin
+        - mountPath: /var/log/contrail
+          name: agent-logs
+        - mountPath: /etc/contrail
+          name: etc-contrail
+      - name: contrail-kubernetes-cni-init
+        image: "{{CONTRAIL_REGISTRY}}/contrail-kubernetes-cni-init:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        envFrom:
+        - configMapRef:
+            name: env
+        volumeMounts:
+        - mountPath: /var/lib/contrail
+          name: var-lib-contrail
         - mountPath: /host/etc_cni
           name: etc-cni
         - mountPath: /host/opt_cni_bin
           name: opt-cni-bin
-        - mountPath: /var/lib/contrail
-          name: var-lib-contrail
+        - mountPath: /host/log_cni
+          name: var-log-contrail-cni
+        - mountPath: /var/log/contrail
+          name: agent-logs
+      containers:
+      - name: contrail-vrouter-agent
+        image: "{{CONTRAIL_REGISTRY}}/contrail-vrouter-agent:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        # TODO: Priveleged mode is requied because w/o it the device /dev/net/tun
+        # is not present in the container. The mounting it into container
+        # doesnt help because of permissions are not enough syscalls,
+        # e.g. https://github.com/Juniper/contrail-controller/blob/master/src/vnsw/agent/contrail/linux/pkt0_interface.cc: 48.
+        securityContext:
+          privileged: true
+        envFrom:
+        - configMapRef:
+            name: env
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: agent-logs
+        - mountPath: /var/crashes
+          name: var-crashes
+        - mountPath: /tmp/serviceaccount
+          name: pod-secret
+        - mountPath: /host/bin
+          name: host-bin
+        - mountPath: /var/run/libvirt
+          name: var-run-libvirt
+        - mountPath: /etc/contrail
+          name: etc-contrail
+      - name: contrail-agent-nodemgr
+        image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        envFrom:
+        - configMapRef:
+            name: env
+        - configMapRef:
+            name: nodemgr-config
+        env:
+        - name: NODE_TYPE
+          value: vrouter
+# todo: there is type Socket in new kubernetes, it is possible to use full
+# path:
+# hostPath:
+#   path: /var/run/docker.sock and
+#   type: Socket
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: agent-logs
+        - mountPath: /mnt
+          name: docker-unix-socket
       volumes:
+      - name: dev
+        hostPath:
+          path: /dev
+      - name: docker-unix-socket
+        hostPath:
+          path: /var/run
+      - name: pod-secret
+        secret:
+          secretName: contrail-kube-manager-token
+      - name: usr-src
+        hostPath:
+          path: /usr/src
+      - name: lib-modules
+        hostPath:
+          path: /lib/modules
+      - name: var-lib-contrail
+        hostPath:
+          path: /var/lib/contrail
+      - name: var-crashes
+        hostPath:
+          path: /var/crashes/vrouter
       - name: etc-cni
         hostPath:
           path: /etc/cni
       - name: opt-cni-bin
         hostPath:
           path: /opt/cni/bin
-      - name: var-lib-contrail
+      - name: var-log-contrail-cni
         hostPath:
-          path: /var/lib/contrail
+          path: /var/log/contrail/cni
+      - name: agent-logs
+        hostPath:
+          path: /var/log/contrail/agent
+      - name: host-bin
+        hostPath:
+          path: /bin
+      - name: etc-contrail
+        hostPath:
+          path: /etc/contrail/vrouter
+      - name: var-run-libvirt
+        hostPath:
+          path: /var/run/libvirt
+
+# Meta information section
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1beta1
@@ -183,3 +300,5 @@ metadata:
   annotations:
     kubernetes.io/service-account.name: contrail-kube-manager
 type: kubernetes.io/service-account-token
+
+
