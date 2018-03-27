@@ -277,7 +277,7 @@ function create_vhost0_dpdk() {
     fi
     if ! ip link set dev vhost0 up ; then
         echo "ERROR: Failed to up vhost0 interface"
-	return 1
+        return 1
     fi
     if ! ip link set dev vhost0 address $phys_int_mac ; then
         echo "ERROR: Failed to set vhost0 address $phys_int_mac"
@@ -321,13 +321,18 @@ function bind_devs_to_driver() {
     done
 }
 
+function get_addrs_for_nic() {
+    local nic=$1
+    ip addr show dev $nic | grep "inet" | grep -oP "[0-9a-f\:\.]*/[0-9]* brd [0-9\.]*|[0-9a-f\:\.]*/[0-9]*"
+}
+
 function prepare_phys_int_dpdk
 {
     local phys_int=''
     local phys_int_mac=''
     IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
     local nic=$phys_int
-    local addrs=$(get_ips_for_nic $phys_int)
+    local addrs=$(get_addrs_for_nic $phys_int)
     local default_gw_metric=`get_default_gateway_for_nic_metric $phys_int`
     local gateway=${VROUTER_GATEWAY:-"$default_gw_metric"}
     local pci=$(get_pci_address_for_nic $phys_int)
@@ -443,7 +448,7 @@ function init_vhost0() {
         # NIC case
         IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
         if [[ "$vrouter_cidr" == '' ]] ; then
-            addrs=$(get_ips_for_nic $phys_int)
+            addrs=$(get_addrs_for_nic $phys_int)
             local default_gw_metric=`get_default_gateway_for_nic_metric $phys_int`
             gateway=${VROUTER_GATEWAY:-"$default_gw_metric"}
         fi
