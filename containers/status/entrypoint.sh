@@ -5,7 +5,7 @@ if [ -f /host/usr/bin/contrail-status ]; then
    exit
 fi
 
-my_id=`awk -F'[:/]' '(($4 == "docker") && (lastId != $NF)) { lastId = $NF; print $NF; }' /proc/self/cgroup`
+my_id=`grep -E "/docker.*[0-9a-fA-F]{8,}" /proc/self/cgroup | tail -1 | grep -oE '[0-9a-fA-F]{8,}'`
 my_image=`python -c "import docker; client = docker.from_env(); print(str(client.inspect_container('$my_id')['Config']['Image']))"`
 cat > /host/usr/bin/contrail-status << EOM
 #!/bin/bash -e
