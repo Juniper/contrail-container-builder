@@ -133,7 +133,7 @@ function get_default_physical_iface() {
 
 function get_ctrl_data_iface() {
   local ctrl_data_network=$1
-  local ctrl_data_nic=$(ip route get $ctrl_data_network | grep -oe "dev\s[[:alnum:]]*" | awk '{print $2}')
+  local ctrl_data_nic=$(ip route get $ctrl_data_network | grep -oe "dev\s[[:graph:]]*" | awk '{print $2}')
   local default_nic=$(get_default_nic)
 
   #check if ctrl_data_nic and default_nic are same
@@ -159,4 +159,3 @@ function get_vrouter_physical_iface() {
     get_default_physical_iface
   fi
 }
-
