@@ -41,7 +41,7 @@ function get_default_ip() {
 
 function get_default_gateway_for_nic() {
   local nic=$1
-  ip route show dev $nic | grep default | head -n 1 | awk '{print $3}'
+  ip route show dev $nic | grep via | awk '{print $NF}' | uniq
 }
 
 function get_default_gateway_for_nic_metric() {
