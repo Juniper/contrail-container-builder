@@ -183,6 +183,8 @@ $vmware_options
 fabric_snat_hash_table_size = $FABRIC_SNAT_HASH_TABLE_SIZE
 EOM
 
+cleanup_lbaas_netns_config
+
 add_ini_params_from_env VROUTER_AGENT /etc/contrail/contrail-vrouter-agent.conf
 
 echo "INFO: check core pattern"
