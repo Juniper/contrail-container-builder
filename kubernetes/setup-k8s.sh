@@ -104,6 +104,18 @@ case "${LINUX_ID}" in
     install_for_centos
     ;;
 esac
+
+# Contrail, at this point in time, does not install CNI/vrouter-agent on nodes marked as control.
+# In a typcical Kubernetes install, kubelets expects to find CNI plugin in nodes they are running.
+# When it does not find it, the corresponding node is flagged as not ready.
+# Our recommendation is to start kubelet with CNI not-enabled.
+if [[ ! ,$AGENT_NODES, == *,$HOST_IP,* ]]; then
+  echo "INFO: Node $HOST_IP is not an agent - disable CNI on it."
+  sed -i "s|^\(.*KUBELET_NETWORK_ARGS=.*\)$|#\1|" /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+  systemctl daemon-reload
+  systemctl restart kubelet.service
+fi
+
 EOS
 
 # assignment doesn't work under sudo
