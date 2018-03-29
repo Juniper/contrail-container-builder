@@ -53,9 +53,9 @@ function process_container() {
   if [[ "$docker_ver" < '17.06' ]] ; then
     cat $docker_file | sed \
       -e 's/\(^ARG CONTRAIL_REGISTRY=.*\)/#\1/' \
+      -e 's/\(^ARG CONTRAIL_CONTAINER_TAG=.*\)/#\1/' \
       -e 's/\(^ARG LINUX_DISTR_VER=.*\)/#\1/' \
       -e 's/\(^ARG LINUX_DISTR=.*\)/#\1/' \
-      -e 's/\(^ARG CONTRAIL_CONTAINER_TAG=.*\)/#\1/' \
       -e "s/\$LINUX_DISTR_VER/$LINUX_DISTR_VER/g" \
       -e "s/\$LINUX_DISTR/$LINUX_DISTR/g" \
       -e 's|^FROM ${CONTRAIL_REGISTRY}/\([^:]*\):${CONTRAIL_CONTAINER_TAG}|FROM '${CONTRAIL_REGISTRY}'/\1:'${tag}'|' \
@@ -63,9 +63,9 @@ function process_container() {
     docker_file="${docker_file}.nofromargs"
   else
     build_arg_opts+=" --build-arg CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY}"
+    build_arg_opts+=" --build-arg CONTRAIL_CONTAINER_TAG=${tag}"
     build_arg_opts+=" --build-arg LINUX_DISTR_VER=${LINUX_DISTR_VER}"
     build_arg_opts+=" --build-arg LINUX_DISTR=${LINUX_DISTR}"
-    build_arg_opts+=" --build-arg CONTRAIL_CONTAINER_TAG=${tag}"
   fi
   build_arg_opts+=" --build-arg GENERAL_EXTRA_RPMS=\"${GENERAL_EXTRA_RPMS}\""
   build_arg_opts+=" --build-arg BASE_EXTRA_RPMS=\"${BASE_EXTRA_RPMS}\""
