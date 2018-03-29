@@ -144,3 +144,34 @@ function get_vrouter_physical_iface() {
   fi
   get_default_physical_iface
 }
+
+function create_lbaas_auth_conf() {
+    read -r -d '' openstack_lbaas_auth << EOM
+[BARBICAN]
+admin_tenant_name = service
+admin_user = ${BARBICAN_USER}
+admin_password = ${BARBICAN_PASSWORD}
+auth_url = $KEYSTONE_AUTH_PROTO://${KEYSTONE_AUTH_HOST}:${KEYSTONE_AUTH_ADMIN_PORT}${KEYSTONE_AUTH_URL_VERSION}
+region = $KEYSTONE_AUTH_REGION_NAME
+user_domain_name = $KEYSTONE_AUTH_USER_DOMAIN_NAME
+project_domain_name = $KEYSTONE_AUTH_PROJECT_DOMAIN_NAME
+region_name = $KEYSTONE_AUTH_REGION_NAME
+insecure = ${KEYSTONE_AUTH_INSECURE}
+certfile = $KEYSTONE_AUTH_CERTFILE
+keyfile = $KEYSTONE_AUTH_KEYFILE
+cafile = $KEYSTONE_AUTH_CA_CERTFILE
+EOM
+    read -r -d '' kubernetes_lbaas_auth << EOM
+[KUBERNETES]
+kubernetes_token=$K8S_TOKEN
+kubernetes_api_server=${KUBERNETES_API_SERVER:-${DEFAULT_LOCAL_IP}}
+kubernetes_api_port=${KUBERNETES_API_PORT:-8080}
+kubernetes_api_secure_port=${KUBERNETES_API_SECURE_PORT:-6443}
+EOM
+    echo "INFO: Preparing /etc/contrail/contrail-lbaas-auth.conf"
+    cat << EOM > /etc/contrail/contrail-lbaas-auth.conf
+$openstack_lbaas_auth
+$kubernetes_lbaas_auth
+EOM
+}
+
