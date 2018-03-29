@@ -9,6 +9,3 @@ RUN yum install -y openssl && \
 COPY *.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
-
-LABEL net.juniper.contrail=certmonger
-LABEL net.juniper.node=certmonger

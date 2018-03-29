@@ -7,5 +7,4 @@ COPY entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/contrail-control"]
 
-LABEL net.juniper.nodemgr.filter.name=contrail-control
 LABEL net.juniper.contrail.service=control

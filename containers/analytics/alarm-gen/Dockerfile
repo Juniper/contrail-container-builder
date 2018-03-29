@@ -7,5 +7,4 @@ COPY entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/python","/usr/bin/contrail-alarm-gen","-c","/etc/contrail/contrail-alarm-gen.conf"]
 
-LABEL net.juniper.nodemgr.filter.name=contrail-alarm-gen
 LABEL net.juniper.contrail.service=alarm-gen

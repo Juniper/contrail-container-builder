@@ -13,5 +13,4 @@ COPY entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/contrail-vrouter-agent"]
 
-LABEL net.juniper.nodemgr.filter.name=contrail-vrouter-agent
 LABEL net.juniper.contrail.service=agent
