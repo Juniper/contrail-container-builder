@@ -21,5 +21,4 @@ ENTRYPOINT ["/docker-entrypoint.sh"]
 WORKDIR /opt/$KAFKA_DISTRO_NAME
 CMD ["bin/kafka-server-start.sh", "config/server.properties"]
 
-LABEL net.juniper.nodemgr.filter.name=kafka
 LABEL net.juniper.contrail.service=kafka

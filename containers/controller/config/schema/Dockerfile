@@ -10,5 +10,4 @@ RUN yum clean all -y && \
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/python","/usr/bin/contrail-schema","--conf_file","/etc/contrail/contrail-schema.conf","--conf_file","/etc/contrail/contrail-keystone-auth.conf"]
 
-LABEL net.juniper.nodemgr.filter.name=contrail-schema
 LABEL net.juniper.contrail.service=schema
