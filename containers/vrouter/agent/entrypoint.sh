@@ -187,8 +187,6 @@ cleanup_lbaas_netns_config
 
 add_ini_params_from_env VROUTER_AGENT /etc/contrail/contrail-vrouter-agent.conf
 
-echo "INFO: check core pattern"
-sysctl kernel.core_pattern
 echo "INFO: /etc/contrail/contrail-vrouter-agent.conf"
 cat /etc/contrail/contrail-vrouter-agent.conf
 
