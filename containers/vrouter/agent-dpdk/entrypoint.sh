@@ -94,5 +94,7 @@ for pci in ${pci_address//,/ } ; do
     wait_device_for_driver $DPDK_UIO_DRIVER $pci
 done
 
+create_lbaas_auth_conf
+
 echo "INFO: exec '$cmd'"
 exec $cmd
