@@ -554,3 +554,8 @@ EOM
     fi
     return $ret
 }
+
+function cleanup_lbaas_netns_config() {
+    rm -rf /var/lib/contrail/loadbalancer/*
+    rm -rf /var/run/netns/
+}
