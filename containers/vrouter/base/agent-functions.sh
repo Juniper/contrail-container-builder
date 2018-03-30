@@ -350,7 +350,7 @@ function prepare_phys_int_dpdk
     local gateway=${VROUTER_GATEWAY:-"$default_gw_metric"}
     local pci=$(get_pci_address_for_nic $phys_int)
     echo "INFO: phys_int=$phys_int phys_int_mac=$phys_int_mac, pci=$pci, addrs=[$addrs], gateway=$gateway"
-    if [[ -z "$phys_int" || -z "$phys_int_mac" || "$pci" || "$addrs" ]] ; then
+    if [[ -z "$phys_int" || -z "$phys_int_mac" || -z "$pci" || -z "$addrs" ]] ; then
         echo "ERROR: failed to detect one of mandatory NIC parameters"
         return 1
     fi
