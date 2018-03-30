@@ -115,14 +115,14 @@ config.dns.server_port = ${dns_server_port:-"'"$DNS_INTROSPECT_PORT"'"};
 config.dns.statusURL = ${dns_statusURL:-'"/Snh_PageReq?x=AllEntries%20VdnsServersReq"'};
 
 config.vcenter = {};
-config.vcenter.server_ip = '127.0.0.1';         //vCenter IP
-config.vcenter.server_port = '443';             //Port
-config.vcenter.authProtocol = 'https';          //http or https
-config.vcenter.datacenter = 'vcenter';          //datacenter name
-config.vcenter.dvsswitch = 'vswitch';           //dvsswitch name
-config.vcenter.strictSSL = false;               //Validate the certificate or ignore
-config.vcenter.ca = '';                         //specify the certificate key file
-config.vcenter.wsdl = '/usr/src/contrail/contrail-web-core/webroot/js/vim.wsdl';
+config.vcenter.server_ip = ${VCENTER_SERVER:-'"127.0.0.1"'};         //vCenter IP
+config.vcenter.server_port = '443';                                  //Port
+config.vcenter.authProtocol = ${VCENTER_AUTH_PROTOCOL:-'"https"'};   //http or https
+config.vcenter.datacenter = ${VCENTER_DATACENTER:-'"vcenter"'};      //datacenter name
+config.vcenter.dvsswitch = ${VCENTER_DVSWITCH:-'"vswitch"'};         //dvsswitch name
+config.vcenter.strictSSL = false;                                    //Validate the certificate or ignore
+config.vcenter.ca = '';                                              //specify the certificate key file
+config.vcenter.wsdl = ${VCENTER_WSDL_PATH:-'"/usr/src/contrail/contrail-web-core/webroot/js/vim.wsdl"'};
 
 config.introspect = {};
 config.introspect.ssl = {};
