@@ -42,7 +42,7 @@ function disable_swap() {
   # todo: uncomment the unmount of tmpfs in case of swapoff hangs
   #umount -a -t tmpfs
   swapoff -a
-  sed -i.bak '/^[^#].*[ \t]\+swap[ \t]\+/ s/(.*\)/#\1/g' /etc/fstab
+  sed -i.bak '/^[^#].*[ \t]\+swap[ \t]\+/ s/\(.*\)/#\1/g' /etc/fstab
 }
 
 function install_for_ubuntu() {
@@ -78,12 +78,16 @@ EOF
   setenforce 0 || true
 
   if [ -f /etc/selinux/config ] && grep "^[ ]*SELINUX[ ]*=" /etc/selinux/config ; then
-    sed -i 's/^[ ]*SELINUX[ ]*=/SELINUX=permissive/g' /etc/selinux/config
+    sed -i 's/^[ ]*SELINUX[ ]*=.*/SELINUX=permissive/g' /etc/selinux/config
   else
     echo "SELINUX=permissive" >> /etc/selinux/config
   fi
 
-  yum install -y kubelet-1.7.4-0 kubeadm-1.7.4-0 kubectl-1.7.4-0 docker ntp
+  pkgs_to_install='kubelet kubeadm kubectl ntp'
+  if ! docker --version 2>&1 ; then
+    pkgs_to_install+=' docker'
+  fi
+  yum install -y \$pkgs_to_install
   systemctl enable docker && systemctl start docker
   systemctl enable kubelet && systemctl start kubelet
   systemctl enable ntpd.service && systemctl start ntpd.service
@@ -105,13 +109,28 @@ case "${LINUX_ID}" in
     ;;
 esac
 
+need_kubelet_restart='false'
+kubelet_cfg_file='/etc/systemd/system/kubelet.service.d/10-kubeadm.conf'
+
 # Contrail, at this point in time, does not install CNI/vrouter-agent on nodes marked as control.
 # In a typcical Kubernetes install, kubelets expects to find CNI plugin in nodes they are running.
 # When it does not find it, the corresponding node is flagged as not ready.
 # Our recommendation is to start kubelet with CNI not-enabled.
 if [[ ! ,$AGENT_NODES, == *,$HOST_IP,* ]]; then
   echo "INFO: Node $HOST_IP is not an agent - disable CNI on it."
-  sed -i "s|^\(.*KUBELET_NETWORK_ARGS=.*\)$|#\1|" /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+  sed -i "s|^\(.*KUBELET_NETWORK_ARGS=.*\)$|#\1|" "\$kubelet_cfg_file"
+  need_kubelet_restart='true'
+fi
+
+docker_cgroup=\$(docker info | awk '/Cgroup Driver:/ {print(\$3)}')
+if [[ -n "\$docker_cgroup" ]] ; then
+  echo "INFO: Change kubelet cgroups to \$docker_cgroup"
+  sed -i "s/--cgroup-driver=[[:alnum:]]*/--cgroup-driver=\$docker_cgroup/g" "\$kubelet_cfg_file"
+  need_kubelet_restart='true'
+fi
+
+if [[ "\$need_kubelet_restart" == 'true' ]] ; then
+  echo "INFO: restart kubelet service"
   systemctl daemon-reload
   systemctl restart kubelet.service
 fi
@@ -119,16 +138,13 @@ fi
 EOS
 
 # assignment doesn't work under sudo
-case "${LINUX_ID}" in
-  "ubuntu" )
-    kube_ver="v$(kubectl version --short=true 2>/dev/null | sed 's/.* v//')"
-    join_flags='--discovery-token-unsafe-skip-ca-verification'
-    ;;
-  "centos" | "rhel" )
-    kube_ver='v1.7.4'
-    join_flags=''
-    ;;
-esac
+kube_ver="v$(kubectl version --short=true 2>/dev/null | sed 's/.* v//')"
+join_flags='--discovery-token-unsafe-skip-ca-verification'
+
+api_srv_opts=''
+if [[ -n "$KUBERNETES_API_SERVER" ]] ; then
+  api_srv_opts="--apiserver-advertise-address $KUBERNETES_API_SERVER"
+fi
 
 sudo -u root /bin/bash << EOS
 # cloud-init of oficial AWS CentOS image at first boot dynamically changes hostname to short name while static name is full one.
@@ -140,7 +156,7 @@ fi
 
 if [[ -z "$join_token" ]]; then
   echo "INFO: kubectl version is $kube_ver"
-  kubeadm init --kubernetes-version $kube_ver
+  kubeadm init $api_srv_opts --kubernetes-version $kube_ver
 
   mkdir -p $HOME/.kube
   cp -u /etc/kubernetes/admin.conf $HOME/.kube/config
@@ -148,11 +164,11 @@ if [[ -z "$join_token" ]]; then
 else
   if [[ -z "$KUBERNETES_API_SERVER" ]]; then
     echo ERROR: Kubernetes master node IP is not specified in KUBERNETES_API_SERVER
+    exit -1
   fi
   echo Join to $KUBERNETES_API_SERVER:6443
   kubeadm join $join_flags --token $join_token $KUBERNETES_API_SERVER:6443
 fi
-
 EOS
 
 if [[ -z "$join_token" ]]; then
