@@ -135,5 +135,3 @@ chmod 600 $SERVER_KEYFILE || fail "Failed to chmod 600 on $SERVER_KEYFILE"
 openssl req -config $openssl_config_file -key $SERVER_KEYFILE -new  -out $csr_file || fail "Failed to create CSR"
 yes | openssl ca -config $openssl_config_file -extensions v3_req -days 365 -in $csr_file -out $SERVER_CERTFILE || fail "Failed to sign certificate"
 chmod 644 $SERVER_CERTFILE || fail "Failed to chmod 644 on $SERVER_CERTFILE"
-
-exec $@

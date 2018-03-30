@@ -16,7 +16,6 @@ RUN mkdir -p -m 777 /var/crashes && \
     yum install -y contrail-lib contrail-setup contrail-utils python-contrail && \
     ldconfig
 
-COPY 10-core-pattern.conf /etc/sysctl.d/
 COPY *.sh /
 
 CMD ["/usr/bin/tail","-f","/dev/null"]

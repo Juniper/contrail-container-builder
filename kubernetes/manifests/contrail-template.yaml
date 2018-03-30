@@ -324,6 +324,21 @@ spec:
         operator: Exists
         effect: NoSchedule
       hostNetwork: true
+      initContainers:
+      - name: contrail-node-init
+        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        securityContext:
+          privileged: true
+        env:
+        - name: CONTRAIL_STATUS_IMAGE
+          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+        envFrom:
+        - configMapRef:
+            name: env
+        volumeMounts:
+        - mountPath: /host/usr/bin
+          name: host-usr-bin
       containers:
       - name: contrail-analytics-api
         image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-api:{{CONTRAIL_CONTAINER_TAG}}"
@@ -407,6 +422,9 @@ spec:
       - name: docker-unix-socket
         hostPath:
           path: /var/run
+      - name: host-usr-bin
+        hostPath:
+          path: /usr/bin
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -433,6 +451,21 @@ spec:
         operator: Exists
         effect: NoSchedule
       hostNetwork: true
+      initContainers:
+      - name: contrail-node-init
+        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        securityContext:
+          privileged: true
+        env:
+        - name: CONTRAIL_STATUS_IMAGE
+          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+        envFrom:
+        - configMapRef:
+            name: env
+        volumeMounts:
+        - mountPath: /host/usr/bin
+          name: host-usr-bin
       containers:
       - name: contrail-controller-control
         image: "{{CONTRAIL_REGISTRY}}/contrail-controller-control-control:{{CONTRAIL_CONTAINER_TAG}}"
@@ -497,6 +530,9 @@ spec:
           path: /var/run
       - name: dns-config
         emptyDir: {}
+      - name: host-usr-bin
+        hostPath:
+          path: /usr/bin
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -523,6 +559,21 @@ spec:
         operator: Exists
         effect: NoSchedule
       hostNetwork: true
+      initContainers:
+      - name: contrail-node-init
+        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        securityContext:
+          privileged: true
+        env:
+        - name: CONTRAIL_STATUS_IMAGE
+          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+        envFrom:
+        - configMapRef:
+            name: env
+        volumeMounts:
+        - mountPath: /host/usr/bin
+          name: host-usr-bin
       containers:
       - name: contrail-controller-config-api
         image: "{{CONTRAIL_REGISTRY}}/contrail-controller-config-api:{{CONTRAIL_CONTAINER_TAG}}"
@@ -592,6 +643,9 @@ spec:
       - name: docker-unix-socket
         hostPath:
           path: /var/run
+      - name: host-usr-bin
+        hostPath:
+          path: /usr/bin
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -618,6 +672,21 @@ spec:
         operator: Exists
         effect: NoSchedule
       hostNetwork: true
+      initContainers:
+      - name: contrail-node-init
+        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        securityContext:
+          privileged: true
+        env:
+        - name: CONTRAIL_STATUS_IMAGE
+          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+        envFrom:
+        - configMapRef:
+            name: env
+        volumeMounts:
+        - mountPath: /host/usr/bin
+          name: host-usr-bin
       containers:
       - name: contrail-controller-webui-job
         image: "{{CONTRAIL_REGISTRY}}/contrail-controller-webui-job:{{CONTRAIL_CONTAINER_TAG}}"
@@ -641,6 +710,9 @@ spec:
       - name: webui-logs
         hostPath:
           path: /var/log/contrail/webui
+      - name: host-usr-bin
+        hostPath:
+          path: /usr/bin
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -760,6 +832,21 @@ spec:
         effect: NoSchedule
       automountServiceAccountToken: false
       hostNetwork: true
+      initContainers:
+      - name: contrail-node-init
+        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        securityContext:
+          privileged: true
+        env:
+        - name: CONTRAIL_STATUS_IMAGE
+          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+        envFrom:
+        - configMapRef:
+            name: env
+        volumeMounts:
+        - mountPath: /host/usr/bin
+          name: host-usr-bin
       containers:
       - name: contrail-kube-manager
         image: "{{CONTRAIL_REGISTRY}}/contrail-kubernetes-kube-manager:{{CONTRAIL_CONTAINER_TAG}}"
@@ -781,6 +868,9 @@ spec:
       - name: pod-secret
         secret:
           secretName: contrail-kube-manager-token
+      - name: host-usr-bin
+        hostPath:
+          path: /usr/bin
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -811,6 +901,20 @@ spec:
       automountServiceAccountToken: false
       hostNetwork: true
       initContainers:
+      - name: contrail-node-init
+        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        securityContext:
+          privileged: true
+        env:
+        - name: CONTRAIL_STATUS_IMAGE
+          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+        envFrom:
+        - configMapRef:
+            name: env
+        volumeMounts:
+        - mountPath: /host/usr/bin
+          name: host-usr-bin
       - name: contrail-vrouter-kernel-init
         image: "{{CONTRAIL_REGISTRY}}/contrail-vrouter-kernel-init:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -938,6 +1042,9 @@ spec:
       - name: agent-logs
         hostPath:
           path: /var/log/contrail/agent
+      - name: host-usr-bin
+        hostPath:
+          path: /usr/bin
 
 # Meta information section
 ---

@@ -1,8 +1,7 @@
 #!/bin/bash
 
 function pre_start_init() {
-   # this file has to be applied manually in containers
-   sysctl -p /etc/sysctl.d/10-core-pattern.conf
+    :
 }
 
 function is_tsn() {
