@@ -5,20 +5,28 @@ FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
 ARG KAFKA_DISTRO_NAME=kafka_2.11-0.9.0.1
 
 ENV KAFKA_DIR=/opt/$KAFKA_DISTRO_NAME \
-    KAFKA_CONF_DIR=/opt/$KAFKA_DISTRO_NAME/config
+    KAFKA_CONF_DIR=/opt/$KAFKA_DISTRO_NAME/config \
+    LOG_DIR=/var/log/kafka
+
 
 RUN yum install -y java iproute && \
     curl -o $KAFKA_DISTRO_NAME.tgz http://archive.apache.org/dist/kafka/0.9.0.1/$KAFKA_DISTRO_NAME.tgz && \
     tar -xvf $KAFKA_DISTRO_NAME.tgz && \
+    mkdir -p /opt/$KAFKA_DISTRO_NAME && \
     mv $KAFKA_DISTRO_NAME /opt/$KAFKA_DISTRO_NAME && \
     rm -f $KAFKA_DISTRO_NAME.tgz && \
     yum clean all -y && \
-    rm -rf /var/cache/yum
+    rm -rf /var/cache/yum && \
+    groupadd kafka && adduser -M -G kafka kafka && \
+    mkdir -p $LOG_DIR && \
+    chown -R kafka:kafka $LOG_DIR && \
+    chown -R kafka:kafka $KAFKA_DIR
 
 COPY docker-entrypoint.sh /
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 WORKDIR /opt/$KAFKA_DISTRO_NAME
+USER kafka:kafka
 CMD ["bin/kafka-server-start.sh", "config/server.properties"]
 
 LABEL net.juniper.nodemgr.filter.name=kafka
