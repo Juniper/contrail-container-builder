@@ -173,6 +173,32 @@ function get_physical_nic_and_mac()
   echo $nic $mac
 }
 
+# Find the secondary interface on a ContrailVM 
+# update vmware_physical_interface as the overlay switch interface 
+function get_vmware_physical_iface()
+{
+  iface_list=`ip -o link show | awk -F': ' '{print $2}'`
+  for iface in $iface_list; do
+     ifconfig $i | grep 'inet*' > /dev/null 2>&1
+     if [[ $? == 0 ]]; then
+         continue;
+     elif [[ "$iface" == "vhost0" ]] ; then
+         continue;
+     elif [[ "$iface" == "docker0" ]]; then
+         continue;
+     elif [[ "$iface" == "pkt"* ]]; then
+         continue;
+     else
+       vmware_int=$iface
+     fi
+  done
+  if [[ "$vmware_int" == '' ]]; then
+      echo "ERROR: vmware_physical_interface not configured"
+      exit -1
+  fi
+  echo $vmware_int
+}
+
 function enable_hugepages_to_coredump() {
     local name=$1
     local pid=$(pidof $name)
