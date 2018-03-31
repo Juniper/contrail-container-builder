@@ -1,5 +1,7 @@
 FROM ubuntu:16.04
 
+ARG CONTAINER_NAME
+
 # This image is used to build vrouter.ko for current ubuntu OS that it's running on.
 # This container uses rpm packages to obtain source of vrouter kernel driver.
 # The container needs /usr/src and /lib/modules mounted from the host to build driver.
@@ -22,5 +24,4 @@ COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-LABEL net.juniper.contrail=vrouter-build-driver-init
-LABEL net.juniper.node=agent
+LABEL net.juniper.contrail.container.name=$CONTAINER_NAME
