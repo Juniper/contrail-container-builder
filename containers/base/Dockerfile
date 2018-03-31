@@ -1,7 +1,7 @@
 # This is the base for contrail specific children
 
-ARG CONTRAIL_REGISTRY=localhost:5000
-ARG CONTRAIL_CONTAINER_TAG=4.1.0.0-6-centos7-newton
+ARG CONTRAIL_REGISTRY
+ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG BASE_EXTRA_RPMS=""
