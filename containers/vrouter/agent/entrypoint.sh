@@ -7,9 +7,9 @@ pre_start_init
 
 if [ "$CLOUD_ORCHESTRATOR" == "vcenter" ]; then
     HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'vmware'}
-    IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
+    vmware_phy_int=$(get_vmware_physical_iface)
     read -r -d '' vmware_options << EOM
-vmware_physical_interface = $phys_int
+vmware_physical_interface = $vmware_phys_int
 vmware_mode = vcenter
 EOM
 else
