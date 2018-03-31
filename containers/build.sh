@@ -51,15 +51,17 @@ function process_container() {
   tag="${CONTRAIL_CONTAINER_TAG}"
   local build_arg_opts=''
   if [[ "$docker_ver" < '17.06' ]] ; then
-    cat $docker_file | sed \
-      -e 's/\(^ARG CONTRAIL_REGISTRY=.*\)/#\1/' \
-      -e 's/\(^ARG CONTRAIL_CONTAINER_TAG=.*\)/#\1/' \
+    # hack change for all inherited from general-base (change FROM string and remove ARGS before)
+    cat ${docker_file} | tr '\n' '\f' | \
+      sed -e 's|ARG.*\fARG.*\fFROM ${CONTRAIL_REGISTRY}/\([^:]*\):${CONTRAIL_CONTAINER_TAG}|FROM '${CONTRAIL_REGISTRY}'/\1:'${tag}'|' | \
+      tr '\f' '\n' > ${docker_file}.nofromargs
+    # simple change for general-base
+    sed -i \
       -e 's/\(^ARG LINUX_DISTR_VER=.*\)/#\1/' \
       -e 's/\(^ARG LINUX_DISTR=.*\)/#\1/' \
       -e "s/\$LINUX_DISTR_VER/$LINUX_DISTR_VER/g" \
       -e "s/\$LINUX_DISTR/$LINUX_DISTR/g" \
-      -e 's|^FROM ${CONTRAIL_REGISTRY}/\([^:]*\):${CONTRAIL_CONTAINER_TAG}|FROM '${CONTRAIL_REGISTRY}'/\1:'${tag}'|' \
-      > ${docker_file}.nofromargs
+      ${docker_file}.nofromargs
     docker_file="${docker_file}.nofromargs"
   else
     build_arg_opts+=" --build-arg CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY}"
@@ -72,6 +74,7 @@ function process_container() {
   build_arg_opts+=" --build-arg YUM_ENABLE_REPOS=\"$YUM_ENABLE_REPOS\""
   [ -n "$PYTHON_PIP_RPM" ] && build_arg_opts+=" --build-arg PYTHON_PIP_RPM=$PYTHON_PIP_RPM"
   [ -n "$PYTHON_PIP_VENV" ] && build_arg_opts+=" --build-arg PYTHON_PIP_VENV=$PYTHON_PIP_VENV"
+  build_arg_opts+=" --build-arg CONTAINER_NAME=\"${container_name}\""
 
   local logfile='build-'$container_name'.log'
   docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} \
