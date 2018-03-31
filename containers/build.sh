@@ -72,6 +72,7 @@ function process_container() {
   build_arg_opts+=" --build-arg YUM_ENABLE_REPOS=\"$YUM_ENABLE_REPOS\""
   [ -n "$PYTHON_PIP_RPM" ] && build_arg_opts+=" --build-arg PYTHON_PIP_RPM=$PYTHON_PIP_RPM"
   [ -n "$PYTHON_PIP_VENV" ] && build_arg_opts+=" --build-arg PYTHON_PIP_VENV=$PYTHON_PIP_VENV"
+  build_arg_opts+=" --build-arg CONTAINER_NAME=\"${container_name}\""
 
   local logfile='build-'$container_name'.log'
   docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} \

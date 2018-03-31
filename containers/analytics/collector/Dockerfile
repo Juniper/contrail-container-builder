@@ -1,5 +1,5 @@
-ARG CONTRAIL_REGISTRY=localhost:5000
-ARG CONTRAIL_CONTAINER_TAG=4.1.0.0-6-centos7-newton
+ARG CONTRAIL_REGISTRY
+ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-analytics-base:${CONTRAIL_CONTAINER_TAG}
 
 COPY entrypoint.sh /
@@ -8,3 +8,4 @@ ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/contrail-collector"]
 
 LABEL net.juniper.contrail.service=collector
+LABEL net.juniper.contrail.container.name=$CONTAINER_NAME

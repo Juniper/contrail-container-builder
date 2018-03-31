@@ -22,5 +22,4 @@ COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-LABEL net.juniper.contrail=vrouter-build-driver-init
-LABEL net.juniper.node=agent
+LABEL net.juniper.contrail.container.name=$CONTAINER_NAME

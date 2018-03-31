@@ -1,5 +1,5 @@
-ARG CONTRAIL_REGISTRY=localhost:5000
-ARG CONTRAIL_CONTAINER_TAG=4.1.0.0-6-centos7-newton
+ARG CONTRAIL_REGISTRY
+ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-vrouter-base:${CONTRAIL_CONTAINER_TAG}
 
 RUN yum install -y contrail-vrouter-dpdk contrail-vrouter-dpdk-init && \
@@ -12,5 +12,5 @@ COPY entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/contrail-vrouter-dpdk"]
 
-LABEL net.juniper.contrail=agent
-LABEL net.juniper.node=agent
+LABEL net.juniper.contrail.service=agent-dpdk
+LABEL net.juniper.contrail.container.name=$CONTAINER_NAME
