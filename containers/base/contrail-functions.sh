@@ -145,7 +145,7 @@ function get_vrouter_physical_iface() {
 }
 
 function create_lbaas_auth_conf() {
-    read -r -d '' openstack_lbaas_auth << EOM
+    read -r -d '' openstack_lbaas_auth << EOM || true
 [BARBICAN]
 admin_tenant_name = service
 admin_user = ${BARBICAN_USER}
@@ -160,7 +160,7 @@ certfile = $KEYSTONE_AUTH_CERTFILE
 keyfile = $KEYSTONE_AUTH_KEYFILE
 cafile = $KEYSTONE_AUTH_CA_CERTFILE
 EOM
-    read -r -d '' kubernetes_lbaas_auth << EOM
+    read -r -d '' kubernetes_lbaas_auth << EOM || true
 [KUBERNETES]
 kubernetes_token=$K8S_TOKEN
 kubernetes_api_server=${KUBERNETES_API_SERVER:-${DEFAULT_LOCAL_IP}}
@@ -173,4 +173,3 @@ $openstack_lbaas_auth
 $kubernetes_lbaas_auth
 EOM
 }
-
