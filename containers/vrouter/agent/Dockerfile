@@ -1,7 +1,8 @@
-ARG CONTRAIL_REGISTRY=localhost:5000
-ARG CONTRAIL_CONTAINER_TAG=4.1.0.0-6-centos7-newton
+ARG CONTRAIL_REGISTRY
+ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-vrouter-base:${CONTRAIL_CONTAINER_TAG}
 
+ARG CONTAINER_NAME
 
 RUN yum install -y dhclient NetworkManager contrail-vrouter-agent haproxy libvirt-client \
       python-opencontrail-vrouter-netns python-contrail-vrouter-api && \
@@ -15,3 +16,4 @@ ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/contrail-vrouter-agent"]
 
 LABEL net.juniper.contrail.service=agent
+LABEL net.juniper.contrail.container.name=$CONTAINER_NAME
