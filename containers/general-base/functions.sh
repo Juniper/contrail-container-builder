@@ -107,7 +107,10 @@ function get_ctrl_data_listen_ip() {
 }
 
 function get_listen_ip_for_node() {
-  local ip=$(get_ctrl_data_listen_ip)
+  # Get ip from control data network, when querying for CONTROL_NODES
+  if [ "$1" = "CONTROL" ] ; then
+    local ip=$(get_ctrl_data_listen_ip)
+  fi
   if [[ -z "$ip" ]] ; then
     ip=$(find_my_ip_and_order_for_node $1  | cut -d ' ' -f 1)
   fi
