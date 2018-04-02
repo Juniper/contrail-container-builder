@@ -9,6 +9,5 @@ COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-LABEL net.juniper.nodemgr.filter.name=contrail-vrouter-network-init
 LABEL net.juniper.contrail=agent
 LABEL net.juniper.node=agent

@@ -7,5 +7,4 @@ COPY entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/contrail-query-engine","--conf_file","/etc/contrail/contrail-query-engine.conf"]
 
-LABEL net.juniper.nodemgr.filter.name=contrail-query-engine
 LABEL net.juniper.contrail.service=query-engine
