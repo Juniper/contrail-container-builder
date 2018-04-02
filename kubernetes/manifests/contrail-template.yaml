@@ -873,6 +873,8 @@ spec:
       - name: rabbitmq
         image: "{{CONTRAIL_REGISTRY}}/contrail-external-rabbitmq:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
+        - name: NODE_TYPE
+          value: config
         envFrom:
         - configMapRef:
             name: env
