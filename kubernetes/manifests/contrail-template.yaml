@@ -345,6 +345,8 @@ spec:
         env:
         - name: CONTRAIL_STATUS_IMAGE
           value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+        - name: DATABASE_NODEMGR__DEFAULTS__minimum_diskGB
+          value: "2"
         envFrom:
         - configMapRef:
             name: env
@@ -711,6 +713,8 @@ spec:
           value: "9041"
         - name: CASSANDRA_JMX_LOCAL_PORT
           value: "7201"
+        - name: CONFIG_NODEMGR__DEFAULTS__minimum_diskGB
+          value: "2"
 # todo: there is type Socket in new kubernetes, it is possible to use full
 # path:
 # hostPath:
@@ -873,6 +877,8 @@ spec:
       - name: rabbitmq
         image: "{{CONTRAIL_REGISTRY}}/contrail-external-rabbitmq:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
+        - name: NODE_TYPE
+          value: config
         envFrom:
         - configMapRef:
             name: env
