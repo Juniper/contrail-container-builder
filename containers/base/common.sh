@@ -178,7 +178,7 @@ SANDESH_KEYFILE=${SANDESH_KEYFILE:-${SERVER_KEYFILE}}
 SANDESH_CA_CERTFILE=${SANDESH_CA_CERTFILE:-${SERVER_CA_CERTFILE}}
 
 if is_enabled ${INTROSPECT_SSL_ENABLE} ; then
-  read -r -d '' sandesh_client_config << EOM
+  read -r -d '' sandesh_client_config << EOM || true
 [SANDESH]
 introspect_ssl_enable=${INTROSPECT_SSL_ENABLE}
 sandesh_ssl_enable=${SANDESH_SSL_ENABLE}
@@ -187,7 +187,7 @@ sandesh_certfile=${SANDESH_CERTFILE}
 sandesh_ca_cert=${SANDESH_CA_CERTFILE}
 EOM
 else
-  read -r -d '' sandesh_client_config << EOM
+  read -r -d '' sandesh_client_config << EOM || true
 [SANDESH]
 introspect_ssl_enable=${INTROSPECT_SSL_ENABLE}
 sandesh_ssl_enable=${SANDESH_SSL_ENABLE}
@@ -195,7 +195,7 @@ EOM
 fi
 
 if is_enabled ${XMPP_SSL_ENABLE} ; then
-  read -r -d '' xmpp_certs_config << EOM
+  read -r -d '' xmpp_certs_config << EOM || true
 xmpp_server_cert=${XMPP_SERVER_CERTFILE}
 xmpp_server_key=${XMPP_SERVER_KEYFILE}
 xmpp_ca_cert=${XMPP_SERVER_CA_CERTFILE}
@@ -216,13 +216,13 @@ RABBITMQ_CLIENT_SSL_CACERTFILE=${RABBITMQ_CLIENT_SSL_CACERTFILE:-${SERVER_CA_CER
 
 # first group is used in analytics and control services
 # second group is used in config service, kubernetes_manager, ironic_notification_manager
-read -r -d '' rabbitmq_config << EOM
+read -r -d '' rabbitmq_config << EOM || true
 rabbitmq_vhost=$RABBITMQ_VHOST
 rabbitmq_user=$RABBITMQ_USER
 rabbitmq_password=$RABBITMQ_PASSWORD
 rabbitmq_use_ssl=$RABBITMQ_USE_SSL
 EOM
-read -r -d '' rabbit_config << EOM
+read -r -d '' rabbit_config << EOM || true
 rabbit_vhost=$RABBITMQ_VHOST
 rabbit_user=$RABBITMQ_USER
 rabbit_password=$RABBITMQ_PASSWORD
@@ -230,13 +230,13 @@ rabbit_use_ssl=$RABBITMQ_USE_SSL
 EOM
 
 if is_enabled ${RABBITMQ_USE_SSL} ; then
-  read -r -d '' rabbitmq_ssl_config << EOM
+  read -r -d '' rabbitmq_ssl_config << EOM || true
 rabbitmq_ssl_version=$RABBITMQ_SSL_VER
 rabbitmq_ssl_keyfile=$RABBITMQ_CLIENT_SSL_KEYFILE
 rabbitmq_ssl_certfile=$RABBITMQ_CLIENT_SSL_CERTFILE
 rabbitmq_ssl_ca_certs=$RABBITMQ_CLIENT_SSL_CACERTFILE
 EOM
-  read -r -d '' kombu_ssl_config << EOM
+  read -r -d '' kombu_ssl_config << EOM || true
 kombu_ssl_version=$RABBITMQ_SSL_VER
 kombu_ssl_certfile=$RABBITMQ_CLIENT_SSL_CERTFILE
 kombu_ssl_keyfile=$RABBITMQ_CLIENT_SSL_KEYFILE

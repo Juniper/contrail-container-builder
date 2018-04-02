@@ -8,7 +8,7 @@ pre_start_init
 if [ "$CLOUD_ORCHESTRATOR" == "vcenter" ]; then
     HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'vmware'}
     IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
-    read -r -d '' vmware_options << EOM
+    read -r -d '' vmware_options << EOM || true
 vmware_physical_interface = $phys_int
 vmware_mode = vcenter
 EOM
@@ -48,7 +48,7 @@ fi
 
 agent_mode_options="physical_interface_mac = $phys_int_mac"
 if is_dpdk ; then
-    read -r -d '' agent_mode_options << EOM
+    read -r -d '' agent_mode_options << EOM || true
 platform=${AGENT_MODE}
 physical_interface_mac=$phys_int_mac
 physical_interface_address=$pci_address
@@ -59,21 +59,21 @@ fi
 tsn_agent_mode=""
 if is_tsn ; then
     TSN_AGENT_MODE="tsn-no-forwarding"
-    read -r -d '' tsn_agent_mode << EOM
+    read -r -d '' tsn_agent_mode << EOM || true
 agent_mode = tsn-no-forwarding
 EOM
 fi
 
 subcluster_option=""
 if [[ -n ${SUBCLUSTER} ]]; then
-  read -r -d '' subcluster_option << EOM
+  read -r -d '' subcluster_option << EOM || true
 subcluster_name=${SUBCLUSTER}
 EOM
 fi
 
 tsn_server_list=""
 IFS=' ' read -ra TSN_SERVERS <<< "${TSN_NODES}"
-read -r -d '' tsn_server_list << EOM
+read -r -d '' tsn_server_list << EOM || true
 tsn_servers = ${TSN_SERVERS}
 EOM
 
