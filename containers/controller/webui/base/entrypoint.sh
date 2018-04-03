@@ -166,7 +166,7 @@ config.redisDBIndex = 3;
 config.CONTRAIL_SERVICE_RETRY_TIME = 300000; //5 minutes
 
 config.redis_server_port = '$REDIS_SERVER_PORT';
-config.redis_server_ip = '$REDIS_SERVER_IP';
+config.redis_server_ip = '127.0.0.1';
 config.redis_dump_file = '/var/lib/redis/dump-webui.rdb';
 config.redis_password = '$REDIS_SERVER_PASSWORD';
 
