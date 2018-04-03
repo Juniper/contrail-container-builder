@@ -79,7 +79,8 @@ low_watermark2.message_severity_level=${COLLECTOR_low_watermark2_message_severit
 
 [REDIS]
 port=$REDIS_SERVER_PORT
-server=$REDIS_SERVER_IP
+server=127.0.0.1
+password=$REDIS_SERVER_PASSWORD
 
 [CONFIGDB]
 config_db_server_list=$configdb_cql_servers

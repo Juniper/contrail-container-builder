@@ -28,6 +28,7 @@ zk_list=$ZOOKEEPER_ANALYTICS_SERVERS_SPACE_DELIM
 [REDIS]
 redis_query_port=$REDIS_SERVER_PORT
 redis_uve_list=$REDIS_SERVERS
+redis_password=$REDIS_SERVER_PASSWORD
 
 $sandesh_client_config
 EOM
