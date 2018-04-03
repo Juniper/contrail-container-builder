@@ -1,19 +1,12 @@
-#! /usr/bin/python
-#
-# Copyright (c) 2014 Juniper Networks, Inc. All rights reserved.
-#
-
 from optparse import OptionParser
 import subprocess
-import os
-import glob
-import platform
 import ConfigParser
+import operator
 import socket
-import re
 import requests
 import warnings
 import docker
+import six
 try:
     from requests.packages.urllib3.exceptions import SubjectAltNameWarning
     warnings.filterwarnings('ignore', category=SubjectAltNameWarning)
@@ -26,49 +19,66 @@ except:
 warnings.filterwarnings('ignore', ".*SNIMissingWarning.*")
 warnings.filterwarnings('ignore', ".*InsecurePlatformWarning.*")
 warnings.filterwarnings('ignore', ".*SubjectAltNameWarning.*")
-from StringIO import StringIO
 from lxml import etree
-from sandesh_common.vns.constants import ServiceHttpPortMap, \
-    NodeUVEImplementedServices, ServicesDefaultConfigurationFiles, \
-    BackupImplementedServices
-from distutils.version import LooseVersion
+from sandesh_common.vns.constants import ServiceHttpPortMap
+from sandesh_common.vns.constants import NodeUVEImplementedServices
+from sandesh_common.vns.constants import BackupImplementedServices
 
-DPDK_NETLINK_TCP_PORT = 20914
 
-CONTRAIL_SERVICES = {'vrouter' : {'nodemgr' : 'contrail-vrouter-nodemgr',
-                                   'agent' : 'contrail-vrouter-agent'},
-                     'control' : {'nodemgr' : 'contrail-control-nodemgr',
-                                  'control' : 'contrail-control',
-                                  'named' : 'contrail-named',
-                                  'dns' : 'contrail-dns'},
-                     'config' : {'nodemgr' : 'contrail-config-nodemgr',
-                                 'api' : 'contrail-api',
-                                 'schema' : 'contrail-schema',
-                                 'svc-monitor' : 'contrail-svc-monitor',
-                                 'device-manager' : 'contrail-device-manager'},
-                     'config-database' : ['cassandra',
-                                          'zookeeper',
-                                          'rabbitmq'],
-                     'analytics' : {'nodemgr' : 'contrail-analytics-nodemgr',
-                                    'api' : 'contrail-analytics-api',
-                                    'collector' : 'contrail-collector',
-                                    'query-engine' : 'contrail-query-engine',
-                                    'alarm-gen' : 'contrail-alarm-gen',
-                                    'snmp-collector' : 'contrail-snmp-collector',
-                                    'topology' : 'contrail-topology'},
-                     'analytics-database' : ['cassandra',
-                                             'zookeeper',
-                                             'kafka'],
-                     'webui' : ['web',
-                                'job',
-                                'redis'],
-                     'kubernetes' : {'kube-manager': 'contrail-kube-manager'},
-                    }
+CONTRAIL_SERVICES_TO_SANDESH_SVC = {
+    'vrouter': {
+        'nodemgr': 'contrail-vrouter-nodemgr',
+        'agent': 'contrail-vrouter-agent',
+    },
+    'control': {
+        'nodemgr': 'contrail-control-nodemgr',
+        'control': 'contrail-control',
+        'named': 'contrail-named',
+        'dns': 'contrail-dns',
+    },
+    'config': {
+        'nodemgr': 'contrail-config-nodemgr',
+        'api': 'contrail-api',
+        'schema': 'contrail-schema',
+        'svc-monitor': 'contrail-svc-monitor',
+        'device-manager': 'contrail-device-manager',
+        'cassandra': None,
+        'zookeeper': None,
+        'rabbitmq': None,
+    },
+    'analytics': {
+        'nodemgr': 'contrail-analytics-nodemgr',
+        'api': 'contrail-analytics-api',
+        'collector': 'contrail-collector',
+        'query-engine': 'contrail-query-engine',
+        'alarm-gen': 'contrail-alarm-gen',
+        'snmp-collector': 'contrail-snmp-collector',
+        'topology': 'contrail-topology',
+    },
+    'kubernetes': {
+        'kube-manager': 'contrail-kube-manager',
+    },
+    'database': {
+        'nodemgr': 'contrail-database-nodemgr',
+        'cassandra': None,
+        'zookeeper': None,
+        'kafka': None,
+    },
+    'webui': {
+        'web': None,
+        'job': None,
+    }
+}
 # TODO: Include vcenter-plugin
 
-(distribution, os_version, os_id) = \
-    platform.linux_distribution(full_distribution_name=0)
-distribution = distribution.lower()
+
+debug_output = False
+
+
+def print_debug(str):
+    if debug_output:
+        print("DEBUG: " + str)
+
 
 class EtreeToDict(object):
     """Converts the xml etree to dictionary/list of dictionary."""
@@ -89,9 +99,7 @@ class EtreeToDict(object):
             else:
                 a_list.append(rval)
 
-        if not a_list:
-            return None
-        return a_list
+        return a_list if a_list else None
     #end _handle_list
 
     def _get_one(self, xp, a_list=None):
@@ -140,25 +148,19 @@ class EtreeToDict(object):
         """
         xp = path.xpath(self.xpath)
         f = filter(lambda x: x.text == match, xp)
-        if len(f):
-            return f[0].text
-        return None
+        return f[0].text if len(f) else None
     #end find_entry
-
 #end class EtreeToDict
 
+
 class IntrospectUtil(object):
-# TODO: restore certs logic
-#    def __init__(self, ip, port, debug, timeout, keyfile, certfile, cacert):
-    def __init__(self, ip, port, debug, timeout):
+    def __init__(self, ip, port, timeout, keyfile, certfile, cacert):
         self._ip = ip
         self._port = port
-        self._debug = debug
         self._timeout = timeout
-# TODO: restore certs logic
-#        self._certfile = certfile
-#        self._keyfile = keyfile
-#        self._cacert = cacert
+        self._certfile = certfile
+        self._keyfile = keyfile
+        self._cacert = cacert
     #end __init__
 
     def _mk_url_str(self, path, secure=False):
@@ -173,164 +175,57 @@ class IntrospectUtil(object):
             resp = requests.get(url, timeout=self._timeout)
         except requests.ConnectionError:
             url = self._mk_url_str(path, True)
-            resp = requests.get(url, timeout=self._timeout)
-# TODO: restore certs logic
-#            resp = requests.get(url, timeout=self._timeout, verify=\
-#                    self._cacert, cert=(self._certfile, self._keyfile))
-        if resp.status_code == requests.codes.ok:
-            return etree.fromstring(resp.text)
-        else:
-            if self._debug:
-                print 'URL: %s : HTTP error: %s' % (url, str(resp.status_code))
+            resp = requests.get(url, timeout=self._timeout, 
+                verify=self._cacert, cert=(self._certfile, self._keyfile))
+        if resp.status_code != requests.codes.ok:
+            print_debug('URL: %s : HTTP error: %s' % (url, str(resp.status_code)))
             return None
 
+        return etree.fromstring(resp.text)
     #end _load
 
     def get_uve(self, tname):
         path = 'Snh_SandeshUVECacheReq?x=%s' % (tname)
         xpath = './/' + tname
         p = self._load(path)
-        if p is not None:
-            return EtreeToDict(xpath).get_all_entry(p)
-        else:
-            if self._debug:
-                print 'UVE: %s : not found' % (path)
+        if p is None:
+            print_debug('UVE: %s : not found' % (path))
             return None
-    #end get_uve
 
+        return EtreeToDict(xpath).get_all_entry(p)
+    #end get_uve
 #end class IntrospectUtil
 
-def get_http_server_port_from_cmdline_options(svc_name, debug):
-    name, instance = svc_name, None
-    name_instance = svc_name.rsplit(':', 1)
-    if len(name_instance) == 1:
-        # Try if it is systemd templated service
-        name_instance = svc_name.rsplit('@', 1)
-    if len(name_instance) == 2:
-        name, instance = name_instance
 
-    cmd = 'ps -eaf | grep %s | grep http_server_port' % (name)
-    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-    cmdout = p.communicate()[0]
-    processes = cmdout.splitlines()
-    for p in processes:
-        p = p.split()
-        try:
-            if instance:
-                wi = p.index('--worker_id')
-                if instance == p[wi+1]:
-                    pi = p.index('--http_server_port')
-                    return int(p[pi+1])
-            else:
-                pi = p.index('--http_server_port')
-                return int(p[pi+1])
-        except ValueError:
-            continue
-    return -1
-# end get_http_server_port_from_cmdline_options
-
-def _get_http_server_port_from_conf(svc_name, conf_file, debug):
-    try:
-        fp = open(conf_file)
-    except IOError as e:
-        if debug:
-            print '{0}: Could not read filename {1}'.format(\
-                svc_name, conf_file)
-        return -1
-    else:
-        data = StringIO('\n'.join(line.strip() for line in fp))
-    # Parse conf file
-    parser = ConfigParser.SafeConfigParser()
-    try:
-        parser.readfp(data)
-    except ConfigParser.ParsingError as e:
-        fp.close()
-        if debug:
-            print '{0}: Parsing error: {1}'.format(svc_name, \
-                str(e))
-        return -1
-    # Read DEFAULT.http_server_port from the conf file. If that fails try
-    # DEFAULTS.http_server_port (for python daemons)
-    try:
-        http_server_port = parser.getint('DEFAULT', 'http_server_port')
-    except (ConfigParser.NoOptionError, ConfigParser.NoSectionError, \
-            ValueError) as de:
-        try:
-            http_server_port = parser.getint('DEFAULTS', 'http_server_port')
-        except (ConfigParser.NoOptionError, ConfigParser.NoSectionError) as dse:
-            fp.close()
-            if debug:
-                print '{0}: DEFAULT/S.http_server_port not present'.format(
-                    svc_name)
-            return -1
-        else:
-            fp.close()
-            return http_server_port
-    else:
-        fp.close()
-        return http_server_port
-
-_DEFAULT_CONF_FILE_DIR = '/etc/contrail/'
-_DEFAULT_CONF_FILE_EXTENSION = '.conf'
-
-def get_http_server_port_from_conf(svc_name, debug):
-    # Open and extract conf file
-    if svc_name in ServicesDefaultConfigurationFiles:
-        default_conf_files = ServicesDefaultConfigurationFiles[svc_name]
-    else:
-        default_conf_files = [_DEFAULT_CONF_FILE_DIR + svc_name + \
-            _DEFAULT_CONF_FILE_EXTENSION]
-    for conf_file in default_conf_files:
-        http_server_port = _get_http_server_port_from_conf(svc_name, conf_file,
-                                                           debug)
-        if http_server_port != -1:
-            return http_server_port
-    return -1
-
-def get_default_http_server_port(svc_name, debug):
+def get_http_server_port(svc_name):
+    # TODO: additionaly the Introspect port can be obtained from containers env.
     if svc_name in ServiceHttpPortMap:
         return ServiceHttpPortMap[svc_name]
-    else:
-        if debug:
-            print '{0}: Introspect port not found'.format(svc_name)
-        return -1
 
-def get_http_server_port(svc_name, debug):
-    http_server_port = get_http_server_port_from_cmdline_options(svc_name, debug)
-    if http_server_port == -1:
-        http_server_port = get_http_server_port_from_conf(svc_name, debug)
-    if http_server_port == -1:
-        http_server_port = get_default_http_server_port(svc_name, debug)
-    return http_server_port
+    print_debug('{0}: Introspect port not found'.format(svc_name))
+    return None
 
-def get_svc_uve_status(svc_name, debug, timeout):
-#def get_svc_uve_status(svc_name, debug, timeout, keyfile, certfile, cacert):
-# TODO: restore certs logic
+
+def get_svc_uve_status(svc_name, timeout, keyfile, certfile, cacert):
     # Get the HTTP server (introspect) port for the service
-    http_server_port = get_http_server_port(svc_name, debug)
-    if http_server_port == -1:
+    http_server_port = get_http_server_port(svc_name)
+    if not http_server_port:
         return None, None
     host = socket.gethostname()
     # Now check the NodeStatus UVE
-    svc_introspect = IntrospectUtil(host, http_server_port, debug, \
-                                    timeout)
-# TODO: restore certs logic
-#                                    timeout, keyfile, certfile, cacert)
+    svc_introspect = IntrospectUtil(host, http_server_port,
+                                    timeout, keyfile, certfile, cacert)
     node_status = svc_introspect.get_uve('NodeStatus')
     if node_status is None:
-        if debug:
-            print '{0}: NodeStatusUVE not found'.format(svc_name)
+        print_debug('{0}: NodeStatusUVE not found'.format(svc_name))
         return None, None
     node_status = [item for item in node_status if 'process_status' in item]
     if not len(node_status):
-        if debug:
-            print '{0}: ProcessStatus not present in NodeStatusUVE'.format(
-                svc_name)
+        print_debug('{0}: ProcessStatus not present in NodeStatusUVE'.format(svc_name))
         return None, None
     process_status_info = node_status[0]['process_status']
     if len(process_status_info) == 0:
-        if debug:
-            print '{0}: Empty ProcessStatus in NodeStatusUVE'.format(svc_name)
+        print_debug('{0}: Empty ProcessStatus in NodeStatusUVE'.format(svc_name))
         return None, None
     description = process_status_info[0]['description']
     for connection_info in process_status_info[0].get('connection_infos', []):
@@ -338,28 +233,23 @@ def get_svc_uve_status(svc_name, debug, timeout):
             description = 'ToR:%s connection %s' % (connection_info['name'], connection_info['status'].lower())
     return process_status_info[0]['state'], description
 
-def get_svc_uve_info(svc_name, svc_status, debug, detail, timeout):
-# TODO: restore certs logic
-#def get_svc_uve_info(svc_name, svc_status, debug, detail, timeout, keyfile,
-#                     certfile, cacert):
+
+def get_svc_uve_info(svc_name, svc_status, detail, timeout, keyfile,
+                     certfile, cacert):
     # Extract UVE state only for running processes
     svc_uve_description = None
-    if (svc_name in NodeUVEImplementedServices or
-            svc_name.rsplit('-', 1)[0] in NodeUVEImplementedServices) and \
-            svc_status == 'active':
+    if ((svc_name in NodeUVEImplementedServices
+                or svc_name.rsplit('-', 1)[0] in NodeUVEImplementedServices)
+            and svc_status == 'active'):
         try:
             svc_uve_status, svc_uve_description = \
-                get_svc_uve_status(svc_name, debug, timeout)
-# TODO: restore certs logic
-#                get_svc_uve_status(svc_name, debug, timeout, keyfile,\
-#                                   certfile, cacert)
+                get_svc_uve_status(svc_name, timeout, keyfile,
+                                   certfile, cacert)
         except requests.ConnectionError, e:
-            if debug:
-                print 'Socket Connection error : %s' % (str(e))
+            print_debug('Socket Connection error : %s' % (str(e)))
             svc_uve_status = "connection-error"
         except (requests.Timeout, socket.timeout) as te:
-            if debug:
-                print 'Timeout error : %s' % (str(te))
+            print_debug('Timeout error : %s' % (str(te)))
             svc_uve_status = "connection-timeout"
 
         if svc_uve_status is not None:
@@ -378,50 +268,108 @@ def get_svc_uve_info(svc_name, svc_status, debug, detail, timeout):
             svc_status = svc_status + ' (' + svc_uve_description + ')'
 
     return svc_status
-# end get_svc_uve_info
-
-client = docker.from_env()
-
-def container_status(pod,svc_name):
-   for container in client.containers():
-      container_properties = container.items()
-      for container_property in container_properties:
-         if container_property[0] == 'Labels':
-            if 'net.juniper.contrail.pod' in container_property[1].keys() and \
-               'net.juniper.contrail.service' in container_property[1].keys():
-                  if container_property[1]['net.juniper.contrail.pod'] == pod and \
-                     container_property[1]['net.juniper.contrail.service'] == svc_name:
-                        for container_property in container_properties:
-                           if container_property[0] == 'State' and container_property[1] == 'running':
-                              return 'active'
-   return 'inactive'
-
-def is_pod_present(pod):
-   for container in client.containers():
-      container_properties = container.items()
-      if 'net.juniper.contrail.pod' in container_properties[3][1].keys():
-          if container_properties[3][1]['net.juniper.contrail.pod'] == pod:
-             return True
-   return False
-
-def contrail_service_status(pod, options):
-    ppod = pod.title()
-    print "== Contrail " + ppod + " =="
-    for svc_name in CONTRAIL_SERVICES[pod]:
-       psvc = svc_name + ': '
-       status = container_status(pod, svc_name)
-       if pod in ['vrouter', 'control', 'config', 'analytics', 'kubernetes']:
-          sandesh_svc = CONTRAIL_SERVICES[pod][svc_name]
-          status = get_svc_uve_info(sandesh_svc, status, options.debug,
-                options.detail, options.timeout)
-# TODO: restore certs logic
-#                options.detail, options.timeout, options.keyfile,
-#                options.certfile, options.cacert)
-       print (psvc + status)
 
 
-def main():
+def contrail_service_status(pods, pod, options):
+    print("== Contrail {} ==".format(pod))
+    pod_map = CONTRAIL_SERVICES_TO_SANDESH_SVC.get(pod)
+    if not pod_map:
+        print('')
+        return
 
+    for service, internal_svc_name in six.iteritems(pod_map):
+        status = 'inactive'
+        container = pods[pod].get(service)
+        if container and container.get('State') == 'running':
+            status = 'active'
+        if internal_svc_name:
+            status = get_svc_uve_info(internal_svc_name, status,
+                options.detail, options.timeout, options.keyfile,
+                options.certfile, options.cacert)
+        print('{}: {}'.format(service, status))
+
+    print('')
+
+
+def get_pod_from_env(client, cid):
+    cnt_full = client.inspect_container(cid)
+    env = cnt_full['Config'].get('Env')
+    if not env:
+        return None
+    node_type = next(iter(
+        [i for i in env if i.startswith('NODE_TYPE=')]), None)
+    # for now pod equals to NODE_TYPE
+    return node_type.split('=')[1] if node_type else None
+
+
+def get_containers():
+    # TODO: try to reuse this logic with nodemgr
+
+    items = dict()
+    client = docker.from_env()
+    flt = {'label': ['net.juniper.contrail.container.name']}
+    for cnt in client.containers(all=True, filters=flt):
+        labels = cnt.get('Labels', dict())
+        if not labels:
+            continue
+        service = labels.get('net.juniper.contrail.service')
+        if not service:
+            # filter only service containers (skip *-init, contrail-status)
+            continue
+        pod = labels.get('net.juniper.contrail.pod')
+        if not pod:
+            pod = get_pod_from_env(client, cnt['Id'])
+        name = labels.get('net.juniper.contrail.container.name')
+
+        key = '{}.{}'.format(pod, service) if pod and service else name
+        item = {
+            'Pod': pod if pod else '',
+            'Service': service if service else '',
+            'Original Name': name,
+            'State': cnt['State'],
+            'Status': cnt['Status'],
+            'Created': cnt['Created']
+        }
+        if key not in items:
+            items[key] = item
+            continue
+        if cnt['State'] != items[key]['State']:
+            if cnt['State'] == 'running':
+                items[key] = container
+            continue
+        # if both has same state - add latest.
+        if cnt['Created'] > items[key]['Created']:
+            items[key] = cnt
+
+    return items
+
+
+def print_containers(containers):
+    # containers is a dict of dicts
+    hdr = ['Pod', 'Service', 'Original Name', 'State', 'Status']
+    items = list()
+    items.extend([v[hdr[0]], v[hdr[1]], v[hdr[2]], v[hdr[3]], v[hdr[4]]]
+                 for k, v in six.iteritems(containers))
+    items.sort(key=operator.itemgetter(0, 1))
+    items.insert(0, hdr)
+
+    cols = [1 for _ in xrange(0, len(items[0]))]
+    for item in items:
+        for i in xrange(0, len(cols)):
+            cl = 2 + len(item[i])
+            if cols[i] < cl:
+                cols[i] = cl
+    for i in xrange(0, len(cols)):
+        cols[i] = '{{:{}}}'.format(cols[i])
+    for item in items:
+        res = ''
+        for i in xrange(0, len(cols)):
+            res += cols[i].format(item[i])
+        print(res)
+    print('')
+
+
+def parse_args():
     parser = OptionParser()
     parser.add_option('-d', '--detail', dest='detail',
                       default=False, action='store_true',
@@ -432,84 +380,67 @@ def main():
     parser.add_option('-t', '--timeout', dest='timeout', type="float",
                       default=2,
                       help="timeout in seconds to use for HTTP requests to services")
-# TODO: restore certs logic
-#    parser.add_option('-k', '--keyfile', dest='keyfile', type="string",
-#                      default="/etc/contrail/ssl/private/server-privkey.pem",
-#                      help="ssl key file to use for HTTP requests to services")
-#    parser.add_option('-c', '--certfile', dest='certfile', type="string",
-#                      default="/etc/contrail/ssl/certs/server.pem",
-#                      help="certificate file to use for HTTP requests to services")
-#    parser.add_option('-a', '--cacert', dest='cacert', type="string",
-#                      default="/etc/contrail/ssl/certs/ca-cert.pem",
-#                      help="ca-certificate file to use for HTTP requests to services")
+    parser.add_option('-k', '--keyfile', dest='keyfile', type="string",
+                      default="/etc/contrail/ssl/private/server-privkey.pem",
+                      help="ssl key file to use for HTTP requests to services")
+    parser.add_option('-c', '--certfile', dest='certfile', type="string",
+                      default="/etc/contrail/ssl/certs/server.pem",
+                      help="certificate file to use for HTTP requests to services")
+    parser.add_option('-a', '--cacert', dest='cacert', type="string",
+                      default="/etc/contrail/ssl/certs/ca-cert.pem",
+                      help="ca-certificate file to use for HTTP requests to services")
+    options, _ = parser.parse_args()
+    return options
 
-    (options, args) = parser.parse_args()
 
-    vrouter = is_pod_present(pod="vrouter")
-    control = is_pod_present(pod="control")
-    config = is_pod_present(pod="config")
-    config_database = is_pod_present(pod="config-database")
-    analytics = is_pod_present(pod="analytics")
-    analytics_database = is_pod_present(pod="analytics-database")
-    webui = is_pod_present(pod="webui")
-    kubernetes = is_pod_present(pod="kubernetes")
+def main():
+    global debug_output
 
-    vr = False
-    lsmodout = None
-    lsofvrouter = None
+    options = parse_args()
+    debug_output = options.debug
+
+    containers = get_containers()
+    print_containers(containers)
+
+    # first check and store containers dict as a tree
+    fail = False
+    pods = dict()
+    for k, v in six.iteritems(containers):
+        pod = v['Pod']
+        service = v['Service']
+        if pod and service:
+            pods.setdefault(pod, dict())[service] = v
+            continue
+        print("WARNING: container with original name '{}' "
+              "have Pod os Service empty. Pod: '{}' / Service: '{}'. "
+              "Please pass NODE_TYPE with pod name to container's env".format(
+                  v['Original Name'], v['Pod'], v['Service']))
+        fail = True
+    if fail:
+        print('')
+
+    vrouter_driver = False
     try:
-        lsmodout = subprocess.Popen('lsmod', stdout=subprocess.PIPE).communicate()[0]
-    except Exception as lsmode:
-        if options.debug:
-            print 'lsmod FAILED: {0}'.format(str(lsmode))
+        lsmod = subprocess.Popen('lsmod', stdout=subprocess.PIPE).communicate()[0]
+        if lsmod.find('vrouter') != -1:
+            vrouter_driver = True
+            print("vrouter kernel module is PRESENT")
+    except Exception as ex:
+        print_debug('lsmod FAILED: {0}'.format(ex))
     try:
-        lsofvrouter = (subprocess.Popen(['lsof', '-ni:{0}'.format(DPDK_NETLINK_TCP_PORT),
-                   '-sTCP:LISTEN'], stdout=subprocess.PIPE).communicate()[0])
-    except Exception as lsofe:
-        if options.debug:
-            print 'lsof -ni:{0} FAILED: {1}'.format(DPDK_NETLINK_TCP_PORT, str(lsofe))
+        lsof = (subprocess.Popen(
+            ['netstat', '-xl'], stdout=subprocess.PIPE).communicate()[0])
+        if lsof.find('dpdk_netlink') != -1:
+            vrouter_driver = True
+            print("vrouter DPDK module is PRESENT")
+    except Exception as ex:
+        print_debug('lsof FAILED: {0}'.format(ex))
+    if 'vrouter' in pods and not vrouter_driver:
+        print("vrouter driver is not PRESENT but agent pod is present")
 
-    if lsmodout and lsmodout.find('vrouter') != -1:
-        vr = True
+    for pod in pods:
+        contrail_service_status(pods, pod, options)
 
-    elif lsofvrouter:
-        vr = True
-
-    if vrouter:
-        if not vr:
-            print "vRouter is NOT PRESENT"
-        else:
-            print "vRouter is PRESENT"
-        contrail_service_status('vrouter', options)
-        print ""
-
-    if control:
-        contrail_service_status('control', options)
-        print ""
-
-    if config:
-        contrail_service_status('config', options)
-        print ""
-
-    if config_database:
-        contrail_service_status('config-database', options)
-        print ""
-
-    if analytics:
-        contrail_service_status('analytics', options)
-        print ""
-
-    if analytics_database:
-        contrail_service_status('analytics-database', options)
-        print ""
-
-    if webui:
-        contrail_service_status('webui', options)
-        print ""
-
-    if kubernetes:
-        contrail_service_status('kubernetes', options)
-        print ""
 
 if __name__ == '__main__':
     main()
