@@ -347,20 +347,6 @@ services:
       restart: on-failure
     depends_on:
       - vrouter-init-kernel
-  vrouter-net-watchdog:
-    image: "${CONTRAIL_REGISTRY}/contrail-vrouter-net-watchdog:${CONTRAIL_CONTAINER_TAG}"
-    env_file: ${ENV_FILE}
-    network_mode: host
-    privileged: true
-    volumes:
-      - /dev:/dev
-      - /etc/sysconfig/network-scripts:/etc/sysconfig/network-scripts
-      - /lib/modules:/lib/modules
-      - /var/run:/var/run
-      - /var/log/contrail:/var/log/contrail
-      restart: on-failure
-    depends_on:
-      - vrouter-agent-dpdk
   vrouter-agent:
     image: "${CONTRAIL_REGISTRY}/contrail-vrouter-agent:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
@@ -373,4 +359,4 @@ services:
       - /var/log/contrail:/var/log/contrail
       restart: on-failure
     depends_on:
-      - vrouter-net-watchdog
+      - vrouter-agent-dpdk
