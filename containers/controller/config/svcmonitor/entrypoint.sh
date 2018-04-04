@@ -20,7 +20,6 @@ rabbit_server=$RABBITMQ_SERVERS
 $rabbit_config
 $kombu_ssl_config
 
-redis_server=$REDIS_SERVER_IP
 collectors=$COLLECTOR_SERVERS
 
 [SECURITY]
