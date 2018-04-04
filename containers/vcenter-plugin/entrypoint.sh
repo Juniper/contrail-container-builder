@@ -15,7 +15,7 @@ vcenter.datacenter=$VCENTER_DATACENTER
 vcenter.dvswitch=$VCENTER_DVSWITCH
 vcenter.ipfabricpg=${VCENTER_IPFABRICPG:-contrail-fab-pg}
 
-api.hostname=$CONFIG_NODES
+api.hostname=$CONFIG_API_VIP
 api.port=$CONFIG_API_PORT
 
 zookeeper.serverlist=$ZOOKEEPER_SERVERS
