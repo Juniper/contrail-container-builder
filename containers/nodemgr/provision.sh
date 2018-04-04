@@ -115,6 +115,9 @@ vrouter)
   if [[ -n ${SUBCLUSTER} ]]; then
     params="$params --sub_cluster_name ${SUBCLUSTER}"
   fi
+  if [[ ${CLOUD_ORCHESTRATOR} == "kubernetes" ]]; then
+    params="$params --enable_vhost_vmi_policy"
+  fi
   provision_node provision_vrouter.py $host_ip ${VROUTER_HOSTNAME:-${DEFAULT_HOSTNAME}} $params
 
 esac
