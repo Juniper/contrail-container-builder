@@ -3,6 +3,7 @@ FROM zookeeper:3.4.10
 ARG CONTAINER_NAME
 
 COPY contrail-entrypoint.sh /
+COPY zookeeper-health.sh /
 
 ENTRYPOINT ["/contrail-entrypoint.sh"]
 CMD ["zkServer.sh", "start-foreground"]
