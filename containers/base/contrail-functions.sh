@@ -13,8 +13,12 @@ function is_dpdk() {
 }
 
 function set_third_party_auth_config(){
-  if [[ $AUTH_MODE == "keystone" ]]; then
-    cat > /etc/contrail/contrail-keystone-auth.conf << EOM
+  if [[ $AUTH_MODE != "keystone" ]]; then
+    return
+  fi
+
+  local tmp_file=/etc/contrail/contrail-keystone-auth.conf.tmp
+  cat > $tmp_file << EOM
 [KEYSTONE]
 #memcache_servers=127.0.0.1:11211
 admin_password = $KEYSTONE_AUTH_ADMIN_PASSWORD
@@ -26,27 +30,27 @@ auth_protocol = $KEYSTONE_AUTH_PROTO
 auth_url = $KEYSTONE_AUTH_PROTO://${KEYSTONE_AUTH_HOST}:${KEYSTONE_AUTH_ADMIN_PORT}${KEYSTONE_AUTH_URL_VERSION}
 auth_type = password
 EOM
-    if [[ "$KEYSTONE_AUTH_URL_VERSION" == '/v3' ]] ; then
-      cat >> /etc/contrail/contrail-keystone-auth.conf << EOM
+  if [[ "$KEYSTONE_AUTH_URL_VERSION" == '/v3' ]] ; then
+    cat >> $tmp_file << EOM
 user_domain_name = $KEYSTONE_AUTH_USER_DOMAIN_NAME
 project_domain_name = $KEYSTONE_AUTH_PROJECT_DOMAIN_NAME
 region_name = $KEYSTONE_AUTH_REGION_NAME
 EOM
-    fi
-    if [[ "$KEYSTONE_AUTH_PROTO" == 'https' ]] ; then
-      cat >> /etc/contrail/contrail-keystone-auth.conf << EOM
+  fi
+  if [[ "$KEYSTONE_AUTH_PROTO" == 'https' ]] ; then
+    cat >> $tmp_file << EOM
 insecure = ${KEYSTONE_AUTH_INSECURE,,}
 certfile = $KEYSTONE_AUTH_CERTFILE
 keyfile = $KEYSTONE_AUTH_KEYFILE
 cafile = $KEYSTONE_AUTH_CA_CERTFILE
 EOM
-    fi
   fi
+  mv $tmp_file /etc/contrail/contrail-keystone-auth.conf
 }
 
 function set_vnc_api_lib_ini(){
-# TODO: set WEB_SERVER to VIP
-  cat > /etc/contrail/vnc_api_lib.ini << EOM
+  local tmp_file=/etc/contrail/vnc_api_lib.ini.tmp
+  cat > $tmp_file << EOM
 [global]
 WEB_SERVER = $CONFIG_NODES
 WEB_PORT = ${CONFIG_API_PORT:-8082}
@@ -54,7 +58,7 @@ BASE_URL = /
 EOM
 
   if [[ $AUTH_MODE == "keystone" ]]; then
-    cat >> /etc/contrail/vnc_api_lib.ini << EOM
+    cat >> $tmp_file << EOM
 
 ; Authentication settings (optional)
 [auth]
@@ -67,7 +71,7 @@ AUTHN_DOMAIN = $KEYSTONE_AUTH_PROJECT_DOMAIN_NAME
 ;AUTHN_TOKEN_URL = http://127.0.0.1:35357/v2.0/tokens
 EOM
     if [[ "$KEYSTONE_AUTH_PROTO" == 'https' ]] ; then
-        cat >> /etc/contrail/vnc_api_lib.ini << EOM
+        cat >> $tmp_file << EOM
 insecure = ${KEYSTONE_AUTH_INSECURE,,}
 certfile = $KEYSTONE_AUTH_CERTFILE
 keyfile = $KEYSTONE_AUTH_KEYFILE
@@ -75,11 +79,12 @@ cafile = $KEYSTONE_AUTH_CA_CERTFILE
 EOM
     fi
   else
-    cat >> /etc/contrail/vnc_api_lib.ini << EOM
+    cat >> $tmp_file << EOM
 [auth]
 AUTHN_TYPE = noauth
 EOM
   fi
+  mv $tmp_file /etc/contrail/vnc_api_lib.ini
 }
 
 function add_ini_params_from_env() {
