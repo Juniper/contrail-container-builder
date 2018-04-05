@@ -27,6 +27,7 @@ api_server_use_ssl=${CONFIG_API_USE_SSL:-False}
 [REDIS]
 redis_server_port=$REDIS_SERVER_PORT
 redis_uve_list=$REDIS_SERVERS
+redis_password=$REDIS_SERVER_PASSWORD
 
 [CONFIGDB]
 config_db_server_list=$config_db_server_list
