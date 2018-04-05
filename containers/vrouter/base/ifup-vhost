@@ -48,7 +48,7 @@ function pkt_setup () {
         fi
         echo $str > $f/rps_cpus
     done
-    ifconfig $1 up
+    ip link set dev $1 up
 }
 
 function insert_vrouter(){
@@ -75,7 +75,7 @@ function insert_vrouter(){
     fi
 }
 
-if [[ "${TYPE}" == "kernel_mode" && ! `ifconfig vhost0` ]]; then
+if [[ "${TYPE}" == "kernel_mode" && ! `ip link show dev vhost0` ]]; then
     insert_vrouter
 fi
 
