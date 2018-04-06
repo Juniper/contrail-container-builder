@@ -17,8 +17,7 @@ if [ -f /host/usr/bin/contrail-status ]; then
 fi
 
 # cause multiple instances can generate this at one moment - this operation should be atomic
-mkdir -p /tmp
-tmp_file=$(mktemp)
+tmp_file=/host/usr/bin/contrail-status.tmp
 cat > $tmp_file << EOM
 #!/bin/bash -e
 docker run --rm --name contrail-status -v /var/run/docker.sock:/var/run/docker.sock --pid host --net host --privileged ${CONTRAIL_STATUS_IMAGE}
