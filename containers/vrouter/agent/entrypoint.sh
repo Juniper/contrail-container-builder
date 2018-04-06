@@ -77,6 +77,61 @@ read -r -d '' tsn_server_list << EOM || true
 tsn_servers = ${TSN_SERVERS}
 EOM
 
+priority_group_option=""
+if [[ -n "${PRIORITY_ID}" ]] && ! is_dpdk; then
+    priority_group_option="[QOS-NIANTIC]"
+    IFS=',' read -ra priority_id_list <<< "${PRIORITY_ID}"
+    IFS=',' read -ra priority_bandwidth_list <<< "${PRIORITY_BANDWIDTH}"
+    IFS=',' read -ra priority_scheduling_list <<< "${PRIORITY_SCHEDULING}"
+    for index in ${!priority_id_list[@]}; do
+        read -r -d '' qos_niantic << EOM
+[PG-${priority_id_list[${index}]}]
+scheduling=${priority_scheduling_list[${index}]}
+bandwidth=${priority_bandwidth_list[${index}]}
+
+EOM
+        priority_group_option+=$'\n'"${qos_niantic}"
+    done
+    if is_vlan $phys_int; then
+        echo "ERROR: qos scheduling not supported for vlan interface skipping ."
+        priority_group_option=""
+    fi
+fi
+
+qos_queueing_option=""
+if [[ -n "${QOS_QUEUE_ID}" ]] && ! is_dpdk; then
+    qos_queueing_option="[QOS]"$'\n'"priority_tagging=${PRIORITY_TAGGING}"
+    IFS=',' read -ra qos_queue_id <<< "${QOS_QUEUE_ID}"
+    IFS=';' read -ra qos_logical_queue <<< "${QOS_LOGICAL_QUEUES}"
+    for index in ${!qos_queue_id[@]}; do
+        if [[ ${index} -ge $((${#qos_queue_id[@]} - 1)) ]]; then
+            break
+        fi
+        read -r -d '' qos_config << EOM
+[QUEUE-${qos_queue_id[${index}]}]
+logical_queue=${qos_logical_queue[${index}]}
+
+EOM
+        qos_queueing_option+=$'\n'"${qos_config}"
+    done
+    qos_def=""
+    if [[ ! -z "${QOS_DEF_HW_QUEUE}" ]]; then
+        qos_def="default_hw_queue=true"
+    fi
+
+    if [[ ${#qos_queue_id[@]} -ne ${#qos_logical_queue[@]} ]]; then
+        qos_logical_queue+=('[]')
+    fi
+
+    read -r -d '' qos_config << EOM
+[QUEUE-${qos_queue_id[-1]}]
+logical_queue=${qos_logical_queue[-1]}
+${qos_def}
+
+EOM
+    qos_queueing_option+=$'\n'"${qos_config}"
+fi
+
 echo "INFO: Preparing /etc/contrail/contrail-vrouter-agent.conf"
 cat << EOM > /etc/contrail/contrail-vrouter-agent.conf
 [CONTROL-NODE]
@@ -125,11 +180,29 @@ $vmware_options
 
 [FLOWS]
 fabric_snat_hash_table_size = $FABRIC_SNAT_HASH_TABLE_SIZE
+
+$qos_queueing_option
+
+$priority_group_option
+
 EOM
 
 cleanup_lbaas_netns_config
 
 add_ini_params_from_env VROUTER_AGENT /etc/contrail/contrail-vrouter-agent.conf
+
+if [[ -n "${PRIORITY_ID}" ]] || [[ -n "${QOS_QUEUE_ID}" ]]; then
+    if is_dpdk ; then
+       echo "INFO: Qos provisioning not supported for dpdk vrouter. Skipping."
+    else
+        interface_list="${phys_int}"
+        if is_bonding ${phys_int} ; then
+            IFS=' ' read -r mode policy slaves pci_addresses bond_numa <<< $(get_bonding_parameters $phys_int)
+            interface_list="${slaves}"
+        fi
+        python /opt/contrail/utils/qosmap.py --interface_list ${interface_list}
+    fi
+fi
 
 echo "INFO: /etc/contrail/contrail-vrouter-agent.conf"
 cat /etc/contrail/contrail-vrouter-agent.conf
