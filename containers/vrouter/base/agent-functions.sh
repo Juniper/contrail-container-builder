@@ -581,3 +581,14 @@ function cleanup_lbaas_netns_config() {
     rm -rf /var/lib/contrail/loadbalancer/*
     rm -rf /var/run/netns/
 }
+
+function setup_vrouter_qos_config() {
+    if [[ -n "${PRIORITY_ID}" ]] || [[ -n "${QOS_QUEUE_ID}" ]]; then
+        if is_bonding ${phys_int} ; then
+            IFS=' ' read -r mode policy slaves pci_addresses bond_numa <<< $(get_bonding_parameters $phys_int)
+            python /opt/contrail/utils/qosmap.py --interface_list ${slaves}
+        else
+            python /opt/contrail/utils/qosmap.py --interface_list ${phys_int}
+       fi
+    fi
+}
