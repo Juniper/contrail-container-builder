@@ -268,9 +268,20 @@ function pkt_setup () {
     ip link set dev $1 up
 }
 
+function load_vrouter() {
+    if lsmod | grep -q vrouter ; then
+        return
+    fi
+    free -h && sync && echo 2 >/proc/sys/vm/drop_caches && free -h
+    load_kernel_module vrouter
+}
+
 function create_vhost0() {
     local phys_int=$1
     local phys_int_mac=$2
+
+    load_vrouter
+
     if [ -f /sys/class/net/pkt1/queues/rx-0/rps_cpus ]; then
         pkt_setup pkt1
     fi
@@ -357,19 +368,28 @@ function prepare_phys_int_dpdk
         echo "INFO: vhost device is already exist"
         return 0
     fi
-    local phys_int=''
-    local phys_int_mac=''
-    IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
-    local nic=$phys_int
-    local addrs=$(get_addrs_for_nic $phys_int)
-    local default_gw_metric=`get_default_gateway_for_nic_metric $phys_int`
-    local gateway=${VROUTER_GATEWAY:-"$default_gw_metric"}
-    local pci=$(get_pci_address_for_nic $phys_int)
+    declare phys_int phys_int_mac nic addrs gateway pci
+    local count=0
+    while (true) ; do
+        echo "INFO: detecting phys interface parameters... ${count}/10"
+        IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
+        nic=$phys_int
+        addrs=$(get_addrs_for_nic $phys_int)
+        local _default_gw_metric=`get_default_gateway_for_nic_metric $phys_int`
+        gateway=${VROUTER_GATEWAY:-"$_default_gw_metric"}
+        pci=$(get_pci_address_for_nic $phys_int)
+        if [[ -n "$phys_int" && -n "$phys_int_mac" && -n "$pci" && -n "$addrs" ]] ; then
+            break
+        fi
+        if (( count == 10 )) ; then
+            echo "ERROR: failed to detect one of mandatory phys interface parameters" >&2
+            echo "ERROR: phys_int=$phys_int phys_int_mac=$phys_int_mac, pci=$pci, addrs=[$addrs], gateway=$gateway" >&2
+            return 1
+        fi
+        sleep 6
+    done
     echo "INFO: phys_int=$phys_int phys_int_mac=$phys_int_mac, pci=$pci, addrs=[$addrs], gateway=$gateway"
-    if [[ -z "$phys_int" || -z "$phys_int_mac" || -z "$pci" || -z "$addrs" ]] ; then
-        echo "ERROR: failed to detect one of mandatory NIC parameters"
-        return 1
-    fi
+
 
     # save data for next usage in network init container
     # TODO: check that data valid for the case if container is re-run again by some reason
