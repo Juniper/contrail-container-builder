@@ -20,8 +20,6 @@ else
     cp -f ${modfile} ${k_dir}/kernel/net/vrouter
   done
   depmod -a
-  free -h && sync && echo 2 >/proc/sys/vm/drop_caches && free -h
-  load_kernel_module vrouter
 fi
 
 exec $@
