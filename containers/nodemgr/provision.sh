@@ -101,6 +101,26 @@ control)
   provision_node provision_control.py $host_ip $DEFAULT_HOSTNAME \
     --router_asn ${BGP_ASN} $ibgp_auto_mesh_opt \
     --bgp_server_port ${BGP_PORT} ${subcluster_name}
+
+  external_routers_list=""
+  external_router=""
+  external_router_name=""
+  external_router_ip=""
+  provision_mx_params=""
+
+  if [[ -n "${EXTERNAL_ROUTERS}" ]]; then
+    IFS=",", read -ra external_routers_list <<< "${EXTERNAL_ROUTERS}"
+    for elem in "${external_routers_list[@]}"; do
+      if [[ $elem == *:* ]]; then
+        IFS=":", read -ra external_router <<< "${elem}"
+        external_router_name=${external_router[0]}
+        external_router_ip=${external_router[1]}
+        provision_mx_params="--router_name ${external_router_name} --router_ip ${external_router_ip} --router_asn ${BGP_ASN}"
+        provision provision_mx.py $provision_mx_params
+      fi
+    done
+  fi
+
   ;;
 
 vrouter)
