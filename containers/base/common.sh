@@ -244,11 +244,13 @@ EOM
 fi
 
 # Agent options
-AGENT_MODE=${AGENT_MODE:-'nic'}
+AGENT_MODE=${AGENT_MODE:-'kernel'}
 DPDK_UIO_DRIVER=${DPDK_UIO_DRIVER:-'uio_pci_generic'}
 CPU_CORE_MASK=${CPU_CORE_MASK:-'0x01'}
 HUGE_PAGES=${HUGE_PAGES:-1024}
-
+HUGE_PAGES_DIR=${HUGE_PAGES_DIR:-'/dev/hugepages'}
+DPDK_MEM_PER_SOCKET=${DPDK_MEM_PER_SOCKET:-1024}
+VHOST_CONFIG_DIR=${VHOST_CONFIG_DIR:-'/etc/sysconfig/network-scripts'}
 TSN_EVPN_MODE=${TSN_EVPN_MODE:-False}
 
 # Protocol with port range or port count can be used DIST_SNAT_PROTO_PORT_LIST=${DIST_SNAT_PROTO_PORT_LIST:-tcp:200,udp:2000-3000,tcp:5000-6000,tcp:1000}
