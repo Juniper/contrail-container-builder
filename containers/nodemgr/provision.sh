@@ -121,3 +121,22 @@ vrouter)
   provision_node provision_vrouter.py $host_ip ${VROUTER_HOSTNAME:-${DEFAULT_HOSTNAME}} $params
 
 esac
+
+ext_router_ip=""
+ext_router_name=""
+provision_mx_params=""
+
+if [[ -n "${EXTERNAL_ROUTER_IP_LIST}" ]] && [[ -n "${EXTERNAL_ROUTER_NAME_LIST}" ]]; then
+  external_router_ip_list=''
+  external_router_name_list=''
+  provision_mx_params=""
+  IFS=',' read -ra external_router_ip_list <<< "${EXTERNAL_ROUTER_IP_LIST}"
+  IFS=',' read -ra external_router_name_list <<< "${EXTERNAL_ROUTER_NAME_LIST}"
+  external_router_ip_list_length=${external_routers_ip_list[@]}
+  for (( x=0; x<${external_router_ip_list_length}; x++)); do
+    external_router_ip=${external_router_ip_list[$x]}
+    external_router_name=${external_router_name_list[$x]}
+    provision_mx_params="--router_name ${external_router_name} --router_ip ${external_router_ip} --router_asn ${BGP_ASN}"
+    provision $script $provision_mx_params
+  done
+fi
