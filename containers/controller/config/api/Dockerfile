@@ -12,6 +12,7 @@ RUN yum install -y python-neutron-lib $PYTHON_PIP_RPM && \
     fi && \
     pip install --upgrade pip && \
     pip install "inflection>=0.3.1" "jxmlease>=1.0.1" "junos-eznc>=2.1.7" "timeout_decorator>=0.4.0" && \
+    "subporcess32>=3.2.7" && \
     ansible-galaxy install Juniper.junos && \
     yum clean all -y && \
     rm -rf /var/cache/yum
