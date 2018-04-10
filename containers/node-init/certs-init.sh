@@ -2,8 +2,11 @@
 
 source /common.sh
 
-if ! is_enabled "$SSL_ENABLE" ; then
-  echo "INFO: SSL_ENABLE=$SSL_ENABLE, nothing to do"
+if [ ! is_enabled "$SSL_ENABLE" ] \
+   && [ ! is_enabled "$XMPP_SSL_ENABLE" ] \
+   && [ ! is_enabled "$INTROSPECT_SSL_ENABLE" ] \
+   && [ ! is_enabled "$SANDESH_SSL_ENABLE" ] ; then
+  echo "INFO: No SSL Parameters Enabled, nothing to do"
   exit 0
 fi
 
