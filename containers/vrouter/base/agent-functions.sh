@@ -1,11 +1,45 @@
 #!/bin/bash
 
+function create_vhost_network_functions() {
+    # TODO: now it is only wait,
+    #       maybe it is worth to put here the code that may start
+    #       appropritate to the agent mode containers, like in
+    #       contrail-status impl.
+    local dir=$1
+    pushd "$dir"
+    /bin/cp -f /ifup-vhost ./
+    chmod +x ./ifup-vhost
+    local tmp_file=$(mktemp -p ./)
+    cat > $tmp_file << EOM
+#!/bin/bash
+
+function prepare_vrouter() {
+  local count=\${1:-60}
+  local step_time=\${2:-5}
+  local i=0
+  while ! ip link show dev vhost0 2>&1 > /dev/null ; do
+    if (( i == count)) ; then
+      echo "There is no vhost0 device. Check that containers are up and running."
+      return 1
+    fi
+    echo "Wait till vhost0 devices... 1/\$count"
+    sleep \$step_time
+  done
+  return 0
+}
+
+EOM
+
+    mv -f $tmp_file network-functions-vrouter-${AGENT_MODE}
+    chmod 644 network-functions-vrouter-${AGENT_MODE}
+    popd
+}
+
 function copy_agent_tools_to_host() {
     # copy ifup-vhost
     local netscript_dir='/etc/sysconfig/network-scripts'
     if [[ -d "$netscript_dir" ]] ; then
-        /bin/cp -f /ifup-vhost "${netscript_dir}/"
-        chmod +x "${netscript_dir}/ifup-vhost"
+        create_vhost_network_functions "$netscript_dir"
     fi
     # copy vif util
     if [[ ! -f /host/bin/vif ]]; then
@@ -324,7 +358,6 @@ function create_vhost0_dpdk() {
 function save_pci_info() {
     local pci=$1
     local binding_data_dir='/var/run/vrouter'
-    mkdir -p ${binding_data_dir}
     local binding_data_file="${binding_data_dir}/${pci}"
     if [[ ! -e "$binding_data_file" ]] ; then
         local pci_data=`lspci -vmmks ${pci}`
@@ -368,33 +401,33 @@ function prepare_phys_int_dpdk
         echo "INFO: vhost device is already exist"
         return 0
     fi
-    declare phys_int phys_int_mac nic addrs gateway pci
+    declare phys_int phys_int_mac pci
     local count=0
     while (true) ; do
         echo "INFO: detecting phys interface parameters... ${count}/10"
         IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
-        nic=$phys_int
-        addrs=$(get_addrs_for_nic $phys_int)
-        local _default_gw_metric=`get_default_gateway_for_nic_metric $phys_int`
-        gateway=${VROUTER_GATEWAY:-"$_default_gw_metric"}
         pci=$(get_pci_address_for_nic $phys_int)
-        if [[ -n "$phys_int" && -n "$phys_int_mac" && -n "$pci" && -n "$addrs" ]] ; then
+        if [[ -n "$phys_int" && -n "$phys_int_mac" && -n "$pci" ]] ; then
             break
         fi
         if (( count == 10 )) ; then
             echo "ERROR: failed to detect one of mandatory phys interface parameters" >&2
-            echo "ERROR: phys_int=$phys_int phys_int_mac=$phys_int_mac, pci=$pci, addrs=[$addrs], gateway=$gateway" >&2
+            echo "ERROR: phys_int=$phys_int phys_int_mac=$phys_int_mac, pci=$pci" >&2
             return 1
         fi
         sleep 6
     done
+    local nic=$phys_int
+    local addrs=$(get_addrs_for_nic $phys_int)
+    local _default_gw_metric=`get_default_gateway_for_nic_metric $phys_int`
+    local gateway=${VROUTER_GATEWAY:-"$_default_gw_metric"}
     echo "INFO: phys_int=$phys_int phys_int_mac=$phys_int_mac, pci=$pci, addrs=[$addrs], gateway=$gateway"
 
 
     # save data for next usage in network init container
     # TODO: check that data valid for the case if container is re-run again by some reason
     local binding_data_dir='/var/run/vrouter'
-    mkdir -p $binding_data_dir
+    mkdir -p ${binding_data_dir}
 
     echo "$nic" > $binding_data_dir/nic
     echo "$phys_int_mac" > $binding_data_dir/${nic}_mac
@@ -491,20 +524,21 @@ function init_vhost0() {
     local phys_int_mac=''
     local addrs=''
     local gateway=''
+    local bind_type=''
     if ! is_dpdk ; then
         # NIC case
+        bind_type='kernel'
         IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
-        if [[ "$vrouter_cidr" == '' ]] ; then
-            addrs=$(get_addrs_for_nic $phys_int)
-            local default_gw_metric=`get_default_gateway_for_nic_metric $phys_int`
-            gateway=${VROUTER_GATEWAY:-"$default_gw_metric"}
-        fi
+        addrs=$(get_addrs_for_nic $phys_int)
+        local default_gw_metric=`get_default_gateway_for_nic_metric $phys_int`
+        gateway=${VROUTER_GATEWAY:-"$default_gw_metric"}
         echo "INFO: creating vhost0 for nic mode: nic: $phys_int, mac=$phys_int_mac"
         if ! create_vhost0 $phys_int $phys_int_mac ; then
             return 1
         fi
     else
         # DPDK case
+        bind_type='dpdk'
         # TODO: rework someow config pathching..
         if ! wait_dpdk_start ; then
             return 1
@@ -523,11 +557,9 @@ physical_interface_mac = $phys_int_mac
 physical_interface_address = $pci_address
 physical_uio_driver = ${DPDK_UIO_DRIVER}
 EOM
-        if [[ "$vrouter_cidr" == '' ]] ; then
-            addrs=`cat $binding_data_dir/${phys_int}_ip_addresses`
-            default_gateway="$(cat $binding_data_dir/${phys_int}_gateway)"
-            gateway=${VROUTER_GATEWAY:-$default_gateway}
-        fi
+        addrs=`cat $binding_data_dir/${phys_int}_ip_addresses`
+        default_gateway="$(cat $binding_data_dir/${phys_int}_gateway)"
+        gateway=${VROUTER_GATEWAY:-$default_gateway}
         echo "INFO: creating vhost0 for dpdk mode: nic: $phys_int, mac=$phys_int_mac"
         if ! create_vhost0_dpdk $phys_int $phys_int_mac ; then
             return 1
@@ -546,27 +578,25 @@ EOM
         fi
         pushd /etc/sysconfig/network-scripts/
 
-        if [ ! -f "contrail.org.ifcfg-${phys_int}" ] ; then
-            /bin/cp -f ifcfg-${phys_int} contrail.org.ifcfg-${phys_int}
-        fi
         if [[ -f route-${phys_int} ]]; then
           /bin/cp -f route-${phys_int} route-vhost0
           mv route-${phys_int} contrail.org.route-${phys_int}
         fi
-        sed -ri "/(DEVICE|TYPE|ONBOOT|VLAN|BONDING)/! s/^[^#].*/#commented_by_contrail& /" ifcfg-${phys_int}
-        echo 'NM_CONTROLLED="no"' >> ifcfg-${phys-int}
-        echo 'BOOTPROTO="none"' >> ifcfg-${phys-int}
+        if [ ! -f "contrail.org.ifcfg-${phys_int}" ] ; then
+            /bin/cp -f ifcfg-${phys_int} contrail.org.ifcfg-${phys_int}
+            sed -r "/(DEVICE|TYPE|ONBOOT|MACADDR|HWADDR|BONDING|SLAVE|VLAN|MTU)/! s/^[^#].*/#commented_by_contrail& /" ifcfg-${phys_int} > ifcfg-${phys_int}.tmp
+            echo 'NM_CONTROLLED="no"' >> ifcfg-${phys_int}.tmp
+            echo 'BOOTPROTO="none"' >> ifcfg-${phys_int}.tmp
+            mv ifcfg-${phys_int}.tmp ifcfg-${phys_int}
+        fi
         if [[ ! -f ifcfg-vhost0 ]] ; then
-            sed "s/${phys_int}/vhost0/g" contrail.org.ifcfg-${phys_int} > ifcfg-vhost0
-            sed -i '/HWADDR=.*/d' ifcfg-vhost0
-            if is_dpdk ; then
-                sed -ri "/NM_CONTROLLED/ s/.*/#commented_by_contrail& /" ifcfg-vhost0
-                echo 'NM_CONTROLLED="no"' >> ifcfg-vhost0
-                echo "TYPE=dpdk" >> ifcfg-vhost0
-            else
-                echo "TYPE=kernel_mode" >> ifcfg-vhost0
-                echo "BIND_INT=${phys_int}" >> ifcfg-vhost0
-            fi
+            sed "s/${phys_int}/vhost0/g" contrail.org.ifcfg-${phys_int} > ifcfg-vhost0.tmp
+            sed -ri '/(TYPE|NM_CONTROLLED|MACADDR|HWADDR|BONDING|SLAVE|VLAN)/d' ifcfg-vhost0.tmp
+            echo "TYPE=${bind_type}" >> ifcfg-vhost0.tmp
+            echo 'NM_CONTROLLED="no"' >> ifcfg-vhost0.tmp
+            echo "BIND_INT=${phys_int}" >> ifcfg-vhost0.tmp
+            echo "BIND_INT_MAC=${phys_int_mac}" >> ifcfg-vhost0.tmp
+            mv ifcfg-vhost0.tmp ifcfg-vhost0
         fi
         popd
         if ! is_dpdk ; then
