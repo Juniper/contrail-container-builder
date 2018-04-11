@@ -77,6 +77,6 @@ echo "log.cleaner.dedupe.buffer.size=${KAFKA_log_cleaner_dedupe_buffer_size}" >>
 sed -i "s/^num.partitions=.*$/num.partitions=30/g" ${CONFIG}
 sed -i "s/^default.replication.factor=.*/default.replication.factor=$replication_factor/g" ${CONFIG}
 echo "offsets.topic.replication.factor=$replication_factor" >> ${CONFIG}
-echo "reserved.broker.max.id: 100001" >> ${CONFIG}
+echo "reserved.broker.max.id=100001" >> ${CONFIG}
 
 exec "$@"
