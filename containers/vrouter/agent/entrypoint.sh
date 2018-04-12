@@ -3,6 +3,29 @@
 source /common.sh
 source /agent-functions.sh
 
+term_agent() {
+    echo "INFO: terminating vrouter agent process"
+    process_exists=$(kill -0 $vrouter_agent_process &>/dev/null)
+    if $process_exists; then
+        kill -KILL "$vrouter_agent_process" &>/dev/null
+        wait $vrouter_agent_process
+    fi
+    cleanup_vrouter_agent_files
+}
+
+# Clean up files and vhost0, when SIGQUIT signal by clean-up.sh
+# clean-up.sh should only be invoked when pod is terminated or
+# deployment is deleted
+# Currently only handled for vrouter-kernel case
+# To-do for dpdk case as well
+if ! is_dpdk ; then
+    trap 'term_agent; remove_vhost0' SIGQUIT
+fi
+
+# Clean up files only, when a container/pod restarts it sends TERM and KILL signal
+# Every time container restarts we dont want to reset data plane
+trap 'term_agent' SIGTERM SIGINT SIGKILL
+
 pre_start_init
 
 if [ "$CLOUD_ORCHESTRATOR" == "vcenter" ]; then
@@ -137,4 +160,9 @@ cat /etc/contrail/contrail-vrouter-agent.conf
 set_vnc_api_lib_ini
 create_lbaas_auth_conf
 
-exec $@
+# spin up vrouter-agent as a child process
+"$@" &
+vrouter_agent_process=$!
+
+# Wait for vrouter-agent process to complete
+wait $vrouter_agent_process
