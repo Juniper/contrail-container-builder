@@ -10,7 +10,7 @@ RUN yum install -y dhclient NetworkManager contrail-vrouter-agent haproxy libvir
     rm -rf /var/cache/yum && \
     ldconfig
 
-COPY entrypoint.sh /
+COPY *.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/contrail-vrouter-agent"]
