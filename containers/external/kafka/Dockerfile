@@ -8,7 +8,7 @@ ARG KAFKA_DISTRO_NAME=kafka_2.11-0.9.0.1
 ENV KAFKA_DIR=/opt/$KAFKA_DISTRO_NAME \
     KAFKA_CONF_DIR=/opt/$KAFKA_DISTRO_NAME/config
 
-RUN yum install -y java iproute && \
+RUN yum install -y java java-1.8.0-openjdk-devel iproute && \
     curl -o $KAFKA_DISTRO_NAME.tgz http://archive.apache.org/dist/kafka/0.9.0.1/$KAFKA_DISTRO_NAME.tgz && \
     tar -xvf $KAFKA_DISTRO_NAME.tgz && \
     mv $KAFKA_DISTRO_NAME /opt/$KAFKA_DISTRO_NAME && \
