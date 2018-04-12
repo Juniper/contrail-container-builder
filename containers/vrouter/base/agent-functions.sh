@@ -359,7 +359,7 @@ function bind_devs_to_driver() {
 
 function get_addrs_for_nic() {
     local nic=$1
-    ip addr show dev $nic | grep "inet" | grep -oP "[0-9a-f\:\.]*/[0-9]* brd [0-9\.]*|[0-9a-f\:\.]*/[0-9]*"
+    ip addr show dev $nic | grep -w "inet" | grep -oP "[0-9a-f\:\.]*/[0-9]* brd [0-9\.]*|[0-9a-f\:\.]*/[0-9]*"
 }
 
 function prepare_phys_int_dpdk
@@ -600,4 +600,95 @@ EOM
 function cleanup_lbaas_netns_config() {
     rm -rf /var/lib/contrail/loadbalancer/*
     rm -rf /var/run/netns/
+}
+
+function cleanup_contrail_cni_config() {
+    rm -f /opt/cni/bin/contrail-k8s-cni
+    rm -f /etc/cni/net.d/10-contrail.conf
+}
+
+# remove vhost0 interface for kernel based node
+function remove_vhost0_kernel() {
+    local phys_int=$1
+    local vhost='vhost0'
+    local addrs=$(get_addrs_for_nic $vhost)
+    local gateway=`get_default_gateway_for_nic_metric $vhost`
+
+    if [[ $(lsmod | grep vrouter | awk '{print $1}') == 'vrouter' ]]; then
+        # Wait for vrouter module to be free for use
+        while [[ $(lsmod | grep vrouter | awk '{print $3}') != '0' ]]; do
+            sleep 1s;
+        done
+        echo "INFO: Unloading kernel module and bringing up $phys_int"
+        if [[ -f "/etc/sysconfig/network-scripts/ifcfg-${phys_int}" && -f "/etc/sysconfig/network-scripts/route-${phys_int}" ]]; then
+            ip link del vhost0 && rmmod vrouter && ifup $phys_int
+        else
+            ip link del vhost0 && rmmod vrouter && ip addr add $addrs dev $phys_int
+            if [[ -n "$gateway" ]]; then
+                echo "INFO: set default gateway"
+                ip route add default via $gateway || { echo "ERROR: failed to add default gateway $gateway" && ret=1; }
+            fi
+        fi
+    fi
+}
+
+# generic remove vhost functionality
+function remove_vhost0() {
+    if ! is_dpdk ; then
+        IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
+        echo "INFO: removing vhost0"
+        remove_vhost0_kernel ${phys_int}
+    fi
+}
+
+# Modify/Deletes files created by agent container
+function cleanup_vrouter_agent_files() {
+    local phys_int=$1
+
+    if [[ -e /etc/sysconfig/network-scripts/ifcfg-vhost0 ]]; then
+        pushd /etc/sysconfig/network-scripts/
+
+        if [ -f "contrail.org.ifcfg-${phys_int}" ] ; then
+            # override ifcfg-${phys_int} file created by vrouter-agent container
+            /bin/cp -f contrail.org.ifcfg-${phys_int} ifcfg-${phys_int}
+            rm -f contrail.org.ifcfg-${phys_int}
+            rm -f ifcfg-vhost0
+        fi
+
+        if [[ -f "contrail.org.route-${phys_int}" ]]; then
+            # override route-${phys_int} file created by vrouter-agent container
+            /bin/cp -f contrail.org.route-${phys_int} route-${phys_int}
+            rm -f contrail.org.route-${phys_int}
+            rm -f route-vhost0
+        fi
+        popd
+    fi
+
+    cleanup_lbaas_netns_config
+    # remove config file
+    rm -rf /etc/contrail/contrail-vrouter-agent.conf
+}
+
+# terminate vrouter agent process
+function term_vrouter_agent() {
+    local vrouter_agent_process=$1
+    local phys_int=$2
+    process_exists=$(kill -0 $vrouter_agent_process &>/dev/null)
+    if $process_exists; then
+        echo "INFO: terminating vrouter agent process"
+        kill -KILL "$vrouter_agent_process" &>/dev/null
+        wait $vrouter_agent_process
+    fi
+    cleanup_vrouter_agent_files $phys_int
+}
+
+# send quit signal to root process
+function quit_root_process() {
+    kill -QUIT 1
+}
+
+# send SIGHUP signal to child process
+function send_sighup_child_process(){
+    local child_process=$1
+    kill -HUP "$child_process"
 }
