@@ -27,9 +27,7 @@ SSL_ENABLE=${SSL_ENABLE:-False}
 SSL_INSECURE=${SSL_INSECURE:-True}
 SERVER_CERTFILE=${SERVER_CERTFILE:-'/etc/contrail/ssl/certs/server.pem'}
 SERVER_KEYFILE=${SERVER_KEYFILE:-'/etc/contrail/ssl/private/server-privkey.pem'}
-# Used self-signed by default
-#SERVER_CA_CERTFILE=${SERVER_CA_CERTFILE:-'/etc/contrail/ssl/certs/ca-cert.pem'}
-SERVER_CA_CERTFILE=${SERVER_CA_CERTFILE:-''}
+SERVER_CA_CERTFILE=${SERVER_CA_CERTFILE:-'/etc/contrail/ssl/certs/ca-cert.pem'}
 
 CONTROLLER_NODES=${CONTROLLER_NODES:-${DEFAULT_LOCAL_IP}}
 

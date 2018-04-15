@@ -124,7 +124,17 @@ control)
   ;;
 
 vrouter)
-  host_ip=$(get_default_ip)
+  host_ip=''
+  for _ in {1..30} ; do
+    host_ip=$(get_listen_ip_for_nic vhost0)
+    if [[ -n "$host_ip" ]] ; then
+      break
+    fi
+    sleep 1
+  done
+  if [[ -z "$host_ip" ]] ; then
+    host_ip=$(get_default_ip)
+  fi
   params=''
   if is_dpdk ; then
     params="$params --dpdk_enabled"
