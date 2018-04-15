@@ -24,15 +24,16 @@ services:
     volumes:
       - /etc/hosts:/etc/hosts
 
-  # TLS cert generation if needed
-  contrail-certs-init:
-    image: "${CONTRAIL_REGISTRY}/contrail-certs-init:${CONTRAIL_CONTAINER_TAG}"
+  # Node init
+  contrail-node-init:
+    image: "${CONTRAIL_REGISTRY}/contrail-node-init:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     network_mode: "service:network"
     depends_on:
       - network
     volumes:
       - /etc/contrail/ssl:/etc/contrail/ssl
+      - /usr/bin:/host/usr/bin
 
   # ===
   # common services
@@ -43,7 +44,7 @@ services:
       - ZOOKEEPER_NODES
     network_mode: "service:network"
     depends_on:
-      - network
+      - contrail-node-init
     restart: on-failure
   rabbitmq:
     image: "${CONTRAIL_REGISTRY}/contrail-external-rabbitmq:${CONTRAIL_CONTAINER_TAG}"
@@ -53,14 +54,14 @@ services:
       - RABBITMQ_ERLANG_COOKIE=${RABBITMQ_ERLANG_COOKIE:-'abcdefg'}
     network_mode: "service:network"
     depends_on:
-      - network
+      - contrail-node-init
     restart: on-failure
   redis:
     image: "redis:4.0.2"
     env_file: ${ENV_FILE}
     network_mode: "service:network"
     depends_on:
-      - network
+      - contrail-node-init
     restart: on-failure
 
   # ===
@@ -80,7 +81,7 @@ services:
       - CASSANDRA_JMX_LOCAL_PORT=7201
     network_mode: "service:network"
     depends_on:
-      - network
+      - contrail-node-init
     restart: on-failure
 
   # ===
@@ -97,10 +98,9 @@ services:
       - /var/log/contrail:/var/log/contrail
       - /var/run/docker.sock:/var/run/docker.sock
     volumes_from:
-      - contrail-certs-init
+      - contrail-node-init
     depends_on:
-      - network
-      - contrail-certs-init
+      - contrail-node-init
     restart: on-failure
   api:
     image: "${CONTRAIL_REGISTRY}/contrail-controller-config-api:${CONTRAIL_CONTAINER_TAG}"
@@ -109,10 +109,9 @@ services:
     volumes:
       - /var/log/contrail:/var/log/contrail
     volumes_from:
-      - contrail-certs-init
+      - contrail-node-init
     depends_on:
-      - network
-      - contrail-certs-init
+      - contrail-node-init
     restart: on-failure
   svcmonitor:
     image: "${CONTRAIL_REGISTRY}/contrail-controller-config-svcmonitor:${CONTRAIL_CONTAINER_TAG}"
@@ -121,10 +120,9 @@ services:
     volumes:
       - /var/log/contrail:/var/log/contrail
     volumes_from:
-      - contrail-certs-init
+      - contrail-node-init
     depends_on:
-      - network
-      - contrail-certs-init
+      - contrail-node-init
     restart: on-failure
   schema:
     image: "${CONTRAIL_REGISTRY}/contrail-controller-config-schema:${CONTRAIL_CONTAINER_TAG}"
@@ -133,10 +131,9 @@ services:
     volumes:
       - /var/log/contrail:/var/log/contrail
     volumes_from:
-      - contrail-certs-init
+      - contrail-node-init
     depends_on:
-      - network
-      - contrail-certs-init
+      - contrail-node-init
     restart: on-failure
   devicemgr:
     image: "${CONTRAIL_REGISTRY}/contrail-controller-config-devicemgr:${CONTRAIL_CONTAINER_TAG}"
@@ -145,10 +142,9 @@ services:
     volumes:
       - /var/log/contrail:/var/log/contrail
     volumes_from:
-      - contrail-certs-init
+      - contrail-node-init
     depends_on:
-      - network
-      - contrail-certs-init
+      - contrail-node-init
     restart: on-failure
 
   # ===
@@ -163,10 +159,9 @@ services:
       - /var/log/contrail:/var/log/contrail
       - /var/run/docker.sock:/var/run/docker.sock
     volumes_from:
-      - contrail-certs-init
+      - contrail-node-init
     depends_on:
-      - network
-      - contrail-certs-init
+      - contrail-node-init
     restart: on-failure
   control:
     image: "${CONTRAIL_REGISTRY}/contrail-controller-control-control:${CONTRAIL_CONTAINER_TAG}"
@@ -175,10 +170,9 @@ services:
     volumes:
       - /var/log/contrail:/var/log/contrail
     volumes_from:
-      - contrail-certs-init
+      - contrail-node-init
     depends_on:
-      - network
-      - contrail-certs-init
+      - contrail-node-init
     restart: on-failure
   control-named:
     image: "${CONTRAIL_REGISTRY}/contrail-controller-control-named:${CONTRAIL_CONTAINER_TAG}"
@@ -189,11 +183,10 @@ services:
      - /var/log/contrail:/var/log/contrail
     volumes_from:
       - control-dns
-      - contrail-certs-init
+      - contrail-node-init
     depends_on:
-      - network
       - control-dns
-      - contrail-certs-init
+      - contrail-node-init
     restart: on-failure
   control-dns:
     image: "${CONTRAIL_REGISTRY}/contrail-controller-control-dns:${CONTRAIL_CONTAINER_TAG}"
@@ -203,10 +196,9 @@ services:
       - /var/log/contrail:/var/log/contrail
       - /etc/contrail
     volumes_from:
-      - contrail-certs-init
+      - contrail-node-init
     depends_on:
-      - network
-      - contrail-certs-init
+      - contrail-node-init
     restart: on-failure
 
   # ===
@@ -223,17 +215,16 @@ services:
       - /var/log/contrail:/var/log/contrail
       - /var/run/docker.sock:/var/run/docker.sock
     volumes_from:
-      - contrail-certs-init
+      - contrail-node-init
     depends_on:
-      - network
-      - contrail-certs-init
+      - contrail-node-init
     restart: on-failure
   analyticsdb-kafka:
     image: "${CONTRAIL_REGISTRY}/contrail-external-kafka:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     network_mode: "service:network"
     depends_on:
-      - network
+      - contrail-node-init
     restart: on-failure
   analyticsdb-cassandra:
     image: "${CONTRAIL_REGISTRY}/contrail-external-cassandra:${CONTRAIL_CONTAINER_TAG}"
@@ -250,7 +241,7 @@ services:
       - CASSANDRA_JMX_LOCAL_PORT=7200
     network_mode: "service:network"
     depends_on:
-      - network
+      - contrail-node-init
     restart: on-failure
 
   # ===
@@ -265,10 +256,9 @@ services:
       - /var/log/contrail:/var/log/contrail
       - /var/run/docker.sock:/var/run/docker.sock
     volumes_from:
-      - contrail-certs-init
+      - contrail-node-init
     depends_on:
-      - network
-      - contrail-certs-init
+      - contrail-node-init
     restart: on-failure
   analytics-api:
     image: "${CONTRAIL_REGISTRY}/contrail-analytics-api:${CONTRAIL_CONTAINER_TAG}"
@@ -277,10 +267,9 @@ services:
     volumes:
       - /var/log/contrail:/var/log/contrail
     volumes_from:
-      - contrail-certs-init
+      - contrail-node-init
     depends_on:
-      - network
-      - contrail-certs-init
+      - contrail-node-init
     restart: on-failure
   analytics-collector:
     image: "${CONTRAIL_REGISTRY}/contrail-analytics-collector:${CONTRAIL_CONTAINER_TAG}"
@@ -289,10 +278,9 @@ services:
     volumes:
       - /var/log/contrail:/var/log/contrail
     volumes_from:
-      - contrail-certs-init
+      - contrail-node-init
     depends_on:
-      - network
-      - contrail-certs-init
+      - contrail-node-init
     restart: on-failure
   analytics-query-engine:
     image: "${CONTRAIL_REGISTRY}/contrail-analytics-query-engine:${CONTRAIL_CONTAINER_TAG}"
@@ -301,10 +289,9 @@ services:
     volumes:
       - /var/log/contrail:/var/log/contrail
     volumes_from:
-      - contrail-certs-init
+      - contrail-node-init
     depends_on:
-      - network
-      - contrail-certs-init
+      - contrail-node-init
     restart: on-failure
   analytics-alarm-gen:
     image: "${CONTRAIL_REGISTRY}/contrail-analytics-alarm-gen:${CONTRAIL_CONTAINER_TAG}"
@@ -313,10 +300,9 @@ services:
     volumes:
       - /var/log/contrail:/var/log/contrail
     volumes_from:
-      - contrail-certs-init
+      - contrail-node-init
     depends_on:
-      - network
-      - contrail-certs-init
+      - contrail-node-init
     restart: on-failure
   analytics-snmp-collector:
     image: "${CONTRAIL_REGISTRY}/contrail-analytics-snmp-collector:${CONTRAIL_CONTAINER_TAG}"
@@ -325,10 +311,9 @@ services:
     volumes:
       - /var/log/contrail:/var/log/contrail
     volumes_from:
-      - contrail-certs-init
+      - contrail-node-init
     depends_on:
-      - network
-      - contrail-certs-init
+      - contrail-node-init
     restart: on-failure
   analytics-topology:
     image: "${CONTRAIL_REGISTRY}/contrail-analytics-topology:${CONTRAIL_CONTAINER_TAG}"
@@ -337,10 +322,9 @@ services:
     volumes:
       - /var/log/contrail:/var/log/contrail
     volumes_from:
-      - contrail-certs-init
+      - contrail-node-init
     depends_on:
-      - network
-      - contrail-certs-init
+      - contrail-node-init
     restart: on-failure
   analytics-redis:
     env_file: ${ENV_FILE}
@@ -348,7 +332,7 @@ services:
     volumes:
       - /var/log/contrail:/var/log/contrail
     depends_on:
-      - network
+      - contrail-node-init
     restart: on-failure
 
   # ===
@@ -360,10 +344,9 @@ services:
     volumes:
       - /var/log/contrail:/var/log/contrail
     volumes_from:
-      - contrail-certs-init
+      - contrail-node-init
     depends_on:
-      - network
-      - contrail-certs-init
+      - contrail-node-init
     restart: on-failure
   contrail-webui-job:
     image: "${CONTRAIL_REGISTRY}/contrail-controller-webui-job:${CONTRAIL_CONTAINER_TAG}"
@@ -372,10 +355,9 @@ services:
     volumes:
       - /var/log/contrail:/var/log/contrail
     volumes_from:
-      - contrail-certs-init
+      - contrail-node-init
     depends_on:
-      - network
-      - contrail-certs-init
+      - contrail-node-init
     restart: on-failure
 
   # ===
@@ -390,9 +372,9 @@ services:
       - /var/log/contrail:/var/log/contrail
       - /var/run/docker.sock:/var/run/docker.sock
     volumes_from:
-      - contrail-certs-init
+      - contrail-node-init
     depends_on:
-      - contrail-certs-init
+      - contrail-node-init
     restart: on-failure
   vrouter-init-kernel:
     image: "${CONTRAIL_REGISTRY}/contrail-vrouter-kernel-init:${CONTRAIL_CONTAINER_TAG}"
@@ -400,13 +382,14 @@ services:
     network_mode: host
     privileged: true
     volumes:
+      - /bin:/host/bin
       - /usr/src:/usr/src
       - /lib/modules:/lib/modules
       - /var/log/contrail:/var/log/contrail
     volumes_from:
-      - contrail-certs-init
+      - contrail-node-init
     depends_on:
-      - contrail-certs-init
+      - contrail-node-init
   vrouter-agent:
     image: "${CONTRAIL_REGISTRY}/contrail-vrouter-agent:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
@@ -415,10 +398,12 @@ services:
     volumes:
       - /dev:/dev
       - /etc/sysconfig/network-scripts:/etc/sysconfig/network-scripts
+      - /usr/src:/usr/src
+      - /lib/modules:/lib/modules
       - /var/log/contrail:/var/log/contrail
     volumes_from:
-      - contrail-certs-init
+      - contrail-node-init
     depends_on:
       - vrouter-init-kernel
-      - contrail-certs-init
+      - contrail-node-init
     restart: on-failure

@@ -2,12 +2,18 @@
 
 source /common.sh
 
-if [ ! is_enabled "$SSL_ENABLE" ] \
-   && [ ! is_enabled "$XMPP_SSL_ENABLE" ] \
-   && [ ! is_enabled "$INTROSPECT_SSL_ENABLE" ] \
-   && [ ! is_enabled "$SANDESH_SSL_ENABLE" ] ; then
+if ! is_ssl_enabled ; then
   echo "INFO: No SSL Parameters Enabled, nothing to do"
   exit 0
+fi
+
+FORCE_GENERATE_CERT=${FORCE_GENERATE_CERT:-'false'}
+if [[ -f "$SERVER_CERTFILE" && -f "$SERVER_KEYFILE" ]] ; then
+  if ! is_enabled $FORCE_GENERATE_CERT ; then
+    echo "INFO: cert and key files are already exist"
+    exit 0
+  fi
+  echo "WARNING: cert and key files are already exist, but force generation is set"
 fi
 
 function fail() {
@@ -25,19 +31,9 @@ for ip in $(get_local_ips) ; do
   (( alt_name_num+=1 ))
 done
 
-[[ -z "$SERVER_CA_CERTFILE" && -z "$SERVER_CA_KEYFILE" ]] \
-  || [[ -n "$SERVER_CA_CERTFILE" && -n "$SERVER_CA_KEYFILE" ]] \
-  || fail "SERVER_CA_CERTFILE and SERVER_CA_KEYFILE must be either both empty or both set"
-
 working_dir='/tmp/contrail_ssl_gen'
-ca_file="${SERVER_CA_CERTFILE}"
-if [[ -z "${ca_file}" || ! -f "${ca_file}" ]] ; then
-  ca_file="$working_dir/certs/ca.crt.pem"
-fi
-ca_key_file=${SERVER_CA_KEYFILE}
-if [[ -z "${ca_key_file}" || ! -f "${ca_key_file}" ]] ; then
-  ca_key_file="$working_dir/certs/ca.key.pem"
-fi
+ca_file=${SERVER_CA_CERTFILE:-"$working_dir/certs/ca.crt.pem"}
+ca_key_file=${SERVER_CA_KEYFILE:-"$working_dir/certs/ca.key.pem"}
 
 rm -rf $working_dir
 mkdir -p $working_dir/certs
@@ -122,19 +118,23 @@ mkdir -p $(dirname $SERVER_CERTFILE)
 mkdir -p $(dirname $SERVER_KEYFILE)
 
 #generate local self-signed CA if requested
-if [[ ! -f "${ca_file}" && ! -f "${ca_key_file}" ]] ; then
+if [[ ! -f "${ca_key_file}" ]] ; then
   openssl genrsa -out $ca_key_file 4096 || fail "Failed to generate CA key file"
   chmod 600 $ca_key_file || fail "Failed to to chmod 600 on $ca_key_file"
+fi
+if [[ ! -f "${ca_file}" ]] ; then
   openssl req -config $openssl_config_file -new -x509 -days 365 -extensions v3_ca -key $ca_key_file -out $ca_file || fail "Failed to generate CA cert"
   chmod 644 $ca_file || fail "Failed to chmod 644 on $ca_file"
-else
-  [[ -f "${ca_file}" && -f "${ca_key_file}" ]] || fail "'${ca_file}' or '${ca_key_file}' doesnt exist"
 fi
+[[ -f "${ca_file}" && -f "${ca_key_file}" ]] || fail "'${ca_file}' or '${ca_key_file}' doesnt exist"
 
 # generate server certificate
 csr_file="${working_dir}/server.pem.csr"
-openssl genrsa -out $SERVER_KEYFILE 2048 || fail "Failed to generate server key file $SERVER_KEYFILE"
-chmod 600 $SERVER_KEYFILE || fail "Failed to chmod 600 on $SERVER_KEYFILE"
-openssl req -config $openssl_config_file -key $SERVER_KEYFILE -new  -out $csr_file || fail "Failed to create CSR"
-yes | openssl ca -config $openssl_config_file -extensions v3_req -days 365 -in $csr_file -out $SERVER_CERTFILE || fail "Failed to sign certificate"
-chmod 644 $SERVER_CERTFILE || fail "Failed to chmod 644 on $SERVER_CERTFILE"
+openssl genrsa -out ${SERVER_KEYFILE}.tmp 2048 || fail "Failed to generate server key file ${SERVER_KEYFILE}.tmp"
+chmod 600 ${SERVER_KEYFILE}.tmp || fail "Failed to chmod 600 on ${SERVER_KEYFILE}.tmp"
+openssl req -config $openssl_config_file -key ${SERVER_KEYFILE}.tmp -new  -out $csr_file || fail "Failed to create CSR"
+yes | openssl ca -config $openssl_config_file -extensions v3_req -days 365 -in $csr_file -out ${SERVER_CERTFILE}.tmp || fail "Failed to sign certificate"
+chmod 644 ${SERVER_CERTFILE}.tmp || fail "Failed to chmod 644 on ${SERVER_CERTFILE}.tmp"
+
+mv ${SERVER_KEYFILE}.tmp ${SERVER_KEYFILE}
+mv ${SERVER_CERTFILE}.tmp ${SERVER_CERTFILE}

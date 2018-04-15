@@ -1,15 +1,57 @@
 #!/bin/bash
 
+
+function is_ssl_enabled() {
+  is_enabled "$SSL_ENABLE" \
+   || is_enabled "$XMPP_SSL_ENABLE" \
+   || is_enabled "$INTROSPECT_SSL_ENABLE" \
+   || is_enabled "$SANDESH_SSL_ENABLE"
+}
+
+function wait_files() {
+  local file1=$1
+  local file2=$2
+  local count=0
+  while (true) ; do
+    if [[ -f "$file1" && -f "$file2" ]] ; then
+      return
+    fi
+    (( count+=1 ))
+    if (( count == 60 ))  ; then
+      break
+    fi
+    sleep 1
+  done
+  return 1
+}
+
+function wait_certs_if_ssl_enabled() {
+  if ! is_ssl_enabled ; then
+    return
+  fi
+
+  is_enabled $SSL_ENABLE && wait_files "$SERVER_KEYFILE" "$SERVER_CERTFILE"
+  if [[ "$SERVER_KEYFILE" != "$XMPP_SERVER_CERTFILE" ]] ; then
+    is_enabled $XMPP_SSL_ENABLE && wait_files "$XMPP_SERVER_CERTFILE" "$XMPP_SERVER_KEYFILE"
+  fi
+  if [[ "$SERVER_KEYFILE" != "$INTROSPECT_CERTFILE" ]] ; then
+    is_enabled $INTROSPECT_SSL_ENABLE && wait_files "$INTROSPECT_CERTFILE" "$INTROSPECT_KEYFILE"
+  fi
+  if [[ "$SERVER_KEYFILE" != "$SANDESH_CERTFILE" ]] ; then
+    is_enabled $SANDESH_SSL_ENABLE && wait_files "$SANDESH_CERTFILE" "$SANDESH_KEYFILE"
+  fi
+}
+
 function pre_start_init() {
-    :
+  wait_certs_if_ssl_enabled
 }
 
 function is_tsn() {
-    [[ $TSN_EVPN_MODE =~ ^[Tt][Rr][Uu][Ee]$ ]]
+  [[ $TSN_EVPN_MODE =~ ^[Tt][Rr][Uu][Ee]$ ]]
 }
 
 function is_dpdk() {
-    test "$AGENT_MODE" == 'dpdk'
+   test "$AGENT_MODE" == 'dpdk'
 }
 
 function set_third_party_auth_config(){

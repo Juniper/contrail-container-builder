@@ -3,25 +3,33 @@
 ZOOKEEPER_PORT=${ZOOKEEPER_PORT:-2181}
 ZOOKEEPER_PORTS=${ZOOKEEPER_PORTS:-'2888:3888'}
 
-ord=1
-my_ord=0
-IFS=',' read -ra srv_list <<< "$ZOOKEEPER_NODES"
-local_ips=",$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}' | tr '\n' ','),"
-zoo_servers=''
-for srv in "${srv_list[@]}"; do
-  if [[ -z "$ZOO_SERVERS" ]] ; then
-    zoo_servers+="server.${ord}=${srv}:${ZOOKEEPER_PORTS} "
+# In all in one deployment there is the race between vhost0 initialization
+# and own IP detection, so there is 10 retries
+for i in {1..10} ; do
+  ord=1
+  my_ord=0
+  IFS=',' read -ra srv_list <<< "$ZOOKEEPER_NODES"
+  local_ips=",$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}' | tr '\n' ','),"
+  zoo_servers=''
+  for srv in "${srv_list[@]}"; do
+    if [[ -z "$ZOO_SERVERS" ]] ; then
+      zoo_servers+="server.${ord}=${srv}:${ZOOKEEPER_PORTS} "
+    fi
+    if [[ "$local_ips" =~ ",$srv," ]] ; then
+      echo "INFO: found '$srv' in local IPs '$local_ips'"
+      my_ord=$ord
+    fi
+    ord=$((ord+1))
+  done
+  if (( $my_ord > 0 && $my_ord <= "${#srv_list[@]}" )); then
+    break
   fi
-  if [[ "$local_ips" =~ ",$srv," ]] ; then
-    echo "INFO: found '$srv' in local IPs '$local_ips'"
-    my_ord=$ord
-  fi
-  ord=$((ord+1))
+  sleep 1
 done
 
 if (( $my_ord < 1 || $my_ord > "${#srv_list[@]}" )); then
   echo "ERROR: Cannot find self ips ('$local_ips') in Zookeeper nodes ('$ZOOKEEPER_NODES')"
-  exit
+  exit -1
 fi
 
 # If ZOO_SERVERS is provided then just use it, because it is an interface of

@@ -145,7 +145,7 @@ export SSL_ENABLE=${SSL_ENABLE:-False}
 export SSL_INSECURE=${SSL_INSECURE:-True}
 export SERVER_CERTFILE=${SERVER_CERTFILE:-'/etc/contrail/ssl/certs/server.pem'}
 export SERVER_KEYFILE=${SERVER_KEYFILE:-'/etc/contrail/ssl/private/server-privkey.pem'}
-export SERVER_CA_CERTFILE=${SERVER_CA_CERTFILE:-''}
+export SERVER_CA_CERTFILE=${SERVER_CA_CERTFILE:-'/etc/contrail/ssl/certs/ca-cert.pem'}
 
 export XMPP_SSL_ENABLE=${XMPP_SSL_ENABLE:-${SSL_ENABLE}}
 export XMPP_SERVER_CERTFILE=${XMPP_SERVER_CERTFILE:-${SERVER_CERTFILE}}
