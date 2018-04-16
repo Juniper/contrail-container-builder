@@ -20,14 +20,23 @@ ZOOKEEPER_ANALYTICS_PORT=${ZOOKEEPER_ANALYTICS_PORT:-2182}
 : ${KAFKA_LISTEN_ADDRESS='auto'}
 my_index=1
 if [ "$KAFKA_LISTEN_ADDRESS" = 'auto' ]; then
-  IFS=',' read -ra server_list <<< "$KAFKA_NODES"
-  for server in "${server_list[@]}"; do
-    if [[ "$local_ips" =~ ",$server," ]] ; then
-      echo "INFO: found '$server' in local IPs '$local_ips'"
-      my_ip=$server
+  # In all in one deployment there is the race between vhost0 initialization
+  # and own IP detection, so there is 10 retries
+  for i in {1..10} ; do
+    my_ip=''
+    IFS=',' read -ra server_list <<< "$KAFKA_NODES"
+    for server in "${server_list[@]}"; do
+      if [[ "$local_ips" =~ ",$server," ]] ; then
+        echo "INFO: found '$server' in local IPs '$local_ips'"
+        my_ip=$server
+        break
+      fi
+      (( my_index+=1 ))
+    done
+    if [ -n "$my_ip" ]; then
       break
     fi
-    (( my_index+=1 ))
+    sleep 1
   done
 
   if [ -z "$my_ip" ]; then
