@@ -35,6 +35,8 @@ fi
 echo "INFO: agent started in $AGENT_MODE mode"
 
 init_vhost0
+init_crypt0 $VROUTER_CRYPT_INTERFACE
+init_decrypt0 $VROUTER_DECRYPT_INTERFACE $VROUTER_DECRYPT_KEY
 
 # TODO: avoid duplication of reading parameters with init_vhost0
 if ! is_dpdk ; then
@@ -227,6 +229,8 @@ create_lbaas_auth_conf
 # spin up vrouter-agent as a child process
 "$@" &
 vrouter_agent_process=$!
+
+add_vrouter_decrypt_intf $VROUTER_DECRYPT_INTERFACE
 
 # Wait for vrouter-agent process to complete
 wait $vrouter_agent_process
