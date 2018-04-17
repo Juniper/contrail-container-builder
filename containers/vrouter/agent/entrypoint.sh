@@ -35,6 +35,12 @@ fi
 echo "INFO: agent started in $AGENT_MODE mode"
 
 init_vhost0
+if is_encryption_supported; then
+   init_crypt0 $VROUTER_CRYPT_INTERFACE
+   init_decrypt0 $VROUTER_DECRYPT_INTERFACE $VROUTER_DECRYPT_KEY
+else
+  echo "INFO: Kernel version does not support the driver required for vrouter to vrouter encryption"
+fi
 
 init_sriov
 
@@ -163,6 +169,14 @@ EOM
     fi
 fi
 
+crypt_intf_setup=""
+if is_encryption_supported; then
+read -r -d '' crypt_intf_setup << EOM || true
+[CRYPT]
+crypt_interface=$VROUTER_CRYPT_INTERFACE
+EOM
+fi
+
 echo "INFO: Preparing /etc/contrail/contrail-vrouter-agent.conf"
 cat << EOM > /etc/contrail/contrail-vrouter-agent.conf
 [CONTROL-NODE]
@@ -217,6 +231,8 @@ $qos_queueing_option
 
 $priority_group_option
 
+$crypt_intf_setup
+
 EOM
 
 add_ini_params_from_env VROUTER_AGENT /etc/contrail/contrail-vrouter-agent.conf
@@ -243,6 +259,17 @@ create_lbaas_auth_conf
 # spin up vrouter-agent as a child process
 "$@" &
 vrouter_agent_process=$!
+
+# This is to ensure decrypt interface is
+# plumbed on vrouter for processing.
+# it will be interim only till vrouter
+# agent natively have the support for
+# decrypt interface in 5.0.1
+if is_encryption_supported; then
+   add_vrouter_decrypt_intf $VROUTER_DECRYPT_INTERFACE
+else
+   echo "INFO: Kernel version does not support vrouter to vrouter encryption - Not adding $VROUTER_DECRYPT_INTERFACE to vrouter"
+fi
 
 # Wait for vrouter-agent process to complete
 wait $vrouter_agent_process
