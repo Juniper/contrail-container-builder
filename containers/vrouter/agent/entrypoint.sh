@@ -35,6 +35,13 @@ fi
 echo "INFO: agent started in $AGENT_MODE mode"
 
 init_vhost0
+encrypt_ok=$((is_encryption_suported))
+if [ $encrypt_ok == 0 ]; then
+   init_crypt0 $VROUTER_CRYPT_INTERFACE
+   init_decrypt0 $VROUTER_DECRYPT_INTERFACE $VROUTER_DECRYPT_KEY
+else
+  echo "INFO: Kernel version does not support the driver required for vrouter to vrouter encryption"
+fi
 
 # TODO: avoid duplication of reading parameters with init_vhost0
 if ! is_dpdk ; then
@@ -197,6 +204,9 @@ $vmware_options
 [FLOWS]
 fabric_snat_hash_table_size = $FABRIC_SNAT_HASH_TABLE_SIZE
 
+[CRYPT]
+crypt_interface = $VROUTER_CRYPT_INTERFACE
+
 $qos_queueing_option
 
 $priority_group_option
@@ -227,6 +237,12 @@ create_lbaas_auth_conf
 # spin up vrouter-agent as a child process
 "$@" &
 vrouter_agent_process=$!
+
+if [ $encrypt_ok == 0 ]; then
+   add_vrouter_decrypt_intf $VROUTER_DECRYPT_INTERFACE
+else
+   echo "INFO: Kernel version does not support vrouter to vrouter encryption - Not adding $VROUTER_DECRYPT_INTERFACE to vrouter"
+fi
 
 # Wait for vrouter-agent process to complete
 wait $vrouter_agent_process
