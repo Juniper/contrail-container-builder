@@ -91,7 +91,7 @@ if [[ "$LINUX_ID" == 'rhel' ]] ; then
       exit 1
   esac
   # generic repos
-  RHEL_HOST_REPOS+="rhel-7-server-rpms,rhel-7-server-extras-rpms"
+  RHEL_HOST_REPOS+="rhel-7-server-rpms,rhel-7-server-extras-rpms,rhel-7-server-optional-rpms"
   # python-pip repo (package python27-python-pip),
   # it is needed in contrail-openstack-ironic-notification-manager
   RHEL_HOST_REPOS+=",rhel-server-rhscl-7-rpms"
