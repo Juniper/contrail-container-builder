@@ -8,7 +8,7 @@ function provision() {
   local script=$1
   shift 1
   local rest_params="$@"
-  local retries=${PROVISION_RETRIES:-10}
+  local retries=${PROVISION_RETRIES:-200}
   local pause=${PROVISION_DELAY:-3}
   for (( i=0 ; i < retries ; ++i )) ; do
     echo "Provisioning: $script $rest_params: $i/$retries"
@@ -16,8 +16,10 @@ function provision() {
       echo "Provisioning: $script $rest_params: succeeded"
       break
     fi
+    echo "Provisioning: $script $rest_params: failed, retrying in: $pause sec"
     sleep $pause
   done
+  echo "Error: Provisioning: $script $rest_params: permanently failed"
 }
 
 function provision_node() {
