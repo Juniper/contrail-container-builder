@@ -2,22 +2,27 @@
 
 source /common.sh
 
-wait_for_contrail_api
-
 function provision() {
   local script=$1
   shift 1
   local rest_params="$@"
   local retries=${PROVISION_RETRIES:-10}
   local pause=${PROVISION_DELAY:-3}
+  local servers=`echo ${CONFIG_NODES} | tr ',' ' '`
+  echo "INFO: Provisioning cmdline: python /opt/contrail/utils/$script $rest_params --api_server_ip {for each node from the list: $CONFIG_NODES} --api_server_port $CONFIG_API_PORT $AUTH_PARAMS"
   for (( i=0 ; i < retries ; ++i )) ; do
-    echo "Provisioning: $script $rest_params: $i/$retries"
-    if python /opt/contrail/utils/$script $rest_params --api_server_ip $CONFIG_API_VIP --api_server_port $CONFIG_API_PORT $AUTH_PARAMS ; then
-      echo "Provisioning: $script $rest_params: succeeded"
-      break
-    fi
+    echo "INFO: Provisioning attempt $((i+1)) of $retries (pause $pause)"
+    for server in $servers ; do
+      if python /opt/contrail/utils/$script $rest_params --api_server_ip $server --api_server_port $CONFIG_API_PORT $AUTH_PARAMS ; then
+        echo "INFO: Provisioning was succeeded"
+        return
+      fi
+    done
     sleep $pause
+    ((pause+=1))
   done
+  echo "ERROR: Provisioning was failed"
+  exit 1
 }
 
 function provision_node() {

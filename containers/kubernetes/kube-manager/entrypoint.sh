@@ -62,6 +62,4 @@ add_ini_params_from_env KUBERNETES /etc/contrail/contrail-kubernetes.conf
 set_third_party_auth_config
 set_vnc_api_lib_ini
 
-wait_for_contrail_api
-
 exec "$@"
