@@ -124,17 +124,7 @@ control)
   ;;
 
 vrouter)
-  host_ip=''
-  for _ in {1..30} ; do
-    host_ip=$(get_listen_ip_for_nic vhost0)
-    if [[ -n "$host_ip" ]] ; then
-      break
-    fi
-    sleep 1
-  done
-  if [[ -z "$host_ip" ]] ; then
-    host_ip=$(get_default_ip)
-  fi
+  host_ip=$(get_ip_for_vrouter_from_control)
   params=''
   if is_dpdk ; then
     params="$params --dpdk_enabled"

@@ -171,7 +171,7 @@ $tsn_server_list
 $sandesh_client_config
 
 [NETWORKS]
-control_network_ip=$(get_default_ip)
+control_network_ip=$(get_ip_for_vrouter_from_control)
 
 [DNS]
 servers=${DNS_SERVERS:-`get_server_list DNS ":$DNS_SERVER_PORT "`}
