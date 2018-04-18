@@ -54,6 +54,10 @@ function is_dpdk() {
    test "$AGENT_MODE" == 'dpdk'
 }
 
+function is_sriov() {
+   [[ -n "$SRIOV_PHYSICAL_INTERFACE" ]] && [[ "$SRIOV_VF" -ne 0 ]]
+}
+
 function set_third_party_auth_config(){
   if [[ $AUTH_MODE != "keystone" ]]; then
     return
