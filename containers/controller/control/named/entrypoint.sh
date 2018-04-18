@@ -53,6 +53,4 @@ touch /var/log/contrail/contrail-named.log
 chown contrail:contrail /var/log/contrail/contrail-named.log
 chown contrail:contrail /var/log/contrail
 
-wait_for_contrail_api
-
 exec "$@"

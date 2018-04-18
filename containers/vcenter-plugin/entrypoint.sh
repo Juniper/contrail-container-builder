@@ -26,7 +26,4 @@ add_ini_params_from_env VCENTER_PLUGIN /etc/contrail/contrail-vcenter-plugin.con
 
 set_vnc_api_lib_ini
 
-wait_for_contrail_api
-
 exec $@
-

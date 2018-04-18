@@ -36,7 +36,10 @@ add_ini_params_from_env ${NODE_TYPE^^}_NODEMGR /etc/contrail/$NODEMGR_NAME.conf
 
 set_vnc_api_lib_ini
 
-/provision.sh
+if ! /provision.sh ; then
+  echo "ERROR: provision.sh was failed. Exiting..."
+  exit 1
+fi
 
 exec "$@"
 
