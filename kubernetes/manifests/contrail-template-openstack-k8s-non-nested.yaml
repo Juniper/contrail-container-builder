@@ -153,6 +153,8 @@ spec:
           name: agent-logs
         - mountPath: /etc/contrail
           name: etc-contrail
+        - mountPath: /etc/sysconfig/network-scripts
+          name: network-scripts
       - name: contrail-kubernetes-cni-init
         image: "{{CONTRAIL_REGISTRY}}/contrail-kubernetes-cni-init:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -196,6 +198,20 @@ spec:
           name: var-run-libvirt
         - mountPath: /etc/contrail
           name: etc-contrail
+        - mountPath: /etc/sysconfig/network-scripts
+          name: network-scripts
+        - mountPath: /dev
+          name: dev
+        - mountPath: /usr/src
+          name: usr-src
+        - mountPath: /lib/modules
+          name: lib-modules
+        - mountPath: /var/lib/contrail
+          name: var-lib-contrail
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/clean-up.sh"]
       - name: contrail-agent-nodemgr
         image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -260,6 +276,9 @@ spec:
       - name: var-run-libvirt
         hostPath:
           path: /var/run/libvirt
+      - name: network-scripts
+        hostPath:
+          path: /etc/sysconfig/network-scripts
 
 # Meta information section
 ---
