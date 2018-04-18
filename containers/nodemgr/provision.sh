@@ -36,12 +36,12 @@ function provision_subcluster() {
   provision $script --oper add $rest_params
 }
 
-
-case $NODE_TYPE in
-
-config)
-  host_ip=$(get_listen_ip_for_node CONFIG)
-  provision_node provision_config_node.py $host_ip $DEFAULT_HOSTNAME
+function create_linklocal() {
+  LINKLOCAL_SERVICE_NAME=$(echo $1|cut -f1 -d":")
+  LINKLOCAL_SERVICE_IP=$(echo $1|cut -f2 -d":")
+  LINKLOCAL_SERVICE_PORT=$(echo $1|cut -f3 -d":")
+  IPFABRIC_SERVICE_HOST=$(echo $1|cut -f4 -d":")
+  IPFABRIC_SERVICE_PORT=$(echo $1|cut -f5 -d":")
 
   fabric_host_arg=''
   if [[ $IPFABRIC_SERVICE_HOST =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
@@ -49,12 +49,25 @@ config)
   else
     fabric_host_arg="--ipfabric_dns_service_name $IPFABRIC_SERVICE_HOST"
   fi
+
   provision provision_linklocal.py --oper add \
     --linklocal_service_name $LINKLOCAL_SERVICE_NAME \
     --linklocal_service_ip $LINKLOCAL_SERVICE_IP \
     --linklocal_service_port $LINKLOCAL_SERVICE_PORT \
     $fabric_host_arg \
     --ipfabric_service_port $IPFABRIC_SERVICE_PORT
+
+}
+
+case $NODE_TYPE in
+
+config)
+  host_ip=$(get_listen_ip_for_node CONFIG)
+  provision_node provision_config_node.py $host_ip $DEFAULT_HOSTNAME
+
+  for LINKLOCAL in $(echo $LINKLOCAL_MAP | tr ',' '\n'); do
+    create_linklocal $LINKLOCAL
+  done
   provision provision_alarm.py
   provision provision_encap.py --encap_priority $ENCAP_PRIORITY
   dist_snat_list=""
