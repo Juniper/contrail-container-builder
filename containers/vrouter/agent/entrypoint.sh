@@ -36,6 +36,8 @@ echo "INFO: agent started in $AGENT_MODE mode"
 
 init_vhost0
 
+init_sriov
+
 # TODO: avoid duplication of reading parameters with init_vhost0
 if ! is_dpdk ; then
     IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
