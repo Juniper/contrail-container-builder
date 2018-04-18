@@ -627,6 +627,17 @@ EOM
     return $ret
 }
 
+function init_sriov() {
+
+    # check whether sriov enabled
+    if is_sriov ; then
+        local  sriov_phy_num=’/sys/class/net/${SRIOV_PHYSICAL_INTERFACE}/device/sriov_numvfs’
+        if [[ -f  “$sriov_phy_num” ]] ; then
+            echo  “$SRIOV_VF”  >  “$sriov_phy_num”
+        fi
+    fi
+}
+
 # Generate ip address add command
 function gen_ip_addr_add_cmd() {
     local from_nic=$1
