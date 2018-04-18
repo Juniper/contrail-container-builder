@@ -1072,6 +1072,10 @@ spec:
           name: var-crashes
         - mountPath: /tmp/serviceaccount
           name: pod-secret
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/clean-up.sh"]
       - name: contrail-agent-nodemgr
         image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
