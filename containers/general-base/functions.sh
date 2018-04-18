@@ -134,7 +134,6 @@ function get_iface_mac() {
 # if fails it then tries DNS lookup via the tool 'host'
 function resolve_hostname_by_ip() {
   local ip=$1
-  local
   local host_entry=$(getent hosts $ip | head -n 1)
   local name=''
   if  [ $? -eq 0 ] ; then
@@ -167,4 +166,10 @@ function get_hostname_by_ip() {
     name=$(generate_hostname_for_ip $ip)
   fi
   echo $name
+}
+
+function get_ip_for_vrouter_from_control() {
+  local node=${CONTROL_NODES[0]}
+  local iface=`ip route get $node | grep -o "dev.*" | awk '{print $2}'`
+  get_listen_ip_for_nic $iface
 }
