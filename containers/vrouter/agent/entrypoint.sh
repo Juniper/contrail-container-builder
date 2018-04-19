@@ -150,6 +150,19 @@ EOM
     qos_queueing_option+=$'\n'"${qos_config}"
 fi
 
+metadata_ssl_conf=''
+if is_enabled "$METADATA_SSL_ENABLE" ; then
+    read -r -d '' metadata_ssl_conf << EOM
+metadata_use_ssl=${METADATA_SSL_ENABLE}
+metadata_client_cert=${METADATA_SSL_CERTFILE}
+metadata_client_key=${METADATA_SSL_KEYFILE}
+metadata_ca_cert=${METADATA_SSL_CA_CERTFILE}
+EOM
+    if [[ -n "$METADATA_SSL_CERT_TYPE" ]] ; then
+        metadata_ssl_conf+=$'\n'"${METADATA_SSL_CERT_TYPE}"
+    fi
+fi
+
 echo "INFO: Preparing /etc/contrail/contrail-vrouter-agent.conf"
 cat << EOM > /etc/contrail/contrail-vrouter-agent.conf
 [CONTROL-NODE]
@@ -180,6 +193,7 @@ servers=${DNS_SERVERS:-`get_server_list DNS ":$DNS_SERVER_PORT "`}
 
 [METADATA]
 metadata_proxy_secret=${METADATA_PROXY_SECRET}
+$metadata_ssl_conf
 
 [VIRTUAL-HOST-INTERFACE]
 name=vhost0
