@@ -169,7 +169,7 @@ function get_hostname_by_ip() {
 }
 
 function get_ip_for_vrouter_from_control() {
-  local node_ip=${CONTROL_NODES[0]}
+  local node_ip=`echo $CONTROL_NODES | cut -d ',' -f 1`
   local iface=`ip route get $node_ip | grep -o "dev.*" | awk '{print $2}'`
   if [[ "$iface" == 'lo' ]] ; then
     echo $node_ip
