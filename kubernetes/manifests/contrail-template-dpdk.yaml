@@ -211,13 +211,6 @@ spec:
         envFrom:
         - configMapRef:
             name: env
-        volumeMounts:
-        - mountPath: /tmp/kafka-logs
-          name: kafka-logs
-      volumes:
-      - name: kafka-logs
-        hostPath:
-          path: /var/lib/contrail/kafka-logs
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
