@@ -79,6 +79,7 @@ services:
       - CASSANDRA_SSL_STORAGE_PORT=7011
       - CASSANDRA_STORAGE_PORT=7010
       - CASSANDRA_JMX_LOCAL_PORT=7201
+      - JVM_EXTRA_OPTS=-Xmx1g -Xms512m
     network_mode: "service:network"
     depends_on:
       - contrail-node-init
@@ -239,6 +240,7 @@ services:
       - CASSANDRA_SSL_STORAGE_PORT=7001
       - CASSANDRA_STORAGE_PORT=7000
       - CASSANDRA_JMX_LOCAL_PORT=7200
+      - JVM_EXTRA_OPTS=-Xmx1g -Xms512m
     network_mode: "service:network"
     depends_on:
       - contrail-node-init

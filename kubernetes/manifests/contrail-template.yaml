@@ -85,6 +85,7 @@ data:
   CASSANDRA_SSL_STORAGE_PORT: "7001"
   CASSANDRA_STORAGE_PORT: "7000"
   CASSANDRA_JMX_LOCAL_PORT: "7200"
+  JVM_EXTRA_OPTS: "-Xmx1g -Xms512m"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -101,6 +102,7 @@ data:
   CASSANDRA_SSL_STORAGE_PORT: "7011"
   CASSANDRA_STORAGE_PORT: "7010"
   CASSANDRA_JMX_LOCAL_PORT: "7201"
+  JVM_EXTRA_OPTS: "-Xmx1g -Xms512m"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -112,15 +114,6 @@ data:
   RABBITMQ_SSL_CERTFILE: "{{ RABBITMQ_SSL_CERTFILE }}"
   RABBITMQ_SSL_KEYFILE: "{{ RABBITMQ_SSL_KEYFILE }}"
   RABBITMQ_SSL_CACERTFILE: "{{ RABBITMQ_SSL_CACERTFILE }}"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: kube-manager-config
-  namespace: kube-system
-data:
-  KUBERNETES_API_SERVER: {{ KUBERNETES_API_SERVER }}
-  K8S_TOKEN_FILE: "/tmp/serviceaccount/token"
 # Containers section
 ---
 apiVersion: extensions/v1beta1
@@ -206,13 +199,6 @@ spec:
         envFrom:
         - configMapRef:
             name: env
-        volumeMounts:
-        - mountPath: /tmp/kafka-logs
-          name: kafka-logs
-      volumes:
-      - name: kafka-logs
-        hostPath:
-          path: /var/lib/contrail/kafka-logs
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -335,6 +321,7 @@ spec:
         operator: Exists
         effect: NoSchedule
       hostNetwork: true
+      serviceAccountName: contrail-node-init
       initContainers:
       - name: contrail-node-init
         image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
@@ -350,6 +337,8 @@ spec:
         volumeMounts:
         - mountPath: /host/usr/bin
           name: host-usr-bin
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       containers:
       - name: contrail-database-nodemgr
         image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
@@ -370,6 +359,8 @@ spec:
 #   path: /var/run/docker.sock and
 #   type: Socket
         volumeMounts:
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
         - mountPath: /var/log/contrail
           name: analyticsdb-logs
         - mountPath: /mnt
@@ -384,6 +375,9 @@ spec:
       - name: host-usr-bin
         hostPath:
           path: /usr/bin
+      - name: ssl-certs
+        hostPath:
+          path: /etc/contrail/ssl
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -410,6 +404,7 @@ spec:
         operator: Exists
         effect: NoSchedule
       hostNetwork: true
+      serviceAccountName: contrail-node-init
       initContainers:
       - name: contrail-node-init
         image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
@@ -425,6 +420,8 @@ spec:
         volumeMounts:
         - mountPath: /host/usr/bin
           name: host-usr-bin
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       containers:
       - name: contrail-analytics-api
         image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-api:{{CONTRAIL_CONTAINER_TAG}}"
@@ -435,6 +432,8 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: analytics-logs
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       - name: contrail-analytics-collector
         image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-collector:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -444,6 +443,8 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: analytics-logs
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       - name: contrail-analytics-alarm-gen
         image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-alarm-gen:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -453,6 +454,8 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: analytics-logs
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       - name: contrail-analytics-query-engine
         image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-query-engine:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -462,6 +465,8 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: analytics-logs
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       - name: contrail-analytics-snmp-collector
         image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-snmp-collector:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -471,6 +476,8 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: analytics-logs
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       - name: contrail-analytics-topology
         image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-topology:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -480,6 +487,8 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: analytics-logs
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       - name: contrail-analytics-nodemgr
         image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -501,6 +510,8 @@ spec:
           name: analytics-logs
         - mountPath: /mnt
           name: docker-unix-socket
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       volumes:
       - name: analytics-logs
         hostPath:
@@ -511,6 +522,9 @@ spec:
       - name: host-usr-bin
         hostPath:
           path: /usr/bin
+      - name: ssl-certs
+        hostPath:
+          path: /etc/contrail/ssl
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -537,6 +551,7 @@ spec:
         operator: Exists
         effect: NoSchedule
       hostNetwork: true
+      serviceAccountName: contrail-node-init
       initContainers:
       - name: contrail-node-init
         image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
@@ -552,6 +567,8 @@ spec:
         volumeMounts:
         - mountPath: /host/usr/bin
           name: host-usr-bin
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       containers:
       - name: contrail-controller-control
         image: "{{CONTRAIL_REGISTRY}}/contrail-controller-control-control:{{CONTRAIL_CONTAINER_TAG}}"
@@ -562,6 +579,8 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: control-logs
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       - name: contrail-controller-control-dns
         image: "{{CONTRAIL_REGISTRY}}/contrail-controller-control-dns:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -573,6 +592,8 @@ spec:
           name: dns-config
         - mountPath: /var/log/contrail
           name: control-logs
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       - name: contrail-controller-control-named
         image: "{{CONTRAIL_REGISTRY}}/contrail-controller-control-named:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -586,6 +607,8 @@ spec:
           name: dns-config
         - mountPath: /var/log/contrail
           name: control-logs
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       - name: contrail-controller-nodemgr
         image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -607,6 +630,8 @@ spec:
           name: control-logs
         - mountPath: /mnt
           name: docker-unix-socket
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       volumes:
       - name: control-logs
         hostPath:
@@ -619,6 +644,9 @@ spec:
       - name: host-usr-bin
         hostPath:
           path: /usr/bin
+      - name: ssl-certs
+        hostPath:
+          path: /etc/contrail/ssl
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -645,6 +673,7 @@ spec:
         operator: Exists
         effect: NoSchedule
       hostNetwork: true
+      serviceAccountName: contrail-node-init
       initContainers:
       - name: contrail-node-init
         image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
@@ -660,6 +689,8 @@ spec:
         volumeMounts:
         - mountPath: /host/usr/bin
           name: host-usr-bin
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       containers:
       - name: contrail-controller-config-api
         image: "{{CONTRAIL_REGISTRY}}/contrail-controller-config-api:{{CONTRAIL_CONTAINER_TAG}}"
@@ -670,6 +701,8 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: config-logs
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       - name: contrail-controller-config-devicemgr
         image: "{{CONTRAIL_REGISTRY}}/contrail-controller-config-devicemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -679,6 +712,8 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: config-logs
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       - name: contrail-controller-config-schema
         image: "{{CONTRAIL_REGISTRY}}/contrail-controller-config-schema:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -688,6 +723,8 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: config-logs
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       - name: contrail-controller-config-svcmonitor
         image: "{{CONTRAIL_REGISTRY}}/contrail-controller-config-svcmonitor:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -697,6 +734,8 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: config-logs
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       - name: contrail-controller-config-nodemgr
         image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -724,6 +763,8 @@ spec:
           name: config-logs
         - mountPath: /mnt
           name: docker-unix-socket
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       volumes:
       - name: config-logs
         hostPath:
@@ -734,6 +775,9 @@ spec:
       - name: host-usr-bin
         hostPath:
           path: /usr/bin
+      - name: ssl-certs
+        hostPath:
+          path: /etc/contrail/ssl
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -760,6 +804,7 @@ spec:
         operator: Exists
         effect: NoSchedule
       hostNetwork: true
+      serviceAccountName: contrail-node-init
       initContainers:
       - name: contrail-node-init
         image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
@@ -775,6 +820,8 @@ spec:
         volumeMounts:
         - mountPath: /host/usr/bin
           name: host-usr-bin
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       containers:
       - name: contrail-controller-webui-job
         image: "{{CONTRAIL_REGISTRY}}/contrail-controller-webui-job:{{CONTRAIL_CONTAINER_TAG}}"
@@ -785,6 +832,8 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: webui-logs
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       - name: contrail-controller-webui-web
         image: "{{CONTRAIL_REGISTRY}}/contrail-controller-webui-web:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -794,6 +843,8 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: webui-logs
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       volumes:
       - name: webui-logs
         hostPath:
@@ -801,6 +852,9 @@ spec:
       - name: host-usr-bin
         hostPath:
           path: /usr/bin
+      - name: ssl-certs
+        hostPath:
+          path: /etc/contrail/ssl
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -921,8 +975,8 @@ spec:
       - key: node-role.kubernetes.io/master
         operator: Exists
         effect: NoSchedule
-      automountServiceAccountToken: false
       hostNetwork: true
+      serviceAccountName: contrail-kube-manager
       initContainers:
       - name: contrail-node-init
         image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
@@ -938,6 +992,8 @@ spec:
         volumeMounts:
         - mountPath: /host/usr/bin
           name: host-usr-bin
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       containers:
       - name: contrail-kube-manager
         image: "{{CONTRAIL_REGISTRY}}/contrail-kubernetes-kube-manager:{{CONTRAIL_CONTAINER_TAG}}"
@@ -945,23 +1001,21 @@ spec:
         envFrom:
         - configMapRef:
             name: env
-        - configMapRef:
-            name: kube-manager-config
         volumeMounts:
         - mountPath: /var/log/contrail
           name: kube-manager-logs
-        - mountPath: /tmp/serviceaccount
-          name: pod-secret
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       volumes:
       - name: kube-manager-logs
         hostPath:
           path: /var/log/contrail/kube-manager
-      - name: pod-secret
-        secret:
-          secretName: contrail-kube-manager-token
       - name: host-usr-bin
         hostPath:
           path: /usr/bin
+      - name: ssl-certs
+        hostPath:
+          path: /etc/contrail/ssl
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -991,6 +1045,7 @@ spec:
         effect: NoSchedule
       automountServiceAccountToken: false
       hostNetwork: true
+      serviceAccountName: contrail-node-init
       initContainers:
       - name: contrail-node-init
         image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
@@ -1006,6 +1061,8 @@ spec:
         volumeMounts:
         - mountPath: /host/usr/bin
           name: host-usr-bin
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       - name: contrail-vrouter-kernel-init
         image: "{{CONTRAIL_REGISTRY}}/contrail-vrouter-kernel-init:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -1070,8 +1127,8 @@ spec:
           name: var-lib-contrail
         - mountPath: /var/crashes
           name: var-crashes
-        - mountPath: /tmp/serviceaccount
-          name: pod-secret
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
         lifecycle:
           preStop:
             exec:
@@ -1097,6 +1154,8 @@ spec:
           name: agent-logs
         - mountPath: /mnt
           name: docker-unix-socket
+        - mountPath: /etc/contrail/ssl
+          name: ssl-certs
       volumes:
       - name: dev
         hostPath:
@@ -1110,9 +1169,6 @@ spec:
       - name: docker-unix-socket
         hostPath:
           path: /var/run
-      - name: pod-secret
-        secret:
-          secretName: contrail-kube-manager-token
       - name: usr-src
         hostPath:
           path: /usr/src
@@ -1140,6 +1196,9 @@ spec:
       - name: host-usr-bin
         hostPath:
           path: /usr/bin
+      - name: ssl-certs
+        hostPath:
+          path: /etc/contrail/ssl
 
 # Meta information section
 ---
@@ -1172,12 +1231,39 @@ subjects:
   name: contrail-kube-manager
   namespace: kube-system
 ---
-apiVersion: v1
-kind: Secret
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
 metadata:
-  name: contrail-kube-manager-token
+  name: contrail-node-init
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: contrail-node-init
+subjects:
+- kind: ServiceAccount
+  name: contrail-node-init
   namespace: kube-system
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
   annotations:
-    kubernetes.io/service-account.name: contrail-kube-manager
-type: kubernetes.io/service-account-token
-
+    rbac.authorization.kubernetes.io/autoupdate: "true"
+  labels:
+    kubernetes.io/bootstrapping: rbac-defaults
+  name: contrail-node-init
+rules:
+  - apiGroups:
+      - '*'
+    resources:
+      - certificatesigningrequests
+      - certificatesigningrequests/approval
+    verbs:
+      - '*'
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: contrail-node-init
+  namespace: kube-system
