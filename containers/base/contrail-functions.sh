@@ -5,7 +5,8 @@ function is_ssl_enabled() {
   is_enabled "$SSL_ENABLE" \
    || is_enabled "$XMPP_SSL_ENABLE" \
    || is_enabled "$INTROSPECT_SSL_ENABLE" \
-   || is_enabled "$SANDESH_SSL_ENABLE"
+   || is_enabled "$SANDESH_SSL_ENABLE" \
+   || is_enabled "$METADATA_SSL_ENABLE"
 }
 
 function wait_files() {
