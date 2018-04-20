@@ -4,9 +4,8 @@ source /common.sh
 
 pre_start_init
 
-if [ $K8S_TOKEN_FILE ]; then
-  K8S_TOKEN=$(cat $K8S_TOKEN_FILE)
-fi
+K8S_TOKEN_FILE=${K8S_TOKEN_FILE:-'/var/run/secrets/kubernetes.io/serviceaccount/token'}
+K8S_TOKEN=${K8S_TOKEN:-"$(cat $K8S_TOKEN_FILE)"}
 
 cassandra_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
 
@@ -20,9 +19,9 @@ log_local=$LOG_LOCAL
 nested_mode=${KUBEMANAGER_NESTED_MODE:-"0"}
 
 [KUBERNETES]
-kubernetes_api_server=${KUBERNETES_API_SERVER:-${DEFAULT_LOCAL_IP}}
+kubernetes_api_server=${KUBERNETES_API_SERVER:-${KUBERNETES_SERVICE_HOST:-${DEFAULT_LOCAL_IP}}}
 kubernetes_api_port=${KUBERNETES_API_PORT:-8080}
-kubernetes_api_secure_port=${KUBERNETES_API_SECURE_PORT:-6443}
+kubernetes_api_secure_port=${KUBERNETES_API_SECURE_PORT:-${KUBERNETES_PORT_443_TCP_PORT:-'6443'}}
 cluster_name=${KUBERNETES_CLUSTER_NAME:-"k8s"}
 cluster_project=${KUBERNETES_CLUSTER_PROJECT:-"{}"}
 cluster_network=${KUBERNETES_CLUSTER_NETWORK:-"{}"}
