@@ -430,22 +430,12 @@ function prepare_phys_int_dpdk
     bind_devs_to_driver $DPDK_UIO_DRIVER "${pci_addresses//,/ }"
 }
 
+
 function ensure_hugepages() {
     local hp_dir=${1:?}
-    if [[ ! -d "$hp_dir" ]] ; then
-        echo "WARNING: There is no $hp_dir mounted from host. Try to create and mount hugetlbfs."
-        if ! mkdir -p $hp_dir ; then
-            echo "ERROR: failed to create $hp_dir"
-            exit -1
-        fi
-        if ! mount -t hugetlbfs hugetlbfs $hp_dir ; then
-            echo "ERROR: failed to mount hugetlbfs to $hp_dir"
-            exit -1
-        fi
-    fi
-
-    if [[ ! -d "$hp_dir" ]]  ; then
-        echo "ERROR: There is no $hp_dir. Probably HugeTables are anuvailable on the host."
+    local hp_dir_mount_type="hugetlbfs $hp_dir hugetlbfs"
+    if ! grep -qs "$hp_dir_mount_type" /proc/mounts ; then
+        echo "ERROR: Hupepages dir($hp_dir) does not have hugetlbfs mount type"
         exit -1
     fi
 }
