@@ -250,7 +250,7 @@ fi
 
 # Agent options
 AGENT_MODE=${AGENT_MODE:-'kernel'}
-DPDK_UIO_DRIVER=${DPDK_UIO_DRIVER:-'uio_pci_generic'}
+DPDK_UIO_DRIVER=${DPDK_UIO_DRIVER-'uio_pci_generic'}
 CPU_CORE_MASK=${CPU_CORE_MASK:-'0x01'}
 HUGE_PAGES=${HUGE_PAGES:-1024}
 HUGE_PAGES_DIR=${HUGE_PAGES_DIR:-'/dev/hugepages'}
