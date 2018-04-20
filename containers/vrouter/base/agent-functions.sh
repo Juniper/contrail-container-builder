@@ -376,6 +376,11 @@ function bind_devs_to_driver() {
     local driver=$1
     shift 1
     local pci=( $@ )
+
+    if [ -z "${driver}" ] ; then
+        return 0
+    fi
+
     # bind physical device(s) to DPDK driver
     local ret=0
     local n=''
@@ -463,7 +468,7 @@ function prepare_phys_int_dpdk
         ip link del $phys_int
     fi
 
-    bind_devs_to_driver $DPDK_UIO_DRIVER "${pci_addresses//,/ }"
+    bind_devs_to_driver "$DPDK_UIO_DRIVER" "${pci_addresses//,/ }"
 }
 
 
