@@ -340,6 +340,11 @@ function bind_devs_to_driver() {
     local driver=$1
     shift 1
     local pci=( $@ )
+
+    if [ "${driver^^}" == "NONE" ] ; then
+        return 0
+    fi
+
     # bind physical device(s) to DPDK driver
     local ret=0
     local n=''

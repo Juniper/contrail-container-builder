@@ -19,8 +19,11 @@ set_ctl net.ipv4.tcp_keepalive_probes 5
 set_ctl net.ipv4.tcp_keepalive_intvl 1
 set_ctl net.core.wmem_max 9160000
 
-load_kernel_module uio
-load_kernel_module "$DPDK_UIO_DRIVER"
+if [ "${DPDK_UIO_DRIVER^^}" != "NONE" ]; then
+  load_kernel_module uio
+  load_kernel_module "$DPDK_UIO_DRIVER"
+fi
+
 # multiple kthreads for port monitoring
 if ! load_kernel_module rte_kni kthread_mode=multiple ; then
   echo "WARNING: rte_ini kernel module is unavailable. Please install/insert it for Ubuntu 14.04 manually."
@@ -102,10 +105,12 @@ if [[ -n "$bond_data" ]] ; then
     done
 fi
 
-# ensure devices are bind to dpdk driver
-for pci in ${pci_address//,/ } ; do
-    wait_device_for_driver $DPDK_UIO_DRIVER $pci
-done
+if [ "${DPDK_UIO_DRIVER^^}" != "NONE" ]; then
+    # ensure devices are bind to dpdk driver
+    for pci in ${pci_address//,/ } ; do
+        wait_device_for_driver $DPDK_UIO_DRIVER $pci
+    done
+fi
 
 echo "INFO: exec '$cmd'"
 exec $cmd
