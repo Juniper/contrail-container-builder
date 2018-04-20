@@ -53,4 +53,7 @@ echo "INFO: RABBITMQ_NODENAME=$RABBITMQ_NODENAME, RABBITMQ_NODE_PORT=$RABBITMQ_N
 echo "INFO: RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=$RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS"
 echo "INFO: /docker-entrypoint.sh $@"
 
+# to be able to run rabbitmqctl without params
+echo "RABBITMQ_NODENAME=contrail@$my_node" > /etc/rabbitmq/rabbitmq-env.conf
+
 exec /docker-entrypoint.sh "$@"
