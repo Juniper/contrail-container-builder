@@ -21,7 +21,7 @@ nested_mode=${KUBEMANAGER_NESTED_MODE:-"0"}
 [KUBERNETES]
 kubernetes_api_server=${KUBERNETES_API_SERVER:-${KUBERNETES_SERVICE_HOST:-${DEFAULT_LOCAL_IP}}}
 kubernetes_api_port=${KUBERNETES_API_PORT:-8080}
-kubernetes_api_secure_port=${KUBERNETES_API_SECURE_PORT:-${KUBERNETES_PORT_443_TCP_PORT:-'6443'}}
+kubernetes_api_secure_port=${KUBERNETES_API_SECURE_PORT:-${KUBERNETES_PORT_443_TCP_PORT:-6443}}
 cluster_name=${KUBERNETES_CLUSTER_NAME:-"k8s"}
 cluster_project=${KUBERNETES_CLUSTER_PROJECT:-"{}"}
 cluster_network=${KUBERNETES_CLUSTER_NETWORK:-"{}"}
