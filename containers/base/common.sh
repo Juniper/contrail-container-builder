@@ -28,6 +28,8 @@ SSL_INSECURE=${SSL_INSECURE:-True}
 SERVER_CERTFILE=${SERVER_CERTFILE:-'/etc/contrail/ssl/certs/server.pem'}
 SERVER_KEYFILE=${SERVER_KEYFILE:-'/etc/contrail/ssl/private/server-privkey.pem'}
 SERVER_CA_CERTFILE=${SERVER_CA_CERTFILE:-'/etc/contrail/ssl/certs/ca-cert.pem'}
+SERVER_CA_KEYFILE=${SERVER_CA_KEYFILE:-'/etc/contrail/ssl/private/ca-key.pem'}
+
 
 CONTROLLER_NODES=${CONTROLLER_NODES:-${DEFAULT_LOCAL_IP}}
 
