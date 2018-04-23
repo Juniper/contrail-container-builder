@@ -364,6 +364,7 @@ function get_addrs_for_nic() {
 
 function prepare_phys_int_dpdk
 {
+    local binding_data_dir='/var/run/vrouter'
     if probe_nic vhost0 ; then
         echo "INFO: vhost device is already exist"
         return 0
@@ -378,6 +379,14 @@ function prepare_phys_int_dpdk
         local _default_gw_metric=`get_default_gateway_for_nic_metric $phys_int`
         gateway=${VROUTER_GATEWAY:-"$_default_gw_metric"}
         pci=$(get_pci_address_for_nic $phys_int)
+        if [ -z $phys_int ]
+        then
+            nic=$(get_vrouter_physical_iface)
+            if [ -e $binding_data_dir/${nic}_gateway ]
+            then
+                return 0
+            fi
+        fi
         if [[ -n "$phys_int" && -n "$phys_int_mac" && -n "$pci" && -n "$addrs" ]] ; then
             break
         fi
@@ -393,7 +402,6 @@ function prepare_phys_int_dpdk
 
     # save data for next usage in network init container
     # TODO: check that data valid for the case if container is re-run again by some reason
-    local binding_data_dir='/var/run/vrouter'
     mkdir -p $binding_data_dir
 
     echo "$nic" > $binding_data_dir/nic
