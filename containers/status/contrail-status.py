@@ -52,8 +52,6 @@ CONTRAIL_SERVICES_TO_SANDESH_SVC = {
         'collector': 'contrail-collector',
         'query-engine': 'contrail-query-engine',
         'alarm-gen': 'contrail-alarm-gen',
-        'snmp-collector': 'contrail-snmp-collector',
-        'topology': 'contrail-topology',
     },
     'kubernetes': {
         'kube-manager': 'contrail-kube-manager',
