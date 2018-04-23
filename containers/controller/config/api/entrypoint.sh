@@ -4,8 +4,7 @@ source /common.sh
 
 pre_start_init
 
-#host_ip=$(get_listen_ip_for_node CONFIG)
-host_ip='0.0.0.0'
+host_ip=$(get_listen_ip_for_node CONFIG)
 cassandra_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
 
 cat > /etc/contrail/contrail-api.conf << EOM
