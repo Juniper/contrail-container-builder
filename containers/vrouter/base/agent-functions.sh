@@ -719,7 +719,6 @@ function cleanup_vrouter_agent_files() {
         popd
     fi
 
-    cleanup_lbaas_netns_config
     # remove config file
     rm -rf /etc/contrail/contrail-vrouter-agent.conf
 }

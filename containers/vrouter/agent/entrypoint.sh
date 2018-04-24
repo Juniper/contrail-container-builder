@@ -235,6 +235,8 @@ $crypt_intf_setup
 
 EOM
 
+cleanup_lbaas_netns_config
+
 add_ini_params_from_env VROUTER_AGENT /etc/contrail/contrail-vrouter-agent.conf
 
 if [[ -n "${PRIORITY_ID}" ]] || [[ -n "${QOS_QUEUE_ID}" ]]; then
