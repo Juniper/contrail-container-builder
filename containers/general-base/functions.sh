@@ -79,38 +79,8 @@ function get_vip_for_node() {
   echo $ip
 }
 
-function get_ctrl_data_iface() {
-  local ctrl_data_network=$1
-  local ctrl_data_nic=$(ip route get $ctrl_data_network | grep -oe "dev\s[[:graph:]]*" | awk '{print $2}')
-  local default_nic=$(get_default_nic)
-
-  #check if ctrl_data_nic and default_nic are same
-  #if they are same nic then physical iface with ctrl_data_network does not exist
-
-  if [ "$ctrl_data_nic" == "$default_nic" ] ; then
-    return
-  fi
-  echo $ctrl_data_nic
-}
-
-function get_ctrl_data_listen_ip() {
-  if [[ ! -z "$CONTROL_DATA_NET_LIST" ]]; then
-    IFS=',' read -ra ctrl_data_net_list <<< "${CONTROL_DATA_NET_LIST}"
-    for ctrl_data_network in "${ctrl_data_net_list[@]}"; do
-      local ctrl_data_nic=$(get_ctrl_data_iface $ctrl_data_network)
-      if [[ -n "$ctrl_data_nic" ]]; then
-        get_listen_ip_for_nic $ctrl_data_nic
-        break
-      fi
-    done
-  fi
-}
-
 function get_listen_ip_for_node() {
-  local ip=$(get_ctrl_data_listen_ip)
-  if [[ -z "$ip" ]] ; then
-    ip=$(find_my_ip_and_order_for_node $1  | cut -d ' ' -f 1)
-  fi
+  local ip=$(find_my_ip_and_order_for_node $1  | cut -d ' ' -f 1)
   if [[ -z "$ip" ]] ; then
     ip=$(get_default_ip)
   fi
@@ -168,12 +138,18 @@ function get_hostname_by_ip() {
   echo $name
 }
 
-function get_ip_for_vrouter_from_control() {
+function get_iface_for_vrouter_from_control() {
   local node_ip=`echo $CONTROL_NODES | cut -d ',' -f 1`
-  local iface=`ip route get $node_ip | grep -o "dev.*" | awk '{print $2}'`
+  local iface=$(ip route get $node_ip | grep -o "dev.*" | awk '{print $2}')
   if [[ "$iface" == 'lo' ]] ; then
-    echo $node_ip
-  else
-    get_listen_ip_for_nic $iface
+    # ip is belong to this machine
+    iface=$(ip address show | awk "/inet .*${node_ip}/{print(\$NF)}")
   fi
+  echo $iface
 }
+
+function get_ip_for_vrouter_from_control() {
+  local iface=$(get_iface_for_vrouter_from_control)
+  [ -n "$iface" ] && get_listen_ip_for_nic $iface
+}
+
