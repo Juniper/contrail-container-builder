@@ -40,7 +40,8 @@ var config = {};
 config.orchestration = {};
 config.orchestration.Manager = "${orchestration_manager}";
 
-config.serviceEndPointFromConfig = ${serviceEndPointFromConfig:-true};
+config.orchestrationModuleEndPointFromConfig = ${orchestrationModuleEndPointFromConfig:-false};
+config.contrailEndPointFromConfig = ${contrailEndPointFromConfig:-true};
 
 config.regionsFromConfig = ${regionsFromConfig:-false};
 
