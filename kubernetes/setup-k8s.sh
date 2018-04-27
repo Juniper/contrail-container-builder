@@ -46,8 +46,12 @@ function disable_swap() {
 }
 
 function install_for_ubuntu() {
-  service ufw stop
-  iptables -F
+  service ufw stop || echo 'WARNING: failed to stop firewall service'
+  systemctl disable ufw || echo 'WARNING: failed to disable firewall'
+
+  iptables -F || echo 'WARNING: failed to flush iptables rules'
+  iptables -P INPUT ACCEPT
+  iptables -P FORWARD ACCEPT
 
   curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
   echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" >/etc/apt/sources.list.d/kubernetes.list
@@ -61,8 +65,11 @@ function install_for_ubuntu() {
 }
 
 function install_for_centos() {
-  service firewalld stop
-  iptables -F
+  service firewalld stop || echo 'WARNING: failed to stop firewall service'
+  chkconfig firewalld off || echo 'WARNING: failed to disable firewall'
+  iptables -F || echo 'WARNING: failed to flush iptables rules'
+  iptables -P INPUT ACCEPT
+  iptables -P FORWARD ACCEPT
 
   cat > /etc/yum.repos.d/kubernetes.repo << EOF
 [kubernetes]
