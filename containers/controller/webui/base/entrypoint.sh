@@ -171,9 +171,9 @@ config.redis_server_ip = '127.0.0.1';
 config.redis_dump_file = '/var/lib/redis/dump-webui.rdb';
 config.redis_password = '$REDIS_SERVER_PASSWORD';
 
-config.logo_file = '/usr/src/contrail/contrail-web-core/webroot/img/opencontrail-logo.png';
+config.logo_file = '/usr/src/contrail/contrail-web-core/webroot/img/juniper-networks-logo.png';
 
-config.favicon_file = '/usr/src/contrail/contrail-web-core/webroot/img/opencontrail-favicon.ico';
+config.favicon_file = '/usr/src/contrail/contrail-web-core/webroot/img/juniper-networks-favicon.ico';
 
 config.featurePkg = {};
 config.featurePkg.webController = {};
