@@ -87,6 +87,21 @@ spec:
         effect: NoSchedule
       automountServiceAccountToken: false
       hostNetwork: true
+      initContainers:
+      - name: contrail-node-init
+        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        securityContext:
+          privileged: true
+        env:
+        - name: CONTRAIL_STATUS_IMAGE
+          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+        envFrom:
+        - configMapRef:
+            name: env
+        volumeMounts:
+        - mountPath: /host/usr/bin
+          name: host-usr-bin
       containers:
       - name: contrail-kube-manager
         image: "{{CONTRAIL_REGISTRY}}/contrail-kubernetes-kube-manager:{{CONTRAIL_CONTAINER_TAG}}"
@@ -108,6 +123,9 @@ spec:
       - name: pod-secret
         secret:
           secretName: contrail-kube-manager-token
+      - name: host-usr-bin
+        hostPath:
+          path: /usr/bin
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -135,6 +153,20 @@ spec:
       automountServiceAccountToken: false
       hostNetwork: true
       initContainers:
+      - name: contrail-node-init
+        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        securityContext:
+          privileged: true
+        env:
+        - name: CONTRAIL_STATUS_IMAGE
+          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+        envFrom:
+        - configMapRef:
+            name: env
+        volumeMounts:
+        - mountPath: /host/usr/bin
+          name: host-usr-bin
       - name: contrail-vrouter-kernel-init
         image: "{{CONTRAIL_REGISTRY}}/contrail-vrouter-kernel-init:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -280,6 +312,9 @@ spec:
       - name: network-scripts
         hostPath:
           path: /etc/sysconfig/network-scripts
+      - name: host-usr-bin
+        hostPath:
+          path: /usr/bin
 
 # Meta information section
 ---
