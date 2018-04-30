@@ -57,6 +57,7 @@ metadata:
   namespace: kube-system
 data:
   KUBERNETES_API_SERVER: {{ KUBERNETES_API_SERVER }}
+  KUBERNETES_API_SECURE_PORT: "{{ KUBERNETES_API_SECURE_PORT }}"
   K8S_TOKEN_FILE: "/tmp/serviceaccount/token"
 # Containers section
 ---
