@@ -156,18 +156,13 @@ function get_default_physical_iface() {
   echo ${PHYSICAL_INTERFACE:-${DEFAULT_IFACE}}
 }
 
+
 function get_vrouter_physical_iface() {
-  if [[ ! -z "$CONTROL_DATA_NET_LIST" ]]; then
-    IFS=',' read -ra ctrl_data_net_list <<< "${CONTROL_DATA_NET_LIST}"
-    for ctrl_data_network in "${ctrl_data_net_list[@]}"; do
-      local ctrl_data_nic=$(get_ctrl_data_iface $ctrl_data_network)
-      if [[ ! -z "$ctrl_data_nic" ]]; then
-        echo $ctrl_data_nic
-        return
-      fi
-    done
+  local iface=($get_iface_for_vrouter_from_control)
+  if [[ -z "$iface" ]] ; then
+    iface=$(get_default_physical_iface)
   fi
-  get_default_physical_iface
+  echo $iface
 }
 
 function create_lbaas_auth_conf() {
