@@ -63,5 +63,6 @@ else
   chkconfig firewalld off || echo 'WARNING: failed to disable firewall'
 fi
 iptables -F || echo 'WARNING: failed to flush iptables rules'
+iptables -P INPUT ACCEPT
 iptables -P FORWARD ACCEPT
 EOS
