@@ -158,7 +158,7 @@ function get_default_physical_iface() {
 
 
 function get_vrouter_physical_iface() {
-  local iface=($get_iface_for_vrouter_from_control)
+  local iface=$(get_iface_for_vrouter_from_control)
   if [[ -z "$iface" ]] ; then
     iface=$(get_default_physical_iface)
   fi
