@@ -560,14 +560,14 @@ EOM
           mv route-${phys_int} contrail.org.route-${phys_int}
         fi
         sed -ri "/(DEVICE|TYPE|ONBOOT|VLAN|BONDING)/! s/^[^#].*/#commented_by_contrail& /" ifcfg-${phys_int}
-        echo 'NM_CONTROLLED="no"' >> ifcfg-${phys-int}
-        echo 'BOOTPROTO="none"' >> ifcfg-${phys-int}
+        echo 'NM_CONTROLLED=no' >> ifcfg-${phys-int}
+        echo 'BOOTPROTO=none' >> ifcfg-${phys-int}
         if [[ ! -f ifcfg-vhost0 ]] ; then
             sed "s/${phys_int}/vhost0/g" contrail.org.ifcfg-${phys_int} > ifcfg-vhost0
             sed -i '/HWADDR=.*/d' ifcfg-vhost0
             if is_dpdk ; then
                 sed -ri "/NM_CONTROLLED/ s/.*/#commented_by_contrail& /" ifcfg-vhost0
-                echo 'NM_CONTROLLED="no"' >> ifcfg-vhost0
+                echo 'NM_CONTROLLED=no' >> ifcfg-vhost0
                 echo "TYPE=dpdk" >> ifcfg-vhost0
             else
                 echo "TYPE=kernel_mode" >> ifcfg-vhost0
