@@ -43,3 +43,9 @@ if ! modprobe vrouter ; then
   echo "ERROR: Failed to insert vrouter kernel module"
   exit 1
 fi
+
+# copy vif util to host
+if [[ -d /host/bin && ! -f /host/bin/vif ]] ; then
+    /bin/cp -f /contrail_tools/usr/bin/vif /host/bin/vif
+    chmod +x /host/bin/vif
+fi
