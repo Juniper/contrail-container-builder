@@ -583,15 +583,15 @@ EOM
         if [ ! -f "contrail.org.ifcfg-${phys_int}" ] ; then
             /bin/cp -f ifcfg-${phys_int} contrail.org.ifcfg-${phys_int}
             sed -r "/(DEVICE|TYPE|ONBOOT|MACADDR|HWADDR|BONDING|SLAVE|VLAN|MTU)/! s/^[^#].*/#commented_by_contrail& /" ifcfg-${phys_int} > ifcfg-${phys_int}.tmp
-            echo 'NM_CONTROLLED="no"' >> ifcfg-${phys_int}.tmp
-            echo 'BOOTPROTO="none"' >> ifcfg-${phys_int}.tmp
+            echo 'NM_CONTROLLED=no' >> ifcfg-${phys_int}.tmp
+            echo 'BOOTPROTO=none' >> ifcfg-${phys_int}.tmp
             mv ifcfg-${phys_int}.tmp ifcfg-${phys_int}
         fi
         if [[ ! -f ifcfg-vhost0 ]] ; then
             sed "s/${phys_int}/vhost0/g" contrail.org.ifcfg-${phys_int} > ifcfg-vhost0.tmp
             sed -ri '/(TYPE|NM_CONTROLLED|MACADDR|HWADDR|BONDING|SLAVE|VLAN)/d' ifcfg-vhost0.tmp
             echo "TYPE=${bind_type}" >> ifcfg-vhost0.tmp
-            echo 'NM_CONTROLLED="no"' >> ifcfg-vhost0.tmp
+            echo 'NM_CONTROLLED=no' >> ifcfg-vhost0.tmp
             echo "BIND_INT=${phys_int}" >> ifcfg-vhost0.tmp
             echo "BIND_INT_MAC=${phys_int_mac}" >> ifcfg-vhost0.tmp
             mv ifcfg-vhost0.tmp ifcfg-vhost0
