@@ -152,15 +152,13 @@ function add_ini_params_from_env() {
   done
 }
 
-function get_default_physical_iface() {
-  echo ${PHYSICAL_INTERFACE:-${DEFAULT_IFACE}}
-}
-
-
 function get_vrouter_physical_iface() {
-  local iface=$(get_iface_for_vrouter_from_control)
-  if [[ -z "$iface" ]] ; then
-    iface=$(get_default_physical_iface)
+  local iface=$PHYSICAL_INTERFACE
+  if [[ -z "$iface" ]]; then
+    iface=$(get_iface_for_vrouter_from_control)
+    if [[ -z "$iface" ]] ; then
+      iface=$DEFAULT_IFACE
+    fi
   fi
   echo $iface
 }
