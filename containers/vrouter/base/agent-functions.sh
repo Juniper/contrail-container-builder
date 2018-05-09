@@ -1,40 +1,18 @@
 #!/bin/bash
 
+source /network-functions-vrouter-${AGENT_MODE}
+
 #Agents constants
 REQUIRED_KERNEL_VROUTER_ENCRYPTION='4.4.0'
 
 function create_vhost_network_functions() {
-    # TODO: now it is only wait,
-    #       maybe it is worth to put here the code that may start
-    #       appropritate to the agent mode containers, like in
-    #       contrail-status impl.
     local dir=$1
     pushd "$dir"
     /bin/cp -f /ifup-vhost ./
+    chmod 644 ./ifup-vhost
     chmod +x ./ifup-vhost
-    local tmp_file=$(mktemp -p ./)
-    cat > $tmp_file << EOM
-#!/bin/bash
-
-function prepare_vrouter() {
-  local count=\${1:-60}
-  local step_time=\${2:-5}
-  local i=0
-  while ! ip link show dev vhost0 2>&1 > /dev/null ; do
-    if (( i == count)) ; then
-      echo "There is no vhost0 device. Check that containers are up and running."
-      return 1
-    fi
-    echo "Wait till vhost0 devices... 1/\$count"
-    sleep \$step_time
-  done
-  return 0
-}
-
-EOM
-
-    mv -f $tmp_file network-functions-vrouter-${AGENT_MODE}
-    chmod 644 network-functions-vrouter-${AGENT_MODE}
+    /bin/cp -f  /network-functions-vrouter /network-functions-vrouter-${AGENT_MODE} ./
+    chmod 644 ./network-functions-vrouter ./network-functions-vrouter-${AGENT_MODE}
     popd
 }
 
@@ -47,6 +25,7 @@ function copy_agent_tools_to_host() {
     # copy vif util
     if [[ ! -f /host/bin/vif ]]; then
         /bin/cp -f /bin/vif /host/bin/vif
+        chmod 644 /host/bin/vif
         chmod +x /host/bin/vif
     fi
 }
@@ -285,56 +264,6 @@ function wait_dpdk_start() {
     return 1
 }
 
-# VRouter specific code starts here
-function pkt_setup () {
-    for f in /sys/class/net/$1/queues/rx-*
-    do
-        q="$(echo $f | cut -d '-' -f2)"
-        r=$(($q%32))
-        s=$(($q/32))
-        ((mask=1<<$r))
-        str=(`printf "%x" $mask`)
-        if [ $s -gt 0 ]; then
-            for ((i=0; i < $s; i++))
-            do
-                str+=,00000000
-            done
-        fi
-        echo $str > $f/rps_cpus
-    done
-    ip link set dev $1 up
-}
-
-function load_vrouter() {
-    if lsmod | grep -q vrouter ; then
-        return
-    fi
-    free -h && sync && echo 2 >/proc/sys/vm/drop_caches && free -h
-    load_kernel_module vrouter
-}
-
-function create_vhost0() {
-    local phys_int=$1
-    local phys_int_mac=$2
-
-    load_vrouter
-
-    if [ -f /sys/class/net/pkt1/queues/rx-0/rps_cpus ]; then
-        pkt_setup pkt1
-    fi
-    if [ -f /sys/class/net/pkt2/queues/rx-0/rps_cpus ]; then
-        pkt_setup pkt2
-    fi
-    if [ -f /sys/class/net/pkt3/queues/rx-0/rps_cpus ]; then
-        pkt_setup pkt3
-    fi
-    vif --create vhost0 --mac $phys_int_mac
-    vif --add $phys_int --mac $phys_int_mac --vrf 0 --vhost-phys --type physical
-    vif --add vhost0 --mac $phys_int_mac --vrf 0 --type vhost --xconnect $phys_int
-    ip link set dev vhost0 address $phys_int_mac
-    ip link set dev vhost0 up
-}
-
 function create_vhost0_dpdk() {
     local phys_int=$1
     local phys_int_mac=$2
@@ -478,36 +407,6 @@ function ensure_hugepages() {
     if ! grep -qs "$hp_dir_mount_type" /proc/mounts ; then
         echo "ERROR: Hupepages dir($hp_dir) does not have hugetlbfs mount type"
         exit -1
-    fi
-}
-
-function set_ctl() {
-    local var=$1
-    local value=$2
-    if grep -q "^$var" /etc/sysctl.conf ; then
-        sed -i "s/^$var.*=.*/$var=$value/g"  /etc/sysctl.conf
-    else
-        echo "$var=$value" >> /etc/sysctl.conf
-    fi
-    sysctl -w ${var}=${value}
-}
-
-function load_kernel_module() {
-    local module=$1
-    shift 1
-    local opts=$@
-    echo "INFO: load $module kernel module"
-    if ! modprobe -v "$module" $opts ; then
-        echo "ERROR: failed to load $module driver"
-        return 1
-    fi
-}
-
-function unload_kernel_module() {
-    local module=$1
-    echo "INFO: unload $module kernel module"
-    if ! rmmod $module ; then
-        echo "WARNING: Failed to unload $module driver"
     fi
 }
 
