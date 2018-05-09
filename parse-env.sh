@@ -63,7 +63,7 @@ export GENERAL_EXTRA_RPMS=${GENERAL_EXTRA_RPMS="https://dl.fedoraproject.org/pub
 export BASE_EXTRA_RPMS=${BASE_EXTRA_RPMS="https://repos.fedorapeople.org/repos/openstack/openstack-$OPENSTACK_VERSION/rdo-release-$OPENSTACK_VERSION-$OPENSTACK_SUBVERSION.noarch.rpm"}
 export DOCKER_REPO=${DOCKER_REPO='https://download.docker.com/linux/centos/docker-ce.repo'}
 export YUM_ENABLE_REPOS=${YUM_ENABLE_REPOS:-}
-if [[ "$LINUX_ID" == 'rhel' ]] ; then
+if [[ "$LINUX_DISTR" == 'rhel' ]] ; then
   export PYTHON_PIP_RPM='python27-python-pip'
   export PYTHON_PIP_VENV='/opt/rh/python27/enable'
   export RHEL_FORCE_REGISTRATION=${RHEL_FORCE_REGISTRATION:-'false'}
