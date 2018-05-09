@@ -1,0 +1,31 @@
+#!/bin/bash
+
+function set_ctl() {
+    local var=$1
+    local value=$2
+    if grep -q "^$var" /etc/sysctl.conf ; then
+        sed -i "s/^$var.*=.*/$var=$value/g"  /etc/sysctl.conf
+    else
+        echo "$var=$value" >> /etc/sysctl.conf
+    fi
+    sysctl -w ${var}=${value}
+}
+
+function load_kernel_module() {
+    local module=$1
+    shift 1
+    local opts=$@
+    echo "INFO: load $module kernel module"
+    if ! modprobe -v "$module" $opts ; then
+        echo "ERROR: failed to load $module driver"
+        return 1
+    fi
+}
+
+function unload_kernel_module() {
+    local module=$1
+    echo "INFO: unload $module kernel module"
+    if ! rmmod $module ; then
+        echo "WARNING: Failed to unload $module driver"
+    fi
+}

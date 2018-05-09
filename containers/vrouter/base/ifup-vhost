@@ -32,9 +32,11 @@ if [ "${BOOTPROTO}" = "bootp" -o "${BOOTPROTO}" = "dhcp" ]; then
     DYNCONFIG=true
 fi
 
+# os-net-config uses 'kernel_mode' instead of 'kernel'
+[ "${TYPE}" == 'kernel_mode' ] && TYPE='kernel'
 . ./network-functions-vrouter-${TYPE}
 
-prepare_vrouter
+ifup_init_vhost
 
 if [ -n "${MACADDR}" ]; then
    ip link set dev ${DEVICE} address ${MACADDR}
