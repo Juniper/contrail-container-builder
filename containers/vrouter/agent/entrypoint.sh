@@ -233,6 +233,10 @@ $priority_group_option
 
 $crypt_intf_setup
 
+[SESSION]
+slo_destination = $SLO_DESTINATION
+sample_destination = $SAMPLE_DESTINATION
+
 EOM
 
 cleanup_lbaas_netns_config
