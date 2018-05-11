@@ -161,11 +161,23 @@ function get_physical_nic_and_mac()
         fi
     else
         # DPDK case, nic name is not exist, so set it to default
-        nic=$(get_vrouter_physical_iface)
+        # Try to get the physical nic from the local file
+        if [ -e $binding_data_dir/nic ]
+        then
+            nic=`cat $binding_data_dir/nic`
+        else
+            nic=$(get_vrouter_physical_iface)
+        fi
     fi
   else
     # there is no vhost0 device, so then get vrouter physical interface
-    nic=$(get_vrouter_physical_iface)
+    # Try to get the physical nic from the local file
+    if [ -e $binding_data_dir/nic ]
+    then
+        nic=`cat $binding_data_dir/nic`
+    else
+        nic=$(get_vrouter_physical_iface)
+    fi
     mac=$(get_iface_mac $nic)
   fi
   # Ensure that nic & mac are not empty
