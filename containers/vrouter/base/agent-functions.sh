@@ -174,11 +174,23 @@ function get_physical_nic_and_mac()
         fi
     else
         # DPDK case, nic name is not exist, so set it to default
-        nic=$(get_vrouter_physical_iface)
+        # Try to get the physical nic from the local file
+        if [ -e $binding_data_dir/nic ]
+        then
+            nic=`cat $binding_data_dir/nic`
+        else
+            nic=$(get_vrouter_physical_iface)
+        fi
     fi
   else
     # there is no vhost0 device, so then get vrouter physical interface
-    nic=$(get_vrouter_physical_iface)
+    # Try to get the physical nic from the local file
+    if [ -e $binding_data_dir/nic ]
+    then
+        nic=`cat $binding_data_dir/nic`
+    else
+        nic=$(get_vrouter_physical_iface)
+    fi
     mac=$(get_iface_mac $nic)
   fi
   # Ensure that nic & mac are not empty
@@ -334,6 +346,7 @@ function get_addrs_for_nic() {
 
 function prepare_phys_int_dpdk
 {
+    local binding_data_dir='/var/run/vrouter'
     if probe_nic vhost0 ; then
         echo "INFO: vhost device is already exist"
         return 0
@@ -344,6 +357,14 @@ function prepare_phys_int_dpdk
         echo "INFO: detecting phys interface parameters... ${count}/10"
         IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
         pci=$(get_pci_address_for_nic $phys_int)
+        if [ -z $phys_int ]
+        then
+            nic=$(get_vrouter_physical_iface)
+            if [ -e $binding_data_dir/${nic}_gateway ]
+            then
+                return 0
+            fi
+        fi
         if [[ -n "$phys_int" && -n "$phys_int_mac" && -n "$pci" ]] ; then
             break
         fi
