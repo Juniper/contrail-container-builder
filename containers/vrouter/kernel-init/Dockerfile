@@ -9,6 +9,7 @@ RUN rpm -Uvh --nodeps $(repoquery --location contrail-vrouter) && \
     rm -rf /var/cache/yum
 
 COPY entrypoint.sh /
+COPY vrouter-kernel-modules /opt/contrail/
 
 ENTRYPOINT ["/entrypoint.sh"]
 
