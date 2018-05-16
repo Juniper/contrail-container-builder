@@ -189,15 +189,24 @@ function get_physical_nic_and_mac()
   echo $nic $mac
 }
 
-# Find the secondary interface on a ContrailVM
-# update vmware_physical_interface as the overlay switch interface
+# Find the overlay interface on a ContrailVM
 # ContrailVM is spawned with nic ens160, which is the primary interface
-# A secondary nic (like ens192) is added during provisioning,
-# and acts as the vmware_physical_interface.
+# Secondary nics (like ens192, ens224) are added during provisioning
+# The overlay interface will have name ens* and not have inet* configured
+# This function uses this logic to find the overlay interface and
+# return as vmware_physical_interface.
 function get_vmware_physical_iface()
 {
   local iface_list=`ip -o link show | awk -F': ' '{print $2}'`
-  local vmware_int=`echo "$iface_list" | grep -v 'vhost0\|docker0\|pkt[0-9]\+\|ens160\|lo'`
+  iface_list=`echo "$iface_list" | grep -v 'vhost0\|docker0\|pkt[0-9]\+\|ens160\|lo'`
+  for iface in $iface_list; do
+      ip addr show dev $iface | grep 'inet*' > /dev/null 2>&1
+      if [[ $? == 0 ]]; then
+          continue;
+      else
+          vmware_int=$iface
+      fi
+  done
   if [[ "$vmware_int" == '' ]]; then
       echo "ERROR: vmware_physical_interface not configured"
       exit -1
