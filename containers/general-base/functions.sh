@@ -143,7 +143,7 @@ function get_iface_for_vrouter_from_control() {
   local iface=$(ip route get $node_ip | grep -o "dev.*" | awk '{print $2}')
   if [[ "$iface" == 'lo' ]] ; then
     # ip is belong to this machine
-    iface=$(ip address show | awk "/inet .*${node_ip}/{print(\$NF)}")
+    iface=`ip address show | awk "/inet .*${node_ip}/{print(\$NF)}"`
   fi
   echo $iface
 }
@@ -152,4 +152,3 @@ function get_ip_for_vrouter_from_control() {
   local iface=$(get_iface_for_vrouter_from_control)
   get_listen_ip_for_nic $iface
 }
-
