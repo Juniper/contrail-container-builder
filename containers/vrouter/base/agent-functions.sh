@@ -197,7 +197,15 @@ function get_physical_nic_and_mac()
 function get_vmware_physical_iface()
 {
   local iface_list=`ip -o link show | awk -F': ' '{print $2}'`
-  local vmware_int=`echo "$iface_list" | grep -v 'vhost0\|docker0\|pkt[0-9]\+\|ens160\|lo'`
+  iface_list=`echo "$iface_list" | grep -v 'vhost0\|docker0\|pkt[0-9]\+\|lo'`
+  for iface in $iface_list; do
+      ifconfig $iface | grep 'inet*' > /dev/null 2>&1
+      if [[ $? == 0 ]]; then
+          continue;
+      else
+          vmware_int=$iface
+      fi
+  done
   if [[ "$vmware_int" == '' ]]; then
       echo "ERROR: vmware_physical_interface not configured"
       exit -1
