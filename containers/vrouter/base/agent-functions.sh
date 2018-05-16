@@ -42,8 +42,8 @@ function get_vlan_parameters() {
     local vlan_parent=''
     if [[ -f "${vlan_file}" ]] ; then
         local vlan_data=$(cat "$vlan_file")
-        vlan_id=$(echo "$vlan_data" | grep 'VID:' | head -1 | awk '{print($3)}')
-        vlan_parent=$(echo "$vlan_data" | grep 'Device:' | head -1 | awk '{print($2)}')
+        vlan_id=`echo "$vlan_data" | grep 'VID:' | head -1 | awk '{print($3)}'`
+        vlan_parent=`echo "$vlan_data" | grep 'Device:' | head -1 | awk '{print($2)}'`
         if [[ -n "$vlan_parent" ]] ; then
             dev=$vlan_parent
         fi
@@ -408,6 +408,35 @@ function ensure_hugepages() {
         echo "ERROR: Hupepages dir($hp_dir) does not have hugetlbfs mount type"
         exit -1
     fi
+}
+
+function check_vrouter_agent_settings() {
+    # check that all control nodes accessible via the same interface and this interface is vhost0
+    local nodes=(`echo $CONTROL_NODES | tr ',' ' '`)
+    if [[ ${#nodes} == 0 ]]; then
+        echo "ERROR: CONTROL_NODES list is empty or incorrect ($CONTROL_NODES)."
+        echo "ERROR: Please define CONTROL_NODES list."
+        return 1
+    fi
+
+    local iface=`ip route get ${nodes[0]} | grep -o "dev.*" | awk '{print $2}'`
+    if [[ "$iface" != 'vhost0' ]]; then
+        echo "ERROR: Control nodes must be accessible via vhost0 (or via interface that vhost0 is based on)."
+        echo "ERROR: Please define CONTROL_NODES list correctly."
+        return 1
+    fi
+    if (( ${#nodes} > 1 )); then
+        for node in ${nodes[@]} ; do
+            local cur_iface=`ip route get $node | grep -o "dev.*" | awk '{print $2}'`
+            if [[ "$iface" != "$cur_iface" ]]; then
+                echo "ERROR: Control node $node is accessible via different interface ($cur_iface) than first control node ${nodes[0]} ($iface)."
+                echo "ERROR: Please define CONTROL_NODES list correctly."
+                return 1
+            fi
+        done
+    fi
+
+    return 0
 }
 
 function init_vhost0() {
