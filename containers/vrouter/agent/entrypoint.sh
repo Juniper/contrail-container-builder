@@ -34,6 +34,11 @@ fi
 
 echo "INFO: agent started in $AGENT_MODE mode"
 
+if ! check_phys_int ; then
+    echo "FATAL: settings are not correct. Exiting..."
+    exit 2
+fi
+
 init_vhost0
 if is_encryption_supported; then
    init_crypt0 $VROUTER_CRYPT_INTERFACE

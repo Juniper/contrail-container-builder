@@ -42,8 +42,8 @@ function get_vlan_parameters() {
     local vlan_parent=''
     if [[ -f "${vlan_file}" ]] ; then
         local vlan_data=$(cat "$vlan_file")
-        vlan_id=$(echo "$vlan_data" | grep 'VID:' | head -1 | awk '{print($3)}')
-        vlan_parent=$(echo "$vlan_data" | grep 'Device:' | head -1 | awk '{print($2)}')
+        vlan_id=`echo "$vlan_data" | grep 'VID:' | head -1 | awk '{print($3)}'`
+        vlan_parent=`echo "$vlan_data" | grep 'Device:' | head -1 | awk '{print($2)}'`
         if [[ -n "$vlan_parent" ]] ; then
             dev=$vlan_parent
         fi
@@ -408,6 +408,40 @@ function ensure_hugepages() {
         echo "ERROR: Hupepages dir($hp_dir) does not have hugetlbfs mount type"
         exit -1
     fi
+}
+
+function check_phys_int() {
+    local vrouter_cidr="$(get_cidr_for_nic vhost0)"
+    if [[ "$vrouter_cidr" != '' ]] ; then
+        # vhost0 is already present - still checks for now
+        return 0
+    fi
+
+    # check that all control nodes accessible via the same interface
+    local nodes=(`echo $CONTROL_NODES | cut -d ','`)
+    if (( ${#nodes} > 1 )); then
+        local first_iface=`ip route get ${nodes[0]} | grep -o "dev.*" | awk '{print $2}'`
+        for node in ${nodes[@]} ; do
+            local cur_iface=`ip route get $node | grep -o "dev.*" | awk '{print $2}'`
+            if [[ "$first_iface" != "$cur_iface" ]]; then
+                echo "ERROR: Control node $node is accessible via different interface ($cur_iface) than first control node ${nodes[0]} ($first_iface)."
+                echo "ERROR: Please define CONTROL_NODES list correctly."
+                return 1
+            fi
+        done
+    fi
+
+    # check that CONTROL_NODES are accessible via PHYSICAL_INTERFACE if it's set
+    if [[ -n "$PHYSICAL_INTERFACE" ]]; then
+        local iface=`get_iface_for_vrouter_from_control`
+        if [[ "$PHYSICAL_INTERFACE" != "$iface" ]]; then
+            echo "ERROR: Physical interface is set to $PHYSICAL_INTERFACE but control nodes are accessible via $iface."
+            echo "ERROR: Please define CONTROL_NODES with IP-s that are accessible via $PHYSICAL_INTERFACE."
+            return 1
+        fi
+    fi
+
+    return 0
 }
 
 function init_vhost0() {
