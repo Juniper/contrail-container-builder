@@ -35,6 +35,11 @@ fi
 echo "INFO: agent started in $AGENT_MODE mode"
 
 init_vhost0
+if ! check_vrouter_agent_settings ; then
+    echo "FATAL: settings are not correct. Exiting..."
+    exit 2
+fi
+
 if is_encryption_supported ; then
     if ! init_crypt0 $VROUTER_CRYPT_INTERFACE ; then
         echo "ERROR: crypt interface was not added. exiting..."
