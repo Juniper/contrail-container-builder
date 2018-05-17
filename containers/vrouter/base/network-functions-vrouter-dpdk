@@ -1,0 +1,159 @@
+#!/bin/bash
+
+. ./network-functions-vrouter
+
+function ifcfg_read_phys_int_mac_pci() {
+    # in case of running from ifup in tripleo there is no way to read params from system,
+    # all of them are to be available from ifcfg-vhost0 (that are passed via env to container)
+    declare phys_int phys_int_mac pci
+    if [[ -n "$BIND_INT" ]] ; then
+        pci=${BIND_INT}
+        phys_int='bond0'
+        [ -z "$BOND_MODE" ] && phys_int=$(get_ifname_by_pci $pci)
+        phys_int_mac=${MACADDR}
+        if [ -z "$phys_int_mac" ] ; then
+            local _first_int=$phys_int
+            if [ -n "$BOND_MODE" ] ; then
+                local _first_pci=$(echo $pci | cut -d ',' -f 1)
+                _first_int=$(get_ifname_by_pci $_first_pci)
+            fi
+            phys_int_mac=$(get_iface_mac $_first_int)
+        fi
+    fi
+    echo $phys_int $phys_int_mac $pci
+}
+
+function is_dpdk_running() {
+    netstat -xl | grep -q  dpdk_netlink
+}
+
+function wait_dpdk_start() {
+    local i=0
+    for i in {1..60} ; do
+        echo "INFO: wait DPDK agent to run... $i"
+        if is_dpdk_running ; then
+            return 0
+        fi
+        sleep 5
+    done
+    return 1
+}
+
+function create_vhost0_dpdk() {
+    local phys_int=$1
+    local phys_int_mac=$2
+    echo "INFO: Creating ${phys_int} interface with mac $phys_int_mac via vif utility..."
+    if ! vif --add 0 --mac ${phys_int_mac} --vrf 0 --vhost-phys --type physical --pmd --id 0 ; then
+        echo "ERROR: Failed to adding ${phys_int} interface"
+        return 1
+    fi
+    echo "INFO: Adding vhost0 interface with vif utility..."
+    if ! vif --add vhost0 --mac ${phys_int_mac} --vrf 0 --type vhost --xconnect 0 --pmd --id 1 ; then
+        echo "ERROR: Failed to add vhost0 interface"
+        return 1
+    fi
+    if ! ip link set dev vhost0 up ; then
+        echo "ERROR: Failed to up vhost0 interface"
+        return 1
+    fi
+    if ! ip link set dev vhost0 address $phys_int_mac ; then
+        echo "ERROR: Failed to set vhost0 address $phys_int_mac"
+        return 1
+    fi
+}
+
+function start_dpdk_container() {
+    [ -z "$CONTRAIL_VROUTER_AGENT_DPDK_DOCKER_IMAGE" ] && \
+        { echo 'ERROR: CONTRAIL_VROUTER_AGENT_DPDK_DOCKER_IMAGE is not provided' && return 1; }
+
+    local env_options="-e AGENT_MODE=$TYPE"
+    env_options+=" -e BIND_INT=$BIND_INT"
+    [ -n "$BOND_MODE" ] && env_options+=" -e BOND_MODE=$BOND_MODE"
+    [ -n "$BOND_POLICY" ] && env_options+=" -e BOND_POLICY=$BOND_POLICY"
+    [ -n "$VLAN_ID" ] && env_options+=" -e VLAN_ID=$VLAN_ID"
+    [ -n "$DRIVER" ] && env_options+=" -e DPDK_UIO_DRIVER=$DRIVER"
+    [ -n "$CPU_LIST" ] && env_options+=" -e CPU_CORE_MASK=$CPU_LIST"
+
+    docker run \
+        --detach \
+        --name contrail-vrouter-agent-dpdk \
+        --net host --privileged \
+        -v /dev/:/dev/ \
+        -v /lib/modules/:/lib/modules/ \
+        -v /var/run/vrouter:/var/run/vrouter \
+        -v /var/log/contrail/agent/:/var/log/contrail/ \
+        ${env_options} \
+        ${CONTRAIL_VROUTER_AGENT_DPDK_DOCKER_IMAGE}
+}
+
+function remove_vhost0_dpdk() {
+    echo "INFO: down vhost0, stop and remove docker container contrail-vrouter-agent-dpdk"
+    ip link set dev vhost0 down
+    if docker ps | grep -q contrail-vrouter-agent-dpdk ; then
+        docker stop contrail-vrouter-agent-dpdk
+    fi
+    docker rm --force contrail-vrouter-agent-dpdk
+}
+
+function restore_iface_driver() {
+    local pci=$1
+    local dpdk_drv=$2
+    [ -z "$dpdk_drv" ] && return
+    local binding_data_dir='/var/run/vrouter'
+    [ ! -d "$binding_data_dir" ] && return
+    declare i
+    for i in ${pci//,/ } ; do
+        if [ -f "$binding_data_dir/$i" ] ; then
+            echo "INFO: rebind device $i from $dpdk_drv to driver $drv"
+            local drv=$(awk '/Driver:/{print($2)}' "$binding_data_dir/$i")
+            echo $i > /sys/bus/pci/drivers/${dpdk_drv}/unbind
+            echo $i > /sys/bus/pci/drivers/${drv}/new_id
+            echo $i > /sys/bus/pci/drivers/${drv}/bind
+        fi
+    done
+}
+
+# ifup interface
+#   there are variables from ifcfg-vhost0:
+#       DEVICETYPE=vhost
+#       TYPE=dpdk
+#       BIND_INT=<pci_string>
+#       BOND_MODE=<bond_mode>
+#       BOND_POLICY=<bond_policy>
+#       DRIVER=<dpdk_driver>
+#       CPU_LIST=<cpu_list>
+#       VLAN_ID=<vlan_id>
+function ifup_init_vhost() {
+    [ -f ./network-functions-vrouter-${TYPE}-env ] && . ./network-functions-vrouter-${TYPE}-env
+    ip addr show dev vhost0 >/dev/null 2>&1 && return 0
+    declare phys_int phys_int_mac pci
+    IFS=' ' read -r phys_int phys_int_mac pci <<< $(ifcfg_read_phys_int_mac_pci)
+    [ -z "$pci" ] && { echo "ERROR: BIND_INT in not set in ifcfg-vhost0" && return 1; }
+    [ -z "$phys_int" ] && { echo "ERROR: failed to detect ifname by pci $pci" && return 1; }
+    [ -z "$phys_int_mac" ] && { echo "ERROR: failed to detect MAC for $phys_int" && return 1; }
+    prepare_vif_config $TYPE
+    start_dpdk_container || return 1
+    wait_dpdk_start || return 1
+    create_vhost0_dpdk $phys_int $phys_int_mac
+}
+
+# ifdown interface
+function ifdown_vhost() {
+    [ -f ./network-functions-vrouter-${TYPE}-env ] && . ./network-functions-vrouter-${TYPE}-env
+    remove_vhost0_dpdk
+}
+
+function ifdown_vhost_post() {
+    [ -f ./network-functions-vrouter-${TYPE}-env ] && . ./network-functions-vrouter-${TYPE}-env
+    local pci=${BIND_INT}
+    [ -z "$pci" ] && { echo "ERROR: BIND_INT in not set in ifcfg-vhost0" && return 1; }
+    local drv=${DRIVER:-${DPDK_UIO_DRIVER}}
+    restore_iface_driver $pci $drv
+    local binding_data_dir='/var/run/vrouter'
+    if [ -d "$binding_data_dir" ] ; then
+        if [ -f "$binding_data_dir/nic" ] ; then
+            local phys_int=$(cat $binding_data_dir/nic)
+            restore_phys_int $phys_int
+        fi
+    fi
+}
