@@ -3,21 +3,32 @@
 source /common.sh
 source /agent-functions.sh
 
-# Clean up files and vhost0, when SIGQUIT signal by clean-up.sh
-# clean-up.sh should only be invoked when pod is terminated or
-# deployment is deleted
-# Currently only handled for vrouter-kernel case
-# To-do for dpdk case as well
-if ! is_dpdk ; then
-    trap 'term_vrouter_agent $vrouter_agent_process $phys_int; remove_vhost0' SIGQUIT
-fi
+echo "INFO: agent started in $AGENT_MODE mode"
 
-# Clean up files only, when a container/pod restarts it sends TERM and KILL signal
+function trap_vrouter_agent_quit() {
+    term_process $vrouter_agent_process
+    remove_vhost0
+    cleanup_vrouter_agent_files
+}
+
+function trap_vrouter_agent_term() {
+    term_process $vrouter_agent_process
+}
+
+function trap_vrouter_agent_hub() {
+    send_sighup_child_process $vrouter_agent_process
+}
+
+# Clean up files and vhost0, when SIGQUIT signal by clean-up.sh
+trap 'trap_vrouter_agent_quit' SIGQUIT
+
+# Terminate process only.
+# When a container/pod restarts it sends TERM and KILL signal.
 # Every time container restarts we dont want to reset data plane
-trap 'term_vrouter_agent $vrouter_agent_process $phys_int' SIGTERM SIGINT
+trap 'trap_vrouter_agent_term' SIGTERM SIGINT
 
 # Send SIGHUP signal to child process
-trap 'send_sighup_child_process $vrouter_agent_process' SIGHUP
+trap 'trap_vrouter_agent_hub' SIGHUP
 
 pre_start_init
 
@@ -31,8 +42,6 @@ EOM
 else
     HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'kvm'}
 fi
-
-echo "INFO: agent started in $AGENT_MODE mode"
 
 init_vhost0
 if is_encryption_supported; then
@@ -259,7 +268,7 @@ set_vnc_api_lib_ini
 create_lbaas_auth_conf
 
 # spin up vrouter-agent as a child process
-"$@" &
+$@ &
 vrouter_agent_process=$!
 
 # This is to ensure decrypt interface is

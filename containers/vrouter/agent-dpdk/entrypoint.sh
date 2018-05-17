@@ -3,9 +3,32 @@
 source /common.sh
 source /agent-functions.sh
 
+echo "INFO: dpdk started"
+
+function trap_dpdk_agent_quit() {
+    term_process $dpdk_agent_process
+    if [ -n "$pci_address" ] ; then
+        restore_phys_int_dpdk "$pci_address"
+    else
+        echo "WARNING: PCIs list is empty, nothing to rebind to initial net driver"
+    fi
+    cleanup_vrouter_agent_files
+}
+
+function trap_dpdk_agent_term() {
+    term_process $dpdk_agent_process
+}
+
+# Clean up files and vhost0, when SIGQUIT signal by clean-up.sh
+trap 'trap_dpdk_agent_quit' SIGQUIT
+
+# Terminate process only.
+# When a container/pod restarts it sends TERM and KILL signal.
+# Every time container restarts we dont want to reset data plane
+trap 'trap_dpdk_agent_term' SIGTERM SIGINT
+
 pre_start_init
 
-echo "INFO: dpdk started"
 # remove rte configuration file (for case if vRouter has crashed)
 # TODO: most probably not needed.. since crash means container re-created
 rm -f '/run/.rte_config'
@@ -20,18 +43,18 @@ set_ctl net.ipv4.tcp_keepalive_intvl 1
 set_ctl net.core.wmem_max 9160000
 
 if [ -n "${DPDK_UIO_DRIVER}" ]; then
-  load_kernel_module uio
-  load_kernel_module "$DPDK_UIO_DRIVER"
+    load_kernel_module uio
+    load_kernel_module "$DPDK_UIO_DRIVER"
 fi
 
 # multiple kthreads for port monitoring
 if ! load_kernel_module rte_kni kthread_mode=multiple ; then
-  echo "WARNING: rte_ini kernel module is unavailable. Please install/insert it for Ubuntu 14.04 manually."
+    echo "WARNING: rte_ini kernel module is unavailable. Please install/insert it for Ubuntu 14.04 manually."
 fi
 
-if ! prepare_phys_int_dpdk ; then
-  echo "FATAL: failed to initialize data for DPDK mode... exiting"
-  exit -1
+if ! read_and_save_dpdk_params ; then
+    echo "FATAL: failed to read data from NIC for DPDK mode... exiting"
+    exit -1
 fi
 
 function assert_file() {
@@ -60,7 +83,6 @@ if [[ -f "$binding_data_dir/${phys_int}_bond" ]] ; then
     bond_data=$(cat "$binding_data_dir/${phys_int}_bond")
     echo "INFO: bond_data: $bond_data"
 fi
-
 
 # base command
 cmd="$@ --no-daemon"
@@ -103,14 +125,21 @@ if [[ -n "$bond_data" ]] ; then
     for s in ${pci_address//,/ } ; do
         cmd+=",slave=${s}"
     done
+    echo "INFO: bonding: removing bond interface from Linux..."
+    ifdown $phys_int
+    ip link del $phys_int
 fi
 
 if [ -n "${DPDK_UIO_DRIVER}" ]; then
-    # ensure devices are bind to dpdk driver
-    for pci in ${pci_address//,/ } ; do
-        wait_device_for_driver $DPDK_UIO_DRIVER $pci
-    done
+    if ! bind_devs_to_driver "$DPDK_UIO_DRIVER" "${pci_address//,/ }" ; then
+        echo "FATAL: failed to bind $pci_address to the driver ${DPDK_UIO_DRIVER}... exiting"
+        exit -1
+    fi
 fi
 
-echo "INFO: exec '$cmd'"
-exec $cmd
+echo "INFO: start '$cmd'"
+$cmd &
+dpdk_agent_process=$!
+wait $dpdk_agent_process
+
+

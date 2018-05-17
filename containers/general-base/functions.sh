@@ -15,8 +15,7 @@ function get_server_list() {
     local server_address=`echo ${server}`
     extended_server_list+=${server_address}${port_with_delim}
   done
-  local extended_list="${extended_server_list::-1}"
-  echo ${extended_list}
+  [ -n "$extended_server_list" ] && echo "${extended_server_list::-1}"
 }
 
 function get_default_nic() {
@@ -93,11 +92,6 @@ function get_order_for_node() {
     order=1
   fi
   echo $order
-}
-
-function get_iface_mac() {
-  local nic=$1
-  cat /sys/class/net/${nic}/address
 }
 
 # It tries to resolve IP via local DBs (/etc/hosts, etc)
