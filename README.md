@@ -94,7 +94,7 @@ Please refer to the README-HELM.md
 8. ~~Create README~~
 9. ~~Remove firewall during setup~~
 10. Deal with “cannot allocate memory” during kernel module loading
-11. **Complete vrouter container - add DPDK, VLAN, etc.**
+11. ~~**Complete vrouter container - add DPDK, VLAN, etc.**~~
 12. ~~Create initContainer for vrouter compilation~~
 13. Split charts to Contrail-only and the rest
 14. Remove all notions about OpenStack/Keystone/Kubernetes from Contrail containers and add separate containers (sidecars) bringing orchestrator-related functionality.
@@ -127,7 +127,7 @@ Please refer to the README-HELM.md
 41. ~~Add provision-alarm.py (https://bugs.launchpad.net/juniperopenstack/+bug/1736279)~~
 42. ~~Avoid changing /etc/hosts file (rabbitmq).~~
 43. ~~vrouter agent entrypoint: add ability to configure metadata_proxy_secret=contrail in [METADATA]~~
-44. Sort out with KUBERNETES_public_fip_pool
+44. ~~Sort out with KUBERNETES_public_fip_pool~~
 45. ~~Ubuntu containers~~
 46. ~~Introduce base container for agent and move agent specific functions to it~~
 47. ~~Remove net-watchdog contrail as the problem with vhost0 rest by agent be solved (dpdk case)~~
