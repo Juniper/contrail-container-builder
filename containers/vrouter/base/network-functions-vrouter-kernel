@@ -41,12 +41,43 @@ function create_vhost0() {
     ip link set dev vhost0 up
 }
 
+function remove_vhost0_kernel() {
+    if ip link sh dev vhost0 >/dev/null 2>&1 ; then
+        echo "INFO: down vhost0 and remove the link"
+        ip link set dev vhost0 down
+        ip link del vhost0
+        unload_kernel_module vrouter
+    fi
+}
+
+# ifup interface
 function ifup_init_vhost() {
+    [ -f ./network-functions-vrouter-${TYPE}-env ] && . ./network-functions-vrouter-${TYPE}-env
     ip addr show dev vhost0 >/dev/null 2>&1 && return 0
     local phys_int=${BIND_INT}
     [ -z "$phys_int" ] && { echo "ERROR: BIND_INT in not set in ifcfg-vhost0" && return 1; }
     local phys_int_mac=${MACADDR}
-    [ -z "$phys_int_mac" ] && phys_int_mac=$(cat /sys/class/net/${phys_int}/address)
+    [ -z "$phys_int_mac" ] && phys_int_mac=$(get_iface_mac ${phys_int})
     [ -z "$phys_int_mac" ] && { echo "ERROR: cant detect MAC for $phys_int" && return 1; }
+    local addrs=$(get_addrs_for_nic $phys_int)
+    declare line addr_to_del
+    echo "$addrs" | while IFS= read -r line ; do
+        addr_to_del=`echo $line | cut -d ' ' -f 1`
+        ip address delete $addr_to_del dev $phys_int
+    done
     create_vhost0 $phys_int $phys_int_mac
+}
+
+# ifdown interface
+function ifdown_vhost() {
+    [ -f ./network-functions-vrouter-${TYPE}-env ] && . ./network-functions-vrouter-${TYPE}-env
+    remove_docker_container $CONTRAIL_VROUTER_AGENT_CONTAINER_NAME
+    remove_vhost0_kernel
+}
+
+function ifdown_vhost_post() {
+    [ -f ./network-functions-vrouter-${TYPE}-env ] && . ./network-functions-vrouter-${TYPE}-env
+    local phys_int=${BIND_INT}
+    [ -z "$phys_int" ] && { echo "ERROR: BIND_INT in not set in ifcfg-vhost0" && return 1; }
+    restore_phys_int $phys_int
 }
