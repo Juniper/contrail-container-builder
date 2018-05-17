@@ -3,18 +3,14 @@
 source /common.sh
 source /agent-functions.sh
 
+echo "INFO: agent started in $AGENT_MODE mode"
+
 # Clean up files and vhost0, when SIGQUIT signal by clean-up.sh
-# clean-up.sh should only be invoked when pod is terminated or
-# deployment is deleted
-# Currently only handled for vrouter-kernel case
-# To-do for dpdk case as well
-if ! is_dpdk ; then
-    trap 'term_vrouter_agent $vrouter_agent_process $phys_int; remove_vhost0' SIGQUIT
-fi
+trap 'term_vrouter_agent $vrouter_agent_process; remove_vhost0' SIGQUIT
 
 # Clean up files only, when a container/pod restarts it sends TERM and KILL signal
 # Every time container restarts we dont want to reset data plane
-trap 'term_vrouter_agent $vrouter_agent_process $phys_int' SIGTERM SIGINT
+trap 'term_vrouter_agent $vrouter_agent_process' SIGTERM SIGINT
 
 # Send SIGHUP signal to child process
 trap 'send_sighup_child_process $vrouter_agent_process' SIGHUP
@@ -31,8 +27,6 @@ EOM
 else
     HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'kvm'}
 fi
-
-echo "INFO: agent started in $AGENT_MODE mode"
 
 init_vhost0
 if is_encryption_supported; then
