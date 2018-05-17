@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 # these next folders must be mounted to compile vrouter.ko in ubuntu: /usr/src /lib/modules
 
