@@ -48,7 +48,7 @@ if [[ -n $action ]]; then
       run_cmd configure_instances.yml
       ;;
     install|3)
-      run_cmd install_contraill.yml
+      run_cmd install_contrail.yml
       ;;
     12)
       run_cmd provision_instances.yml
@@ -56,12 +56,12 @@ if [[ -n $action ]]; then
       ;;
     23)
       run_cmd configure_instances.yml
-      run_cmd install_contraill.yml
+      run_cmd install_contrail.yml
       ;;
     all|123)
       run_cmd provision_instances.yml
       run_cmd configure_instances.yml
-      run_cmd install_contraill.yml
+      run_cmd install_contrail.yml
       ;;
     *) 
       showhelp
