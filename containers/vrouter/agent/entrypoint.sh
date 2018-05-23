@@ -35,11 +35,17 @@ fi
 echo "INFO: agent started in $AGENT_MODE mode"
 
 init_vhost0
-if is_encryption_supported; then
-   init_crypt0 $VROUTER_CRYPT_INTERFACE
-   init_decrypt0 $VROUTER_DECRYPT_INTERFACE $VROUTER_DECRYPT_KEY
+if is_encryption_supported ; then
+    if ! init_crypt0 $VROUTER_CRYPT_INTERFACE ; then
+        echo "ERROR: crypt interface was not added. exiting..."
+        exit 1
+    fi
+    if ! init_decrypt0 $VROUTER_DECRYPT_INTERFACE $VROUTER_DECRYPT_KEY ; then
+        echo "ERROR: decrypt interface was not added. exiting..."
+        exit 1
+    fi
 else
-  echo "INFO: Kernel version does not support the driver required for vrouter to vrouter encryption"
+    echo "INFO: Kernel version does not support the driver required for vrouter to vrouter encryption"
 fi
 
 init_sriov
@@ -169,9 +175,9 @@ EOM
     fi
 fi
 
-crypt_intf_setup=""
-if is_encryption_supported; then
-read -r -d '' crypt_intf_setup << EOM || true
+crypt_interface_option=""
+if is_encryption_supported ; then
+    read -r -d '' crypt_interface_option << EOM || true
 [CRYPT]
 crypt_interface=$VROUTER_CRYPT_INTERFACE
 EOM
@@ -231,7 +237,7 @@ $qos_queueing_option
 
 $priority_group_option
 
-$crypt_intf_setup
+$crypt_interface_option
 
 EOM
 
@@ -267,10 +273,13 @@ vrouter_agent_process=$!
 # it will be interim only till vrouter
 # agent natively have the support for
 # decrypt interface in 5.0.1
-if is_encryption_supported; then
-   add_vrouter_decrypt_intf $VROUTER_DECRYPT_INTERFACE
+if is_encryption_supported ; then
+    if ! add_vrouter_decrypt_intf $VROUTER_DECRYPT_INTERFACE ; then
+        echo "ERROR: decrypt interface was not configured. exiting..."
+        exit 1
+    fi
 else
-   echo "INFO: Kernel version does not support vrouter to vrouter encryption - Not adding $VROUTER_DECRYPT_INTERFACE to vrouter"
+    echo "INFO: Kernel version does not support vrouter to vrouter encryption - Not adding $VROUTER_DECRYPT_INTERFACE to vrouter"
 fi
 
 # Wait for vrouter-agent process to complete

@@ -655,101 +655,79 @@ function send_sighup_child_process(){
 # In release 5.0, vrouter to vrouter encryption
 # works only on kernels 4.4 and above
 function is_encryption_supported() {
-    local encryption_supported=1
-    kernel_version=`uname -r | cut -d "-" -f 1`
-    if (( $(echo "$kernel_version $REQUIRED_KERNEL_VROUTER_ENCRYPTION" | awk '{print ($1 >= $2)}') )); then
-       encryption_supported=0
+    local enc="${VROUTER_ENCRYPTION:-TRUE}"
+    if [[ "${enc^^}" == 'FALSE' ]]; then
+        return 1
     fi
-    return $encryption_supported
+    local kernel_version=`uname -r | cut -d "-" -f 1`
+    return `echo "$kernel_version $REQUIRED_KERNEL_VROUTER_ENCRYPTION" | awk '{print ($1 < $2)}'`
 }
 
 # create the ipvlan interface for
 # vrouter to vrouter datapath encryption
 function init_crypt0() {
-    # Check if the kernel is 4.4 or greater
-    local ret=0
     local crypt_intf=$1
-    crypt0=`ip link show $crypt_intf | grep -wo $crypt_intf`
-    if [ "$crypt0" == "$crypt_intf" ]; then
-       echo "INFO: $crypt_intf already exists"
-       return $ret
+    if ip link show $crypt_intf ; then
+        echo "INFO: $crypt_intf already exists"
+        return
     fi
-    local ipvlan=`lsmod | grep -wo ipvlan`
-    local aes=`grep -o aes /proc/cpuinfo`
+
+    modprobe ipvlan || { echo "ERROR: Failed to modprobe ipvlan kernel module" && return 1; }
+    if grep -q aes /proc/cpuinfo ; then
+        modprobe aesni_intel || echo "WARNING: Failed to modprobe aesni_intel kernel module. Proceeding without aesni module."
+    fi
+
     local mtu=`cat /sys/class/net/vhost0/mtu`
-    if [ "$ipvlan" != "ipvlan" ]; then
-        modprobe ipvlan || { echo "ERROR: Failed to modprobe ipvlan kernel module" && return 1; }
-    fi
-    if [ "$aes" == "aes" ]; then
-       local aesni=`lsmod | grep -wo aesni_intel`
-       if [ "$aesni" != "aesni_intel" ]; then
-          modprobe aesni_intel || { echo "ERROR: Failed to modprobe aesni_intel kernel module. Proceeding without aesni module." && ret=0; }
-       fi
-    fi
     ip link add $crypt_intf link vhost0 type ipvlan || { echo "ERROR: Failed to initialize ipvlan interface $crypt_intf" && return 1; }
     ip link set dev $crypt_intf mtu $mtu up
     echo "Successfully added ipvlan interface $crypt_intf"
-    return $ret
 }
 
 function create_iptables_vrouter_encryption() {
-    local ret=0
     local key=$1
-    local mplsoudp_port=`iptables -L -nvx -t mangle | grep -wo 6635`
-    local vxlanoudp_port=`iptables -L -nvx -t mangle | grep -wo 4789`
-    local gre=`iptables -L -nvx -t mangle | grep -wo 47`
     # create iptables rule for marking the packets such that IPSec kernel can process such packets
     # UDP posrt 6635 - MPLSoUDP, 4789 - VXLAN UDP DST port
-    if [[ $mplsoudp_port != 6635 ]]; then
-       iptables -I OUTPUT -t mangle -p udp --dport 6635 -j MARK --set-mark $key || { echo "ERROR: Failed to add iptables rule for MPLS0UDP encryption" && ret=1; }
+    if ! iptables -L -nvx -t mangle | grep -wq 6635 ; then
+        iptables -I OUTPUT -t mangle -p udp --dport 6635 -j MARK --set-mark $key || echo "WARNING: Failed to add iptables rule for MPLS0UDP encryption"
     fi
-    if [[ $vxlanoudp_port != 4789 ]]; then
-       iptables -I OUTPUT -t mangle -p udp --dport 4789 -j MARK --set-mark $key || { echo "ERROR: Failed to add iptables rule for VXLANoUDP encryption" && ret=1; }
+    if ! iptables -L -nvx -t mangle | grep -wq 4789 ; then
+        iptables -I OUTPUT -t mangle -p udp --dport 4789 -j MARK --set-mark $key || echo "WARNING: Failed to add iptables rule for VXLANoUDP encryption"
     fi
-    if [[ $gre != 47 ]]; then
-       iptables -I OUTPUT -t mangle -p gre -j MARK --set-mark $key || { echo "ERROR: Failed to add iptables rule for GRE encryption" && ret=1; }
+    if ! iptables -L -nvx -t mangle | grep -wq 47 ; then
+        iptables -I OUTPUT -t mangle -p gre -j MARK --set-mark $key || echo "WARNING: Failed to add iptables rule for GRE encryption"
     fi
-    return $ret
 }
 
 # create decrypt interface for vrouter
 # to vrouter encryption
 function init_decrypt0() {
-    local ret=0
     local decrypt_intf=$1
     local key=$2
-    decrypt0=`ip link show $decrypt_intf | grep -wo $decrypt_intf`
-    if [ "$decrypt0" == "$decrypt_intf" ]; then
-         echo "INFO: $decrypt_intf already exists"
-         create_iptables_vrouter_encryption $key
-         return $ret
+    if ! ip link show $decrypt_intf ; then
+        echo "INFO: $decrypt_intf already exists"
+    else
+        local mtu=`cat /sys/class/net/vhost0/mtu`
+        local l_ip=$(get_listen_ip_for_nic vhost0)
+        ip tunnel add $decrypt_intf local $l_ip mode vti key $key || { echo "ERROR: Failed to initialize tunnel interface $decrypt_intf" && return 1; }
+        ip link set dev $decrypt_intf mtu $mtu up
+        ip link set dev ip_vti0 mtu $mtu up
+        echo "Successfully added tunnel interface $decrypt_intf and the required iptables rules"
     fi
-    local mtu=`cat /sys/class/net/vhost0/mtu`
-    local l_ip=$(get_listen_ip_for_nic vhost0)
-    ip tunnel add $decrypt_intf local $l_ip mode vti key $key || { echo "ERROR: Failed to initialize tunnel interface $decrypt_intf" && return 1; }
-    ip link set dev $decrypt_intf mtu $mtu up
-    ip link set dev ip_vti0 mtu $mtu up
     create_iptables_vrouter_encryption $key
-    echo "Successfully added tunnel interface $decrypt_intf and the required iptables rules"
-    return $ret
 }
 
 # add the decrypt interface to vrouter
 # this will be required till vrouter agent
 # has the native support for decrrpt interface
 function add_vrouter_decrypt_intf() {
-    local ret=0
     local decrypt_intf=$1
     local mac=$(get_iface_mac vhost0)
-    decrypt_intf_up=`ip link show $decrypt_intf | grep -wo UP`
-    if [ "$decrypt_intf_up" == "UP" ]; then
-       # wait for vif to initialize
-       sleep 2
-       local vif_decrypt_intf=`vif --list | grep -wo $decrypt_intf`
-       if [ "$vif_decrypt_intf" != "$decrypt_intf" ]; then
-          vif --add $decrypt_intf --mac $mac --vrf 0 --vhost-phys --type physical || { echo "ERROR: Failed to add decrypt interface $decrypt_intf to vrouter" && return 1; }
-          echo "Successfully added tunnel interface $decrypt_intf to vrouter"
-       fi
+    if ip link show $decrypt_intf | grep -wq UP ; then
+        # wait for vif to initialize
+        sleep 2
+        if ! vif --list | grep -wq $decrypt_intf ; then
+            vif --add $decrypt_intf --mac $mac --vrf 0 --vhost-phys --type physical || { echo "ERROR: Failed to add decrypt interface $decrypt_intf to vrouter" && return 1; }
+            echo "Successfully added tunnel interface $decrypt_intf to vrouter"
+        fi
     fi
-    return $ret
 }
