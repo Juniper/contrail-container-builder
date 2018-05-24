@@ -24,8 +24,150 @@ function load_kernel_module() {
 
 function unload_kernel_module() {
     local module=$1
+    lsmod | grep -q "$module" || return
+    echo "INFO: wait 0 use-count for $module"
+    while [[ "$(lsmod | grep "$module" | awk '{print($3)}')" != '0' ]] ; do
+        sleep 1s;
+    done
     echo "INFO: unload $module kernel module"
     if ! rmmod $module ; then
-        echo "WARNING: Failed to unload $module driver"
+        echo "ERROR: Failed to unload $module driver"
+        return 1
     fi
+}
+
+function convert_bond_policy(){
+    local policy=$1
+    ## Map Linux values to DPDK
+    case "${policy}" in
+        "layer2") policy="l2";;
+        "layer3+4") policy="l34";;
+        "layer2+3") policy="l23";;
+        # DPDK 2.0 does not support inner packet hashing
+        "encap2+3") policy="l23";;
+        "encap3+4") policy="l34";;
+    esac
+    echo $policy
+}
+
+function get_bond_numa() {
+    local pci=$1
+    local slave_numa=$(cat "/sys/bus/pci/devices/${pci}/numa_node")
+    local bond_numa=''
+    # DPDK EAL for bond interface interprets -1 as 255
+    if [[ -z "${slave_numa}" || "${slave_numa}" -eq -1 ]] ; then
+        bond_numa=0
+    else
+        bond_numa=${slave_numa}
+    fi
+    echo $bond_numa
+}
+
+function get_ifname_by_pci() {
+    local pci=$1
+    ls "/sys/bus/pci/devices/${pci}/net"
+}
+
+function prepare_vif_config() {
+    # this is for vif tool
+    # in agent container this is re-written by container at latest step
+    local type=$1
+    cat << EOM > /etc/contrail/contrail-vrouter-agent.conf
+[DEFAULT]
+platform=$type
+EOM
+}
+
+function get_iface_mac() {
+  local nic=$1
+  cat /sys/class/net/${nic}/address
+}
+
+function get_addrs_for_nic() {
+    local nic=$1
+    ip addr show dev $nic | grep "inet" | grep -oP "[0-9a-f\:\.]*/[0-9]* brd [0-9\.]*|[0-9a-f\:\.]*/[0-9]*"
+}
+
+# Generate ip address add command
+function gen_ip_addr_add_cmd() {
+    local from_nic=$1
+    local to_nic=$2
+    local addrs=`get_addrs_for_nic $from_nic`
+    declare line cmd
+    while IFS= read -r line ; do
+        local addr_to_add=$(echo $line | sed 's/brd/broadcast/')
+        if [[ -n $cmd ]]; then
+            cmd+=" && "
+        fi
+        cmd+="ip address add $addr_to_add dev $to_nic"
+    done <<< "$addrs"
+    echo $cmd
+}
+
+function restore_phys_int() {
+    local phys_int="$1"
+    local add_ipaddr_cmd="$2"
+    local gateway="$3"
+    local netscript_dir='/etc/sysconfig/network-scripts'
+    echo "INFO: restore bind interface $phys_int"
+    if [ -d "$netscript_dir" ] ; then
+        pushd "$netscript_dir"
+        declare i
+        for i in $(ls | awk -F '.' '/contrail.org/{print($3)}') ; do
+            echo "INFO: restore $i from contrail.org.$i"
+            mv contrail.org.$i $i
+        done
+        popd
+        echo "INFO: reinit $phys_int"
+        ifdown $phys_int >/dev/null 2>&1
+        ifup $phys_int
+    else
+        if [ -n "$add_ipaddr_cmd" ] ; then
+            echo "INFO: restore IPs for $phys_int"
+            eval "$add_ipaddr_cmd"
+        fi
+        if [ -n "${gateway// }" ] ; then
+            if ip route | grep "default via" | grep -q "$gateway" ; then
+                echo "INFO: restore default gateway $gateway"
+                ip route add default via $gateway
+            fi
+        fi
+    fi
+}
+
+function remove_docker_container() {
+    local container=$1
+    local signal=$2
+    [ -z "$container" ] && { echo "ERROR: container id/name must be provided" && return 1 ; }
+    if docker inspect "$container" 2>&1 >/dev/null ; then
+        if [ -n "$signal" ] ; then
+            echo "INFO: send $signal to the container $container"
+            docker kill --signal $signal "$container"
+            echo "INFO: wait container $container finishes"
+            docker wait "$container"
+        fi
+        echo "INFO: remove the container $container"
+        docker rm --force "$container"
+    fi
+}
+
+function ifcfg_read_phys_int_mac_pci() {
+    # in case of running from ifup in tripleo there is no way to read params from system,
+    # all of them are to be available from ifcfg-vhost0 (that are passed via env to container)
+    declare phys_int phys_int_mac pci
+    if [[ -n "$BIND_INT" ]] ; then
+        pci=${BIND_INT}
+        phys_int='bond0'
+        [ -z "$BOND_MODE" ] && phys_int=$(get_ifname_by_pci $pci)
+        phys_int_mac=${MACADDR}
+        if [ -z "$phys_int_mac" ] ; then
+            local _first_int=$phys_int
+            if [ -n "$BOND_MODE" ] ; then
+                local _first_pci=$(echo $pci | cut -d ',' -f 1)
+                _first_int=$(get_ifname_by_pci $_first_pci)
+            fi
+            phys_int_mac=$(get_iface_mac $_first_int)
+        fi
+    fi
+    echo $phys_int $phys_int_mac $pci
 }
