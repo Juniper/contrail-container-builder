@@ -10,7 +10,7 @@ function get_server_json_list(){
   echo "['"$srv_list"']"
 }
 
-orchestration_manager=$CLOUD_ORCHESTRATOR
+orchestration_manager=${CLOUD_ORCHESTRATOR,,}
 
 if [[ "$orchestration_manager" == 'kubernetes' ]] ; then
   orchestration_manager='none'
@@ -30,6 +30,25 @@ if [[ "${KEYSTONE_AUTH_INSECURE,,}" == 'false' ]] ; then
   identityManager_strict_ssl=true
 fi
 
+function set_to_lower() {
+  local val=$(echo ${!1:-${2}} | tr '[:upper:]' '[:lower:]');
+  eval "${1}=$val"
+}
+
+# convert to lower
+set_to_lower orchestrationModuleEndPointFromConfig false
+set_to_lower contrailEndPointFromConfig true
+set_to_lower regionsFromConfig false
+set_to_lower networkManager_strictSSL false
+set_to_lower imageManager_strictSSL false
+set_to_lower computeManager_strictSSL false
+set_to_lower storageManager_strictSSL false
+set_to_lower cnfg_strictSSL false
+set_to_lower analytics_strictSSL false
+set_to_lower cassandra_enable_edit false
+set_to_lower WEBUI_INSECURE_ACCESS false
+set_to_lower serviceEndPointTakePublicURL true
+
 cat > /etc/contrail/config.global.js << EOM
 /*
  * Copyright (c) 2014 Juniper Networks, Inc. All rights reserved.
@@ -40,10 +59,10 @@ var config = {};
 config.orchestration = {};
 config.orchestration.Manager = "${orchestration_manager}";
 
-config.orchestrationModuleEndPointFromConfig = ${orchestrationModuleEndPointFromConfig:-false};
-config.contrailEndPointFromConfig = ${contrailEndPointFromConfig:-true};
+config.orchestrationModuleEndPointFromConfig = ${orchestrationModuleEndPointFromConfig};
+config.contrailEndPointFromConfig = ${contrailEndPointFromConfig};
 
-config.regionsFromConfig = ${regionsFromConfig:-false};
+config.regionsFromConfig = ${regionsFromConfig};
 
 config.endpoints = {};
 config.endpoints.apiServiceType = "${endpoints_apiServiceType:-ApiServer}";
@@ -52,14 +71,14 @@ config.endpoints.opServiceType = "${endpoints_apiServiceType:-OpServer}";
 config.regions = {};
 config.regions.RegionOne = "${regions_RegionOne:-http://127.0.0.1:5000/v2.0}";
 
-config.serviceEndPointTakePublicURL = ${serviceEndPointTakePublicURL:-true};
+config.serviceEndPointTakePublicURL = ${serviceEndPointTakePublicURL};
 
 config.networkManager = {};
 config.networkManager.ip = "${networkManager_ip:-127.0.0.1}";
 config.networkManager.port = "${networkManager_port:-9696}";
 config.networkManager.authProtocol = "${networkManager_authProtocol:-http}";
 config.networkManager.apiVersion = ${networkManager_apiVersion:-[]};
-config.networkManager.strictSSL = ${networkManager_strictSSL:-false};
+config.networkManager.strictSSL = ${networkManager_strictSSL};
 config.networkManager.ca = "$networkManager_ca";
 
 config.imageManager = {};
@@ -67,7 +86,7 @@ config.imageManager.ip = "${imageManager_ip:-127.0.0.1}";
 config.imageManager.port = "${imageManager_port:-9292}";
 config.imageManager.authProtocol = "${imageManager_authProtocol:-http}";
 config.imageManager.apiVersion = ${imageManager_apiVersion:-['v1', 'v2']};
-config.imageManager.strictSSL = ${imageManager_strictSSL:-false};
+config.imageManager.strictSSL = ${imageManager_strictSSL};
 config.imageManager.ca = "$imageManager_ca";
 
 config.computeManager = {};
@@ -75,7 +94,7 @@ config.computeManager.ip = "${computeManager_ip:-127.0.0.1}";
 config.computeManager.port = "${computeManager_port:-8774}";
 config.computeManager.authProtocol = "${computeManager_authProtocol:-http}";
 config.computeManager.apiVersion = ${computeManager_apiVersion:-['v1.1', 'v2']};
-config.computeManager.strictSSL = ${computeManager_strictSSL:-false};
+config.computeManager.strictSSL = ${computeManager_strictSSL};
 config.computeManager.ca = "$computeManager_ca";
 
 config.identityManager = {};
@@ -91,14 +110,14 @@ config.storageManager.ip = "${storageManager_ip:-127.0.0.1}";
 config.storageManager.port = "${storageManager_port:-8776}";
 config.storageManager.authProtocol = "${storageManager_authProtocol:-http}";
 config.storageManager.apiVersion = ${storageManager_apiVersion:-['v1']};
-config.storageManager.strictSSL = ${storageManager_strictSSL:-false};
+config.storageManager.strictSSL = ${storageManager_strictSSL};
 config.storageManager.ca = "$storageManager_ca";
 
 config.cnfg = {};
 config.cnfg.server_ip = ${cnfg_server_ip:-`get_server_json_list CONFIG`};
 config.cnfg.server_port = ${cnfg_server_port:-"'"$CONFIG_API_PORT"'"};
 config.cnfg.authProtocol = "${cnfg_authProtocol:-http}";
-config.cnfg.strictSSL = ${cnfg_strictSSL:-false};
+config.cnfg.strictSSL = ${cnfg_strictSSL};
 config.cnfg.ca = ${cnfg_ca:-''};
 config.cnfg.statusURL = ${cnfg_statusURL:-'"/global-system-configs"'};
 
@@ -106,7 +125,7 @@ config.analytics = {};
 config.analytics.server_ip = "$ANALYTICS_API_VIP";
 config.analytics.server_port = "$ANALYTICS_API_PORT";
 config.analytics.authProtocol = "${analytics_authProtocol:-http}";
-config.analytics.strictSSL = ${analytics_strictSSL:-false};
+config.analytics.strictSSL = ${analytics_strictSSL};
 config.analytics.ca = ${analytics_ca:-''};
 config.analytics.statusURL = ${analytics_statusURL:-'"/analytics/uves/bgp-peers"'};
 
@@ -143,14 +162,14 @@ config.files.download_path = '/tmp';
 config.cassandra = {};
 config.cassandra.server_ips = ${cassandra_server_ips:-`get_server_json_list CONFIGDB`};
 config.cassandra.server_port = ${cassandra_server_port:-"'"$CONFIGDB_CQL_PORT"'"};
-config.cassandra.enable_edit = ${cassandra_enable_edit:-false};
+config.cassandra.enable_edit = ${cassandra_enable_edit};
 
 config.kue = {};
 config.kue.ui_port = '$KUE_UI_PORT'
 
 config.webui_addresses = [${WEBUI_LISTEN_ADDRESSES:-'0.0.0.0'}];
 
-config.insecure_access = ${WEBUI_INSECURE_ACCESS:-false};
+config.insecure_access = ${WEBUI_INSECURE_ACCESS};
 
 config.http_port = '$WEBUI_HTTP_LISTEN_PORT';
 
