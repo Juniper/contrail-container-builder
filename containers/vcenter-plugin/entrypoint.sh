@@ -2,6 +2,8 @@
 
 source /common.sh
 
+api_hostname=${CONFIG_API_VIP:-$(get_vip_for_node CONFIG)}
+
 cat > /etc/contrail/contrail-vcenter-plugin.conf << EOM
 [DEFAULT]
 # Vcenter plugin URL
@@ -15,7 +17,7 @@ vcenter.datacenter=$VCENTER_DATACENTER
 vcenter.dvswitch=$VCENTER_DVSWITCH
 vcenter.ipfabricpg=${VCENTER_IPFABRICPG:-contrail-fab-pg}
 
-api.hostname=$CONFIG_API_VIP
+api.hostname=$api_hostname
 api.port=$CONFIG_API_PORT
 
 zookeeper.serverlist=$ZOOKEEPER_SERVERS
