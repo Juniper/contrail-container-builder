@@ -286,10 +286,12 @@ function read_phys_int_mac_pci() {
 }
 
 function read_and_save_dpdk_params() {
-    if probe_nic vhost0 ; then
-        echo "INFO: vhost device is already exist"
-        return 0
+    local binding_data_dir='/var/run/vrouter'
+    if [ -f $binding_data_dir/nic ] ; then
+        echo "WARNING: binding information is already saved"
+        return
     fi
+
     declare phys_int phys_int_mac pci
     IFS=' ' read -r phys_int phys_int_mac pci <<< $(read_phys_int_mac_pci)
 
@@ -303,8 +305,6 @@ function read_and_save_dpdk_params() {
     local nic=$phys_int
 
     # save data for next usage in network init container
-    # TODO: check that data valid for the case if container is re-run again by some reason
-    local binding_data_dir='/var/run/vrouter'
     mkdir -p ${binding_data_dir}
 
     echo "$nic" > $binding_data_dir/nic
@@ -425,6 +425,10 @@ function init_vhost0() {
             return 1
         fi
         local binding_data_dir='/var/run/vrouter'
+        if [ ! -f "$binding_data_dir/nic" ] ; then
+            echo "ERROR: there is not binding runtime information"
+            return 1
+        fi
         phys_int=`cat $binding_data_dir/nic`
         phys_int_mac=`cat $binding_data_dir/${phys_int}_mac`
         local pci_address=`cat $binding_data_dir/${phys_int}_pci`

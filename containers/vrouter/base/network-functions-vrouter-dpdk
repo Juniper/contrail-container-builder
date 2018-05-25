@@ -88,6 +88,7 @@ function restore_iface_driver() {
                 # [[ -n "$vendor" && -n "$device" ]] && echo -n "$vendor $device" > /sys/bus/pci/drivers/${drv}/new_id
                 echo -n "$i" > /sys/bus/pci/drivers/${drv}/bind
             fi
+            rm -f "$binding_data_dir/$i"
         fi
     done
 }
@@ -97,7 +98,7 @@ function restore_phys_int_dpdk() {
     local drv=${2:-${DPDK_UIO_DRIVER}}
     declare phys_int gateway restore_ip_cmd
     local binding_data_dir='/var/run/vrouter'
-    [ -f "$binding_data_dir/nic" ] && phys_int=$(cat $binding_data_dir/nic)
+    [ -f "$binding_data_dir/nic" ] && phys_int=$(cat "$binding_data_dir/nic")
     local netscript_dir='/etc/sysconfig/network-scripts'
     if [ ! -d "$netscript_dir" ] ; then
         gateway=$(get_default_gateway_for_nic_metric vhost0)
@@ -106,9 +107,11 @@ function restore_phys_int_dpdk() {
     restore_iface_driver $pci $drv
     if [ -n "$phys_int" ] ; then
         restore_phys_int $phys_int "$restore_ip_cmd" "$gateway"
+        rm -f "$binding_data_dir/${phys_int}"*
     else
         echo "WARNING: there is info about phys_int to restore"
     fi
+    rm -f "$binding_data_dir/nic"
 }
 
 # ifup interface

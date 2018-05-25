@@ -43,7 +43,11 @@ else
     HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'kvm'}
 fi
 
-init_vhost0
+if ! init_vhost0 ; then
+    echo "FATAL: failed to init vhost0"
+    exit 1
+fi
+
 if ! check_vrouter_agent_settings ; then
     echo "FATAL: settings are not correct. Exiting..."
     exit 2
@@ -82,12 +86,12 @@ echo "INFO: vhost0 cidr $vrouter_cidr, gateway $VROUTER_GATEWAY"
 
 if [[ -z "$vrouter_cidr" ]] ; then
     echo "ERROR: vhost0 interface is down or has no assigned IP"
-    exit -1
+    exit 1
 fi
 vrouter_ip=${vrouter_cidr%/*}
 if [[ -z "$VROUTER_GATEWAY" ]] ; then
     echo "ERROR: VROUTER_GATEWAY is empty or there is no default route for vhost0"
-    exit -1
+    exit 1
 fi
 
 agent_mode_options="physical_interface_mac = $phys_int_mac"
