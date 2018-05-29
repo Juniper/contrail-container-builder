@@ -114,15 +114,15 @@ config.storageManager.strictSSL = ${storageManager_strictSSL};
 config.storageManager.ca = "$storageManager_ca";
 
 config.cnfg = {};
-config.cnfg.server_ip = ${cnfg_server_ip:-`get_server_json_list CONFIG`};
-config.cnfg.server_port = ${cnfg_server_port:-"'"$CONFIG_API_PORT"'"};
+config.cnfg.server_ip = ${CONFIG_API_VIP:-`get_server_json_list CONFIG`};
+config.cnfg.server_port = "$CONFIG_API_PORT";
 config.cnfg.authProtocol = "${cnfg_authProtocol:-http}";
 config.cnfg.strictSSL = ${cnfg_strictSSL};
 config.cnfg.ca = ${cnfg_ca:-''};
 config.cnfg.statusURL = ${cnfg_statusURL:-'"/global-system-configs"'};
 
 config.analytics = {};
-config.analytics.server_ip = "$ANALYTICS_API_VIP";
+config.analytics.server_ip = ${ANALYTICS_API_VIP:-`get_server_json_list ANALYTICS`};
 config.analytics.server_port = "$ANALYTICS_API_PORT";
 config.analytics.authProtocol = "${analytics_authProtocol:-http}";
 config.analytics.strictSSL = ${analytics_strictSSL};
