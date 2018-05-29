@@ -4,7 +4,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
 
-RUN yum install -y docker-python && \
+RUN yum install -y --setopt=obsoletes=0 python-docker-py && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 

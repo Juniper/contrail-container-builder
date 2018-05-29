@@ -4,7 +4,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
 
-RUN yum install -y contrail-nodemgr docker-python && \
+RUN yum install -y --setopt=obsoletes=0 contrail-nodemgr python-docker-py && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 
