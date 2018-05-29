@@ -30,7 +30,6 @@ trap 'trap_dpdk_agent_term' SIGTERM SIGINT
 pre_start_init
 
 # remove rte configuration file (for case if vRouter has crashed)
-# TODO: most probably not needed.. since crash means container re-created
 rm -f '/run/.rte_config'
 
 ensure_hugepages $HUGE_PAGES_DIR
