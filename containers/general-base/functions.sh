@@ -24,7 +24,7 @@ function get_default_nic() {
 
 function get_cidr_for_nic() {
   local nic=$1
-  ip addr show dev $nic | grep "inet .*/.* brd " | awk '{print $2}'
+  ip addr show dev $nic | grep "inet " | awk '{print $2}' | head -n 1
 }
 
 function get_listen_ip_for_nic() {
