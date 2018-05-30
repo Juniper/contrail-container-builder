@@ -46,6 +46,24 @@ KAFKA_NODES=${KAFKA_NODES:-${ANALYTICSDB_NODES}}
 TSN_NODES=${TSN_NODES:-[]}
 KUBERNETES_API_NODES=${KUBERNETES_API_NODES:-${CONFIG_NODES}}
 
+#convert dns name to ip until https://bugs.launchpad.net/juniperopenstack/+bug/1774128 is fixed
+for node in CONTROLLER \
+CONFIG \
+CONTROL \
+DNS \
+CONFIGDB \
+ZOOKEEPER \
+RABBITMQ \
+ANALYTICS \
+ANALYTICSDB \
+ZOOKEEPER_ANALYTICS \
+KAFKA \
+TSN \
+KUBERNETES_API
+do
+  declare ${node}_NODES=`convert_from_dns_to_ip ${node}`
+done
+
 CONTROL_INTROSPECT_PORT=${CONTROL_INTROSPECT_PORT:-8083}
 BGP_PORT=${BGP_PORT:-179}
 BGP_AUTO_MESH=${BGP_AUTO_MESH:-'true'}

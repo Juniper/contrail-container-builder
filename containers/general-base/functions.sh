@@ -5,6 +5,22 @@ function is_enabled() {
   [[ "${val}" == 'true' || "${val}" == 'yes' || "${val}" == 'enabled' ]]
 }
 
+function convert_from_dns_to_ip() {
+  local server_typ=$1_NODES
+  local server_list=''
+  IFS=',' read -ra server_list <<< "${!server_typ}"
+  local extended_server_list=''
+  for server in "${server_list[@]}"; do
+    if [[ ! `echo ${server} |grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b"` ]]; then 
+      local server_address=`getent hosts ${server}|awk '{print $1}'`
+    else
+      local server_address=`echo ${server}`
+    fi
+    extended_server_list+=${server_address},
+  done
+  [ -n "$extended_server_list" ] && echo "${extended_server_list::-1}"
+}
+
 function get_server_list() {
   local server_typ=$1_NODES
   local port_with_delim=$2
