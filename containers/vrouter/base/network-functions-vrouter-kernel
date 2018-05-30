@@ -55,6 +55,7 @@ function ifup_init_vhost() {
     [ -f ./network-functions-vrouter-${TYPE}-env ] && . ./network-functions-vrouter-${TYPE}-env
     ip addr show dev vhost0 >/dev/null 2>&1 && return 0
     local phys_int=${BIND_INT}
+    ifup ${BIND_INT}
     [ -z "$phys_int" ] && { echo "ERROR: BIND_INT in not set in ifcfg-vhost0" && return 1; }
     local phys_int_mac=${MACADDR}
     [ -z "$phys_int_mac" ] && phys_int_mac=$(get_iface_mac ${phys_int})
