@@ -44,9 +44,8 @@ if [ -z "$my_ip" ] ; then
 fi
 
 export RABBITMQ_NODENAME=contrail@$my_node
-if [[ "$RABBITMQ_NODE_PORT" != '' ]] ; then
-  export RABBITMQ_NODE_PORT=${RABBITMQ_NODE_PORT}
-fi
+export RABBITMQ_NODE_PORT=${RABBITMQ_NODE_PORT:-5673}
+
 if (( ${#server_list[@]} > 1 )); then
   RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=${RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS:-}
   RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS+="-rabbit cluster_nodes $cluster_nodes"
