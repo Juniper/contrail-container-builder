@@ -1,0 +1,38 @@
+#!/bin/bash
+function showhelp(){
+  echo "Usage:"
+  echo ""
+  echo "docker run -t \ "
+  echo "  -v /path/to/YOUR_COMMAND_SERVERS.yaml:/command_servers.yaml \ "
+  echo "  -v /path/to/YOUR_INSTANCES.yaml:/instances.yaml \ "
+  echo "  -e action=provision_contrail_command|provision_cluster \ "
+  echo "  <REPO>/contrail-command-deployer"
+  echo ""
+  echo "------------------------------------------------------------"
+  echo "------------------------------------------------------------"
+  echo ""
+  echo "parameters:"
+  echo "  -e action="
+  echo "    provision_contrail_command : provisions only contrail command containers"
+  echo "    provision_cluster : provisions contrail command containers and contrail cluster"
+  echo "  -e \"config=\`cat /path/to/YOUR_COMMAND_SERVERS.yaml\`\": Contrail Command config yaml is overloaded as environment variable"
+  echo "  -e \"cluster_config=\`cat /path/to/YOUR_INSTANCES.yaml\`\": Contrail Cluster config yaml is overloaded as environment variable"
+  echo "  alternatively"
+  echo "  -v /path/to/YOUR_COMMAND_SERVERS.yaml:/command_servers.yaml: Contrail Command config yaml is mounted"
+  echo "  -v /path/to/YOUR_INSTANCES.yaml:/instances.yaml: Contrail Cluster config yaml is mounted"
+}
+
+if [[ ! -e /command_servers.yaml || -z $action ]]; then
+  showhelp
+  exit 0
+fi
+
+ANSIBLE_CONFIG=/etc/ansible/ansible.cfg ansible-playbook -e config_file=/command_servers.yml -i /contrail-command-deployer/inventory /contrail-command-deployer/playbooks/deploy.yml
+
+if [[ $action == "provision_contrail_cluster" ]]; then
+  if [[ ! -e /instances.yaml ]]; then
+    showhelp
+    exit 0
+  fi
+  ANSIBLE_CONFIG=/etc/ansible/ansible.cfg ansible-playbook -e config_file=/command_servers.yml -i /contrail-command-deployer/inventory /contrail-command-deployer/playbooks/import_cluster.yml
+fi

@@ -1,0 +1,17 @@
+FROM centos:7.4.1708
+
+MAINTAINER Nitish Krishna 
+
+RUN yum update -y && \
+    yum install -y yum-plugin-priorities https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
+    yum install -y python-pip git && \
+    pip install ansible && \
+    git config --global user.email "contrail@juniper.net" && \
+    git config --global user.name "Contrail Deployer" && \
+    git clone http://github.com/Juniper/contrail-command-deployer /contrail-command-deployer
+
+COPY entrypoint.sh /
+COPY deploy_contrail_command /bin
+ENTRYPOINT ["/entrypoint.sh"]
+# default command: display Ansible version
+CMD [ "/bin/deploy_contrail_command" ]

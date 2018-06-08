@@ -1,0 +1,2 @@
+ANSIBLE_CONFIG=/etc/ansible/ansible.cfg ansible-playbook -e config_file=/command_servers.yml -e instance_file=/instances.yml  -i /contrail-command-deployer/inventory /contrail-command-deployer/playbooks/deploy.yml
+ANSIBLE_CONFIG=/etc/ansible/ansible.cfg ansible-playbook -e config_file=/command_servers.yml -e instance_file=/instances.yml  -i /contrail-command-deployer/inventory /contrail-command-deployer/playbooks/import_cluster.yml
