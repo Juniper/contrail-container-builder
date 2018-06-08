@@ -4,6 +4,7 @@ source /common.sh
 
 api_hostname=${CONFIG_API_VIP:-$(get_vip_for_node CONFIG)}
 
+mkdir -p /etc/contrail/contrail-vcenter-manager
 cat > /etc/contrail/contrail-vcenter-manager/config.yaml << EOM
 esxi:
   host: $ESXI_HOST
