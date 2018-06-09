@@ -638,7 +638,7 @@ function create_iptables_vrouter_encryption() {
 function init_decrypt0() {
     local decrypt_intf=$1
     local key=$2
-    if ! ip link show $decrypt_intf ; then
+    if ip link show $decrypt_intf ; then
         echo "INFO: $decrypt_intf already exists"
     else
         local mtu=`cat /sys/class/net/vhost0/mtu`
