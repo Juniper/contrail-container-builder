@@ -281,7 +281,7 @@ function bind_devs_to_driver() {
     done
 }
 
-function read_phys_int_mac_pci() {
+function read_phys_int_mac_pci_dpdk() {
     if [[ -z "$BIND_INT" ]] ; then
         declare phys_int phys_int_mac pci
         IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
@@ -291,7 +291,7 @@ function read_phys_int_mac_pci() {
     fi
     # in case of running from ifup in tripleo there is no way to read params from system,
     # all of them are to be available from ifcfg-vhost0 (that are passed via env to container)
-    ifcfg_read_phys_int_mac_pci
+    ifcfg_read_phys_int_mac_pci_dpdk
 }
 
 function read_and_save_dpdk_params() {
@@ -302,7 +302,7 @@ function read_and_save_dpdk_params() {
     fi
 
     declare phys_int phys_int_mac pci
-    IFS=' ' read -r phys_int phys_int_mac pci <<< $(read_phys_int_mac_pci)
+    IFS=' ' read -r phys_int phys_int_mac pci <<< $(read_phys_int_mac_pci_dpdk)
 
     local addrs=''
     [ -z "$BIND_INT" ] && addrs=$(get_addrs_for_nic $phys_int)
