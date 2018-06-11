@@ -51,7 +51,6 @@ CONTRAIL_SERVICES_TO_SANDESH_SVC = {
         'api': 'contrail-analytics-api',
         'collector': 'contrail-collector',
         'query-engine': 'contrail-query-engine',
-        'alarm-gen': 'contrail-alarm-gen',
     },
     'kubernetes': {
         'kube-manager': 'contrail-kube-manager',
@@ -60,7 +59,6 @@ CONTRAIL_SERVICES_TO_SANDESH_SVC = {
         'nodemgr': 'contrail-database-nodemgr',
         'cassandra': None,
         'zookeeper': None,
-        'kafka': None,
     },
     'webui': {
         'web': None,
