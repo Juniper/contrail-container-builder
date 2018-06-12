@@ -103,6 +103,12 @@ WEB_PORT = ${CONFIG_API_PORT:-8082}
 BASE_URL = /
 EOM
 
+  if [[ $VNC_CURL_LOG_NAME != "" ]]; then
+      cat >> $tmp_file << EOM
+CURL_LOG = vnc-api.log
+EOM
+  fi
+
   if [[ $AUTH_MODE == "keystone" ]]; then
     cat >> $tmp_file << EOM
 
