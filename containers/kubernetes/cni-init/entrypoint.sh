@@ -31,7 +31,7 @@ if [ $KUBEMANAGER_NESTED_MODE == '0' ]; then
 # the node with vrouter agent
 cat << EOM > /host/etc_cni/net.d/10-contrail.conf
 {
-    "cniVersion": "0.2.0",
+    "cniVersion": "0.3.1",
     "contrail" : {
         "vrouter-ip"    : "127.0.0.1",
         "vrouter-port"  : $VROUTER_PORT,
@@ -54,7 +54,7 @@ else
 phys_int=$(get_vrouter_physical_iface)
 cat << EOM > /host/etc_cni/net.d/10-contrail.conf
 {
-   "cniVersion": "0.2.0",
+   "cniVersion": "0.3.1",
    "contrail" : {
        "mode"              : "k8s",
        "vif-type"          : "macvlan",
