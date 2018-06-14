@@ -42,7 +42,7 @@ default_tag="${OPENSTACK_VERSION}-${CONTRAIL_VERSION}"
 export CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG:-$default_tag}
 
 declare -A _os_subversions
-_os_subversions=([newton]=5 [ocata]=3 [pike]=1 [queens]=0)
+_os_subversions=([newton]=5 [ocata]=3 [pike]=1 [queens]=1)
 _os_subversion="${_os_subversions[$OPENSTACK_VERSION]}"
 export OPENSTACK_SUBVERSION=${OPENSTACK_SUBVERSION:-"$_os_subversion"}
 
