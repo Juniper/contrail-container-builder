@@ -84,7 +84,7 @@ if [[ -f "$binding_data_dir/${phys_int}_bond" ]] ; then
 fi
 
 # base command
-cmd="$@ --no-daemon"
+cmd="$@ --no-daemon $DPDK_COMMAND_ADDITIONAL_ARGS"
 
 # update command with taskset options (core mask)
 # TODO: consider to avoid taskset here and leave to manage by Docker
