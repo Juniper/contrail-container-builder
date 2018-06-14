@@ -190,7 +190,7 @@ function get_vmware_physical_iface()
   local iface_list=`ip -o link show | awk -F': ' '{print $2}'`
   iface_list=`echo "$iface_list" | grep -v 'vhost0\|docker0\|pkt[0-9]\+\|ens160\|lo'`
   for iface in $iface_list; do
-      ip addr show dev $iface | grep 'inet*' > /dev/null 2>&1
+      ip addr show dev $iface | grep 'inet ' > /dev/null 2>&1
       if [[ $? == 0 ]]; then
           continue;
       else
