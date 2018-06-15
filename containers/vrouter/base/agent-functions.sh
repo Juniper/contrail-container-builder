@@ -316,7 +316,6 @@ function read_and_save_dpdk_params() {
     # save data for next usage in network init container
     mkdir -p ${binding_data_dir}
 
-    echo "$nic" > $binding_data_dir/nic
     echo "$phys_int_mac" > $binding_data_dir/${nic}_mac
     echo "$pci" > $binding_data_dir/${nic}_pci
     echo "$addrs" > $binding_data_dir/${nic}_ip_addresses
@@ -368,6 +367,10 @@ function read_and_save_dpdk_params() {
         echo "$mode $policy $slaves $pci $bond_numa" > $binding_data_dir/${nic}_bond
         echo "INFO: bonding: $mode $policy $slaves $pci $bond_numa"
     fi
+
+    # Save this file latest because it is used
+    # as an sign that params where saved succesfully
+    echo "$nic" > $binding_data_dir/nic
 }
 
 function ensure_hugepages() {
@@ -415,6 +418,7 @@ function init_vhost0() {
         echo "INFO: vhost0 is already up"
         return 0
     fi
+
     declare phys_int phys_int_mac addrs gateway bind_type bind_int
     if ! is_dpdk ; then
         # NIC case
@@ -467,10 +471,9 @@ function init_vhost0() {
             fi
         fi
         pushd /etc/sysconfig/network-scripts/
-
-        if [[ -f route-${phys_int} ]]; then
-          /bin/cp -f route-${phys_int} route-vhost0
-          mv route-${phys_int} contrail.org.route-${phys_int}
+        if [[ ! -f route-vhost0 && -f route-${phys_int} ]] ; then
+            /bin/cp -f route-${phys_int} route-vhost0
+            mv route-${phys_int} contrail.org.route-${phys_int}
         fi
         if [ ! -f "contrail.org.ifcfg-${phys_int}" ] ; then
             /bin/cp -f ifcfg-${phys_int} contrail.org.ifcfg-${phys_int}

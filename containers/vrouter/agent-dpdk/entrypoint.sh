@@ -51,6 +51,12 @@ if ! load_kernel_module rte_kni kthread_mode=multiple ; then
     echo "WARNING: rte_ini kernel module is unavailable. Please install/insert it for Ubuntu 14.04 manually."
 fi
 
+binding_data_dir='/var/run/vrouter'
+restarted='false'
+# If the folder exists it means the container is restarted w/o
+# ifdown of interface, so it is needed to init vhost0 after restart
+[ -f $binding_data_dir/nic ] && restarted='true'
+
 if ! read_and_save_dpdk_params ; then
     echo "FATAL: failed to read data from NIC for DPDK mode... exiting"
     exit -1
@@ -64,7 +70,6 @@ function assert_file() {
     fi
 }
 
-binding_data_dir='/var/run/vrouter'
 assert_file "$binding_data_dir/nic"
 phys_int=`cat "$binding_data_dir/nic"`
 assert_file "$binding_data_dir/${phys_int}_mac"
@@ -139,6 +144,17 @@ fi
 echo "INFO: start '$cmd'"
 $cmd &
 dpdk_agent_process=$!
+
+export CONTRAIL_DPDK_CONTRAINER_CONTEXT='true'
+for i in {1..3} ; do
+    echo "INFO: init vhost0... $i"
+    init_vhost0 && break
+    if (( i == 3 )) ; then
+        echo "ERROR: failed to init vhost0.. exit"
+        term_process $dpdk_agent_process
+        exit -1
+    fi
+    sleep 3
+done
+
 wait $dpdk_agent_process
-
-
