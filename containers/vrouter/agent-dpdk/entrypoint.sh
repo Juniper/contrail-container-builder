@@ -139,6 +139,17 @@ fi
 echo "INFO: start '$cmd'"
 $cmd &
 dpdk_agent_process=$!
+
+export CONTRAIL_DPDK_CONTAINER_CONTEXT='true'
+for i in {1..3} ; do
+    echo "INFO: init vhost0... $i"
+    init_vhost0 && break
+    if (( i == 3 )) ; then
+        echo "ERROR: failed to init vhost0.. exit"
+        term_process $dpdk_agent_process
+        exit -1
+    fi
+    sleep 3
+done
+
 wait $dpdk_agent_process
-
-

@@ -43,9 +43,22 @@ else
     HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'kvm'}
 fi
 
-if ! init_vhost0 ; then
-    echo "FATAL: failed to init vhost0"
-    exit 1
+# init_vhost for dpdk case is called from dpdk container.
+#   In osp13 case there is docker service restart that leads
+#   to restart of dpdk container at the step right after network
+#   pre-config stetp. At this moment agen container is not created yet
+#   and ifup is alrady run before, so, only dpdk container
+#   can do re-init of vhost0.
+if ! is_dpdk ; then
+    if ! init_vhost0 ; then
+        echo "FATAL: failed to init vhost0"
+        exit 1
+    fi
+else
+    if ! wait_vhost0 ; then
+        echo "FATAL: failed to wait vhost0"
+        exit 1
+    fi
 fi
 
 if ! check_vrouter_agent_settings ; then
