@@ -10,6 +10,12 @@ local_ips=",$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}' | tr
 
 CONFIG="$KAFKA_CONF_DIR/server.properties"
 
+ZOO_START_BIN="$KAFKA_BIN_DIR/zookeeper-server-start"
+CONN_STAND_ALONE_BIN="$KAFKA_BIN_DIR/connect-standalone"
+CONN_DISTRI_BIN="$KAFKA_BIN_DIR/connect-distributed"
+KAFKA_START_BIN="$KAFKA_BIN_DIR/kafka-server-start"
+KAFKA_START_BIN_TEST="$KAFKA_BIN_DIR/kafka-server-start_test"
+
 CONTROLLER_NODES=${CONTROLLER_NODES:-${default_ip_address}}
 ANALYTICS_NODES=${ANALYTICS_NODES:-${CONTROLLER_NODES}}
 ANALYTICSDB_NODES=${ANALYTICSDB_NODES:-${ANALYTICS_NODES}}
@@ -72,6 +78,11 @@ KAFKA_log_cleaner_dedupe_buffer_size=${KAFKA_log_cleaner_dedupe_buffer_size:-250
 KAFKA_log_cleaner_enable=${KAFKA_log_cleaner_enable:-true}
 KAFKA_delete_topic_enable=${KAFKA_delete_topic_enable:-true}
 
+sed -i "s/=\"\$base_dir\/..\/etc/=\"\$base_dir\/..\/..\/etc/g" ${ZOO_START_BIN}
+sed -i "s/=\"\$base_dir\/..\/etc/=\"\$base_dir\/..\/..\/etc/g" ${CONN_STAND_ALONE_BIN}
+sed -i "s/=\"\$base_dir\/..\/etc/=\"\$base_dir\/..\/..\/etc/g" ${CONN_DISTRI_BIN}
+sed -i "s/=\"\$base_dir\/..\/etc/=\"\$base_dir\/..\/..\/etc/g" ${KAFKA_START_BIN}
+
 sed -i "s/^broker.id=.*$/broker.id=$KAFKA_BROKER_ID/g" ${CONFIG}
 sed -i "s/#port=.*$/port=$KAFKA_LISTEN_PORT/g" ${CONFIG}
 sed -i "s/^listeners=.*$/listeners=PLAINTEXT:\/\/$KAFKA_LISTEN_ADDRESS:$KAFKA_LISTEN_PORT/g" ${CONFIG}
@@ -80,12 +91,16 @@ sed -i "s/#advertised.host.name=.*$/advertised.host.name=$my_ip/g" ${CONFIG}
 sed -i "s/^#log.retention.bytes=.*$/log.retention.bytes=$KAFKA_log_retention_bytes/g" ${CONFIG}
 sed -i "s/^log.retention.hours=.*$/log.retention.hours=$KAFKA_log_retention_hours/g" ${CONFIG}
 sed -i "s/^log.segment.bytes=.*$/log.segment.bytes=$KAFKA_log_segment_bytes/g" ${CONFIG}
+sed -i "s/^num.partitions=.*$/num.partitions=30/g" ${CONFIG}
+sed -i "s/^default.replication.factor=.*/default.replication.factor=$replication_factor/g" ${CONFIG}
+sed -i "s/group.initial.rebalance.delay.ms=.*$/group.initial.rebalance.delay.ms=20000/g" ${CONFIG}
+
+echo "############################################# " >> ${CONFIG}
 echo "log.cleanup.policy=${KAFKA_log_cleanup_policy}" >> ${CONFIG}
 echo "log.cleaner.threads=${KAFKA_log_cleaner_threads}" >> ${CONFIG}
 echo "log.cleaner.dedupe.buffer.size=${KAFKA_log_cleaner_dedupe_buffer_size}" >> ${CONFIG}
-sed -i "s/^num.partitions=.*$/num.partitions=30/g" ${CONFIG}
-sed -i "s/^default.replication.factor=.*/default.replication.factor=$replication_factor/g" ${CONFIG}
 echo "offsets.topic.replication.factor=$replication_factor" >> ${CONFIG}
 echo "reserved.broker.max.id: 100001" >> ${CONFIG}
+
 
 exec "$@"
