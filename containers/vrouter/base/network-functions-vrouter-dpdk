@@ -80,8 +80,8 @@ function start_dpdk_container() {
     [ -n "$DRIVER" ] && env_options+=" -e DPDK_UIO_DRIVER=$DRIVER"
     [ -n "$CPU_LIST" ] && env_options+=" -e CPU_CORE_MASK=$CPU_LIST"
 
-    if docker inspect contrail-vrouter-agent-dpdk | grep -io 'status.*running' ; then
-        echo "WARNING: container contrail-vrouter-agent-dpdk is already up"
+    if docker inspect contrail-vrouter-agent-dpdk 2>&1 | grep -io 'status.*running' ; then
+        echo "INFO: container contrail-vrouter-agent-dpdk is already up"
         return 0
     fi
 
@@ -91,6 +91,7 @@ function start_dpdk_container() {
         --net host --privileged \
         --restart always \
         -v /dev/:/dev/ \
+        -v /etc/sysconfig/network-scripts/:/etc/sysconfig/network-scripts/ \
         -v /lib/modules/:/lib/modules/ \
         -v /var/run/vrouter:/var/run/vrouter \
         -v /var/log/contrail/agent/:/var/log/contrail/ \
@@ -166,19 +167,28 @@ function ifup_init_vhost() {
     [ -z "$phys_int" ] && { echo "ERROR: failed to detect ifname by pci $pci" && return 1; }
     [ -z "$phys_int_mac" ] && { echo "ERROR: failed to detect MAC for $phys_int" && return 1; }
     prepare_vif_config $TYPE
-    start_dpdk_container || return 1
-    wait_dpdk_start || return 1
-    create_vhost0_dpdk $phys_int $phys_int_mac
+    # ifup could be called from host (osp) and container (k8s, hel, etc),
+    # in context of host - it should just start container and
+    # wait till container creates vhost0
+    if [[ -z "$CONTRAIL_DPDK_CONTRAINER_CONTEXT" ]] ; then
+        start_dpdk_container || return 1
+        wait_dpdk_start || return 1
+        wait_vhost0 || return 1
+    fi
 }
 
 # ifdown interface
 function ifdown_vhost() {
+    [ -n "$CONTRAIL_DPDK_CONTRAINER_CONTEXT" ] && {
+        echo "ERROR: container context... should not be called from container" && return 1 ; }
     [ -f ./network-functions-vrouter-${TYPE}-env ] && . ./network-functions-vrouter-${TYPE}-env
     remove_docker_container $CONTRAIL_VROUTER_AGENT_CONTAINER_NAME SIGTERM
     remove_docker_container $CONTRAIL_VROUTER_AGENT_DPDK_CONTAINER_NAME SIGTERM
 }
 
 function ifdown_vhost_post() {
+    [ -n "$CONTRAIL_DPDK_CONTRAINER_CONTEXT" ] && {
+        echo "ERROR: container context... should not be called from container" && return 1 ; }
     [ -f ./network-functions-vrouter-${TYPE}-env ] && . ./network-functions-vrouter-${TYPE}-env
     local pci=${BIND_INT}
     [ -z "$pci" ] && { echo "ERROR: BIND_INT in not set in ifcfg-vhost0" && return 1; }
