@@ -9,6 +9,7 @@ default_ip_address=$(get_default_ip)
 local_ips=",$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}' | tr '\n' ','),"
 
 CONFIG="$KAFKA_CONF_DIR/server.properties"
+KAFKA_START_BIN="$KAFKA_BIN_DIR/kafka-server-start"
 
 CONTROLLER_NODES=${CONTROLLER_NODES:-${default_ip_address}}
 ANALYTICS_NODES=${ANALYTICS_NODES:-${CONTROLLER_NODES}}
@@ -80,12 +81,14 @@ sed -i "s/#advertised.host.name=.*$/advertised.host.name=$my_ip/g" ${CONFIG}
 sed -i "s/^#log.retention.bytes=.*$/log.retention.bytes=$KAFKA_log_retention_bytes/g" ${CONFIG}
 sed -i "s/^log.retention.hours=.*$/log.retention.hours=$KAFKA_log_retention_hours/g" ${CONFIG}
 sed -i "s/^log.segment.bytes=.*$/log.segment.bytes=$KAFKA_log_segment_bytes/g" ${CONFIG}
-echo "log.cleanup.policy=${KAFKA_log_cleanup_policy}" >> ${CONFIG}
-echo "log.cleaner.threads=${KAFKA_log_cleaner_threads}" >> ${CONFIG}
-echo "log.cleaner.dedupe.buffer.size=${KAFKA_log_cleaner_dedupe_buffer_size}" >> ${CONFIG}
+# echo "log.cleanup.policy=${KAFKA_log_cleanup_policy}" >> ${CONFIG}
+# echo "log.cleaner.threads=${KAFKA_log_cleaner_threads}" >> ${CONFIG}
+# echo "log.cleaner.dedupe.buffer.size=${KAFKA_log_cleaner_dedupe_buffer_size}" >> ${CONFIG}
 sed -i "s/^num.partitions=.*$/num.partitions=30/g" ${CONFIG}
 sed -i "s/^default.replication.factor=.*/default.replication.factor=$replication_factor/g" ${CONFIG}
 echo "offsets.topic.replication.factor=$replication_factor" >> ${CONFIG}
 echo "reserved.broker.max.id: 100001" >> ${CONFIG}
+
+sed -i "s/=\"\$base_dir/=\"\$base_dir\/../g" ${KAFKA_START_BIN}
 
 exec "$@"
