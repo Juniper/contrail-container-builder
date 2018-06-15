@@ -140,7 +140,7 @@ function remove_docker_container() {
     local container=$1
     local signal=$2
     [ -z "$container" ] && { echo "ERROR: container id/name must be provided" && return 1 ; }
-    if docker inspect "$container" 2>&1 >/dev/null ; then
+    if docker inspect "$container" >/dev/null 2>&1 ; then
         if [ -n "$signal" ] ; then
             echo "INFO: send $signal to the container $container"
             docker kill --signal $signal "$container"
@@ -150,4 +150,20 @@ function remove_docker_container() {
         echo "INFO: remove the container $container"
         docker rm --force "$container"
     fi
+}
+
+function wait_vhost0() {
+    local max=${1:-60}
+    local pause=${2:-5}
+    local i=0
+    for (( i=0; i<max; i+=1 )) ; do
+        echo "INFO: wait vhost0 to be initilaized... ${i}/${max}"
+        if ip addr show dev $nic 2>/dev/null | grep -q "inet " ; then
+            echo "INFO: vhost0 is ready."
+            return 0
+        fi
+        sleep $pause
+    done
+    echo "INFO: vhost0 is not ready."
+    return 1
 }
