@@ -9,6 +9,7 @@ default_ip_address=$(get_default_ip)
 local_ips=",$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}' | tr '\n' ','),"
 
 CONFIG="$KAFKA_CONF_DIR/server.properties"
+KAFKA_START_BIN="$KAFKA_BIN_DIR/kafka-server-start"
 
 CONTROLLER_NODES=${CONTROLLER_NODES:-${default_ip_address}}
 ANALYTICS_NODES=${ANALYTICS_NODES:-${CONTROLLER_NODES}}
@@ -87,5 +88,7 @@ sed -i "s/^num.partitions=.*$/num.partitions=30/g" ${CONFIG}
 sed -i "s/^default.replication.factor=.*/default.replication.factor=$replication_factor/g" ${CONFIG}
 echo "offsets.topic.replication.factor=$replication_factor" >> ${CONFIG}
 echo "reserved.broker.max.id: 100001" >> ${CONFIG}
+
+sed -i "s/=\"\$base_dir/=\"\$base_dir\/../g" ${KAFKA_START_BIN} 
 
 exec "$@"
