@@ -151,24 +151,3 @@ function remove_docker_container() {
         docker rm --force "$container"
     fi
 }
-
-function ifcfg_read_phys_int_mac_pci() {
-    # in case of running from ifup in tripleo there is no way to read params from system,
-    # all of them are to be available from ifcfg-vhost0 (that are passed via env to container)
-    declare phys_int phys_int_mac pci
-    if [[ -n "$BIND_INT" ]] ; then
-        pci=${BIND_INT}
-        phys_int='bond0'
-        [ -z "$BOND_MODE" ] && phys_int=$(get_ifname_by_pci $pci)
-        phys_int_mac=${MACADDR}
-        if [ -z "$phys_int_mac" ] ; then
-            local _first_int=$phys_int
-            if [ -n "$BOND_MODE" ] ; then
-                local _first_pci=$(echo $pci | cut -d ',' -f 1)
-                _first_int=$(get_ifname_by_pci $_first_pci)
-            fi
-            phys_int_mac=$(get_iface_mac $_first_int)
-        fi
-    fi
-    echo $phys_int $phys_int_mac $pci
-}
