@@ -257,6 +257,10 @@ $priority_group_option
 
 $crypt_interface_option
 
+[SESSION_DESTINATION]
+slo_destination = $SLO_DESTINATION
+sample_destination = $SAMPLE_DESTINATION
+
 EOM
 
 cleanup_lbaas_netns_config
