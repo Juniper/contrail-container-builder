@@ -14,6 +14,7 @@ RUN YUM_ENABLE_REPOS=$(echo $YUM_ENABLE_REPOS | tr -d '"') && \
     if [[ -n "$YUM_ENABLE_REPOS" ]] ; then \
         echo "INFO: contrail-general-base: enable repos $YUM_ENABLE_REPOS" && \
         yum-config-manager --enable $YUM_ENABLE_REPOS ; \
+        yum clean metadata ; \
     fi && \
     yum update -y && \
     yum install -y yum-plugin-priorities iproute less && \
