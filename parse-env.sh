@@ -71,35 +71,38 @@ if [[ "$LINUX_DISTR" == 'rhel'* ]] ; then
   export RHEL_POOL_ID=${RHEL_POOL_ID:-}
   export RHEL_ORG=${RHEL_ORG:-}
   export RHEL_ACTIVATION_KEY=${RHEL_ACTIVATION_KEY:-}
-  export RHEL_HOST_REPOS=${RHEL_HOST_REPOS:-}
-  rhel_os_repo_num=''
-  case "$OPENSTACK_VERSION" in
-    newton)
-      rhel_os_repo_num='10'
-      ;;
-    ocata)
-      rhel_os_repo_num='11'
-      ;;
-    pike)
-      rhel_os_repo_num='12'
-      ;;
-    queens)
-      rhel_os_repo_num='13'
-      ;;
-    *)
-      echo "ERROR: unsupported OS $OPENSTACK_VERSION for RHEL"
-      exit 1
-  esac
-  # generic repos
-  RHEL_HOST_REPOS+="rhel-7-server-rpms,rhel-7-server-extras-rpms,rhel-7-server-optional-rpms"
-  # python-pip repo (package python27-python-pip),
-  # it is needed in contrail-openstack-ironic-notification-manager
-  RHEL_HOST_REPOS+=",rhel-server-rhscl-7-rpms"
-  # ansible repo
-  RHEL_HOST_REPOS+=",rhel-7-server-ansible-2.4-rpms"
-  # openstack repos
-  RHEL_HOST_REPOS+=",rhel-7-server-openstack-${rhel_os_repo_num}-rpms"
-  RHEL_HOST_REPOS+=",rhel-7-server-openstack-${rhel_os_repo_num}-devtools-rpms"
+  if [[ -z "${RHEL_HOST_REPOS+x}" ]] ; then
+    export RHEL_HOST_REPOS=''
+    rhel_os_repo_num=''
+    case "$OPENSTACK_VERSION" in
+      newton)
+        rhel_os_repo_num='10'
+        ;;
+      ocata)
+        rhel_os_repo_num='11'
+        ;;
+      pike)
+        rhel_os_repo_num='12'
+        ;;
+      queens)
+        rhel_os_repo_num='13'
+        ;;
+      *)
+        echo "ERROR: unsupported OS $OPENSTACK_VERSION for RHEL"
+        exit 1
+    esac
+    # generic repos
+    RHEL_HOST_REPOS+=",rhel-7-server-rpms,rhel-7-server-extras-rpms,rhel-7-server-optional-rpms"
+    # python-pip repo (package python27-python-pip),
+    # it is needed in contrail-openstack-ironic-notification-manager
+    RHEL_HOST_REPOS+=",rhel-server-rhscl-7-rpms"
+    # ansible repo
+    RHEL_HOST_REPOS+=",rhel-7-server-ansible-2.4-rpms"
+    # openstack repos
+    RHEL_HOST_REPOS+=",rhel-7-server-openstack-${rhel_os_repo_num}-rpms"
+    RHEL_HOST_REPOS+=",rhel-7-server-openstack-${rhel_os_repo_num}-devtools-rpms"
+    RHEL_HOST_REPOS="${RHEL_HOST_REPOS##,}"
+  fi
   # add repos to be explicitly enabled inside containers
   # byt default only basic repos are enabled inside.
   YUM_ENABLE_REPOS+=",${RHEL_HOST_REPOS}"
