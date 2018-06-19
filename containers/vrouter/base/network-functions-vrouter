@@ -158,7 +158,7 @@ function wait_vhost0() {
     local i=0
     for (( i=0; i<max; i+=1 )) ; do
         echo "INFO: wait vhost0 to be initilaized... ${i}/${max}"
-        if ip addr show dev $nic 2>/dev/null | grep -q "inet " ; then
+        if ip addr show dev vhost0 2>/dev/null | grep -q "inet " ; then
             echo "INFO: vhost0 is ready."
             return 0
         fi
