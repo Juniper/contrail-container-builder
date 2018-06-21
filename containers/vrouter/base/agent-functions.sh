@@ -461,7 +461,7 @@ function init_vhost0() {
     fi
 
     local ret=0
-    if [[ -e /etc/sysconfig/network-scripts/ifcfg-${phys_int} ]]; then
+    if [[ -e /etc/sysconfig/network-scripts/ifcfg-${phys_int} || -e /etc/sysconfig/network-scripts/ifcfg-vhost0 ]]; then
         echo "INFO: creating ifcfg-vhost0 and initialize it via ifup"
         if ! is_dpdk ; then
             ifdown ${phys_int}
@@ -475,7 +475,7 @@ function init_vhost0() {
             /bin/cp -f route-${phys_int} route-vhost0
             mv route-${phys_int} contrail.org.route-${phys_int}
         fi
-        if [ ! -f "contrail.org.ifcfg-${phys_int}" ] ; then
+        if [[ ! -f "contrail.org.ifcfg-${phys_int}" && -f "ifcfg-${phys_int}" ]] ; then
             /bin/cp -f ifcfg-${phys_int} contrail.org.ifcfg-${phys_int}
             sed -r "/(DEVICE|TYPE|ONBOOT|MACADDR|HWADDR|BONDING|SLAVE|VLAN|MTU)/! s/^[^#].*/#commented_by_contrail& /" ifcfg-${phys_int} > ifcfg-${phys_int}.tmp
             echo 'NM_CONTROLLED=no' >> ifcfg-${phys_int}.tmp
@@ -500,7 +500,7 @@ function init_vhost0() {
             ip route del $line || { echo "ERROR: route $line was not removed for iface ${phys_int}." && ret=1; }
         done < <(ip route sh | grep ${phys_int})
     else
-        echo "INFO: there is no ifcfg-$phys_int, so initialize vhost0 manually"
+        echo "INFO: there is no ifcfg-$phys_int and ifcfg-vhost0, so initialize vhost0 manually"
         # TODO: switch off dhcp on phys_int
         echo "INFO: Changing physical interface to vhost in ip table"
         echo "$addrs" | while IFS= read -r line ; do
