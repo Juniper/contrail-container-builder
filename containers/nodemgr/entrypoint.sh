@@ -36,7 +36,9 @@ add_ini_params_from_env ${NODE_TYPE^^}_NODEMGR /etc/contrail/$NODEMGR_NAME.conf
 
 set_vnc_api_lib_ini
 
-if ! /provision.sh ; then
+if [[ ${MAINTENANCE_MODE^^} == 'TRUE' ]]; then
+  echo "WARNING: MAINTENANCE_MODE is switched on - provision.sh is not called."
+elif ! /provision.sh ; then
   echo "ERROR: provision.sh was failed. Exiting..."
   exit 1
 fi
