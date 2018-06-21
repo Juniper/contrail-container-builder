@@ -148,6 +148,8 @@ spec:
           name: zookeeper-data
         - mountPath: /var/log/zookeeper
           name: zookeeper-logs
+      imagePullSecrets:
+      - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
       - name: zookeeper-data
         hostPath:
@@ -195,6 +197,8 @@ spec:
           name: zookeeper-data
         - mountPath: /var/log/zookeeper
           name: zookeeper-logs
+      imagePullSecrets:
+      - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
       - name: zookeeper-data
         hostPath:
@@ -243,6 +247,8 @@ spec:
           name: analyticsdb-data
         - mountPath: /var/log/cassandra
           name: analyticsdb-logs
+      imagePullSecrets:
+      - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
       - name: analyticsdb-data
         hostPath:
@@ -291,6 +297,8 @@ spec:
           name: configdb-data
         - mountPath: /var/log/cassandra
           name: configdb-log
+      imagePullSecrets:
+      - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
       - name: configdb-data
         hostPath:
@@ -367,6 +375,8 @@ spec:
           name: analyticsdb-logs
         - mountPath: /mnt
           name: docker-unix-socket
+      imagePullSecrets:
+      - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
       - name: analyticsdb-logs
         hostPath:
@@ -482,6 +492,8 @@ spec:
           name: analytics-logs
         - mountPath: /mnt
           name: docker-unix-socket
+      imagePullSecrets:
+      - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
       - name: analytics-logs
         hostPath:
@@ -598,6 +610,8 @@ spec:
           name: control-logs
         - mountPath: /mnt
           name: docker-unix-socket
+      imagePullSecrets:
+      - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
       - name: control-logs
         hostPath:
@@ -727,6 +741,8 @@ spec:
           name: config-logs
         - mountPath: /mnt
           name: docker-unix-socket
+      imagePullSecrets:
+      - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
       - name: config-logs
         hostPath:
@@ -803,6 +819,8 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: webui-logs
+      imagePullSecrets:
+      - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
       - name: webui-logs
         hostPath:
@@ -900,6 +918,8 @@ spec:
           name: rabbitmq-data
         - mountPath: /var/log/rabbitmq
           name: rabbitmq-logs
+      imagePullSecrets:
+      - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
       - name: rabbitmq-data
         hostPath:
@@ -967,6 +987,8 @@ spec:
           name: kube-manager-logs
         - mountPath: /tmp/serviceaccount
           name: pod-secret
+      imagePullSecrets:
+      - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
       - name: kube-manager-logs
         hostPath:
@@ -1120,6 +1142,8 @@ spec:
           name: agent-logs
         - mountPath: /mnt
           name: docker-unix-socket
+      imagePullSecrets:
+      - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
       - name: dev
         hostPath:
