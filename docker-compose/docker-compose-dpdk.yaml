@@ -189,6 +189,13 @@ services:
     depends_on:
       - network
     restart: on-failure
+  analyticsdb-kafka:
+    image: "${CONTRAIL_REGISTRY}/contrail-external-kafka:${CONTRAIL_CONTAINER_TAG}"
+    env_file: ${ENV_FILE}
+    network_mode: "service:network"
+    depends_on:
+      - network
+    restart: on-failure
   analyticsdb-cassandra:
     image: "${CONTRAIL_REGISTRY}/contrail-external-cassandra:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
@@ -241,6 +248,15 @@ services:
     restart: on-failure
   analytics-query-engine:
     image: "${CONTRAIL_REGISTRY}/contrail-analytics-query-engine:${CONTRAIL_CONTAINER_TAG}"
+    env_file: ${ENV_FILE}
+    network_mode: "service:network"
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+    depends_on:
+      - network
+    restart: on-failure
+  analytics-alarm-gen:
+    image: "${CONTRAIL_REGISTRY}/contrail-analytics-alarm-gen:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     network_mode: "service:network"
     volumes:
