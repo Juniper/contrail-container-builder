@@ -35,6 +35,10 @@ function set_to_lower() {
   eval "${1}=$val"
 }
 
+# add quotes
+[ -n "${CONFIG_API_VIP}" ] && CONFIG_API_VIP="'"${CONFIG_API_VIP}"'"
+[ -n "${ANALYTICS_API_VIP}" ] && ANALYTICS_API_VIP="'"${ANALYTICS_API_VIP}"'"
+
 # convert to lower
 set_to_lower orchestrationModuleEndPointFromConfig false
 set_to_lower contrailEndPointFromConfig true
