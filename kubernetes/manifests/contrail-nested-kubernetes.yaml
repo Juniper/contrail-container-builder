@@ -87,6 +87,8 @@ spec:
           name: kube-manager-logs
         - mountPath: /tmp/serviceaccount
           name: pod-secret
+      imagePullSecrets:
+      - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
       - name: kube-manager-logs
         hostPath:
@@ -136,6 +138,8 @@ spec:
           name: opt-cni-bin
         - mountPath: /var/lib/contrail
           name: var-lib-contrail
+      imagePullSecrets:
+      - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
       - name: etc-cni
         hostPath:
