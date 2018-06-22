@@ -33,7 +33,7 @@ You should choose the right template for your desired Contrail deployement model
 
 To deploy standalone and all-in-one Contrail cluster. All Contrail components will be deployed.
 
-* contrail-dpdk-standalone-kubernetes.yml
+* contrail-dpdk-standalone-kubernetes.yaml
 
 To deploy standalone and all-in-one Contrail cluster with DPDK for forwarding.
 All Contrail components will be deployed.
@@ -49,7 +49,7 @@ agent (i.e Contrail CNI) will be deployed in the overlay Kubernetes cluster.
 These agents will in-turn interface with Contrail Control and Data plane processes
 managing networking in the underlay Openstack cluster.
 
-* contrail-non-nested-kubernetes.yml
+* contrail-non-nested-kubernetes.yaml
 
 To deploy Contrail in a non-nested non-standalone deployment model. In this mode, the Contrail control
 plane agent (i.e Contrail Kube-Manager) will be delployed to interface with Kubernetes control plane.
