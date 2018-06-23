@@ -29,6 +29,7 @@ log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 # sandesh_send_rate_limit=
 cassandra_server_list=$ANALYTICSDB_CQL_SERVERS
+kafka_broker_list=$KAFKA_SERVERS
 zookeeper_server_list=$ZOOKEEPER_ANALYTICS_SERVERS
 
 [COLLECTOR]
@@ -41,6 +42,10 @@ protobuf_port=${COLLECTOR_PROTOBUF_LISTEN_PORT:-$COLLECTOR_PROTOBUF_PORT}
 port=${COLLECTOR_STRUCTURED_SYSLOG_LISTEN_PORT:-$COLLECTOR_STRUCTURED_SYSLOG_PORT}
 # List of external syslog receivers to forward structured syslog messages in ip:port format separated by space
 # tcp_forward_destination=10.213.17.53:514
+kafka_broker_list=$KAFKA_SERVERS
+kafka_topic=${KAFKA_TOPIC:-structured_syslog_topic}
+# number of kafka partitions
+kafka_partitions=${KAFKA_PARTITIONS:-30}
 
 [API_SERVER]
 # List of api-servers in ip:port format separated by space
