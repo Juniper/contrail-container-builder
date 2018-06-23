@@ -50,6 +50,22 @@ function convert_bond_policy(){
     echo $policy
 }
 
+function convert_bond_mode(){
+    local mode=$1
+    ## Map Linux values to DPDK
+    case "${mode}" in
+        "balance-rr") mode="0";;
+        "active-backup") mode="1";;
+        "balance-xor") mode="2";;
+        "broadcast") mode="3";;
+        "802.3ad") mode="4";;
+        "balance-tlb") mode="5";;
+        "balance-alb") mode="6";;
+	*) mode=${mode};;
+    esac
+    echo $mode
+}
+
 function get_bond_numa() {
     local pci=$1
     local slave_numa=$(cat "/sys/bus/pci/devices/${pci}/numa_node")
