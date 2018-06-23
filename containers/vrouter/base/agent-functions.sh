@@ -618,6 +618,7 @@ function init_crypt0() {
     fi
 
     local mtu=`cat /sys/class/net/vhost0/mtu`
+    mtu=$((mtu-60))
     ip link add $crypt_intf link vhost0 type ipvlan || { echo "ERROR: Failed to initialize ipvlan interface $crypt_intf" && return 1; }
     ip link set dev $crypt_intf mtu $mtu up
     echo "Successfully added ipvlan interface $crypt_intf"
@@ -626,7 +627,7 @@ function init_crypt0() {
 function create_iptables_vrouter_encryption() {
     local key=$1
     # create iptables rule for marking the packets such that IPSec kernel can process such packets
-    # UDP posrt 6635 - MPLSoUDP, 4789 - VXLAN UDP DST port
+    # UDP port 6635 - MPLSoUDP, 4789 - VXLAN
     if ! iptables -L -nvx -t mangle | grep -wq 6635 ; then
         iptables -I OUTPUT -t mangle -p udp --dport 6635 -j MARK --set-mark $key || echo "WARNING: Failed to add iptables rule for MPLS0UDP encryption"
     fi
