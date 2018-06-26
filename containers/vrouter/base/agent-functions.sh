@@ -204,6 +204,16 @@ function get_vmware_physical_iface()
   echo $vmware_int
 }
 
+function setup_contrailvm_interface_settings()
+{
+  IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
+  ethtool --offload $phys_int rx off
+  ethtool --offload $phys_int tx off
+
+  vmware_phys_int=$(get_vmware_physical_iface)
+  ethtool --offload $vmware_phys_int lro off
+}
+
 function enable_hugepages_to_coredump() {
     local name=$1
     local pid=$(pidof $name)
