@@ -317,5 +317,9 @@ else
     echo "INFO: Kernel version does not support vrouter to vrouter encryption - Not adding $VROUTER_DECRYPT_INTERFACE to vrouter"
 fi
 
+if [ "$CLOUD_ORCHESTRATOR" == "vcenter" ]; then
+    setup_contrailvm_interface_settings
+fi
+
 # Wait for vrouter-agent process to complete
 wait $vrouter_agent_process
