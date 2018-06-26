@@ -32,17 +32,6 @@ trap 'trap_vrouter_agent_hub' SIGHUP
 
 pre_start_init
 
-if [ "$CLOUD_ORCHESTRATOR" == "vcenter" ]; then
-    HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'vmware'}
-    vmware_phys_int=$(get_vmware_physical_iface)
-    read -r -d '' vmware_options << EOM || true
-vmware_physical_interface = $vmware_phys_int
-vmware_mode = vcenter
-EOM
-else
-    HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'kvm'}
-fi
-
 # init_vhost for dpdk case is called from dpdk container.
 #   In osp13 case there is docker service restart that leads
 #   to restart of dpdk container at the step right after network
@@ -96,6 +85,19 @@ VROUTER_GATEWAY=${VROUTER_GATEWAY:-`get_default_gateway_for_nic 'vhost0'`}
 vrouter_cidr=$(get_cidr_for_nic 'vhost0')
 echo "INFO: Physical interface: $phys_int, mac=$phys_int_mac, pci=$pci_address"
 echo "INFO: vhost0 cidr $vrouter_cidr, gateway $VROUTER_GATEWAY"
+
+if [ "$CLOUD_ORCHESTRATOR" == "vcenter" ]; then
+    HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'vmware'}
+    vmware_phys_int=$(get_vmware_physical_iface)
+    disable_chksum_offload $phys_int
+    disable_lro_offload $vmware_phys_int
+    read -r -d '' vmware_options << EOM || true
+vmware_physical_interface = $vmware_phys_int
+vmware_mode = vcenter
+EOM
+else
+    HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'kvm'}
+fi
 
 if [[ -z "$vrouter_cidr" ]] ; then
     echo "ERROR: vhost0 interface is down or has no assigned IP"
