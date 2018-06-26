@@ -12,7 +12,6 @@ esxi:
   password: $ESXI_PASSWORD
   preferred_api_versions:
     - ${VCENTER_API_VERSION:-vim.version.version10}
-  datacenter: $ESXI_DATACENTER
 
 vcenter:
   host: $VCENTER_SERVER
