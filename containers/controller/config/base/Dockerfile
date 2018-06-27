@@ -6,5 +6,6 @@ FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 RUN sed -e '/^tsflags=nodocs/d' -i /etc/yum.conf && \
     yum install -y contrail-config contrail-config-openstack
 
-LABEL net.juniper.contrail.pod=config
+ENV NODE_TYPE=config
+LABEL net.juniper.contrail.pod=$NODE_TYPE
 CMD ["/usr/bin/tail","-f","/dev/null"]

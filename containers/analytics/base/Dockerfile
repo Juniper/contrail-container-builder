@@ -7,5 +7,6 @@ RUN sed -e '/^tsflags=nodocs/d' -i /etc/yum.conf && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 
-LABEL net.juniper.contrail.pod=analytics
+ENV NODE_TYPE=analytics
+LABEL net.juniper.contrail.pod=$NODE_TYPE
 CMD ["/usr/bin/tail","-f","/dev/null"]

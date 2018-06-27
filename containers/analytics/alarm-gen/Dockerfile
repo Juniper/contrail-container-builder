@@ -9,5 +9,6 @@ COPY entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/python","/usr/bin/contrail-alarm-gen","-c","/etc/contrail/contrail-alarm-gen.conf"]
 
-LABEL net.juniper.contrail.service=alarm-gen
+ENV SERVICE_NAME=alarm-gen
+LABEL net.juniper.contrail.service=$SERVICE_NAME
 LABEL net.juniper.contrail.container.name=$CONTAINER_NAME
