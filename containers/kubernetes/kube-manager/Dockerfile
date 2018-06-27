@@ -15,6 +15,8 @@ COPY entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/python", "/usr/bin/contrail-kube-manager", "-c", "/etc/contrail/contrail-kubernetes.conf"]
 
-LABEL net.juniper.contrail.pod=kubernetes
-LABEL net.juniper.contrail.service=kube-manager
+ENV NODE_TYPE=kubernetes
+ENV SERVICE_NAME=kube-manager
+LABEL net.juniper.contrail.pod=$NODE_TYPE
+LABEL net.juniper.contrail.service=$SERVICE_NAME
 LABEL net.juniper.contrail.container.name=$CONTAINER_NAME

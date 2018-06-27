@@ -18,4 +18,6 @@ RUN mkdir -p -m 777 /var/crashes && \
 
 COPY *.sh /
 
+ENV PS1="$(tput bold)($(printenv NODE_TYPE)-$(printenv SERVICE_NAME))$(tput sgr0)[$(id -un)@$(hostname -s) $(pwd)]$ "
+
 CMD ["/usr/bin/tail","-f","/dev/null"]

@@ -7,4 +7,5 @@ ARG CONTAINER_NAME
 RUN yum install -y contrail-debuginfo contrail-vrouter-dpdk-debuginfo contrail-manifest
 RUN ln -s /opt/contrail/manifest.xml /manifest.xml
 
+ENV PS1="$(tput bold)($CONTAINER_NAME)$(tput sgr0)[$(id -un)@$(hostname -s) $(pwd)]$ "
 LABEL net.juniper.contrail.container.name=$CONTAINER_NAME

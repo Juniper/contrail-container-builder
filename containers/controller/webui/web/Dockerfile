@@ -8,5 +8,6 @@ ENTRYPOINT ["/entrypoint.sh"]
 WORKDIR /usr/src/contrail/contrail-web-core
 CMD ["/usr/bin/node","webServerStart.js"]
 
-LABEL net.juniper.contrail.service=web
+ENV SERVICE_NAME=web
+LABEL net.juniper.contrail.service=$SERVICE_NAME
 LABEL net.juniper.contrail.container.name=$CONTAINER_NAME

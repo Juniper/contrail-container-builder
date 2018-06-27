@@ -6,5 +6,6 @@ RUN yum install -y contrail-control contrail-dns && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 
-LABEL net.juniper.contrail.pod=control
+ENV NODE_TYPE=control
+LABEL net.juniper.contrail.pod=$NODE_TYPE
 CMD ["/usr/bin/tail","-f","/dev/null"]
