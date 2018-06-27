@@ -8,5 +8,6 @@ RUN yum install -y nodejs-0.10.35-1contrail.el7 contrail-web-controller contrail
 
 COPY entrypoint.sh /
 
-LABEL net.juniper.contrail.pod=webui
+ENV NODE_TYPE=webui
+LABEL net.juniper.contrail.pod=$NODE_TYPE
 CMD ["/usr/bin/tail","-f","/dev/null"]

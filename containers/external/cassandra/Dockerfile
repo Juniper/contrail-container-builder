@@ -7,5 +7,6 @@ COPY *.sh /
 ENTRYPOINT ["/contrail-entrypoint.sh"]
 CMD ["cassandra", "-f"]
 
-LABEL net.juniper.contrail.service=cassandra
+ENV SERVICE_NAME=cassandra
+LABEL net.juniper.contrail.service=$SERVICE_NAME
 LABEL net.juniper.contrail.container.name=$CONTAINER_NAME

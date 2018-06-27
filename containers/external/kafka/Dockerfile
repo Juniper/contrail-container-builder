@@ -30,5 +30,6 @@ WORKDIR $KAFKA_DIR
 USER kafka:kafka
 CMD ["bin/kafka-server-start.sh", "config/server.properties"]
 
-LABEL net.juniper.contrail.service=kafka
+ENV SERVICE_NAME=kafka
+LABEL net.juniper.contrail.service=$SERVICE_NAME
 LABEL net.juniper.contrail.container.name=$CONTAINER_NAME
