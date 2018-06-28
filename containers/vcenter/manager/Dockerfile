@@ -13,6 +13,7 @@ COPY *.sh /
 ENTRYPOINT ["/entrypoint.sh"]
 CMD /usr/bin/python -m cvm
 
-LABEL net.juniper.contrail.service=vcenter-manager
+ENV SERVICE_NAME=vcenter-manager
+LABEL net.juniper.contrail.service=$SERVICE_NAME
 LABEL net.juniper.contrail.container.name=$CONTAINER_NAME
 

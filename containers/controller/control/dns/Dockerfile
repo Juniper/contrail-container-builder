@@ -9,5 +9,6 @@ COPY entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/contrail-dns"]
 
-LABEL net.juniper.contrail.service=dns
+ENV SERVICE_NAME=dns
+LABEL net.juniper.contrail.service=$SERVICE_NAME
 LABEL net.juniper.contrail.container.name=$CONTAINER_NAME
