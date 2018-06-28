@@ -610,7 +610,7 @@ function is_encryption_supported() {
         return 1
     fi
     local kernel_version=`uname -r | cut -d "-" -f 1`
-    return `echo "$kernel_version $REQUIRED_KERNEL_VROUTER_ENCRYPTION" | awk '{print ($1 < $2)}'`
+    printf "${kernel_version}\n${REQUIRED_KERNEL_VROUTER_ENCRYPTION}" | sort -V | head -1 | grep -q $REQUIRED_KERNEL_VROUTER_ENCRYPTION
 }
 
 # create the ipvlan interface for
