@@ -21,6 +21,7 @@ vcenter:
   preferred_api_versions:
     - ${VCENTER_API_VERSION:-vim.version.version10}
   datacenter: $VCENTER_DATACENTER
+  dvswitch: $VCENTER_DVSWITCH
 
 vnc:
   api_server_host: $api_hostname
