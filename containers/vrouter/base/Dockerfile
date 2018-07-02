@@ -7,5 +7,6 @@ RUN yum install -y initscripts ethtool pciutils sudo contrail-vrouter-utils && \
 
 COPY *.sh ifup-* ifdown-* network-functions-vrouter* /
 
-LABEL net.juniper.contrail.pod=vrouter
+ENV NODE_TYPE=vrouter
+LABEL net.juniper.contrail.pod=$NODE_TYPE
 CMD ["/usr/bin/tail","-f","/dev/null"]

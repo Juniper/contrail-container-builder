@@ -13,5 +13,6 @@ COPY *.sh /
 ENTRYPOINT ["/entrypoint.sh"]
 CMD /usr/bin/python /usr/bin/contrail-nodemgr --nodetype=${NODEMGR_TYPE}
 
-LABEL net.juniper.contrail.service=nodemgr
+ENV SERVICE_NAME=nodemgr
+LABEL net.juniper.contrail.service=$SERVICE_NAME
 LABEL net.juniper.contrail.container.name=$CONTAINER_NAME

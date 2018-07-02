@@ -7,5 +7,6 @@ COPY contrail-entrypoint.sh /
 ENTRYPOINT ["/contrail-entrypoint.sh"]
 CMD ["rabbitmq-server"]
 
-LABEL net.juniper.contrail.service=rabbitmq
+ENV SERVICE_NAME=rabbitmq
+LABEL net.juniper.contrail.service=$SERVICE_NAME
 LABEL net.juniper.contrail.container.name=$CONTAINER_NAME
