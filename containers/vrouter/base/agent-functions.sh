@@ -410,9 +410,7 @@ function check_vrouter_agent_settings() {
 
     local iface=`ip route get ${nodes[0]} | grep -o "dev.*" | awk '{print $2}'`
     if [[ "$iface" != 'vhost0' && "$iface" != 'lo' ]]; then
-        echo "ERROR: Control nodes must be accessible via vhost0 (or via interface that vhost0 is based on)."
-        echo "ERROR: Please define CONTROL_NODES list correctly."
-        return 1
+        echo "WARNING: First control node isn't accessible via vhost0 (or via interface that vhost0 is based on). It's valid for gateway mode and invalid for normal mode."
     fi
     if (( ${#nodes} > 1 )); then
         for node in ${nodes[@]} ; do
