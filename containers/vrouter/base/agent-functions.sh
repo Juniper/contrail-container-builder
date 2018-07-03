@@ -188,7 +188,7 @@ function get_physical_nic_and_mac()
 # return as vmware_physical_interface.
 function get_vmware_physical_iface() {
     local iface_list=`ip -o link show | awk -F': ' '{print $2}'`
-    iface_list=`echo "$iface_list" | grep -v 'vhost0\|docker0\|pkt[0-9]\+\|ens160\|lo'`
+    iface_list=`echo "$iface_list" | grep -v 'vhost0\|docker0\|pkt[0-9]\+\|ens160\|eth\|lo'`
     for iface in $iface_list; do
         ip addr show dev $iface | grep 'inet ' > /dev/null 2>&1
         if [[ $? == 0 ]]; then
@@ -206,8 +206,11 @@ function get_vmware_physical_iface() {
 
 function disable_chksum_offload() {
     local intf=$1
-    ethtool --offload $intf rx off
-    ethtool --offload $intf tx off
+    intf_type=`ethtool -i $intf | grep driver | cut -f 2 -d ' '`
+    if [[ $intf_type == "vmxnet3" ]]; then
+        ethtool --offload $intf rx off
+        ethtool --offload $intf tx off
+    fi
 }
 
 function disable_lro_offload() {
