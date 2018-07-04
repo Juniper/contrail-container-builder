@@ -32,6 +32,9 @@ vnc:
   password:  $KEYSTONE_AUTH_ADMIN_PASSWORD
   tenant_name: $KEYSTONE_AUTH_ADMIN_TENANT
 
+sandesh:
+  collectors: $COLLECTOR_SERVERS
+
 EOM
 
 exec "$@"
