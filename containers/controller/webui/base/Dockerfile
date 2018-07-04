@@ -6,6 +6,8 @@ RUN yum install -y nodejs-0.10.35-1contrail.el7 contrail-web-controller contrail
     yum clean all -y && \
     rm -rf /var/cache/yum
 
+COPY custom-images/logo.png /opt/contrail/images/logo.png
+COPY custom-images/favicon.ico /opt/contrail/images/favicon.ico
 COPY entrypoint.sh /
 
 ENV NODE_TYPE=webui
