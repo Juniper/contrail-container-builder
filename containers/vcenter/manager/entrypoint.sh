@@ -32,6 +32,13 @@ vnc:
   password:  $KEYSTONE_AUTH_ADMIN_PASSWORD
   tenant_name: $KEYSTONE_AUTH_ADMIN_TENANT
 
+sandesh:
+  collectors: $COLLECTOR_SERVERS
+  introspect_port: 9090
+  logging_level: SYS_INFO
+  log_file: /var/log/contrail/contrail-vcenter-manager.log
+
+
 EOM
 
 exec "$@"
