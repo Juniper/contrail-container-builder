@@ -486,9 +486,12 @@ function init_vhost0() {
             fi
         fi
         pushd /etc/sysconfig/network-scripts/
-        if [[ ! -f route-vhost0 && -f route-${phys_int} ]] ; then
-            /bin/cp -f route-${phys_int} route-vhost0
+        if [[ ! -f contrail.org.route-${phys_int} && -f route-${phys_int} ]] ; then
             mv route-${phys_int} contrail.org.route-${phys_int}
+            if [[ ! -f route-vhost0 ]] ; then
+                sed "s/${phys_int}/vhost0/g" contrail.org.route-${phys_int} > route-vhost0.tmp
+                mv route-vhost0.tmp route-vhost0
+            fi
         fi
         if [[ ! -f "contrail.org.ifcfg-${phys_int}" && -f "ifcfg-${phys_int}" ]] ; then
             /bin/cp -f ifcfg-${phys_int} contrail.org.ifcfg-${phys_int}
