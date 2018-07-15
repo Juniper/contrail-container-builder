@@ -42,6 +42,9 @@ CONTRAIL_SERVICES_TO_SANDESH_SVC = {
         'schema': 'contrail-schema',
         'svc-monitor': 'contrail-svc-monitor',
         'device-manager': 'contrail-device-manager',
+    },
+    'config-database': {
+        'nodemgr': 'contrail-config-database-nodemgr',
         'cassandra': None,
         'zookeeper': None,
         'rabbitmq': None,
