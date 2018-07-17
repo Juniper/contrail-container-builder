@@ -264,6 +264,24 @@ services:
     depends_on:
       - network
     restart: on-failure
+  analytics-snmp-collector:
+    image: "${CONTRAIL_REGISTRY}/contrail-analytics-snmp-collector:${CONTRAIL_CONTAINER_TAG}"
+    env_file: ${ENV_FILE}
+    network_mode: "service:network"
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+    depends_on:
+      - network
+    restart: on-failure
+  analytics-topology:
+    image: "${CONTRAIL_REGISTRY}/contrail-analytics-topology:${CONTRAIL_CONTAINER_TAG}"
+    env_file: ${ENV_FILE}
+    network_mode: "service:network"
+    volumes:
+      - /var/log/contrail:/var/log/contrail
+    depends_on:
+      - network
+    restart: on-failure
   analytics-redis:
     env_file: ${ENV_FILE}
     image: "redis:4.0.2"

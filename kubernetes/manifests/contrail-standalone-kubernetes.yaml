@@ -505,6 +505,24 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: analytics-logs
+      - name: contrail-analytics-snmp-collector
+        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-snmp-collector:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        envFrom:
+        - configMapRef:
+            name: env
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: analytics-logs
+      - name: contrail-topology
+        image: "{{CONTRAIL_REGISTRY}}/contrail-topology:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        envFrom:
+        - configMapRef:
+            name: env
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: analytics-logs
       - name: contrail-analytics-nodemgr
         image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
