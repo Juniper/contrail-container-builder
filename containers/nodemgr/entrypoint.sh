@@ -5,14 +5,14 @@ source /common.sh
 pre_start_init
 
 # Env variables:
-# NODE_TYPE = name of the component [vrouter, config, control, analytics, database]
+# NODE_TYPE = name of the component [vrouter, config, control, analytics, database, config-database]
 
-VAR_PREFIX=${NODE_TYPE^^}NODEMGR
 # ToDo - decide how to resolve this for non-contrail parts
 export NODEMGR_TYPE=contrail-${NODE_TYPE}
 NODEMGR_NAME=${NODEMGR_TYPE}-nodemgr
 
-hostip=$(get_listen_ip_for_node ${NODE_TYPE^^})
+ntype=`echo ${NODE_TYPE^^} | tr '-' '_'`
+hostip=$(get_listen_ip_for_node ${ntype})
 
 cat > /etc/contrail/$NODEMGR_NAME.conf << EOM
 [DEFAULTS]
@@ -32,7 +32,7 @@ server_list=${COLLECTOR_SERVERS}
 $sandesh_client_config
 EOM
 
-add_ini_params_from_env ${NODE_TYPE^^}_NODEMGR /etc/contrail/$NODEMGR_NAME.conf
+add_ini_params_from_env ${ntype}_NODEMGR /etc/contrail/$NODEMGR_NAME.conf
 
 set_vnc_api_lib_ini
 
