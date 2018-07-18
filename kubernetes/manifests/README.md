@@ -65,3 +65,33 @@ independently installed someplace else and are reachable by ip routing.
 A reference template file, capturing all possible and relevant config environments for Kubernetes
 deployment. This is strictly for reference and is not intended for yaml file generation.
 
+# FAQ
+
+* How can I generate yaml file to provision Contrail cluster with images from private docker registry ?
+
+Step 1. In your Kubernetes cluster, create a kubernetes secret with credentials of the private docker registry.
+
+```
+kubectl create secret docker-registry <name> --docker-server=<registry> --docker-username=<username> --docker-password=<password> --docker-email=<email> -n <namespace>
+
+<name>      - name of the secret
+<registry>  - example: hub.juniper.net/contrail
+<username>  - registry user name
+<password>  - registry passcode
+<email>     - registered email of this registry account
+<namespace> - kubernetes namespace where this secret is to be created. This should be the namespace where you intend to create pods.
+
+```
+
+Step 2. Generate single yaml file after setting variable KUBERNETES_SECRET_CONTRAIL_REPO=<secret-name> in common.env file
+
+```
+File: $SBOX/common.env
+
+...
+KUBERNETES_SECRET_CONTRAIL_REPO=<secret-name>
+...
+
+<secret-name>  - Name of the secret created in Step 1.
+```
+
