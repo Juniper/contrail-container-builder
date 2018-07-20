@@ -822,7 +822,7 @@ spec:
       hostNetwork: true
       initContainers:
       - name: contrail-vrouter-kernel-init-dpdk
-        image: "{{CONTRAIL_REGISTRY}}/contrail-vrouter-kernel-init-dpdk:{{CONTRAIL_CONTAINER_TAG}}"
+        image: "{{CONTRAIL_REGISTRY}}/{{VROUTER_KERNEL_INIT_IMAGE}}:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         securityContext:
           privileged: true
