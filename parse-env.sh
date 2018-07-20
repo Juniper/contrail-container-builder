@@ -190,3 +190,12 @@ export METADATA_SSL_CERTFILE=${METADATA_SSL_CERTFILE:-}
 export METADATA_SSL_KEYFILE=${METADATA_SSL_KEYFILE:-}
 export METADATA_SSL_CA_CERTFILE=${METADATA_SSL_CA_CERTFILE:-}
 export METADATA_SSL_CERT_TYPE=${METADATA_SSL_CERT_TYPE:-}
+
+# VRouter kernel module init image.
+if [[ "$VROUTER_DPDK" == True ]] ; then
+    export VROUTER_KERNEL_INIT_IMAGE='contrail-vrouter-kernel-init-dpdk'
+elif [[ "$LINUX_DISTR" == 'ubuntu' ]] ; then
+    export VROUTER_KERNEL_INIT_IMAGE='contrail-vrouter-kernel-build-init'
+else
+    export VROUTER_KERNEL_INIT_IMAGE='contrail-vrouter-kernel-init'
+fi
