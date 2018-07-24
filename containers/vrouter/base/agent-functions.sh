@@ -447,6 +447,7 @@ function init_vhost0() {
         addrs=$(get_addrs_for_nic $phys_int)
         local default_gw_metric=`get_default_gateway_for_nic_metric $phys_int`
         gateway=${VROUTER_GATEWAY:-"$default_gw_metric"}
+        mtu=$(get_iface_mtu $phys_int)
         echo "INFO: creating vhost0 for nic mode: nic: $phys_int, mac=$phys_int_mac"
         if ! create_vhost0 $phys_int $phys_int_mac ; then
             return 1
@@ -539,6 +540,9 @@ function init_vhost0() {
             echo "INFO: set default gateway"
             ip route add default via $gateway || { echo "ERROR: failed to add default gateway $gateway" && ret=1; }
         fi
+        if [[ -n "$mtu" ]] ; then
+            echo "INFO: set mtu"
+            ip link set dev vhost0 mtu $mtu
     fi
     return $ret
 }

@@ -105,6 +105,11 @@ function get_addrs_for_nic() {
     ip addr show dev $nic | grep "inet" | grep -oP "[0-9a-f\:\.]*/[0-9]* brd [0-9\.]*|[0-9a-f\:\.]*/[0-9]*"
 }
 
+function get_iface_mtu() {
+    local nic=$1
+    cat /sys/class/net/${nic}/mtu
+}
+
 # Generate ip address add command
 function gen_ip_addr_add_cmd() {
     local from_nic=$1
