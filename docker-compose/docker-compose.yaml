@@ -57,7 +57,7 @@ services:
       - contrail-node-init
     restart: on-failure
   redis:
-    image: "redis:4.0.2"
+    image: "${CONTRAIL_REGISTRY}/contrail-external-reids:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     network_mode: "service:network"
     depends_on:
