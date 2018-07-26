@@ -486,6 +486,13 @@ function init_vhost0() {
     fi
 
     local ret=0
+    # For Google and Azure the underlying physical inetrface has network plumbed differently.
+    # We need the following to initilize vhost0 in GC and Azure
+    azure_or_gcp=$(dmidecode | grep -m1 Manufacturer | awk '{print $2}')
+    if [[ "$azure_or_gcp" =~ ^(Microsoft|Google)$ ]]; then
+       nohup dhclient -v -d -1  -sf /vhost-dhcp.sh ${phys_int} &>/dev/null &
+       ip addr flush ${phys_int}
+    fi
     if [[ -e /etc/sysconfig/network-scripts/ifcfg-${phys_int} || -e /etc/sysconfig/network-scripts/ifcfg-vhost0 ]]; then
         echo "INFO: creating ifcfg-vhost0 and initialize it via ifup"
         if ! is_dpdk ; then
