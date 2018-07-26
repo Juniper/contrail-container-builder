@@ -8,6 +8,11 @@ echo "INFO: agent started in $AGENT_MODE mode"
 function trap_vrouter_agent_quit() {
     term_process $vrouter_agent_process
     remove_vhost0
+    local azure_or_gcp=$(cat /sys/devices/virtual/dmi/id/chassis_vendor)
+    if [[ "$azure_or_gcp" =~ ^(Microsoft|Google)$ ]]; then
+       local pids=$(ps -A -o pid,cmd|grep 'vhost-dhcp\|vhost0' | grep -v grep | awk '{print $1}')
+       [ ! -z "$pids" ] && kill $pids
+    fi
     cleanup_vrouter_agent_files
 }
 
