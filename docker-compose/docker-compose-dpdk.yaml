@@ -46,7 +46,7 @@ services:
       - network
     restart: on-failure
   redis:
-    image: "redis:4.0.2"
+    image: "${CONTRAIL_REGISTRY}/contrail-external-redis:${CONTRAIL_CONTAINER_TAG}"
     env_file: ${ENV_FILE}
     network_mode: "service:network"
     depends_on:
@@ -284,7 +284,7 @@ services:
     restart: on-failure
   analytics-redis:
     env_file: ${ENV_FILE}
-    image: "redis:4.0.2"
+    image: "${CONTRAIL_REGISTRY}/contrail-external-redis:${CONTRAIL_CONTAINER_TAG}"
     volumes:
       - /var/log/contrail:/var/log/contrail
     depends_on:
