@@ -50,6 +50,23 @@ else
     fi
 fi
 
+# For Google and Azure the underlying physical inetrface has network plumbed differently.
+# We need the following to initialize vhost0 in GC and Azure
+azure_or_gcp=$(cat /sys/devices/virtual/dmi/id/chassis_vendor)
+if [[ "$azure_or_gcp" =~ ^(Microsoft|Google)$ ]]; then
+    pids=$(check_vhost0_dhcp_clients)
+    if [ -z "$pids" ] ; then
+        check_and_launch_dhcp_clients
+    else
+        # this is an important case when dhcp clients are running
+        # but arp is not resolved
+        if ! arp -ani vhost0 | grep vhost0 ; then
+            kill $pids
+            check_and_launch_dhcp_clients
+        fi
+    fi
+fi
+
 if ! check_vrouter_agent_settings ; then
     echo "FATAL: settings are not correct. Exiting..."
     exit 2
