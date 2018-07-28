@@ -702,3 +702,40 @@ function add_vrouter_decrypt_intf() {
         fi
     fi
 }
+
+# this check is required for ensuring
+# dhclp clients for vhost0 is running
+# for the dhcp lease renewal
+function check_vhost0_dhcp_clients() {
+    local pids=$(ps -A -o pid,cmd|grep 'vhost-dhcp\|vhost0' | grep -v grep | awk '{print $1}')
+    echo $pids
+}
+
+# Get dhcp client for physical interface
+# we need this in case of clearing
+function check_phys_dhcp_clients() {
+    local pids=$(ps -A -o pid,cmd|grep dhclient | grep ${1} | grep -v grep | awk '{print $1}')
+    echo $pids
+}
+
+# sleeping for 3 seconds is more than sufficient for the job and connectivity
+function launch_dhcp_clients() {
+    dhclient -v -1  -sf /vhost-dhcp.sh -pf /run/dhclient.vhost0.pid -lf /var/lib/dhcp/dhclient.vhost0.leases -I vhost0 2>&1 </dev/null & disown -h "$!"
+    sleep 3
+    dhclient vhost0 2>&1 </dev/null & disown -h "$!"
+    sleep 3
+}
+
+function check_and_launch_dhcp_clients() {
+    declare phys_int
+    IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
+    if launch_dhcp_clients ; then
+       local pids=$(check_phys_dhcp_clients $phys_int)
+       if [ ! -z "$pids" ] ; then
+          kill $pids
+       fi
+       ip addr flush $phys_int
+    else
+        echo "WARNING: dhcp clients not running for vhost0. If this is not static configuration, connectivity will be lost"
+    fi
+}
