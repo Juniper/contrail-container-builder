@@ -121,6 +121,21 @@ if [[ -z "$vrouter_cidr" ]] ; then
     exit 1
 fi
 vrouter_ip=${vrouter_cidr%/*}
+
+# Google has point to point DHCP address to the VM, but we need to initialize
+# with the network address mask. This is needed for proper forwarding of pkts
+# at the vrouter interface
+gcp=$(cat /sys/devices/virtual/dmi/id/chassis_vendor)
+if [ "$gcp" == "Google" ]; then
+    intfs=$(curl -s http://metadata.google.internal/computeMetadata/v1beta1/instance/network-interfaces/)
+    for intf in $intfs ; do
+        if [[ $phys_int_mac == "$(curl -s http://metadata.google.internal/computeMetadata/v1beta1/instance/network-interfaces/${intf}/mac)" ]]; then
+            mask=$(curl -s http://metadata.google.internal/computeMetadata/v1beta1/instance/network-interfaces/${intf}/subnetmask)
+            vrouter_cidr=$vrouter_ip/$(mask2cidr $mask)
+        fi
+    done
+fi
+
 if [[ -z "$VROUTER_GATEWAY" ]] ; then
     echo "ERROR: VROUTER_GATEWAY is empty or there is no default route for vhost0"
     exit 1
