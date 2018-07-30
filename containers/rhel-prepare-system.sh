@@ -11,7 +11,7 @@ if ! subscription-manager status | grep -q -i 'Overall Status: Current' ; then
   [ -n "$RHEL_USER_NAME" ] && register_opts+=" --username $RHEL_USER_NAME"
   [ -n "$RHEL_USER_PASSWORD" ] && register_opts+=" --password $RHEL_USER_PASSWORD"
   [ -n "$ORG_KEY" ] && register_opts+=" --org $ORG_KEY"
-  [ -n "$RHEL_ACTIVATION_KEY" ] && activationkey+=" --org $RHEL_ACTIVATION_KEY"
+  [ -n "$RHEL_ACTIVATION_KEY" ] && register_opts+=" --activationkey $RHEL_ACTIVATION_KEY"
   echo "INFO: register system with opts $register_opts"
   subscription-manager register $register_opts
   attach_opts='--auto'
