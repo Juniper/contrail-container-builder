@@ -711,7 +711,10 @@ function check_phys_dhcp_clients() {
 }
 
 # sleeping for 3 seconds is more than sufficient for the job and connectivity
+# reason for the sleeps here are for the DHCP response and populting the lease file
+# and also for making sure the arp table is updated with the mac of the GW
 function launch_dhcp_clients() {
+    mkdir -p /var/lib/dhcp
     dhclient -v -1  -sf /vhost-dhcp.sh -pf /run/dhclient.vhost0.pid -lf /var/lib/dhcp/dhclient.vhost0.leases -I vhost0 2>&1 </dev/null & disown -h "$!"
     sleep 3
     dhclient vhost0 2>&1 </dev/null & disown -h "$!"
@@ -719,7 +722,7 @@ function launch_dhcp_clients() {
 }
 
 function check_and_launch_dhcp_clients() {
-    declare phys_int
+    declare phys_int phys_int_mac
     IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
     if launch_dhcp_clients ; then
        local pids=$(check_phys_dhcp_clients $phys_int)
