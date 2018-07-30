@@ -8,4 +8,6 @@ ret=0
 
 /certs-init.sh || ret=1
 
+/files-init.sh || ret=1
+
 exit $ret
