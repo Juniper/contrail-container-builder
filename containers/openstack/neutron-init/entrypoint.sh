@@ -1,6 +1,4 @@
-#!/bin/bash
-
-set -ex
+#!/bin/bash -ex
 
 # linux distro here always centos for now
 src_path='/usr/lib/python2.7/site-packages'
