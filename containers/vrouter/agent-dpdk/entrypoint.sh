@@ -44,6 +44,10 @@ set_ctl net.core.wmem_max 9160000
 if [ -n "${DPDK_UIO_DRIVER}" ]; then
     load_kernel_module uio
     load_kernel_module "$DPDK_UIO_DRIVER"
+else
+    # No UIO driver to bind means its Mellanox, load the necessary drivers
+    load_kernel_module mlx5_ib
+    load_kernel_module ib_uverbs
 fi
 
 # multiple kthreads for port monitoring
