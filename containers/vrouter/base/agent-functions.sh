@@ -325,6 +325,7 @@ function read_and_save_dpdk_params() {
 
     local _default_gw_metric=`get_default_gateway_for_nic_metric $phys_int`
     local gateway=${VROUTER_GATEWAY:-"$_default_gw_metric"}
+    local mtu=$(get_iface_mtu $phys_int)
 
     echo "INFO: phys_int=$phys_int phys_int_mac=$phys_int_mac, pci=$pci, addrs=[$addrs], gateway=$gateway"
     local nic=$phys_int
@@ -336,6 +337,7 @@ function read_and_save_dpdk_params() {
     echo "$pci" > $binding_data_dir/${nic}_pci
     echo "$addrs" > $binding_data_dir/${nic}_ip_addresses
     echo "$gateway" > $binding_data_dir/${nic}_gateway
+    echo "$mtu" > $binding_data_dir/${nic}_mtu
 
     declare vlan_id vlan_parent
     if [ -n "$BIND_INT" ] ; then
@@ -440,13 +442,14 @@ function init_vhost0() {
         return 0
     fi
 
-    declare phys_int phys_int_mac addrs gateway bind_type bind_int
+    declare phys_int phys_int_mac addrs gateway bind_type bind_int mtu
     if ! is_dpdk ; then
         # NIC case
         IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
         addrs=$(get_addrs_for_nic $phys_int)
         local default_gw_metric=`get_default_gateway_for_nic_metric $phys_int`
         gateway=${VROUTER_GATEWAY:-"$default_gw_metric"}
+        mtu=$(get_iface_mtu $phys_int)
         echo "INFO: creating vhost0 for nic mode: nic: $phys_int, mac=$phys_int_mac"
         if ! create_vhost0 $phys_int $phys_int_mac ; then
             return 1
@@ -473,6 +476,7 @@ function init_vhost0() {
         addrs=`cat $binding_data_dir/${phys_int}_ip_addresses`
         default_gateway="$(cat $binding_data_dir/${phys_int}_gateway)"
         gateway=${VROUTER_GATEWAY:-$default_gateway}
+        mtu=`cat $binding_data_dir/${phys_int}_mtu`
         echo "INFO: creating vhost0 for dpdk mode: nic: $phys_int, mac=$phys_int_mac"
         if ! create_vhost0_dpdk $phys_int $phys_int_mac ; then
             return 1
@@ -538,6 +542,10 @@ function init_vhost0() {
         if [[ -n "$gateway" ]]; then
             echo "INFO: set default gateway"
             ip route add default via $gateway || { echo "ERROR: failed to add default gateway $gateway" && ret=1; }
+        fi
+        if [[ -n "$mtu" ]] ; then
+            echo "INFO: set mtu"
+            ip link set dev vhost0 mtu $mtu
         fi
     fi
     return $ret
