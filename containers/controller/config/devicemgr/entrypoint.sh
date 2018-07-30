@@ -12,6 +12,7 @@ api_server_ip=$CONFIG_NODES
 api_server_port=$CONFIG_API_PORT
 analytics_server_ip=$ANALYTICS_NODES
 analytics_server_port=$ANALYTICS_API_PORT
+push_mode=1
 log_file=$LOG_DIR/contrail-device-manager.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
