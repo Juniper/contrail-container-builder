@@ -898,6 +898,10 @@ spec:
         envFrom:
         - configMapRef:
             name: env
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/clean-up.sh"]
         volumeMounts:
         # TODO: need for hugepages & communication with dpdk agent
         - mountPath: /dev

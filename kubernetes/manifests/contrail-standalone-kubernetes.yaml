@@ -1154,6 +1154,10 @@ spec:
             name: env
         - configMapRef:
             name: configzookeeperenv
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/clean-up.sh"]
         volumeMounts:
         - mountPath: /dev
           name: dev
