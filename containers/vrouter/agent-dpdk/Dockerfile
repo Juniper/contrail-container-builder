@@ -10,6 +10,7 @@ RUN yum install -y contrail-vrouter-dpdk contrail-vrouter-dpdk-init && \
     ldconfig
 
 COPY entrypoint.sh /
+COPY *_defs /
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/contrail-vrouter-dpdk"]

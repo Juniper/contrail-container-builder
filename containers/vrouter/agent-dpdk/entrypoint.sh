@@ -3,6 +3,10 @@
 source /common.sh
 source /agent-functions.sh
 
+if [[ -n "${DPDK_UIO_DRIVER}" && -f "/${DPDK_UIO_DRIVER}_defs" ]]; then
+  source "/${DPDK_UIO_DRIVER}_defs"
+fi
+
 echo "INFO: dpdk started"
 
 function trap_dpdk_agent_quit() {
@@ -41,10 +45,9 @@ set_ctl net.ipv4.tcp_keepalive_probes 5
 set_ctl net.ipv4.tcp_keepalive_intvl 1
 set_ctl net.core.wmem_max 9160000
 
-if [ -n "${DPDK_UIO_DRIVER}" ]; then
-    load_kernel_module uio
-    load_kernel_module "$DPDK_UIO_DRIVER"
-fi
+for driver in $(echo $dpdk_drivers_to_load | tr ',' ' ') ; do
+    load_kernel_module $driver
+done
 
 # multiple kthreads for port monitoring
 if ! load_kernel_module rte_kni kthread_mode=multiple ; then
@@ -129,9 +132,9 @@ if [[ -n "$bond_data" ]] ; then
     ip link del $phys_int
 fi
 
-if [ -n "${DPDK_UIO_DRIVER}" ]; then
-    if ! bind_devs_to_driver "$DPDK_UIO_DRIVER" "${pci_address//,/ }" ; then
-        echo "FATAL: failed to bind $pci_address to the driver ${DPDK_UIO_DRIVER}... exiting"
+if [ -n "$dpdk_driver_to_bind" ]; then
+    if ! bind_devs_to_driver "$dpdk_driver_to_bind" "${pci_address//,/ }" ; then
+        echo "FATAL: failed to bind $pci_address to the driver ${dpdk_driver_to_bind}... exiting"
         exit -1
     fi
 fi
