@@ -1,0 +1,2 @@
+dpdk_drivers_to_load=uio,vfio-pci
+dpdk_driver_to_bind=vfio-pci
