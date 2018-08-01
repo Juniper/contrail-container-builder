@@ -1,0 +1,2 @@
+dpdk_drivers_to_load=ib_uverbs,mlx5_ib
+dpdk_driver_to_bind=
