@@ -4,7 +4,7 @@
 # and own IP detection, so there is 10 retries
 for i in {1..10} ; do
   server_names_list=()
-  cluster_nodes='{['
+  cluster_nodes=''
   local_ips=",$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}' | tr '\n' ','),"
   IFS=',' read -ra server_list <<< "${RABBITMQ_NODES}"
   my_ip=''
@@ -37,23 +37,16 @@ for i in {1..10} ; do
   sleep 1
 done
 
-cluster_nodes=${cluster_nodes::-1}'],disc}'
 if [ -z "$my_ip" ] ; then
   echo "ERROR: Cannot find self ips ('$local_ips') in RabbitMQ nodes ('$RABBITMQ_NODES')"
   exit -1
 fi
 
-export RABBITMQ_NODENAME=contrail@$my_node
-export RABBITMQ_NODE_PORT=${RABBITMQ_NODE_PORT:-5673}
+RABBITMQ_NODENAME=contrail@$my_node
+RABBITMQ_NODE_PORT=${RABBITMQ_NODE_PORT:-5673}
 
-if (( ${#server_list[@]} > 1 )); then
-  RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=${RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS:-}
-  RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS+="-rabbit cluster_nodes $cluster_nodes"
-  export RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS
-fi
 
 echo "INFO: RABBITMQ_NODENAME=$RABBITMQ_NODENAME, RABBITMQ_NODE_PORT=$RABBITMQ_NODE_PORT"
-echo "INFO: RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=$RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS"
 
 # to be able to run rabbitmqctl without params
 echo "RABBITMQ_NODENAME=contrail@$my_node" > /etc/rabbitmq/rabbitmq-env.conf
@@ -79,6 +72,34 @@ if [[ "${server_names_list[0]}" != "$my_node" ]] ; then
     fi
   done
 fi
+
+cat << EOF > /etc/rabbitmq/rabbitmq.config
+[
+   {rabbit, [ {tcp_listeners, [{"${my_ip}", ${RABBITMQ_NODE_PORT}}]}, {cluster_partition_handling, autoheal},{loopback_users, []},
+              {cluster_nodes, {[${cluster_nodes::-1}], disc}},
+              {vm_memory_high_watermark, 0.8},
+              {disk_free_limit,50000000},
+              {log_levels,[{connection, info},{mirroring, info}]},
+              {heartbeat,10},
+              {delegate_count,20},
+              {channel_max,5000},
+              {tcp_listen_options,
+                        [binary,
+                          {packet, raw},
+                          {reuseaddr, true},
+                          {backlog, 128},
+                          {nodelay, true},
+                          {exit_on_close, false},
+                          {keepalive, true}
+                         ]
+              },
+              {collect_statistics_interval, 60000}
+            ]
+   },
+   {rabbitmq_management_agent, [ {force_fine_statistics, true} ] },
+   {kernel, [{net_ticktime,  60}]}
+].
+EOF
 
 echo "INFO: $(date): /docker-entrypoint.sh $@"
 exec /docker-entrypoint.sh "$@"
