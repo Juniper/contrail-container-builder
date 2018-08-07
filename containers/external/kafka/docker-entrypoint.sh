@@ -4,7 +4,6 @@ set -e
 
 source /functions.sh
 
-default_interface=$(get_default_nic)
 default_ip_address=$(get_default_ip)
 local_ips=",$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}' | tr '\n' ','),"
 
