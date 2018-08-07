@@ -1,0 +1,2 @@
+dpdk_drivers_to_load=uio,uio_pci_generic
+dpdk_driver_to_bind=uio_pci_generic
