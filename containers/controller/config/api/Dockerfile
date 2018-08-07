@@ -6,7 +6,7 @@ ARG CONTAINER_NAME
 ARG PYTHON_PIP_RPM=python-pip
 ARG PYTHON_PIP_VENV=""
 
-RUN yum install -y python-neutron-lib $PYTHON_PIP_RPM && \
+RUN yum install -y python-neutron-lib $PYTHON_PIP_RPM openssh-clients && \
     if [[ -n "$PYTHON_PIP_VENV" ]] ; then \
         source $PYTHON_PIP_VENV ; \
     fi && \
