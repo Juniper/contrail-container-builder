@@ -547,6 +547,7 @@ function init_vhost0() {
             echo "INFO: set mtu"
             ip link set dev vhost0 mtu $mtu
         fi
+        change_route_dev $phys_int vhost0
     fi
     return $ret
 }
@@ -589,6 +590,7 @@ function remove_vhost0() {
     if [ ! -d "$netscript_dir" ] ; then
         gateway=$(get_default_gateway_for_nic_metric vhost0)
         restore_ip_cmd=$(gen_ip_addr_add_cmd vhost0 $phys_int)
+        change_route_dev vhost0 $phys_int
     fi
     remove_vhost0_kernel || { echo "ERROR: failed to remove vhost0" && return 1; }
     restore_phys_int $phys_int "$restore_ip_cmd" "$gateway"
