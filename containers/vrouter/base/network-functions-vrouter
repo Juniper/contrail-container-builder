@@ -126,6 +126,20 @@ function gen_ip_addr_add_cmd() {
     echo $cmd
 }
 
+function change_route_dev() {
+    local from=$1
+    local to=$2
+    local route
+    # move non-defaults routes first
+    while IFS= read -r route ; do
+        ip route change $route  dev $to || echo "WARNING: failed to apply ip route change $route  dev $to"
+    done < <(ip route list dev ${from} | grep -v default)
+    # move rest (defaults) if any
+    while IFS= read -r route ; do
+        ip route change $route  dev $to || echo "WARNING: failed to apply ip route change $route  dev $to"
+    done < <(ip route list dev ${from})
+}
+
 function restore_phys_int() {
     local phys_int="$1"
     local add_ipaddr_cmd="$2"
