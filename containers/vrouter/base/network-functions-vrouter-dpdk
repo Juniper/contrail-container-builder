@@ -137,6 +137,7 @@ function restore_phys_int_dpdk() {
     if [ ! -d "$netscript_dir" ] ; then
         gateway=$(get_default_gateway_for_nic_metric vhost0)
         restore_ip_cmd=$(gen_ip_addr_add_cmd vhost0 $phys_int)
+        [ -n "$phys_int" ] && change_route_dev vhost0 $phys_int
     fi
     restore_iface_driver $pci $drv
     if [ -n "$phys_int" ] ; then
