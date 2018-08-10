@@ -98,6 +98,11 @@ else
     pci_address=`cat $binding_data_dir/${phys_int}_pci`
 fi
 
+if [ "$CLOUD_ORCHESTRATOR" == "kubernetes" ] && [ ! -z $VROUTER_GATEWAY ]; then
+    # dont need k8s_pod_cidr_route if default gateway is vhost0
+    add_k8s_pod_cidr_route
+fi
+
 VROUTER_GATEWAY=${VROUTER_GATEWAY:-`get_default_gateway_for_nic 'vhost0'`}
 vrouter_cidr=$(get_cidr_for_nic 'vhost0')
 echo "INFO: Physical interface: $phys_int, mac=$phys_int_mac, pci=$pci_address"
