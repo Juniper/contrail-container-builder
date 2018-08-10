@@ -744,3 +744,8 @@ function check_and_launch_dhcp_clients() {
         echo "WARNING: dhcp clients not running for vhost0. If this is not static configuration, connectivity will be lost"
     fi
 }
+
+function add_k8s_pod_cidr_route() {
+    pod_cidr=${KUBERNETES_POD_SUBNETS:-"10.32.0.0/12"}
+    ip route add $pod_cidr via $VROUTER_GATEWAY dev vhost0
+}
