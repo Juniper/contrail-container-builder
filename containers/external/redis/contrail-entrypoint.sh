@@ -1,5 +1,10 @@
 #!/bin/bash -e
 
+REDIS_NODES=${REDIS_NODES:-${ANALYTICS_NODES:-${CONTROLLER_NODES}}}
+# redis is needed for WebUI also. WebUI works with 127.0.0.1
+# If WebUI is placed on the same node with analytics - redis will listen on two IP-s and analytics and WebUI will work well.
+# If WebUI is placed on different node than analitics - redis on the node with WebUI will listen only 127.0.0.1 and it is sufficient for WebUI.
+
 REDIS_SERVER_PORT=${REDIS_SERVER_PORT:-6379}
 REDIS_LISTEN_ADDRESS=${REDIS_LISTEN_ADDRESS:-}
 REDIS_SERVER_PASSWORD=${REDIS_SERVER_PASSWORD:-}
