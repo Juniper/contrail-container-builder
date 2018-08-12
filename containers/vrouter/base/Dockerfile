@@ -3,7 +3,8 @@ ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 RUN yum install -y initscripts ethtool pciutils sudo contrail-vrouter-utils && \
-    ldconfig
+    ldconfig && \
+    rm -rf /etc/sysconfig/network-scripts
 
 COPY *.sh ifup-* ifdown-* network-functions-vrouter* /
 
