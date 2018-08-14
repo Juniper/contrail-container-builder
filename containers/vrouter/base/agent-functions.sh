@@ -536,6 +536,7 @@ function init_vhost0() {
     else
         echo "INFO: there is no ifcfg-$phys_int and ifcfg-vhost0, so initialize vhost0 manually"
         # TODO: switch off dhcp on phys_int
+        change_route_dev $phys_int vhost0
         echo "INFO: Changing physical interface to vhost in ip table"
         echo "$addrs" | while IFS= read -r line ; do
             if ! is_dpdk ; then
@@ -553,7 +554,6 @@ function init_vhost0() {
             echo "INFO: set mtu"
             ip link set dev vhost0 mtu $mtu
         fi
-        change_route_dev $phys_int vhost0
     fi
     return $ret
 }
