@@ -80,7 +80,6 @@ cat << EOF > /etc/rabbitmq/rabbitmq.config
               {vm_memory_high_watermark, 0.8},
               {disk_free_limit,50000000},
               {log_levels,[{connection, info},{mirroring, info}]},
-              {heartbeat,10},
               {delegate_count,20},
               {channel_max,5000},
               {tcp_listen_options,
