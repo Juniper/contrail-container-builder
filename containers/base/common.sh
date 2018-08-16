@@ -221,6 +221,7 @@ RABBITMQ_SSL_VER=${RABBITMQ_SSL_VER:-''}
 RABBITMQ_CLIENT_SSL_CERTFILE=${RABBITMQ_CLIENT_SSL_CERTFILE:-${SERVER_CERTFILE}}
 RABBITMQ_CLIENT_SSL_KEYFILE=${RABBITMQ_CLIENT_SSL_KEYFILE:-${SERVER_KEYFILE}}
 RABBITMQ_CLIENT_SSL_CACERTFILE=${RABBITMQ_CLIENT_SSL_CACERTFILE:-${SERVER_CA_CERTFILE}}
+RABBITMQ_HEARTBEAT_INTERVAL=${RABBITMQ_HEARTBEAT_INTERVAL:-10}
 
 # first group is used in analytics and control services
 # second group is used in config service, kubernetes_manager, ironic_notification_manager
@@ -229,12 +230,14 @@ rabbitmq_vhost=$RABBITMQ_VHOST
 rabbitmq_user=$RABBITMQ_USER
 rabbitmq_password=$RABBITMQ_PASSWORD
 rabbitmq_use_ssl=$RABBITMQ_USE_SSL
+rabbitmq_health_check_interval=$RABBITMQ_HEARTBEAT_INTERVAL
 EOM
 read -r -d '' rabbit_config << EOM || true
 rabbit_vhost=$RABBITMQ_VHOST
 rabbit_user=$RABBITMQ_USER
 rabbit_password=$RABBITMQ_PASSWORD
 rabbit_use_ssl=$RABBITMQ_USE_SSL
+rabbit_health_check_interval=$RABBITMQ_HEARTBEAT_INTERVAL
 EOM
 
 if is_enabled ${RABBITMQ_USE_SSL} ; then

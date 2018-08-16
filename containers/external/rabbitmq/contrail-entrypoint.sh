@@ -72,7 +72,6 @@ if [[ "${server_names_list[0]}" != "$my_node" ]] ; then
     fi
   done
 fi
-
 cat << EOF > /etc/rabbitmq/rabbitmq.config
 [
    {rabbit, [ {tcp_listeners, [{"${my_ip}", ${RABBITMQ_NODE_PORT}}]}, {cluster_partition_handling, autoheal},{loopback_users, []},
@@ -87,6 +86,7 @@ cat << EOF > /etc/rabbitmq/rabbitmq.config
                           {packet, raw},
                           {reuseaddr, true},
                           {backlog, 128},
+                          {heartbeat, ${RABBITMQ_HEARTBEAT_INTERVAL}},
                           {nodelay, true},
                           {exit_on_close, false},
                           {keepalive, true}
