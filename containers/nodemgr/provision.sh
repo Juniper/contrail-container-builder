@@ -92,6 +92,16 @@ analytics)
   provision_node provision_analytics_node.py $host_ip $DEFAULT_HOSTNAME
   ;;
 
+analytics-snmp)
+  host_ip=$(get_listen_ip_for_node ANALYTICS_SNMP)
+  provision_node provision_analytics_snmp_node.py $host_ip $DEFAULT_HOSTNAME
+  ;;
+
+analytics-alarm)
+  host_ip=$(get_listen_ip_for_node ANALYTICS_ALARM)
+  provision_node provision_analytics_alarm_node.py $host_ip $DEFAULT_HOSTNAME
+  ;;
+
 control)
   host_ip=$(get_listen_ip_for_node CONTROL)
   if [[ "$BGP_AUTO_MESH" == 'true' ]] ; then
