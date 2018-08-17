@@ -7,6 +7,8 @@ pre_start_init
 hostip=$(get_listen_ip_for_node ANALYTICS)
 rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')
 configdb_cql_servers=$(echo $CONFIGDB_CQL_SERVERS | sed 's/,/ /g')
+is_alarm_enabled=${ENABLE_ANALYTICS_ALARM:-False}
+
 
 cat > /etc/contrail/contrail-collector.conf << EOM
 [DEFAULT]
@@ -29,7 +31,15 @@ log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 # sandesh_send_rate_limit=
 cassandra_server_list=$ANALYTICSDB_CQL_SERVERS
+alarm_enable=$is_alarm_enabled
+EOM
+
+if [[ ${is_alarm_enabled,,} == true ]] ; then
+cat >> /etc/contrail/contrail-collector.conf << EOM
 kafka_broker_list=$KAFKA_SERVERS
+EOM
+fi
+cat >> /etc/contrail/contrail-collector.conf << EOM
 zookeeper_server_list=$ZOOKEEPER_ANALYTICS_SERVERS
 
 [COLLECTOR]
@@ -42,11 +52,17 @@ protobuf_port=${COLLECTOR_PROTOBUF_LISTEN_PORT:-$COLLECTOR_PROTOBUF_PORT}
 port=${COLLECTOR_STRUCTURED_SYSLOG_LISTEN_PORT:-$COLLECTOR_STRUCTURED_SYSLOG_PORT}
 # List of external syslog receivers to forward structured syslog messages in ip:port format separated by space
 # tcp_forward_destination=10.213.17.53:514
+EOM
+if [[ ${is_alarm_enabled,,} == true ]] ; then
+cat >> /etc/contrail/contrail-collector.conf << EOM
 kafka_broker_list=$KAFKA_SERVERS
 kafka_topic=${KAFKA_TOPIC:-structured_syslog_topic}
 # number of kafka partitions
 kafka_partitions=${KAFKA_PARTITIONS:-30}
+EOM
+fi
 
+cat >> /etc/contrail/contrail-collector.conf << EOM
 [API_SERVER]
 # List of api-servers in ip:port format separated by space
 api_server_list=$CONFIG_SERVERS
