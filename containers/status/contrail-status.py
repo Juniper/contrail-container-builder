@@ -54,25 +54,42 @@ CONTRAIL_SERVICES_TO_SANDESH_SVC = {
         'nodemgr': 'contrail-analytics-nodemgr',
         'api': 'contrail-analytics-api',
         'collector': 'contrail-collector',
-        'query-engine': 'contrail-query-engine',
-        'alarm-gen': 'contrail-alarm-gen',
-        'snmp-collector': 'contrail-snmp-collector',
-        'topology': 'contrail-topology',
     },
     'kubernetes': {
         'kube-manager': 'contrail-kube-manager',
     },
     'database': {
         'nodemgr': 'contrail-database-nodemgr',
-        'cassandra': None,
-        'zookeeper': None,
-        'kafka': None,
     },
     'webui': {
         'web': None,
         'job': None,
     }
 }
+
+alarm_enable = os.getenv('ENABLE_ANALYTICS_ALARM', 'False')
+snmp_enable = os.getenv('ENABLE_ANALYTICS_SNMP', 'False')
+qe_enable = os.getenv('ENABLE_ANALYTICS_QUERY_ENGINE', 'False')
+kafka_enable = os.getenv('ENABLE_ANALYTICS_DATABASE_KAFKA', 'False')
+cassandra_enable = os.getenv('ENABLE_ANALYTICS_DATABASE_CASSANDRA', 'False')
+
+if alarm_enable == 'True':
+    CONTRAIL_SERVICES_TO_SANDESH_SVC['analytics']['alarm-gen'] = \
+        'contrail-alarm-gen'
+if kafka_enable == 'True':
+    CONTRAIL_SERVICES_TO_SANDESH_SVC['database']['kafka'] = None
+    CONTRAIL_SERVICES_TO_SANDESH_SVC['database']['zookeeper'] = None
+if snmp_enable == 'True':
+    CONTRAIL_SERVICES_TO_SANDESH_SVC['analytics']['snmp-collector'] = \
+        'contrail-snmp-collector'
+    CONTRAIL_SERVICES_TO_SANDESH_SVC['analytics']['topology'] = \
+        'contrail-topology'
+if qe_enable == 'True':
+    CONTRAIL_SERVICES_TO_SANDESH_SVC['analytics']['query-engine'] = \
+        'contrail-query-engine'
+if cassandra_enable == 'True':
+    CONTRAIL_SERVICES_TO_SANDESH_SVC['analytics']['cassandra'] = None
+
 # TODO: Include vcenter-plugin
 
 

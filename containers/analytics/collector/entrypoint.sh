@@ -7,6 +7,9 @@ pre_start_init
 hostip=$(get_listen_ip_for_node ANALYTICS)
 rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')
 configdb_cql_servers=$(echo $CONFIGDB_CQL_SERVERS | sed 's/,/ /g')
+is_kafka_enabled=${ENABLE_GLOBAL_ANALYTICS_DATABASE_KAFKA:-False}
+is_cassandra_enabled=${ENABLE_GLOBAL_ANALYTICS_DATABASE_CASSANDRA:-False}
+
 
 cat > /etc/contrail/contrail-collector.conf << EOM
 [DEFAULT]
@@ -28,9 +31,20 @@ log_file_size=${COLLECTOR_LOG_FILE_SIZE:-1048576}
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 # sandesh_send_rate_limit=
+EOM
+if [[ ${is_cassandra_enabled,,} == true ]] ; then
+cat >> /etc/contrail/contrail-collector.conf << EOM
 cassandra_server_list=$ANALYTICSDB_CQL_SERVERS
+EOM
+fi
+
+if [[ ${is_kafka_enabled,,} == true ]] ; then
+cat >> /etc/contrail/contrail-collector.conf << EOM
 kafka_broker_list=$KAFKA_SERVERS
-zookeeper_server_list=$ZOOKEEPER_ANALYTICS_SERVERS
+EOM
+fi
+cat >> /etc/contrail/contrail-collector.conf << EOM
+zookeeper_server_list=$ZOOKEEPER_SERVERS
 
 [COLLECTOR]
 port=${COLLECTOR_LISTEN_PORT:-$COLLECTOR_PORT}
@@ -42,16 +56,26 @@ protobuf_port=${COLLECTOR_PROTOBUF_LISTEN_PORT:-$COLLECTOR_PROTOBUF_PORT}
 port=${COLLECTOR_STRUCTURED_SYSLOG_LISTEN_PORT:-$COLLECTOR_STRUCTURED_SYSLOG_PORT}
 # List of external syslog receivers to forward structured syslog messages in ip:port format separated by space
 # tcp_forward_destination=10.213.17.53:514
+EOM
+if [[ ${is_kafka_enabled,,} == true ]] ; then
+cat >> /etc/contrail/contrail-collector.conf << EOM
 kafka_broker_list=$KAFKA_SERVERS
 kafka_topic=${KAFKA_TOPIC:-structured_syslog_topic}
 # number of kafka partitions
 kafka_partitions=${KAFKA_PARTITIONS:-30}
+EOM
+fi
+
+cat >> /etc/contrail/contrail-collector.conf << EOM
 
 [API_SERVER]
 # List of api-servers in ip:port format separated by space
 api_server_list=$CONFIG_SERVERS
 api_server_use_ssl=${CONFIG_API_USE_SSL:-False}
 
+EOM
+if [[ ${is_cassandra_enabled,,} == true ]] ; then
+cat >> /etc/contrail/contrail-collector.conf << EOM
 [DATABASE]
 # disk usage percentage
 disk_usage_percentage.high_watermark0=${COLLECTOR_disk_usage_percentage_high_watermark0:-90}
@@ -76,6 +100,10 @@ high_watermark1.message_severity_level=${COLLECTOR_high_watermark1_message_sever
 low_watermark1.message_severity_level=${COLLECTOR_low_watermark1_message_severity_level:-SYS_WARN}
 high_watermark2.message_severity_level=${COLLECTOR_high_watermark2_message_severity_level:-SYS_DEBUG}
 low_watermark2.message_severity_level=${COLLECTOR_low_watermark2_message_severity_level:-INVALID}
+EOM
+fi
+
+cat >> /etc/contrail/contrail-collector.conf << EOM
 
 [REDIS]
 port=$REDIS_SERVER_PORT
