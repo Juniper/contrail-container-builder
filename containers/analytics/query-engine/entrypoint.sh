@@ -21,7 +21,6 @@ start_time=${QUERYENGINE_START_TIME:-0}
 # Sandesh send rate limit can be used to throttle system logs transmitted per
 # second. System logs are dropped if the sending rate is exceeded
 # sandesh_send_rate_limit=
-cassandra_server_list=$ANALYTICSDB_CQL_SERVERS
 collectors=$COLLECTOR_SERVERS
 
 [REDIS]

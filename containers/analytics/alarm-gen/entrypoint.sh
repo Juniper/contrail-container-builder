@@ -17,7 +17,7 @@ log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 collectors=$COLLECTOR_SERVERS
 kafka_broker_list=$KAFKA_SERVERS
-zk_list=$ZOOKEEPER_ANALYTICS_SERVERS_SPACE_DELIM
+zk_list=$ZOOKEEPER_SERVERS_SPACE_DELIM
 
 [API_SERVER]
 # List of api-servers in ip:port format separated by space
