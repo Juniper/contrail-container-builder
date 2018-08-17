@@ -6,6 +6,8 @@ pre_start_init
 
 host_ip=$(get_listen_ip_for_node ANALYTICS)
 config_db_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
+is_kafka_enabled=${ENABLE_ANALYTICS_DATABASE_KAFKA:-False}
+
 
 cat > /etc/contrail/contrail-alarm-gen.conf << EOM
 [DEFAULTS]
@@ -16,7 +18,14 @@ log_file=$LOG_DIR/contrail-alarm-gen.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 collectors=$COLLECTOR_SERVERS
+EOM
+
+if [[ ${is_alarm_enabled,,} == true ]] ; then
+cat >> /etc/contrail/contrail-alarm-gen.conf << EOM
 kafka_broker_list=$KAFKA_SERVERS
+EOM
+fi
+cat >> /etc/contrail/contrail-alarm-gen.conf << EOM
 zk_list=$ZOOKEEPER_ANALYTICS_SERVERS_SPACE_DELIM
 
 [API_SERVER]
