@@ -400,6 +400,7 @@ services:
     volumes:
       - /dev:/dev
       - /etc/sysconfig/network-scripts:/etc/sysconfig/network-scripts
+      - /etc/modprobe.d/:/etc/modprobe.d/
       - /usr/src:/usr/src
       - /lib/modules:/lib/modules
       - /var/log/contrail:/var/log/contrail
