@@ -339,7 +339,7 @@ def get_containers():
             continue
         if cnt['State'] != items[key]['State']:
             if cnt['State'] == 'running':
-                items[key] = container
+                items[key] = item
             continue
         # if both has same state - add latest.
         if cnt['Created'] > items[key]['Created']:
