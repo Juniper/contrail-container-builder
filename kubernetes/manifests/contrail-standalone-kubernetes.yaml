@@ -31,8 +31,6 @@ data:
   WEBUI_NODES: {{ WEBUI_NODES }}
   WEBUI_VIP: "{{ WEBUI_VIP }}"
   ZOOKEEPER_ANALYTICS_PORT: "{{ ZOOKEEPER_ANALYTICS_PORT }}"
-  ZOOKEEPER_NODES: {{ ZOOKEEPER_NODES }}
-  ZOOKEEPER_PORTS: "{{ ZOOKEEPER_PORTS }}"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -40,7 +38,9 @@ metadata:
   name: configzookeeperenv
   namespace: kube-system
 data:
+  ZOOKEEPER_NODES: {{ CONFIGDB_NODES }}
   ZOOKEEPER_PORT: "{{ ZOOKEEPER_PORT }}"
+  ZOOKEEPER_PORTS: "{{ ZOOKEEPER_PORTS }}"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -48,7 +48,9 @@ metadata:
   name: analyticszookeeperenv
   namespace: kube-system
 data:
+  ZOOKEEPER_NODES: {{ ANALYTICSDB_NODES }}
   ZOOKEEPER_PORT: "{{ ZOOKEEPER_ANALYTICS_PORT }}"
+  ZOOKEEPER_PORTS: "4888:5888"
 
 ---
 apiVersion: v1
@@ -108,6 +110,7 @@ data:
   KUBERNETES_API_SERVER: {{ KUBERNETES_API_SERVER }}
   KUBERNETES_API_SECURE_PORT: "{{ KUBERNETES_API_SECURE_PORT }}"
   K8S_TOKEN_FILE: "/tmp/serviceaccount/token"
+
 # Containers section
 ---
 apiVersion: extensions/v1beta1
@@ -128,7 +131,7 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: "node-role.opencontrail.org/controller"
+              - key: "node-role.opencontrail.org/configdb"
                 operator: Exists
       tolerations:
       - key: node-role.kubernetes.io/master
@@ -139,6 +142,9 @@ spec:
       - name: config-zookeeper
         image: "{{CONTRAIL_REGISTRY}}/contrail-external-zookeeper:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
+        env:
+        - name: NODE_TYPE
+          value: config-database
         envFrom:
         - configMapRef:
             name: env
@@ -177,7 +183,7 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: "node-role.opencontrail.org/controller"
+              - key: "node-role.opencontrail.org/analyticsdb"
                 operator: Exists
       tolerations:
       - key: node-role.kubernetes.io/master
@@ -188,6 +194,9 @@ spec:
       - name: analytics-zookeeper
         image: "{{CONTRAIL_REGISTRY}}/contrail-external-zookeeper:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
+        env:
+        - name: NODE_TYPE
+          value: database
         envFrom:
         - configMapRef:
             name: env
@@ -226,7 +235,7 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: "node-role.opencontrail.org/controller"
+              - key: "node-role.opencontrail.org/analyticsdb"
                 operator: Exists
       tolerations:
       - key: node-role.kubernetes.io/master
@@ -240,6 +249,10 @@ spec:
         env:
         - name: NODE_TYPE
           value: database
+        - name: KAFKA_NODES
+          value: {{ ANALYTICSDB_NODES}}
+        - name: ZOOKEEPER_NODES
+          value: {{ ANALYTICSDB_NODES}}
         envFrom:
         - configMapRef:
             name: env
@@ -273,7 +286,7 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: "node-role.opencontrail.org/controller"
+              - key: "node-role.opencontrail.org/analyticsdb"
                 operator: Exists
       tolerations:
       - key: node-role.kubernetes.io/master
@@ -323,7 +336,7 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: "node-role.opencontrail.org/controller"
+              - key: "node-role.opencontrail.org/configdb"
                 operator: Exists
       tolerations:
       - key: node-role.kubernetes.io/master
@@ -336,7 +349,7 @@ spec:
         imagePullPolicy: ""
         env:
         - name: NODE_TYPE
-          value: config
+          value: config-database
         envFrom:
         - configMapRef:
             name: contrail-configdb-config
@@ -344,14 +357,14 @@ spec:
         - mountPath: /var/lib/cassandra
           name: configdb-data
         - mountPath: /var/log/cassandra
-          name: configdb-log
+          name: configdb-logs
       imagePullSecrets:
       - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
       - name: configdb-data
         hostPath:
           path: /var/lib/contrail/configdb
-      - name: configdb-log
+      - name: configdb-logs
         hostPath:
           path: /var/log/contrail/configdb
 ---
@@ -373,7 +386,7 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: "node-role.opencontrail.org/controller"
+              - key: "node-role.opencontrail.org/analyticsdb"
                 operator: Exists
       tolerations:
       - key: node-role.kubernetes.io/master
@@ -392,8 +405,6 @@ spec:
         envFrom:
         - configMapRef:
             name: env
-        - configMapRef:
-            name: analyticszookeeperenv
         volumeMounts:
         - mountPath: /host/usr/bin
           name: host-usr-bin
@@ -407,7 +418,7 @@ spec:
         - configMapRef:
             name: nodemgr-config
         - configMapRef:
-            name: analyticszookeeperenv
+            name: contrail-analyticsdb-config
         env:
         - name: NODE_TYPE
           value: database
@@ -439,22 +450,22 @@ spec:
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: contrail-analytics
+  name: contrail-config-database-nodemgr
   namespace: kube-system
   labels:
-    app: contrail-analytics
+    app: contrail-config-database-nodemgr
 spec:
   template:
     metadata:
       labels:
-        app: contrail-analytics
+        app: contrail-config-database-nodemgr
     spec:
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: "node-role.opencontrail.org/controller"
+              - key: "node-role.opencontrail.org/configdb"
                 operator: Exists
       tolerations:
       - key: node-role.kubernetes.io/master
@@ -473,8 +484,85 @@ spec:
         envFrom:
         - configMapRef:
             name: env
+        volumeMounts:
+        - mountPath: /host/usr/bin
+          name: host-usr-bin
+      containers:
+      - name: contrail-config-database-nodemgr
+        image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        envFrom:
         - configMapRef:
-            name: analyticszookeeperenv
+            name: env
+        - configMapRef:
+            name: nodemgr-config
+        - configMapRef:
+            name: contrail-configdb-config
+        env:
+        - name: NODE_TYPE
+          value: config-database
+        - name: CONFIG_DATABASE_NODEMGR__DEFAULTS__minimum_diskGB
+          value: "2"
+# todo: there is type Socket in new kubernetes, it is possible to use full
+# path:
+# hostPath:
+#   path: /var/run/docker.sock and
+#   type: Socket
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: configdb-logs
+        - mountPath: /mnt
+          name: docker-unix-socket
+      imagePullSecrets:
+      - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
+      volumes:
+      - name: configdb-logs
+        hostPath:
+          path: /var/log/contrail/configdb
+      - name: docker-unix-socket
+        hostPath:
+          path: /var/run
+      - name: host-usr-bin
+        hostPath:
+          path: /usr/bin
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: contrail-analytics
+  namespace: kube-system
+  labels:
+    app: contrail-analytics
+spec:
+  template:
+    metadata:
+      labels:
+        app: contrail-analytics
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: "node-role.opencontrail.org/analytics"
+                operator: Exists
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      hostNetwork: true
+      initContainers:
+      - name: contrail-node-init
+        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        securityContext:
+          privileged: true
+        env:
+        - name: CONTRAIL_STATUS_IMAGE
+          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+        envFrom:
+        - configMapRef:
+            name: env
         volumeMounts:
         - mountPath: /host/usr/bin
           name: host-usr-bin
@@ -593,7 +681,7 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: "node-role.opencontrail.org/controller"
+              - key: "node-role.opencontrail.org/control"
                 operator: Exists
       tolerations:
       - key: node-role.kubernetes.io/master
@@ -612,8 +700,6 @@ spec:
         envFrom:
         - configMapRef:
             name: env
-        - configMapRef:
-            name: configzookeeperenv
         volumeMounts:
         - mountPath: /host/usr/bin
           name: host-usr-bin
@@ -624,8 +710,6 @@ spec:
         envFrom:
         - configMapRef:
             name: env
-        - configMapRef:
-            name: configzookeeperenv
         volumeMounts:
         - mountPath: /var/log/contrail
           name: control-logs
@@ -635,8 +719,6 @@ spec:
         envFrom:
         - configMapRef:
             name: env
-        - configMapRef:
-            name: configzookeeperenv
         volumeMounts:
         - mountPath: /etc/contrail
           name: dns-config
@@ -648,8 +730,6 @@ spec:
         envFrom:
         - configMapRef:
             name: env
-        - configMapRef:
-            name: configzookeeperenv
         securityContext:
           privileged: true
         volumeMounts:
@@ -713,7 +793,7 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: "node-role.opencontrail.org/controller"
+              - key: "node-role.opencontrail.org/config"
                 operator: Exists
       tolerations:
       - key: node-role.kubernetes.io/master
@@ -732,8 +812,6 @@ spec:
         envFrom:
         - configMapRef:
             name: env
-        - configMapRef:
-            name: configzookeeperenv
         volumeMounts:
         - mountPath: /host/usr/bin
           name: host-usr-bin
@@ -842,7 +920,7 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: "node-role.opencontrail.org/controller"
+              - key: "node-role.opencontrail.org/webui"
                 operator: Exists
       tolerations:
       - key: node-role.kubernetes.io/master
@@ -861,8 +939,6 @@ spec:
         envFrom:
         - configMapRef:
             name: env
-        - configMapRef:
-            name: configzookeeperenv
         volumeMounts:
         - mountPath: /host/usr/bin
           name: host-usr-bin
@@ -873,8 +949,6 @@ spec:
         envFrom:
         - configMapRef:
             name: env
-        - configMapRef:
-            name: configzookeeperenv
         volumeMounts:
         - mountPath: /var/log/contrail
           name: webui-logs
@@ -884,8 +958,6 @@ spec:
         envFrom:
         - configMapRef:
             name: env
-        - configMapRef:
-            name: configzookeeperenv
         volumeMounts:
         - mountPath: /var/log/contrail
           name: webui-logs
@@ -917,10 +989,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: "node-role.opencontrail.org/controller"
+              - key: "node-role.opencontrail.org/analytics"
                 operator: Exists
             - matchExpressions:
-              - key: "node-role.opencontrail.org/controller"
+              - key: "node-role.opencontrail.org/webui"
                 operator: Exists
       tolerations:
       - key: node-role.kubernetes.io/master
@@ -929,9 +1001,11 @@ spec:
       hostNetwork: true
       containers:
       - name: redis
-        image: "${CONTRAIL_REGISTRY}/contrail-external-redis:${CONTRAIL_CONTAINER_TAG}"
+        image: "{{CONTRAIL_REGISTRY}}/contrail-external-redis:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
+        - configMapRef:
+            name: env
         volumeMounts:
         - mountPath: /var/lib/redis
           name: redis-data
@@ -963,7 +1037,7 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: "node-role.opencontrail.org/controller"
+              - key: "node-role.opencontrail.org/configdb"
                 operator: Exists
       tolerations:
       - key: node-role.kubernetes.io/master
@@ -976,12 +1050,10 @@ spec:
         imagePullPolicy: ""
         env:
         - name: NODE_TYPE
-          value: config
+          value: config-database
         envFrom:
         - configMapRef:
             name: env
-        - configMapRef:
-            name: configzookeeperenv
         - configMapRef:
             name: rabbitmq-config
         volumeMounts:
@@ -1037,8 +1109,6 @@ spec:
         envFrom:
         - configMapRef:
             name: env
-        - configMapRef:
-            name: configzookeeperenv
         volumeMounts:
         - mountPath: /host/usr/bin
           name: host-usr-bin
@@ -1049,8 +1119,6 @@ spec:
         envFrom:
         - configMapRef:
             name: env
-        - configMapRef:
-            name: configzookeeperenv
         - configMapRef:
             name: kube-manager-config
         volumeMounts:
@@ -1090,10 +1158,8 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: "node-role.opencontrail.org/controller"
-                operator: NotIn
-                values:
-                - "true"
+              - key: "node-role.opencontrail.org/agent"
+                operator: Exists
       #Enable tolerations for single node setup
       tolerations:
       - key: node-role.kubernetes.io/master
@@ -1113,8 +1179,6 @@ spec:
         envFrom:
         - configMapRef:
             name: env
-        - configMapRef:
-            name: configzookeeperenv
         volumeMounts:
         - mountPath: /host/usr/bin
           name: host-usr-bin
@@ -1126,8 +1190,6 @@ spec:
         envFrom:
         - configMapRef:
             name: env
-        - configMapRef:
-            name: configzookeeperenv
         volumeMounts:
         - mountPath: /usr/src
           name: usr-src
@@ -1143,8 +1205,6 @@ spec:
         envFrom:
         - configMapRef:
             name: env
-        - configMapRef:
-            name: configzookeeperenv
         volumeMounts:
         - mountPath: /var/lib/contrail
           name: var-lib-contrail
@@ -1169,8 +1229,10 @@ spec:
         envFrom:
         - configMapRef:
             name: env
-        - configMapRef:
-            name: configzookeeperenv
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/clean-up.sh"]
         volumeMounts:
         - mountPath: /dev
           name: dev
@@ -1196,8 +1258,6 @@ spec:
         envFrom:
         - configMapRef:
             name: env
-        - configMapRef:
-            name: configzookeeperenv
         - configMapRef:
             name: nodemgr-config
         env:
