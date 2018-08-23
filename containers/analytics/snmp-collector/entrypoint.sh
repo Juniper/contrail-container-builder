@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source /common.sh
+export SNMPCONFPATH=${SNMPCONFPATH:-/etc/contrail}
 
 pre_start_init
 
