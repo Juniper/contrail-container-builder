@@ -45,6 +45,7 @@ fi
 RABBITMQ_NODENAME=contrail@$my_node
 RABBITMQ_NODE_PORT=${RABBITMQ_NODE_PORT:-5673}
 RABBITMQ_DIST_PORT=$((RABBITMQ_NODE_PORT+20000))
+RABBITMQ_HEARTBEAT_INTERVAL=${RABBITMQ_HEARTBEAT_INTERVAL:-10}
 
 echo "INFO: RABBITMQ_NODENAME=$RABBITMQ_NODENAME, RABBITMQ_NODE_PORT=$RABBITMQ_NODE_PORT"
 
@@ -72,7 +73,6 @@ if [[ "${server_names_list[0]}" != "$my_node" ]] ; then
     fi
   done
 fi
-
 cat << EOF > /etc/rabbitmq/rabbitmq.config
 [
    {rabbit, [ {tcp_listeners, [{"${my_ip}", ${RABBITMQ_NODE_PORT}}]}, {cluster_partition_handling, autoheal},{loopback_users, []},
@@ -80,6 +80,7 @@ cat << EOF > /etc/rabbitmq/rabbitmq.config
               {vm_memory_high_watermark, 0.8},
               {disk_free_limit,50000000},
               {log_levels,[{connection, info},{mirroring, info}]},
+              {heartbeat, ${RABBITMQ_HEARTBEAT_INTERVAL}},
               {delegate_count,20},
               {channel_max,5000},
               {tcp_listen_options,
