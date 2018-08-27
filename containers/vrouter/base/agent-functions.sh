@@ -650,9 +650,9 @@ function init_crypt0() {
         return
     fi
 
-    modprobe ipvlan || { echo "ERROR: Failed to modprobe ipvlan kernel module" && return 1; }
+    load_kernel_module ipvlan || { echo "ERROR: Failed to load ipvlan kernel module" && return 1; }
     if grep -q aes /proc/cpuinfo ; then
-        modprobe aesni_intel || echo "WARNING: Failed to modprobe aesni_intel kernel module. Proceeding without aesni module."
+        load_kernel_module aesni_intel || echo "WARNING: Failed to load aesni_intel kernel module. Proceeding without aesni module."
     fi
 
     local mtu=`cat /sys/class/net/vhost0/mtu`
