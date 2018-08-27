@@ -15,9 +15,9 @@ function load_kernel_module() {
     local module=$1
     shift 1
     local opts=$@
-    echo "INFO: load $module kernel module"
+    echo "INFO: load $module kernel module, options='$opts'"
     if ! modprobe -v "$module" $opts ; then
-        echo "ERROR: failed to load $module driver"
+        echo "WARNING: failed to load $module driver"
         return 1
     fi
 }
@@ -31,7 +31,7 @@ function unload_kernel_module() {
     done
     echo "INFO: unload $module kernel module"
     if ! rmmod $module ; then
-        echo "ERROR: Failed to unload $module driver"
+        echo "WARNING: Failed to unload $module driver"
         return 1
     fi
 }

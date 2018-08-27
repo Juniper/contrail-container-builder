@@ -24,7 +24,7 @@ function pkt_setup () {
 function load_vrouter() {
     lsmod | grep -q vrouter && return 0
     free -h && sync && echo 2 >/proc/sys/vm/drop_caches && free -h
-    load_kernel_module vrouter
+    load_kernel_module vrouter $VROUTER_MODULE_OPTIONS
 }
 
 function create_vhost0() {
