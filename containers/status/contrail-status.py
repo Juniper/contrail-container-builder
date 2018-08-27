@@ -416,7 +416,7 @@ def main():
             pods.setdefault(pod, dict())[service] = v
             continue
         print("WARNING: container with original name '{}' "
-              "have Pod os Service empty. Pod: '{}' / Service: '{}'. "
+              "have Pod or Service empty. Pod: '{}' / Service: '{}'. "
               "Please pass NODE_TYPE with pod name to container's env".format(
                   v['Original Name'], v['Pod'], v['Service']))
         fail = True
