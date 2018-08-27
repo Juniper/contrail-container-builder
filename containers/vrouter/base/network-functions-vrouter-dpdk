@@ -79,6 +79,7 @@ function start_dpdk_container() {
     [ -n "$VLAN_ID" ] && env_options+=" -e VLAN_ID=$VLAN_ID"
     [ -n "$DRIVER" ] && env_options+=" -e DPDK_UIO_DRIVER=$DRIVER"
     [ -n "$CPU_LIST" ] && env_options+=" -e CPU_CORE_MASK=$CPU_LIST"
+    [ -n "$DPDK_COMMAND_ADDITIONAL_ARGS" ] && env_options+=" -e DPDK_COMMAND_ADDITIONAL_ARGS=$DPDK_COMMAND_ADDITIONAL_ARGS"
 
     if docker inspect contrail-vrouter-agent-dpdk 2>&1 | grep -io 'status.*running' ; then
         echo "INFO: container contrail-vrouter-agent-dpdk is already up"

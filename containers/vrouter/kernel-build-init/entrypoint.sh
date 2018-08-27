@@ -38,12 +38,6 @@ ls -l /lib/modules/$kver/updates/dkms/vrouter.ko
 
 touch $vrouter_dir/module_compiled
 
-free -h && sync && echo 2 >/proc/sys/vm/drop_caches && free -h
-if ! modprobe vrouter ; then
-  echo "ERROR: Failed to insert vrouter kernel module"
-  exit 1
-fi
-
 # copy vif util to host
 if [[ -d /host/bin && ! -f /host/bin/vif ]] ; then
     /bin/cp -f /contrail_tools/usr/bin/vif /host/bin/vif
