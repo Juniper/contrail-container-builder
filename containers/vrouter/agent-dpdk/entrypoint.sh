@@ -38,7 +38,6 @@ rm -f '/run/.rte_config'
 
 ensure_hugepages $HUGE_PAGES_DIR
 
-set_ctl vm.nr_hugepages ${HUGE_PAGES}
 set_ctl vm.max_map_count 128960
 set_ctl net.ipv4.tcp_keepalive_time 5
 set_ctl net.ipv4.tcp_keepalive_probes 5
