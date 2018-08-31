@@ -398,15 +398,6 @@ function read_and_save_dpdk_params() {
     echo "$nic" > $binding_data_dir/nic
 }
 
-function ensure_hugepages() {
-    local hp_dir=${1:?}
-    local hp_dir_mount_type="hugetlbfs $hp_dir hugetlbfs"
-    if ! grep -qs "$hp_dir_mount_type" /proc/mounts ; then
-        echo "ERROR: Hupepages dir($hp_dir) does not have hugetlbfs mount type"
-        exit -1
-    fi
-}
-
 function check_vrouter_agent_settings() {
     # check that all control nodes accessible via the same interface and this interface is vhost0
     local nodes=(`echo $CONTROL_NODES | tr ',' ' '`)
