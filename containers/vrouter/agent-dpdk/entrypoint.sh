@@ -38,7 +38,12 @@ rm -f '/run/.rte_config'
 
 ensure_hugepages $HUGE_PAGES_DIR
 
-set_ctl vm.nr_hugepages ${HUGE_PAGES}
+if [ -n "$HUGE_PAGES" ]; then
+  set_ctl vm.nr_hugepages ${HUGE_PAGES}
+else
+  echo "INFO: HugePages amount not modified, preallocation required"
+fi
+
 set_ctl vm.max_map_count 128960
 set_ctl net.ipv4.tcp_keepalive_time 5
 set_ctl net.ipv4.tcp_keepalive_probes 5
