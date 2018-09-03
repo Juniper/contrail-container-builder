@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 # these next folders must be mounted to compile vrouter.ko in ubuntu: /usr/src /lib/modules
 
@@ -28,9 +28,12 @@ templ=$(cat /opt/contrail/src/dkms.conf)
 content=$(eval "echo \"$templ\"")
 echo "$content" > $vrouter_dir/dkms.conf
 
-dkms add -m vrouter -v "${contrail_version}"
-dkms build -m vrouter -v "${contrail_version}"
-dkms install -m vrouter -v "${contrail_version}"
+mkdir -p /vrouter/${contrail_version}/build/include/
+mkdir -p /vrouter/${contrail_version}/build/dp-core
+dkms --verbose add -m vrouter -v "${contrail_version}"
+dkms --verbose build -m vrouter -v "${contrail_version}"
+cat /var/lib/dkms/vrouter/${contrail_version}/build/make.log
+dkms --verbose install -m vrouter -v "${contrail_version}"
 depmod -a
 
 # check vrouter.ko was built
