@@ -329,11 +329,10 @@ function read_and_save_dpdk_params() {
     local addrs=''
     [ -z "$BIND_INT" ] && addrs=$(get_addrs_for_nic $phys_int)
 
-    local _default_gw_metric=`get_default_gateway_for_nic_metric $phys_int`
-    local gateway=${VROUTER_GATEWAY:-"$_default_gw_metric"}
     local mtu=$(get_iface_mtu $phys_int)
+    local routes=$(get_dev_routes $phys_int)
 
-    echo "INFO: phys_int=$phys_int phys_int_mac=$phys_int_mac, pci=$pci, addrs=[$addrs], gateway=$gateway"
+    echo "INFO: phys_int=$phys_int phys_int_mac=$phys_int_mac, pci=$pci, addrs=[$addrs], routes=[$routes]"
     local nic=$phys_int
 
     # save data for next usage in network init container
@@ -342,8 +341,8 @@ function read_and_save_dpdk_params() {
     echo "$phys_int_mac" > $binding_data_dir/${nic}_mac
     echo "$pci" > $binding_data_dir/${nic}_pci
     echo "$addrs" > $binding_data_dir/${nic}_ip_addresses
-    echo "$gateway" > $binding_data_dir/${nic}_gateway
     echo "$mtu" > $binding_data_dir/${nic}_mtu
+    echo "$routes" > $binding_data_dir/${nic}_routes
 
     declare vlan_id vlan_parent
     if [ -n "$BIND_INT" ] ; then
@@ -448,14 +447,13 @@ function init_vhost0() {
         return 0
     fi
 
-    declare phys_int phys_int_mac addrs gateway bind_type bind_int mtu
+    declare phys_int phys_int_mac addrs bind_type bind_int mtu routes
     if ! is_dpdk ; then
         # NIC case
         IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
         addrs=$(get_addrs_for_nic $phys_int)
-        local default_gw_metric=`get_default_gateway_for_nic_metric $phys_int`
-        gateway=${VROUTER_GATEWAY:-"$default_gw_metric"}
         mtu=$(get_iface_mtu $phys_int)
+        routes=$(get_dev_routes $phys_int)
         echo "INFO: creating vhost0 for nic mode: nic: $phys_int, mac=$phys_int_mac"
         if ! create_vhost0 $phys_int $phys_int_mac ; then
             return 1
@@ -480,9 +478,8 @@ function init_vhost0() {
         # Maybe rework someow config pathching..
         prepare_vif_config $AGENT_MODE
         addrs=`cat $binding_data_dir/${phys_int}_ip_addresses`
-        default_gateway="$(cat $binding_data_dir/${phys_int}_gateway)"
-        gateway=${VROUTER_GATEWAY:-$default_gateway}
         mtu=`cat $binding_data_dir/${phys_int}_mtu`
+        routes=`cat $binding_data_dir/${phys_int}_routes`
         echo "INFO: creating vhost0 for dpdk mode: nic: $phys_int, mac=$phys_int_mac"
         if ! create_vhost0_dpdk $phys_int $phys_int_mac ; then
             return 1
@@ -530,13 +527,11 @@ function init_vhost0() {
         fi
         ip link set dev vhost0 down
         ifup vhost0 || { echo "ERROR: failed to ifup vhost0." && ret=1; }
-        while IFS= read -r line ; do
-            ip route del $line || { echo "ERROR: route $line was not removed for iface ${phys_int}." && ret=1; }
-        done < <(ip route sh | grep ${phys_int})
+        set_dev_routes vhost0 "$routes"
     else
         echo "INFO: there is no ifcfg-$phys_int and ifcfg-vhost0, so initialize vhost0 manually"
         # TODO: switch off dhcp on phys_int
-        change_route_dev $phys_int vhost0
+        set_dev_routes vhost0 "$routes"
         echo "INFO: Changing physical interface to vhost in ip table"
         echo "$addrs" | while IFS= read -r line ; do
             if ! is_dpdk ; then
@@ -546,10 +541,6 @@ function init_vhost0() {
             local addr_to_add=`echo $line | sed 's/brd/broadcast/'`
             ip address add $addr_to_add dev vhost0 || { echo "ERROR: failed to add address $addr_to_add to vhost0." && ret=1; }
         done
-        if [[ -n "$gateway" ]]; then
-            echo "INFO: set default gateway"
-            ip route add default via $gateway || { echo "ERROR: failed to add default gateway $gateway" && ret=1; }
-        fi
         if [[ -n "$mtu" ]] ; then
             echo "INFO: set mtu"
             ip link set dev vhost0 mtu $mtu
@@ -590,16 +581,16 @@ function remove_vhost0() {
         return
     fi
     echo "INFO: removing vhost0"
-    declare phys_int phys_int_mac gateway restore_ip_cmd
+    declare phys_int phys_int_mac restore_ip_cmd routes
     IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
     local netscript_dir='/etc/sysconfig/network-scripts'
     if [ ! -d "$netscript_dir" ] ; then
-        gateway=$(get_default_gateway_for_nic_metric vhost0)
         restore_ip_cmd=$(gen_ip_addr_add_cmd vhost0 $phys_int)
-        change_route_dev vhost0 $phys_int
+        routes=$(get_dev_routes vhost0)
+        del_dev_routes vhost0 "$routes"
     fi
     remove_vhost0_kernel || { echo "ERROR: failed to remove vhost0" && return 1; }
-    restore_phys_int $phys_int "$restore_ip_cmd" "$gateway"
+    restore_phys_int $phys_int "$restore_ip_cmd" "$routes"
 }
 
 # Modify/Deletes files created by agent container

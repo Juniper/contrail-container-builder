@@ -126,24 +126,42 @@ function gen_ip_addr_add_cmd() {
     echo $cmd
 }
 
-function change_route_dev() {
-    local from=$1
-    local to=$2
-    local route
-    # move non-defaults routes first
-    while IFS= read -r route ; do
-        ip route change $route  dev $to || echo "WARNING: failed to apply ip route change $route  dev $to"
-    done < <(ip route list dev ${from} | grep -v default)
-    # move rest (defaults) if any
-    while IFS= read -r route ; do
-        ip route change $route  dev $to || echo "WARNING: failed to apply ip route change $route  dev $to"
-    done < <(ip route list dev ${from})
+function get_dev_routes() {
+    local dev=$1
+    local routes_list=$(ip route list dev ${dev} | grep -v default)
+    [ -n "$routes_list" ] && echo "$routes_list"
+    routes_list=$(ip route list dev ${dev} | grep default)
+    [ -n "$routes_list" ] && echo "$routes_list"
+}
+
+function del_dev_routes() {
+    local dev=$1
+    local routes_list=$2
+    if [ -n "$routes_list" ] ; then
+        local route
+        while IFS= read -r route ; do
+            echo "INFO: ip route del $route dev $dev"
+            ip route del $route dev $dev || echo "WARNING: failed to apply ip route del $route dev $dev"
+        done < <(echo "$routes_list")
+    fi
+}
+
+function set_dev_routes() {
+    local dev=$1
+    local routes_list=$2
+    if [ -n "$routes_list" ] ; then
+        local route
+        while IFS= read -r route ; do
+            echo "INFO: ip route replace $route dev $dev"
+            ip route replace $route dev $dev || echo "WARNING: failed to apply ip route replace $route dev $dev"
+        done < <(echo "$routes_list")
+    fi
 }
 
 function restore_phys_int() {
     local phys_int="$1"
     local add_ipaddr_cmd="$2"
-    local gateway="$3"
+    local routes="$3"
     local netscript_dir='/etc/sysconfig/network-scripts'
     echo "INFO: restore bind interface $phys_int"
     if [ -d "$netscript_dir" ] ; then
@@ -158,15 +176,10 @@ function restore_phys_int() {
         ifdown $phys_int >/dev/null 2>&1
         ifup $phys_int
     else
+        set_dev_routes $phys_int "$routes"
         if [ -n "$add_ipaddr_cmd" ] ; then
             echo "INFO: restore IPs for $phys_int"
             eval "$add_ipaddr_cmd"
-        fi
-        if [ -n "${gateway// }" ] ; then
-            if ip route | grep "default via" | grep -q "$gateway" ; then
-                echo "INFO: restore default gateway $gateway"
-                ip route add default via $gateway
-            fi
         fi
     fi
 }
