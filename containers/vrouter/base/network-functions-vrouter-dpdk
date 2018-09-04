@@ -131,18 +131,18 @@ function restore_iface_driver() {
 function restore_phys_int_dpdk() {
     local pci=$1
     local drv=${2:-${DPDK_UIO_DRIVER}}
-    declare phys_int gateway restore_ip_cmd
+    declare phys_int restore_ip_cmd routes
     local binding_data_dir='/var/run/vrouter'
-    [ -f "$binding_data_dir/nic" ] && phys_int=$(cat "$binding_data_dir/nic")
+    [ -f "$binding_data_dir/nic" ] && phys_int=$(cat $binding_data_dir/nic)
     local netscript_dir='/etc/sysconfig/network-scripts'
     if [ ! -d "$netscript_dir" ] ; then
-        gateway=$(get_default_gateway_for_nic_metric vhost0)
         restore_ip_cmd=$(gen_ip_addr_add_cmd vhost0 $phys_int)
-        [ -n "$phys_int" ] && change_route_dev vhost0 $phys_int
+        [ -f "$binding_data_dir/${phys_int}_routes" ] && routes=$(cat $binding_data_dir/${phys_int}_routes)
+        del_dev_routes vhost0 "$routes"
     fi
     restore_iface_driver $pci $drv
     if [ -n "$phys_int" ] ; then
-        restore_phys_int $phys_int "$restore_ip_cmd" "$gateway"
+        restore_phys_int $phys_int "$restore_ip_cmd" "$routes"
         rm -f "$binding_data_dir/${phys_int}"*
     else
         echo "WARNING: there is info about phys_int to restore"
