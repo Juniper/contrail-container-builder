@@ -132,6 +132,8 @@ control)
 
 vrouter)
   host_ip=$(get_ip_for_vrouter_from_control)
+  vhost_if=$(get_iface_for_vrouter_from_control)
+  ip_fabric_subnet=$(get_cidr_subnet_for_nic $vhost_if)
   params=''
   if is_dpdk ; then
     params="$params --dpdk_enabled"
@@ -145,6 +147,7 @@ vrouter)
   if [[ ${CLOUD_ORCHESTRATOR} == "kubernetes" ]]; then
     params="$params --enable_vhost_vmi_policy"
   fi
+  params="$params --ip_fabric_subnet $ip_fabric_subnet"
   provision_node provision_vrouter.py $host_ip ${VROUTER_HOSTNAME:-${DEFAULT_HOSTNAME}} $params
 
 esac

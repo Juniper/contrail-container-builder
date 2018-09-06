@@ -166,3 +166,68 @@ function mask2cidr() {
   done
   echo "$nbits"
 }
+
+#START: These functions below are "inspired" from https://dalemonk.wordpress.com/network-scripts/
+function cidr_to_subnet_mask() {
+    local i
+    local subnetmask=""
+    local full_octets=$(($1/8))
+    local partial_octet=$(($1%8))
+    for ((i=0;i<4;i+=1)); do
+        if [ $i -lt $full_octets ]; then
+            subnetmask+=255
+        elif [ $i -eq $full_octets ]; then
+            subnetmask+=$((256 - 2**(8-$partial_octet)))
+        else
+            subnetmask+=0
+        fi
+        [ $i -lt 3 ] && subnetmask+=.
+    done
+    echo $subnetmask
+}
+
+function ip_to_octets()
+{
+    local ip_address=$(echo $1 | awk -F/ {'print $1'})
+    OLDIFS="$IFS"
+    IFS=.
+    set $ip_address
+    local octet1=$1
+    local octet2=$2
+    local octet3=$3
+    local octet4=$4
+    IFS="$OLDIFS"
+    echo $octet1 $octet2 $octet3 $octet4
+}
+
+# Returns the 'subnet/mask' of an interface given its 'ip/mask'
+function get_subnet_addr() {
+   local ip_address="$1"
+   local cidr=$(echo $ip_address | awk -F/ {'print $2'})
+   local subnetmask=$(cidr_to_subnet_mask $cidr)
+   local octetip=$(ip_to_octets $ip_address)
+   local octetsn=$(ip_to_octets $subnetmask)
+
+   local octetip1=$(echo $octetip | awk {'print $1'})
+   local octetip2=$(echo $octetip | awk {'print $2'})
+   local octetip3=$(echo $octetip | awk {'print $3'})
+   local octetip4=$(echo $octetip | awk {'print $4'})
+
+   local octetsn1=$(echo $octetsn | awk {'print $1'})
+   local octetsn2=$(echo $octetsn | awk {'print $2'})
+   local octetsn3=$(echo $octetsn | awk {'print $3'})
+   local octetsn4=$(echo $octetsn | awk {'print $4'})
+
+   local netaddress=$(($octetip1 & $octetsn1)).$(($octetip2 & $octetsn2)).$(($octetip3 & $octetsn3)).$(($octetip4 & $octetsn4))
+   echo $netaddress
+}
+
+#END: These functions above are "inspired" from https://dalemonk.wordpress.com/network-scripts/
+
+function get_cidr_subnet_for_nic() {
+  local nic=$1
+  local if_cidr=$(get_cidr_for_nic $nic)
+  local if_cidr_subnet=$(get_subnet_addr $if_cidr)
+  echo $if_cidr_subnet
+}
+
