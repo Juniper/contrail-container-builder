@@ -11,7 +11,7 @@ cat > /etc/contrail/contrail-analytics-api.conf << EOM
 host_ip=${host_ip}
 http_server_port=${ANALYTICS_API_INTROSPECT_LISTEN_PORT:-$ANALYTICS_API_INTROSPECT_PORT}
 rest_api_port=${ANALYTICS_API_LISTEN_PORT:-$ANALYTICS_API_PORT}
-rest_api_ip=${ANALYTICS_API_LISTEN_IP:-0.0.0.0}
+rest_api_ip=${ANALYTICS_API_LISTEN_IP:-$host_ip}
 partitions=${ANALYTICS_UVE_PARTITIONS:-30}
 aaa_mode=$AAA_MODE
 log_file=$LOG_DIR/contrail-analytics-api.log
