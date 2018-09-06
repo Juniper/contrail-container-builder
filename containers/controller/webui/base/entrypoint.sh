@@ -4,6 +4,8 @@ source /common.sh
 
 pre_start_init
 
+host_ip=$(get_listen_ip_for_node WEBUI)
+
 function get_server_json_list(){
   server_typ=$1_NODES
   srv_list=$(echo ${!server_typ} | sed 's/,/'\',\''/g')
@@ -171,7 +173,7 @@ config.cassandra.enable_edit = ${cassandra_enable_edit};
 config.kue = {};
 config.kue.ui_port = '$KUE_UI_PORT'
 
-config.webui_addresses = [${WEBUI_LISTEN_ADDRESSES:-'0.0.0.0'}];
+config.webui_addresses = [${WEBUI_LISTEN_ADDRESSES:-$host_ip}];
 
 config.insecure_access = ${WEBUI_INSECURE_ACCESS};
 
