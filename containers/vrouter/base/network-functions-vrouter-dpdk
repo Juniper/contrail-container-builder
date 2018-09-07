@@ -41,20 +41,38 @@ function create_vhost0_dpdk() {
     fi
 }
 
+function get_next_free_bond_name() {
+    local i=0
+    local next_name
+    while (true) ; do
+        next_name="bond${i}"
+        [ ! -e "/sys/class/net/${next_name}" ] && break
+        (( i+=1 ))
+    done
+    echo $next_name
+}
+
 function ifcfg_read_phys_int_mac_pci_dpdk() {
     # in case of running from ifup in tripleo there is no way to read params from system,
     # all of them are to be available from ifcfg-vhost0 (that are passed via env to container)
     declare phys_int phys_int_mac pci
     if [[ -n "$BIND_INT" ]] ; then
         pci=${BIND_INT}
-        phys_int='bond0'
         phys_int_mac=${MACADDR}
         local binding_data_dir='/var/run/vrouter'
         if [ -f $binding_data_dir/nic ] ; then
+            # just read already saved params from files
             phys_int=$(cat $binding_data_dir/nic)
             [ -z "$phys_int_mac" ] && phys_int_mac=$(cat $binding_data_dir/${phys_int}_mac)
         else
-            [ -z "$BOND_MODE" ] && phys_int=$(get_ifname_by_pci $pci)
+            if [ -z "$BOND_MODE" ] ; then
+                # for no bonding detect name by pci
+                phys_int=$(get_ifname_by_pci $pci)
+            else
+                # first time, so use free bond nic name
+                # BOND_INT_NAME can be used to avoid autogeneration logic in case of issues
+                phys_int=${BOND_INT_NAME:-$(get_next_free_bond_name)}
+            fi
             if [ -z "$phys_int_mac" ] ; then
                 local _first_int=$phys_int
                 if [ -n "$BOND_MODE" ] ; then
