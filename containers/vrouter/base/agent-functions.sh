@@ -326,11 +326,15 @@ function read_and_save_dpdk_params() {
     declare phys_int phys_int_mac pci
     IFS=' ' read -r phys_int phys_int_mac pci <<< $(read_phys_int_mac_pci_dpdk)
 
-    local addrs=''
-    [ -z "$BIND_INT" ] && addrs=$(get_addrs_for_nic $phys_int)
-
-    local mtu=$(get_iface_mtu $phys_int)
-    local routes=$(get_dev_routes $phys_int)
+    local addrs
+    local mtu
+    local routes
+    if [ -z "$BIND_INT" ] ; then
+        # read additional data from phys nic in non OSP case only
+        addrs=$(get_addrs_for_nic $phys_int)
+        mtu=$(get_iface_mtu $phys_int)
+        routes=$(get_dev_routes $phys_int)
+    fi
 
     echo "INFO: phys_int=$phys_int phys_int_mac=$phys_int_mac, pci=$pci, addrs=[$addrs], routes=[$routes]"
     local nic=$phys_int
@@ -451,9 +455,12 @@ function init_vhost0() {
     if ! is_dpdk ; then
         # NIC case
         IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
-        addrs=$(get_addrs_for_nic $phys_int)
-        mtu=$(get_iface_mtu $phys_int)
-        routes=$(get_dev_routes $phys_int)
+        if [ -z "$BIND_INT" ] ; then
+            # read from phys dev in non OSP case only
+            addrs=$(get_addrs_for_nic $phys_int)
+            mtu=$(get_iface_mtu $phys_int)
+            routes=$(get_dev_routes $phys_int)
+        fi
         echo "INFO: creating vhost0 for nic mode: nic: $phys_int, mac=$phys_int_mac"
         if ! create_vhost0 $phys_int $phys_int_mac ; then
             return 1
