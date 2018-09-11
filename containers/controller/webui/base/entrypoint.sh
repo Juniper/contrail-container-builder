@@ -10,6 +10,13 @@ function get_server_json_list(){
   echo "['"$srv_list"']"
 }
 
+function init_tls() {
+  SSL_ENABLE=true SERVER_CERTFILE="$WEBUI_SSL_CERT_FILE" \
+    SERVER_KEYFILE="$WEBUI_SSL_KEY_FILE" SERVER_CA_KEYFILE='' /certs-init.sh
+}
+
+init_tls
+
 orchestration_manager=${CLOUD_ORCHESTRATOR,,}
 
 if [[ "$orchestration_manager" == 'kubernetes' ]] ; then
@@ -224,6 +231,9 @@ config.server_options.ciphers = '$WEBUI_SSL_CIPHERS';
 module.exports = config;
 EOM
 
+echo "INFO: config /etc/contrail/config.global.js"
+cat /etc/contrail/config.global.js
+
 cat > /etc/contrail/contrail-webui-userauth.js << EOM
 /*
  * Copyright (c) 2014 Juniper Networks, Inc. All rights reserved.
@@ -238,6 +248,8 @@ auth.admin_tenant_name = '$KEYSTONE_AUTH_ADMIN_TENANT';
 module.exports = auth;
 EOM
 
+echo "INFO: config /etc/contrail/contrail-webui-userauth.js"
+cat /etc/contrail/contrail-webui-userauth.js
 
 set_vnc_api_lib_ini
 
