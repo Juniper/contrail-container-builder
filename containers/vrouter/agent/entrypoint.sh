@@ -108,7 +108,7 @@ vrouter_cidr=$(get_cidr_for_nic 'vhost0')
 echo "INFO: Physical interface: $phys_int, mac=$phys_int_mac, pci=$pci_address"
 echo "INFO: vhost0 cidr $vrouter_cidr, gateway $VROUTER_GATEWAY"
 
-if [ "$CLOUD_ORCHESTRATOR" == "vcenter" ]; then
+if [ "$CLOUD_ORCHESTRATOR" == "vcenter" ] && ! is_tsn; then
     HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'vmware'}
     vmware_phys_int=$(get_vmware_physical_iface)
     disable_chksum_offload $phys_int
