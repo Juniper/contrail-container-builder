@@ -21,7 +21,7 @@ AUTH_MODE=${AUTH_MODE:-'noauth'}
 if [[ $CLOUD_ORCHESTRATOR == 'openstack' ]] ; then
   AUTH_MODE='keystone'
 fi
-CLOUD_ADMIN_ROLE=${CLOUD_ADMIN_ROLE:-admin}
+CLOUD_ADMIN_ROLES=${CLOUD_ADMIN_ROLES:-admin}
 
 SSL_ENABLE=${SSL_ENABLE:-False}
 SSL_INSECURE=${SSL_INSECURE:-True}

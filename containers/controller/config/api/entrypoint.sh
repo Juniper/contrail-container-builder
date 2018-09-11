@@ -18,8 +18,8 @@ log_local=$LOG_LOCAL
 list_optimization_enabled=${CONFIG_API_LIST_OPTIMIZATION_ENABLED:-True}
 auth=$AUTH_MODE
 aaa_mode=$AAA_MODE
-cloud_admin_role=$CLOUD_ADMIN_ROLE
-global_read_only_role=$GLOBAL_READ_ONLY_ROLE
+cloud_admin_roles=$CLOUD_ADMIN_ROLES
+global_read_only_roles=$GLOBAL_READ_ONLY_ROLES
 cassandra_server_list=$cassandra_server_list
 zk_server_ip=$ZOOKEEPER_SERVERS
 
