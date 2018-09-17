@@ -2,8 +2,6 @@
 
 source /common.sh
 
-api_hostname=${CONFIG_API_VIP:-$(get_vip_for_node CONFIG)}
-
 cat > /etc/contrail/contrail-vcenter-manager/config.yaml << EOM
 esxi:
   host: $ESXI_HOST
@@ -24,7 +22,7 @@ vcenter:
   dvswitch: $VCENTER_DVSWITCH
 
 vnc:
-  api_server_host: $api_hostname
+  api_server_host: $CONFIG_NODES
   api_server_port: $CONFIG_API_PORT
   auth_host: $KEYSTONE_AUTH_HOST
   auth_port: $KEYSTONE_AUTH_PUBLIC_PORT
