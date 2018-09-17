@@ -383,11 +383,13 @@ function read_and_save_dpdk_params() {
             pci=$BIND_INT
             _slave=$(echo ${slaves//,/ } | cut -d ',' -f 1)
             bond_numa=$(get_bond_numa $_slave)
+	    echo "0000:00:00.0"  > $binding_data_dir/${nic}_pci
         fi
     else
         # read from system
         if is_bonding $phys_int ; then
             wait_bonding_slaves $phys_int
+	    echo "0000:00:00.0"  > $binding_data_dir/${nic}_pci
             IFS=' ' read -r mode policy slaves pci bond_numa <<< $(get_bonding_parameters $phys_int)
         fi
     fi
