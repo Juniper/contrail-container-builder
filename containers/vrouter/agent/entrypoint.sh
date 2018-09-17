@@ -171,10 +171,8 @@ subcluster_name=${SUBCLUSTER}
 EOM
 fi
 
-tsn_server_list=""
-IFS=' ' read -ra TSN_SERVERS <<< "${TSN_NODES}"
 read -r -d '' tsn_server_list << EOM || true
-tsn_servers = ${TSN_SERVERS}
+tsn_servers = `echo ${TSN_NODES} | tr ',' ' '`
 EOM
 
 priority_group_option=""
