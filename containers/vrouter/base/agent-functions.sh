@@ -533,7 +533,6 @@ function init_vhost0() {
         popd
         if ! is_dpdk ; then
             ifup ${phys_int} || { echo "ERROR: failed to ifup $phys_int." && ret=1; }
-            del_dev_routes ${phys_int} "$routes"
         fi
         ip link set dev vhost0 down
         ifup vhost0 || { echo "ERROR: failed to ifup vhost0." && ret=1; }
@@ -554,6 +553,13 @@ function init_vhost0() {
             echo "INFO: set mtu"
             ip link set dev vhost0 mtu $mtu
         fi
+    fi
+    # Remove all routes from phys iface if any.
+    # One case is centos: it may assign 192.254.0.0/16 to ethX as a Zeroconf route.
+    # (/etc/sysconfig/network-scripts/ifup-eth)
+    if ! is_dpdk ; then
+        local _phys_int_routes=$(get_dev_routes $phys_int)
+        del_dev_routes ${phys_int} "$_phys_int_routes"
     fi
     return $ret
 }
