@@ -1,5 +1,15 @@
 #!/bin/bash
 
+function set_ctl() {
+    local var=$1
+    local value=$2
+    if grep -q "^$var" /etc/sysctl.conf ; then
+        sed -i "s/^$var.*=.*/$var=$value/g"  /etc/sysctl.conf
+    else
+        echo "$var=$value" >> /etc/sysctl.conf
+    fi
+    sysctl -w ${var}=${value}
+}
 
 function is_ssl_enabled() {
   is_enabled "$SSL_ENABLE" \
