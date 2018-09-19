@@ -2,6 +2,8 @@ FROM rabbitmq:3.6.10
 
 ARG CONTAINER_NAME
 
+RUN apt-get update && apt-get -fy install bind9-host
+
 COPY contrail-entrypoint.sh /
 
 ENTRYPOINT ["/contrail-entrypoint.sh"]
