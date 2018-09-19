@@ -4,7 +4,8 @@ function set_ctl() {
     local var=$1
     local value=$2
     if grep -q "^$var" /etc/sysctl.conf ; then
-        sed -i "s/^$var.*=.*/$var=$value/g"  /etc/sysctl.conf
+        local _escaped_value=$(echo "$value" | sed 's/\//\\\//g')
+        sed -i "s/^$var.*=.*/$var=$_escaped_value/g" /etc/sysctl.conf
     else
         echo "$var=$value" >> /etc/sysctl.conf
     fi
