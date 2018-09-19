@@ -13,8 +13,9 @@ function get_server_json_list(){
 }
 
 function init_tls() {
-  SSL_ENABLE=true SERVER_CERTFILE="$WEBUI_SSL_CERT_FILE" \
-    SERVER_KEYFILE="$WEBUI_SSL_KEY_FILE" SERVER_CA_KEYFILE='' /certs-init.sh
+  SSL_ENABLE=true \
+    SERVER_CERTFILE="$WEBUI_SSL_CERT_FILE" SERVER_KEYFILE="$WEBUI_SSL_KEY_FILE" \
+    SERVER_CA_KEYFILE='' SERVER_CA_CERTFILE='' /certs-init.sh
 }
 
 init_tls
