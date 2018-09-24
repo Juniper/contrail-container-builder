@@ -31,7 +31,12 @@ password=$REDIS_SERVER_PASSWORD
 
 $sandesh_client_config
 EOM
-
+if [ $STATS_COLLECTOR_DESTINATION_PATH != '' ]; then
+    cat >> /etc/contrail/contrail-query-engine.conf << EOM
+[STATS]
+stats_collector=${STATS_COLLECTOR_DESTINATION_PATH}
+EOM
+fi
 add_ini_params_from_env QUERY_ENGINE /etc/contrail/contrail-query-engine.conf
 
 set_third_party_auth_config

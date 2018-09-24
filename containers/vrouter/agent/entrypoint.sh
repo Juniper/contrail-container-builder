@@ -311,6 +311,10 @@ $crypt_interface_option
 slo_destination = $SLO_DESTINATION
 sample_destination = $SAMPLE_DESTINATION
 
+[SESSION_DESTINATION]
+slo_destination = $SLO_DESTINATION
+sample_destination = $SAMPLE_DESTINATION
+
 EOM
 
 cleanup_lbaas_netns_config

@@ -39,6 +39,13 @@ $kombu_ssl_config
 $sandesh_client_config
 EOM
 
+if [ $STATS_COLLECTOR_DESTINATION_PATH != '' ]; then
+    cat >> /etc/contrail/contrail-alarm-gen.conf << EOM
+[STATS]
+stats_collector=${STATS_COLLECTOR_DESTINATION_PATH}
+EOM
+fi
+
 add_ini_params_from_env ALARM_GEN /etc/contrail/contrail-alarm-gen.conf
 
 set_third_party_auth_config

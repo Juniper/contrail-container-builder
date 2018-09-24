@@ -31,7 +31,12 @@ collectors=$COLLECTOR_SERVERS
 
 $sandesh_client_config
 EOM
-
+if [ $STATS_COLLECTOR_DESTINATION_PATH != '' ]; then
+    cat >> /etc/contrail/contrail-api.conf << EOM
+[STATS]
+stats_collector=${STATS_COLLECTOR_DESTINATION_PATH}
+EOM
+fi
 add_ini_params_from_env API /etc/contrail/contrail-api.conf
 
 set_third_party_auth_config

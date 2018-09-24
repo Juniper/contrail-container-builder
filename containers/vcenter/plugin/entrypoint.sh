@@ -24,6 +24,13 @@ zookeeper.serverlist=$ZOOKEEPER_SERVERS
 
 EOM
 
+if [ $STATS_COLLECTOR_DESTINATION_PATH != '' ]; then
+    cat >> /etc/contrail/contrail-vcenter-plugin.conf << EOM
+[STATS]
+stats_collector=${STATS_COLLECTOR_DESTINATION_PATH}
+EOM
+fi
+
 add_ini_params_from_env VCENTER_PLUGIN /etc/contrail/contrail-vcenter-plugin.conf
 
 set_vnc_api_lib_ini

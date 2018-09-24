@@ -32,7 +32,12 @@ redis_password=$REDIS_SERVER_PASSWORD
 
 $sandesh_client_config
 EOM
-
+if [ $STATS_COLLECTOR_DESTINATION_PATH != '' ]; then
+    cat >> /etc/contrail/contrail-analytics-api.conf << EOM
+[STATS]
+stats_collector=${STATS_COLLECTOR_DESTINATION_PATH}
+EOM
+fi
 add_ini_params_from_env ANALYTICS_API /etc/contrail/contrail-analytics-api.conf
 
 set_third_party_auth_config

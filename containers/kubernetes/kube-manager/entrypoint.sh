@@ -56,6 +56,13 @@ auth_token_url=$KEYSTONE_AUTH_PROTO://${KEYSTONE_AUTH_HOST}:${KEYSTONE_AUTH_ADMI
 EOM
 fi
 
+if [ $STATS_COLLECTOR_DESTINATION_PATH != '' ]; then
+    cat >> /etc/contrail/contrail-kubernetes.conf << EOM
+[STATS]
+stats_collector=${STATS_COLLECTOR_DESTINATION_PATH}
+EOM
+fi
+
 add_ini_params_from_env KUBERNETES /etc/contrail/contrail-kubernetes.conf
 
 set_third_party_auth_config

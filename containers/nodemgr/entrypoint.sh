@@ -32,7 +32,18 @@ server_list=${COLLECTOR_SERVERS}
 $sandesh_client_config
 EOM
 
+<<<<<<< HEAD
 add_ini_params_from_env ${ntype}_NODEMGR /etc/contrail/$NODEMGR_NAME.conf
+=======
+if [ $STATS_COLLECTOR_DESTINATION_PATH != '' ]; then
+    cat >> /etc/contrail/$NODEMGR_NAME.conf << EOM
+[STATS]
+stats_collector=${STATS_COLLECTOR_DESTINATION_PATH}
+EOM
+fi
+
+add_ini_params_from_env ${NODE_TYPE^^}_NODEMGR /etc/contrail/$NODEMGR_NAME.conf
+>>>>>>> a96344b... Containers should add a new variable in the config files
 
 set_vnc_api_lib_ini
 

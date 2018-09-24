@@ -35,7 +35,12 @@ aaa_mode = $AAA_MODE
 
 $sandesh_client_config
 EOM
-
+if [ $STATS_COLLECTOR_DESTINATION_PATH != '' ]; then
+    cat >> /etc/contrail/contrail-svc-monitor.conf << EOM
+[STATS]
+stats_collector=${STATS_COLLECTOR_DESTINATION_PATH}
+EOM
+fi
 add_ini_params_from_env SVC_MONITOR /etc/contrail/contrail-svc-monitor.conf
 
 set_third_party_auth_config
