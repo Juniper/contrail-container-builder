@@ -267,6 +267,17 @@ kafka_keyfile=$KAFKA_SSL_KEYFILE
 kafka_certfile=$KAFKA_SSL_CERTFILE
 kafka_ca_cert=$KAFKA_SSL_CACERTFILE
 EOM
+else
+  kafka_ssl_config=''
+fi
+
+if [ -n $STATS_COLLECTOR_DESTINATION_PATH ]; then
+  read -r -d '' collector_stats_config << EOM || true
+[STATS]
+stats_collector=${STATS_COLLECTOR_DESTINATION_PATH}
+EOM
+else
+  collector_stats_config=''
 fi
 
 # Agent options
