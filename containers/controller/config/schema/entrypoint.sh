@@ -26,6 +26,8 @@ $kombu_ssl_config
 collectors=$COLLECTOR_SERVERS
 
 $sandesh_client_config
+
+$collector_stats_config
 EOM
 
 add_ini_params_from_env SCHEMA /etc/contrail/contrail-schema.conf
