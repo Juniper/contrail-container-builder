@@ -37,8 +37,9 @@ analytics_server_list=$ANALYTICS_SERVERS
 aaa_mode = $AAA_MODE
 
 $sandesh_client_config
-EOM
 
+$contrail_stats_collector
+EOM
 add_ini_params_from_env SVC_MONITOR /etc/contrail/contrail-svc-monitor.conf
 
 set_third_party_auth_config

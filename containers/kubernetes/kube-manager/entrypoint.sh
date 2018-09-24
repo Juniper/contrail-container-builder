@@ -50,6 +50,8 @@ collectors=$COLLECTOR_SERVERS
 zk_server_ip=$ZOOKEEPER_SERVERS
 
 $sandesh_client_config
+
+$contrail_stats_collector
 EOM
 
 if [[ $AUTH_MODE == "keystone" ]]; then

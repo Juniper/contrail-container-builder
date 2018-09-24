@@ -269,6 +269,11 @@ kafka_ca_cert=$KAFKA_SSL_CACERTFILE
 EOM
 fi
 
+read -r -d '' CONTRAIL_STATS_COLLECTOR << EOM || true
+[STATS]
+stats_collector=${STATS_COLLECTOR_DESTINATION_PATH}
+EOM
+
 # Agent options
 AGENT_MODE=${AGENT_MODE:-'kernel'}
 DPDK_UIO_DRIVER=${DPDK_UIO_DRIVER-'uio_pci_generic'}

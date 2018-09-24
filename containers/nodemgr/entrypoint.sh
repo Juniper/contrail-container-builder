@@ -51,6 +51,8 @@ db_jmx_port=${CASSANDRA_JMX_LOCAL_PORT}
 server_list=${COLLECTOR_SERVERS}
 
 $sandesh_client_config
+
+$contrail_stats_collector
 EOM
 
 add_ini_params_from_env ${ntype}_NODEMGR /etc/contrail/$NODEMGR_NAME.conf

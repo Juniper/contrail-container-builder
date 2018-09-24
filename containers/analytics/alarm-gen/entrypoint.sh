@@ -42,6 +42,8 @@ $rabbitmq_config
 $kombu_ssl_config
 
 $sandesh_client_config
+
+$contrail_stats_collector
 EOM
 
 add_ini_params_from_env ALARM_GEN /etc/contrail/contrail-alarm-gen.conf

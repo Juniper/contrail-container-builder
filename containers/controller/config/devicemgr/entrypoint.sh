@@ -29,8 +29,9 @@ $kombu_ssl_config
 collectors=$COLLECTOR_SERVERS
 
 $sandesh_client_config
-EOM
 
+$contrail_stats_collector
+EOM
 add_ini_params_from_env DEVICE_MANAGER /etc/contrail/contrail-device-manager.conf
 
 set_third_party_auth_config

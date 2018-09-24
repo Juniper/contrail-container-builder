@@ -32,8 +32,9 @@ redis_uve_list=$REDIS_SERVERS
 redis_password=$REDIS_SERVER_PASSWORD
 
 $sandesh_client_config
-EOM
 
+$contrail_stats_collector
+EOM
 add_ini_params_from_env ANALYTICS_API /etc/contrail/contrail-analytics-api.conf
 
 set_third_party_auth_config

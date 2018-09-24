@@ -96,8 +96,9 @@ $rabbitmq_config
 $rabbitmq_ssl_config
 
 $sandesh_client_config
-EOM
 
+$contrail_stats_collector
+EOM
 add_ini_params_from_env COLLECTOR /etc/contrail/contrail-collector.conf
 
 set_third_party_auth_config
