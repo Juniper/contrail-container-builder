@@ -1,6 +1,6 @@
 ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
-FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
+FROM ${CONTRAIL_REGISTRY}/contrail-vcenter-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
 
@@ -17,5 +17,6 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["/usr/bin/contrail-vcenter-plugin"]
 
-ENV PS1="\033[1m($CONTAINER_NAME)\033[m\017[$(id -un)@$(hostname -s) $(pwd)]$ "
+ENV SERVICE_NAME=vcenter-plugin
+LABEL net.juniper.contrail.service=$SERVICE_NAME
 LABEL net.juniper.contrail.container.name=$CONTAINER_NAME
