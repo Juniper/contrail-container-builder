@@ -17,5 +17,7 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["/usr/bin/contrail-vcenter-plugin"]
 
-ENV PS1="\033[1m($CONTAINER_NAME)\033[m\017[$(id -un)@$(hostname -s) $(pwd)]$ "
+ENV NODE_TYPE=vcenter
+ENV SERVICE_NAME=plugin
+LABEL net.juniper.contrail.service=$SERVICE_NAME
 LABEL net.juniper.contrail.container.name=$CONTAINER_NAME
