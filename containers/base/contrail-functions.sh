@@ -1,15 +1,14 @@
 #!/bin/bash
 
 function set_ctl() {
-    local var=$1
-    local value=$2
-    if grep -q "^$var" /etc/sysctl.conf ; then
-        local _escaped_value=$(echo "$value" | sed 's/\//\\\//g')
-        sed -i "s/^$var.*=.*/$var=$_escaped_value/g" /etc/sysctl.conf
-    else
-        echo "$var=$value" >> /etc/sysctl.conf
-    fi
-    sysctl -w ${var}=${value}
+  local var=$1
+  local value=$2
+  local filename=`echo $var | sed "s/[^a-zA-Z_.]/_/g" | cut -c1-50`
+  local file=/etc/sysctl.d/60-$filename.conf
+  local tmpfile=`mktemp -p /etc/sysctl.d/`
+  echo "$var=$value" > $tmpfile
+  mv $tmpfile $file
+  sysctl -w ${var}=${value}
 }
 
 function is_ssl_enabled() {
