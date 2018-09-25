@@ -16,5 +16,5 @@ ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/contrail-vrouter-dpdk"]
 
 ENV SERVICE_NAME=agent-dpdk
-LABEL net.juniper.contrail.service=agent-dpdk
+LABEL net.juniper.contrail.service=$SERVICE_NAME
 LABEL net.juniper.contrail.container.name=$CONTAINER_NAME
