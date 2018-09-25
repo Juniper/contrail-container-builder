@@ -101,8 +101,12 @@ EOF
 
   sysctl -w net.bridge.bridge-nf-call-iptables=1
   sysctl -w net.bridge.bridge-nf-call-ip6tables=1
-  echo "net.bridge.bridge-nf-call-iptables=1" >> /etc/sysctl.conf
-  echo "net.bridge.bridge-nf-call-ip6tables=1" >> /etc/sysctl.conf
+  tmpfile1=`mktemp -p /etc/sysctl.d/`
+  tmpfile2=`mktemp -p /etc/sysctl.d/`
+  echo "net.bridge.bridge-nf-call-iptables=1" > $tmpfile1
+  echo "net.bridge.bridge-nf-call-ip6tables=1" > $tmpfile2
+  mv $tmpfile1 /etc/sysctl.d/60-net.bridge.bridge-nf-call-iptables.conf
+  mv $tmpfile2 /etc/sysctl.d/60-net.bridge.bridge-nf-call-ip6tables.conf
 }
 
 disable_swap
