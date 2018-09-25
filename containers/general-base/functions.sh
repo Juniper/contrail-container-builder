@@ -133,7 +133,10 @@ function get_hostname_by_ip() {
 }
 
 function get_iface_for_vrouter_from_control() {
-  local node_ip=`echo $CONTROL_NODES | cut -d ',' -f 1`
+  local node_ip=`echo $VROUTER_GATEWAY`
+  if [[ -z "$node_ip" ]] ; then
+    node_ip=`echo $CONTROL_NODES | cut -d ',' -f 1`
+  fi
   local iface=$(ip route get $node_ip | grep -o "dev.*" | awk '{print $2}')
   if [[ "$iface" == 'lo' ]] ; then
     # ip is belong to this machine
