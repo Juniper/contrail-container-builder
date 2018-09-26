@@ -355,11 +355,11 @@ function read_and_save_dpdk_params() {
         vlan_id=$VLAN_ID
         vlan_parent=$phys_int
     else
-         # read from system
-         if is_vlan $phys_int ; then
+        # read from system
+        if is_vlan $phys_int ; then
             IFS=' ' read -r vlan_id vlan_parent <<< $(get_vlan_parameters $phys_int)
             phys_int=$vlan_parent
-         fi
+        fi
     fi
     if [ -n "$vlan_id" ] ; then
         echo "$vlan_id $vlan_parent" > $binding_data_dir/${nic}_vlan
@@ -383,13 +383,13 @@ function read_and_save_dpdk_params() {
             pci=$BIND_INT
             _slave=$(echo ${slaves//,/ } | cut -d ',' -f 1)
             bond_numa=$(get_bond_numa $_slave)
-	    echo "0000:00:00.0"  > $binding_data_dir/${nic}_pci
+	        echo "0000:00:00.0"  > $binding_data_dir/${nic}_pci
         fi
     else
         # read from system
         if is_bonding $phys_int ; then
             wait_bonding_slaves $phys_int
-	    echo "0000:00:00.0"  > $binding_data_dir/${nic}_pci
+	        echo "0000:00:00.0"  > $binding_data_dir/${nic}_pci
             IFS=' ' read -r mode policy slaves pci bond_numa <<< $(get_bonding_parameters $phys_int)
         fi
     fi
@@ -443,6 +443,22 @@ function check_vrouter_agent_settings() {
     fi
 
     return 0
+}
+
+# Get dhcp client for physical interface
+# we need this in case of clearing
+function get_dhcp_client_pids() {
+    local pids=$(ps -A -o pid,cmd | grep dhclient | grep ${1} | grep -v grep | awk '{print $1}')
+    echo $pids
+}
+
+function kill_dhcp_clients() {
+    local phys_int=$1
+    local dhcpcl_id=$(get_dhcp_client_pids ${phys_int})
+    if [ -n "$dhcpcl_id" ] ; then
+        echo "INFO: kill dhclient for $phys_int"
+        kill -9 $dhcpcl_id
+    fi
 }
 
 function init_vhost0() {
@@ -502,10 +518,7 @@ function init_vhost0() {
         echo "INFO: creating ifcfg-vhost0 and initialize it via ifup"
         if ! is_dpdk ; then
             ifdown ${phys_int}
-            local dhcpcl_id=$(ps -efa | grep dhclient | grep -v grep | grep ${phys_int} | awk '{print $2}')
-            if [ -n "$dhcpcl_id" ]; then
-                kill -9 $dhcpcl_id
-            fi
+            kill_dhcp_clients ${phys_int}
         fi
         pushd /etc/sysconfig/network-scripts/
         if [[ ! -f contrail.org.route-${phys_int} && -f route-${phys_int} ]] ; then
@@ -538,7 +551,10 @@ function init_vhost0() {
         ifup vhost0 || { echo "ERROR: failed to ifup vhost0." && ret=1; }
     else
         echo "INFO: there is no ifcfg-$phys_int and ifcfg-vhost0, so initialize vhost0 manually"
-        # TODO: switch off dhcp on phys_int
+        if ! is_dpdk ; then
+            # TODO: switch off dhcp on phys_int permanently
+            kill_dhcp_clients ${phys_int}
+        fi
         set_dev_routes vhost0 "$routes"
         echo "INFO: Changing physical interface to vhost in ip table"
         echo "$addrs" | while IFS= read -r line ; do
@@ -725,13 +741,6 @@ function check_vhost0_dhcp_clients() {
     echo $pids
 }
 
-# Get dhcp client for physical interface
-# we need this in case of clearing
-function check_phys_dhcp_clients() {
-    local pids=$(ps -A -o pid,cmd|grep dhclient | grep ${1} | grep -v grep | awk '{print $1}')
-    echo $pids
-}
-
 # sleeping for 3 seconds is more than sufficient for the job and connectivity
 # reason for the sleeps here are for the DHCP response and populting the lease file
 # and also for making sure the arp table is updated with the mac of the GW
@@ -747,10 +756,7 @@ function check_and_launch_dhcp_clients() {
     declare phys_int phys_int_mac
     IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
     if launch_dhcp_clients ; then
-       local pids=$(check_phys_dhcp_clients $phys_int)
-       if [ ! -z "$pids" ] ; then
-          kill $pids
-       fi
+       kill_dhcp_clients $phys_int
        ip addr flush $phys_int
     else
         echo "WARNING: dhcp clients not running for vhost0. If this is not static configuration, connectivity will be lost"
