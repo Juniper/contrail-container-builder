@@ -17,10 +17,12 @@ function trap_dpdk_agent_quit() {
         echo "WARNING: PCIs list is empty, nothing to rebind to initial net driver"
     fi
     cleanup_vrouter_agent_files
+    exit 0
 }
 
 function trap_dpdk_agent_term() {
     term_process $dpdk_agent_process
+    exit 0
 }
 
 # Clean up files and vhost0, when SIGQUIT signal by clean-up.sh
@@ -121,21 +123,33 @@ if [[ -n "$vlan_data" ]] ; then
     vlan_id=$(echo "$vlan_data" | cut -d ' ' -f 1)
     vlan_parent=$(echo "$vlan_data" | cut -d ' ' -f 2)
     cmd+=" --vlan_tci ${vlan_id} --vlan_fwd_intf_name ${vlan_parent}"
+    [ -e "/sys/class/net/${phys_int}" ] && {
+        echo "INFO: down $phys_int"
+        ifdown $phys_int
+    }
 fi
 if [[ -n "$bond_data" ]] ; then
+    _bond_nic=$phys_int
+    [ -n "$vlan_parent" ] && _bond_nic=$vlan_parent
     mode=$(echo "$bond_data" | cut -d ' ' -f 1)
     policy=$(echo "$bond_data" | cut -d ' ' -f 2)
     numa=$(echo "$bond_data" | cut -d ' ' -f 5)
     # use list of slaves pci for next check of bind
     pci_address=$(echo "$bond_data" | cut -d ' ' -f 4)
-    cmd+=" --vdev eth_bond_${phys_int},mode=${mode},xmit_policy=${policy},socket_id=${numa},mac=$phys_int_mac"
+    cmd+=" --vdev eth_bond_${_bond_nic},mode=${mode},xmit_policy=${policy},socket_id=${numa},mac=$phys_int_mac"
     for s in ${pci_address//,/ } ; do
         cmd+=",slave=${s}"
     done
-    echo "INFO: bonding: removing bond interface from Linux..."
-    ifdown $phys_int
-    ip link del $phys_int
+    [ -e "/sys/class/net/${_bond_nic}" ] && {
+        echo "INFO: down & remove $_bond_nic"
+        ifdown $_bond_nic
+        ip link del $_bond_nic
+    }
 fi
+
+# kill old dhcp clients if any
+# (because device will disappear after rebinding to dpdk driver)
+kill_dhcp_clients $phys_int
 
 if [ -n "$dpdk_driver_to_bind" ]; then
     if ! bind_devs_to_driver "$dpdk_driver_to_bind" "${pci_address//,/ }" ; then

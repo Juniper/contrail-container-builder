@@ -156,7 +156,7 @@ function restore_phys_int() {
     if [ -d "$netscript_dir" ] ; then
         pushd "$netscript_dir"
         declare i
-        for i in $(ls | awk -F '.' '/contrail.org/{print($3)}') ; do
+        for i in $(ls | grep 'contrail\.org\.' | sed 's/contrail\.org\.//g') ; do
             echo "INFO: restore $i from contrail.org.$i"
             mv contrail.org.$i $i
         done

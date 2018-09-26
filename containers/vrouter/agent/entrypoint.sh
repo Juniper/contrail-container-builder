@@ -9,10 +9,12 @@ function trap_vrouter_agent_quit() {
     term_process $vrouter_agent_process
     remove_vhost0
     cleanup_vrouter_agent_files
+    exit 0
 }
 
 function trap_vrouter_agent_term() {
     term_process $vrouter_agent_process
+    exit 0
 }
 
 function trap_vrouter_agent_hub() {
