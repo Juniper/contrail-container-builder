@@ -24,6 +24,7 @@ from lxml import etree
 from sandesh_common.vns.constants import ServiceHttpPortMap
 from sandesh_common.vns.constants import NodeUVEImplementedServices
 from sandesh_common.vns.constants import BackupImplementedServices
+import yaml
 
 
 CONTRAIL_SERVICES_TO_SANDESH_SVC = {
@@ -71,6 +72,12 @@ CONTRAIL_SERVICES_TO_SANDESH_SVC = {
     'webui': {
         'web': None,
         'job': None,
+    },
+    'vcenter-manager': {
+        'manager': None,
+    },
+    'vcenter': {
+        'plugin': None,
     }
 }
 # TODO: Include vcenter-plugin
@@ -190,13 +197,16 @@ class IntrospectUtil(object):
 
     def get_uve(self, tname):
         path = 'Snh_SandeshUVECacheReq?x=%s' % (tname)
+        return self.get_data(path, tname)
+    #end get_uve
+
+    def get_data(self, path, tname):
         xpath = './/' + tname
         p = self._load(path)
-        if p is None:
-            print_debug('UVE: %s : not found' % (path))
-            return None
-
-        return EtreeToDict(xpath).get_all_entry(p)
+        if p is not None:
+            return EtreeToDict(xpath).get_all_entry(p)
+        print_debug('UVE: %s : not found' % (path))
+        return None
     #end get_uve
 #end class IntrospectUtil
 
@@ -242,36 +252,80 @@ def get_svc_uve_info(svc_name, svc_status, detail, timeout, keyfile,
                      certfile, cacert):
     # Extract UVE state only for running processes
     svc_uve_description = None
-    if ((svc_name in NodeUVEImplementedServices
-                or svc_name.rsplit('-', 1)[0] in NodeUVEImplementedServices)
-            and svc_status == 'active'):
-        try:
-            svc_uve_status, svc_uve_description = \
-                get_svc_uve_status(svc_name, timeout, keyfile,
-                                   certfile, cacert)
-        except (requests.ConnectionError,IOError), e:
-            print_debug('Socket Connection error : %s' % (str(e)))
-            svc_uve_status = "connection-error"
-        except (requests.Timeout, socket.timeout) as te:
-            print_debug('Timeout error : %s' % (str(te)))
-            svc_uve_status = "connection-timeout"
+    if svc_status != 'active':
+        return svc_status
+    if (svc_name not in NodeUVEImplementedServices
+            and svc_name.rsplit('-', 1)[0] not in NodeUVEImplementedServices):
+        return svc_status
 
-        if svc_uve_status is not None:
-            if svc_uve_status == 'Non-Functional':
-                svc_status = 'initializing'
-            elif svc_uve_status == 'connection-error':
-                if svc_name in BackupImplementedServices:
-                    svc_status = 'backup'
-                else:
-                    svc_status = 'initializing'
-            elif svc_uve_status == 'connection-timeout':
-                svc_status = 'timeout'
-        else:
+    try:
+        svc_uve_status, svc_uve_description = \
+            get_svc_uve_status(svc_name, timeout, keyfile, certfile, cacert)
+    except (requests.ConnectionError,IOError), e:
+        print_debug('Socket Connection error : %s' % (str(e)))
+        svc_uve_status = "connection-error"
+    except (requests.Timeout, socket.timeout) as te:
+        print_debug('Timeout error : %s' % (str(te)))
+        svc_uve_status = "connection-timeout"
+
+    if svc_uve_status is not None:
+        if svc_uve_status == 'Non-Functional':
             svc_status = 'initializing'
-        if svc_uve_description is not None and svc_uve_description is not '':
-            svc_status = svc_status + ' (' + svc_uve_description + ')'
-
+        elif svc_uve_status == 'connection-error':
+            if svc_name in BackupImplementedServices:
+                svc_status = 'backup'
+            else:
+                svc_status = 'initializing'
+        elif svc_uve_status == 'connection-timeout':
+            svc_status = 'timeout'
+    else:
+        svc_status = 'initializing'
+    if svc_uve_description is not None and svc_uve_description is not '':
+        svc_status = svc_status + ' (' + svc_uve_description + ')'
     return svc_status
+
+
+def vcenter_plugin(svc_status, detail, timeout,
+                   keyfile, certfile, cacert):
+    svc_name = "vcenter-plugin"
+    try:
+        host = socket.gethostname()
+        # Now check the NodeStatus UVE
+        svc_introspect = IntrospectUtil(
+            host, 8234, timeout, keyfile, certfile, cacert)
+        node_status = svc_introspect.get_data("Snh_VCenterPluginInfo", 'VCenterPlugin')
+    except (requests.ConnectionError,IOError), e:
+        print_debug('Socket Connection error : %s' % (str(e)))
+        return "initializing"
+    except (requests.Timeout, socket.timeout) as te:
+        print_debug('Timeout error : %s' % (str(te)))
+        return "timeout"
+
+    if node_status is None:
+        print_debug('{0}: NodeStatusUVE not found'.format(svc_name))
+        return "initializing (vcenter-plugin is not ready)"
+    if not len(node_status):
+        print_debug('{0}: NodeStatusUVE is empty'.format(svc_name))
+        return "initializing (vcenter-plugin is not ready)"
+    node_status = node_status[0].get('VCenterPluginStruct')
+    if not node_status:
+        print_debug('{0}: VCenterPluginStruct not found'.format(svc_name))
+        return "initializing (vcenter-plugin is not ready)"
+
+    master = yaml.load(node_status.get('master', 'false'))
+    if not master:
+        return "backup"
+
+    description = list()
+    api_server = node_status.get('ApiServerInfo', dict()).get('ApiServerStruct', dict())
+    if not yaml.load(api_server.get('connected', 'false')):
+        description.append("API server connection is not ready")
+    vcenter_server = node_status.get('VCenterServerInfo', dict()).get('VCenterServerStruct', dict())
+    if not yaml.load(vcenter_server.get('connected', 'false')):
+        description.append("VCenter server connection is not ready")
+    if description:
+        return "initializing (" + ", ".join(description) + ")"
+    return "active"
 
 
 def contrail_service_status(pods, pod, options):
@@ -290,6 +344,12 @@ def contrail_service_status(pods, pod, options):
             status = get_svc_uve_info(internal_svc_name, status,
                 options.detail, options.timeout, options.keyfile,
                 options.certfile, options.cacert)
+        else:
+            fn_name = "{}_{}".format(pod, service).replace('-', '_')
+            fn = locals().get(fn_name)
+            if fn:
+                status = fn(status, options.detail, options.timeout,
+                    options.keyfile, options.certfile, options.cacert)
         print('{}: {}'.format(service, status))
 
     print('')
