@@ -71,7 +71,10 @@ CONTRAIL_SERVICES_TO_SANDESH_SVC = {
     'webui': {
         'web': None,
         'job': None,
-    }
+    },
+    'vcenter-manager': {
+        'vcenter-manager': 'contrail-vcenter-manager',
+    },
 }
 # TODO: Include vcenter-plugin
 
