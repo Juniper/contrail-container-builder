@@ -75,7 +75,7 @@ function process_container() {
   local logfile='build-'$container_name'.log'
   docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} \
     ${build_arg_opts} -f $docker_file ${opts} $dir |& tee $logfile
-  if [ ${PIPESTATUS[0]} -eq 0 ]; then
+  if [ ${PIPESTATUS[0]} -eq 0 -a ${CONTRAIL_REGISTRY_PUSH} -eq 1 ]; then
     docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} |& tee -a $logfile
     if [ ${PIPESTATUS[0]} -eq 0 ]; then
       rm $logfile
