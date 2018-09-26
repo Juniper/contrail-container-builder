@@ -40,6 +40,7 @@ op='build'
 function process_container() {
   local dir=${1%/}
   local docker_file=$2
+  local exit_code=0
   if [[ $op == 'list' ]]; then
     echo "${dir#"./"}"
     return
@@ -75,11 +76,13 @@ function process_container() {
   local logfile='build-'$container_name'.log'
   docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} \
     ${build_arg_opts} -f $docker_file ${opts} $dir |& tee $logfile
-  if [ ${PIPESTATUS[0]} -eq 0 ]; then
+  exit_code=${PIPESTATUS[0]}
+  if [ ${PIPESTATUS[0]} -eq 0 -a ${CONTRAIL_REGISTRY_PUSH} -eq 1 ]; then
     docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} |& tee -a $logfile
-    if [ ${PIPESTATUS[0]} -eq 0 ]; then
-      rm $logfile
-    fi
+    exit_code=${PIPESTATUS[0]}
+  fi
+  if [ ${exit_code} -eq 0 ]; then
+    rm $logfile
   fi
   if [ -f $logfile ]; then
     was_errors=1
