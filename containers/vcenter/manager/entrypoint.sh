@@ -33,7 +33,7 @@ vnc:
 sandesh:
   collectors: $COLLECTOR_SERVERS
   introspect_port: 9090
-  logging_level: $LOG_LEVEL
+  logging_level: ${CVM_LOG_LEVEL:-SYS_INFO}
   log_file: $LOG_DIR/contrail-vcenter-manager.log
 
 
