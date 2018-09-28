@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source /common.sh
+export ALARMGEN_REDIS_AGGREGATE_DB_OFFSET=${ALARMGEN_REDIS_AGGREGATE_DB_OFFSET:-1}
 
 pre_start_init
 
