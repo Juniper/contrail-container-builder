@@ -52,6 +52,16 @@ function wait_certs_if_ssl_enabled() {
   fi
 }
 
+function wait_config_api_certs_if_ssl_enabled() {
+  if ! is_enabled ${CONFIG_API_SSL_ENABLE} ; then
+    return
+  fi
+
+  if [[ "$SERVER_KEYFILE" != "$CONFIG_API_SERVER_CERTFILE" ]] ; then
+    wait_files "$CONFIG_API_SERVER_CERTFILE" "$CONFIG_API_SERVER_KEYFILE"
+  fi
+}
+
 function pre_start_init() {
   wait_certs_if_ssl_enabled
 }
@@ -111,7 +121,13 @@ function set_vnc_api_lib_ini(){
 WEB_SERVER = $CONFIG_NODES
 WEB_PORT = ${CONFIG_API_PORT:-8082}
 BASE_URL = /
+use_ssl = $CONFIG_API_SSL_ENABLE
 EOM
+  if is_enabled ${CONFIG_API_SSL_ENABLE}; then
+    cat >> $tmp_file << EOM
+cafile = $CONFIG_API_SERVER_CA_CERTFILE
+EOM
+  fi
 
   if [[ $AUTH_MODE == "keystone" ]]; then
     cat >> $tmp_file << EOM
@@ -160,6 +176,24 @@ function add_ini_params_from_env() {
     local var_param=`echo $var | sed "s/.*$delim\(.*\)$/\1/"`
     echo "$var_param = $val" >> $cfg_path
   done
+}
+
+function get_iface_for_vrouter_from_control() {
+  local node_ip=`echo $VROUTER_GATEWAY`
+  if [[ -z "$node_ip" ]] ; then
+    node_ip=`echo $CONTROL_NODES | cut -d ',' -f 1`
+  fi
+  local iface=$(ip route get $node_ip | grep -o "dev.*" | awk '{print $2}')
+  if [[ "$iface" == 'lo' ]] ; then
+    # ip is belong to this machine
+    iface=`ip address show | grep "inet .*${node_ip}" | awk '{print($NF)}'`
+  fi
+  echo $iface
+}
+
+function get_ip_for_vrouter_from_control() {
+  local iface=$(get_iface_for_vrouter_from_control)
+  get_ip_for_nic $iface
 }
 
 function get_vrouter_physical_iface() {

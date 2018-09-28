@@ -2,71 +2,38 @@
 
 set -e
 
-source /functions.sh
-
-default_ip_address=$(get_default_ip)
-local_ips=",$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}' | tr '\n' ','),"
-
-CONFIG="$KAFKA_CONF_DIR/server.properties"
-
-CONTROLLER_NODES=${CONTROLLER_NODES:-${default_ip_address}}
-ANALYTICS_NODES=${ANALYTICS_NODES:-${CONTROLLER_NODES}}
-ANALYTICSDB_NODES=${ANALYTICSDB_NODES:-${ANALYTICS_NODES}}
-KAFKA_NODES=${KAFKA_NODES:-${ANALYTICSDB_NODES}}
-ZOOKEEPER_ANALYTICS_NODES=${ZOOKEEPER_ANALYTICS_NODES:-${ANALYTICSDB_NODES}}
-ZOOKEEPER_ANALYTICS_PORT=${ZOOKEEPER_ANALYTICS_PORT:-2182}
-KAFKA_SSL_ENABLE=${KAFKA_SSL_ENABLE:-${SSL_ENABLE:-False}}
-KAFKA_SSL_CERTFILE=${KAFKA_SSL_CERTFILE:-${SERVER_CERTFILE:-'/etc/contrail/ssl/certs/server.pem'}}
-KAFKA_SSL_KEYFILE=${KAFKA_SSL_KEYFILE:-${SERVER_KEYFILE:-'/etc/contrail/ssl/private/server-privkey.pem'}}
-KAFKA_SSL_CACERTFILE=${KAFKA_SSL_CACERTFILE:-${SERVER_CA_CERTFILE:-'/etc/contrail/ssl/certs/ca-cert.pem'}}
-
+source /common.sh
 
 : ${KAFKA_LISTEN_ADDRESS='auto'}
+my_ip=''
 my_index=1
 if [ "$KAFKA_LISTEN_ADDRESS" = 'auto' ]; then
   # In all in one deployment there is the race between vhost0 initialization
   # and own IP detection, so there is 10 retries
   for i in {1..10} ; do
-    my_ip=''
-    IFS=',' read -ra server_list <<< "$KAFKA_NODES"
-    for server in "${server_list[@]}"; do
-      if server_ip=`python -c "import socket; print(socket.gethostbyname('$server'))"` \
-          && [[ "$local_ips" =~ ",$server_ip," ]] ; then
-        echo "INFO: found '$server/$server_ip' in local IPs '$local_ips'"
-        my_ip=$server_ip
-        break
-      fi
-      (( my_index+=1 ))
-    done
-    if [ -n "$my_ip" ]; then
+    my_ip_and_order=$(find_my_ip_and_order_for_node KAFKA)
+    if [ -n "$my_ip_and_order" ]; then
       break
     fi
     sleep 1
   done
-
-  if [ -z "$my_ip" ]; then
-    echo "ERROR: Cannot find self ips ('$local_ips') in Kafka nodes ('$KAFKA_NODES')"
+  if [ -z "$my_ip_and_order" ]; then
+    echo "ERROR: Cannot find self ips ('$(get_local_ips)') in Kafka nodes ('$KAFKA_NODES')"
     exit -1
   fi
+  my_ip=$(echo $my_ip_and_order | cut -d ' ' -f 1)
+  my_index=$(echo $my_ip_and_order | cut -d ' ' -f 2)
 
   export KAFKA_LISTEN_ADDRESS=$my_ip
 fi
 
-zk_server_list=''
-# zk_chroot_list=''
-IFS=',' read -ra server_list <<< "${ZOOKEEPER_ANALYTICS_NODES}"
-for server in "${server_list[@]}"; do
-  zk_server_list+=${server}:${ZOOKEEPER_ANALYTICS_PORT},
-done
-
-zk_list="${zk_server_list::-1}"
-if [[ `echo ${#server_list[@]}` -gt 1 ]] ; then
+zk_servers_array=( $ZOOKEEPER_SERVERS_SPACE_DELIM )
+if [[ `echo ${#zk_servers_array[@]}` -gt 1 ]] ; then
   replication_factor=2
 else
   replication_factor=1
 fi
 KAFKA_BROKER_ID=${my_index:-1}
-KAFKA_PORT=${KAFKA_PORT:-9092}
 KAFKA_LISTEN_PORT=${KAFKA_LISTEN_PORT:-$KAFKA_PORT}
 KAFKA_log_retention_bytes=${KAFKA_log_retention_bytes:-268435456}
 KAFKA_log_segment_bytes=${KAFKA_log_segment_bytes:-268435456}
@@ -79,6 +46,7 @@ KAFKA_delete_topic_enable=${KAFKA_delete_topic_enable:-true}
 KAFKA_KEY_PASSWORD=${KAFKA_KEY_PASSWORD:-c0ntrail123}
 KAFKA_STORE_PASSWORD=${KAFKA_STORE_PASSWORD:-c0ntrail123}
 
+CONFIG="$KAFKA_CONF_DIR/server.properties"
 sed -i "s/^broker.id=.*$/broker.id=$KAFKA_BROKER_ID/g" ${CONFIG}
 sed -i "s/#port=.*$/port=$KAFKA_LISTEN_PORT/g" ${CONFIG}
 if [[ ${KAFKA_SSL_ENABLE} == "False" ]] ; then
@@ -118,7 +86,7 @@ else
     (grep -q '^security.inter.broker.protocol' ${CONFIG} && sed -i 's|^security.inter.broker.protocol.*$|security.inter.broker.protocol=SSL|' ${CONFIG}) || echo "security.inter.broker.protocol=SSL" >> ${CONFIG}
 fi
 
-sed -i "s)^zookeeper.connect=.*$)zookeeper.connect=$zk_list)g" ${CONFIG}
+sed -i "s)^zookeeper.connect=.*$)zookeeper.connect=$ZOOKEEPER_SERVERS)g" ${CONFIG}
 sed -i "s/#advertised.host.name=.*$/advertised.host.name=$my_ip/g" ${CONFIG}
 sed -i "s/^#log.retention.bytes=.*$/log.retention.bytes=$KAFKA_log_retention_bytes/g" ${CONFIG}
 sed -i "s/^log.retention.hours=.*$/log.retention.hours=$KAFKA_log_retention_hours/g" ${CONFIG}

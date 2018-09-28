@@ -26,6 +26,10 @@ start_time=${QUERYENGINE_START_TIME:-0}
 cassandra_server_list=$ANALYTICSDB_CQL_SERVERS
 collectors=$COLLECTOR_SERVERS
 
+[CASSANDRA]
+cassandra_use_ssl=${CASSANDRA_SSL_ENABLE,,}
+cassandra_ca_certs=$CASSANDRA_SSL_CA_CERTFILE
+
 [REDIS]
 port=$REDIS_SERVER_PORT
 server=127.0.0.1
@@ -33,6 +37,8 @@ server_list=$REDIS_SERVERS
 password=$REDIS_SERVER_PASSWORD
 
 $sandesh_client_config
+
+$collector_stats_config
 EOM
 
 add_ini_params_from_env QUERY_ENGINE /etc/contrail/contrail-query-engine.conf

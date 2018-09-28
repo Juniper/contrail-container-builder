@@ -13,7 +13,7 @@ function provision() {
   for (( i=0 ; i < retries ; ++i )) ; do
     echo "INFO: Provisioning attempt $((i+1)) of $retries (pause $pause)"
     for server in $servers ; do
-      if python /opt/contrail/utils/$script $rest_params --api_server_ip $server --api_server_port $CONFIG_API_PORT $AUTH_PARAMS ; then
+      if python /opt/contrail/utils/$script $rest_params --api_server_ip $server --api_server_port $CONFIG_API_PORT $AUTH_PARAMS --api_server_use_ssl ${CONFIG_API_SSL_ENABLE} ; then
         echo "INFO: Provisioning was succeeded"
         return
       fi
@@ -93,6 +93,18 @@ analytics)
   host_ip=$(get_listen_ip_for_node ANALYTICS)
   host_name=$(resolve_hostname_by_ip $host_ip)
   provision_node provision_analytics_node.py $host_ip ${host_name:-$DEFAULT_HOSTNAME}
+  ;;
+
+analytics-snmp)
+  host_ip=$(get_listen_ip_for_node ANALYTICS_SNMP)
+  host_name=$(resolve_hostname_by_ip $host_ip)
+  provision_node provision_analytics_snmp_node.py $host_ip ${host_name:-$DEFAULT_HOSTNAME}
+  ;;
+
+analytics-alarm)
+  host_ip=$(get_listen_ip_for_node ANALYTICS_ALARM)
+  host_name=$(resolve_hostname_by_ip $host_ip)
+  provision_node provision_analytics_alarm_node.py $host_ip ${host_name:-$DEFAULT_HOSTNAME}
   ;;
 
 control)

@@ -31,6 +31,10 @@ if [[ -n "$KEYSTONE_AUTH_URL_VERSION" ]] ; then
   identityManager_apiVersion="['${KEYSTONE_AUTH_URL_VERSION#/}']"
 fi
 
+if is_enabled ${CONFIG_API_SSL_ENABLE} ; then
+  cnfg_authProtocol='https'
+fi
+
 introspect_strict_ssl=false
 if [[ "${INTROSPECT_SSL_INSECURE,,}" == 'false' ]]; then
   introspect_strict_ssl=true
@@ -58,7 +62,7 @@ set_to_lower networkManager_strictSSL false
 set_to_lower imageManager_strictSSL false
 set_to_lower computeManager_strictSSL false
 set_to_lower storageManager_strictSSL false
-set_to_lower cnfg_strictSSL false
+set_to_lower cnfg_strictSSL ${CONFIG_API_SSL_ENABLE}
 set_to_lower analytics_strictSSL false
 set_to_lower cassandra_enable_edit false
 set_to_lower WEBUI_INSECURE_ACCESS false
@@ -133,7 +137,7 @@ config.cnfg.server_ip = ${CONFIG_API_VIP:-`get_server_json_list CONFIG`};
 config.cnfg.server_port = "$CONFIG_API_PORT";
 config.cnfg.authProtocol = "${cnfg_authProtocol:-http}";
 config.cnfg.strictSSL = ${cnfg_strictSSL};
-config.cnfg.ca = ${cnfg_ca:-''};
+config.cnfg.ca = "${cnfg_ca:-$CONFIG_API_SERVER_CA_CERTFILE}";
 config.cnfg.statusURL = ${cnfg_statusURL:-'"/global-system-configs"'};
 
 config.analytics = {};
@@ -178,6 +182,8 @@ config.cassandra = {};
 config.cassandra.server_ips = ${cassandra_server_ips:-`get_server_json_list CONFIGDB`};
 config.cassandra.server_port = ${cassandra_server_port:-"'"$CONFIGDB_CQL_PORT"'"};
 config.cassandra.enable_edit = ${cassandra_enable_edit};
+config.cassandra.use_ssl = ${CASSANDRA_SSL_ENABLE,,};
+config.cassandra.ca_certs = '${CASSANDRA_SSL_CA_CERTFILE}';
 
 config.kue = {};
 config.kue.ui_port = '$KUE_UI_PORT'
@@ -233,6 +239,17 @@ config.server_options.ciphers = '$WEBUI_SSL_CIPHERS';
 
 module.exports = config;
 EOM
+
+if [[ "$AUTH_MODE" == 'noauth' ]] ; then
+  cat >> /etc/contrail/config.global.js << EOM
+
+config.staticAuth = [];
+config.staticAuth[0] = {};
+config.staticAuth[0].username = '$WEBUI_STATIC_AUTH_USER';
+config.staticAuth[0].password = '$WEBUI_STATIC_AUTH_PASSWORD';
+config.staticAuth[0].roles = ['$WEBUI_STATIC_AUTH_ROLE'];
+EOM
+fi
 
 echo "INFO: config /etc/contrail/config.global.js"
 cat /etc/contrail/config.global.js

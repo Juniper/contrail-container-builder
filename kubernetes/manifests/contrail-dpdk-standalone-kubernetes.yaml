@@ -22,6 +22,11 @@ data:
   ANALYTICS_API_VIP: "{{ ANALYTICS_API_VIP }}"
   ANALYTICS_NODES: {{ ANALYTICS_NODES }}
   ANALYTICSDB_NODES: {{ ANALYTICSDB_NODES }}
+  ANALYTICS_SNMP_NODES: {{ ANALYTICS_SNMP_NODES }}
+  ANALYTICS_ALARM_NODES: {{ ANALYTICS_ALARM_NODES}}
+  ANALYTICSDB_ENABLE: "true"
+  ANALYTICS_ALARM_ENABLE: "true"
+  ANALYTICS_SNMP_ENABLE: "true"
   AUTH_MODE: {{ AUTH_MODE }}
   CLOUD_ORCHESTRATOR: {{ CLOUD_ORCHESTRATOR }}
   CONFIG_API_VIP: "{{ CONFIG_API_VIP }}"
@@ -269,9 +274,9 @@ spec:
         imagePullPolicy: ""
         env:
         - name: NODE_TYPE
-          value: database
+          value: analytics-alarm
         - name: KAFKA_NODES
-          value: {{ ANALYTICSDB_NODES}}
+          value: {{ KAFKA_NODES}}
         - name: ZOOKEEPER_NODES
           value: {{ ANALYTICSDB_NODES}}
         envFrom:
@@ -621,6 +626,9 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: analytics-logs
+        env:
+        - name: NODE_TYPE
+          value: analytics-alarm
       - name: contrail-analytics-query-engine
         image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-query-engine:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -630,6 +638,9 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: analytics-logs
+        env:
+        - name: NODE_TYPE
+          value: database
       - name: contrail-analytics-snmp-collector
         image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-snmp-collector:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -639,8 +650,11 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: analytics-logs
-      - name: contrail-analytics-topology
-        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-topology:{{CONTRAIL_CONTAINER_TAG}}"
+        env:
+        - name: NODE_TYPE
+          value: analytics-snmp
+      - name: contrail-analytics-snmp-topology
+        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-snmp-topology:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -648,6 +662,9 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: analytics-logs
+        env:
+        - name: NODE_TYPE
+          value: analytics-snmp
       - name: contrail-analytics-nodemgr
         image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -1431,4 +1448,3 @@ metadata:
   annotations:
     kubernetes.io/service-account.name: contrail-kube-manager
 type: kubernetes.io/service-account-token
-

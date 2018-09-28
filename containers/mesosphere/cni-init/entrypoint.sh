@@ -5,7 +5,7 @@ source /common.sh
 VROUTER_IP=${VROUTER_IP:-$(get_ip_for_vrouter_from_control)}
 VROUTER_PORT=${VROUTER_PORT:-9091}
 
-MESOS_IP=${MESOS_IP:-$(get_default_ip)}
+MESOS_IP=${MESOS_IP:-$DEFAULT_LOCAL_IP}
 MESOS_PORT=${MESOS_PORT:-6991}
 CLUSTER_NAME=${CLUSTER_NAME:-'mesos'}
 

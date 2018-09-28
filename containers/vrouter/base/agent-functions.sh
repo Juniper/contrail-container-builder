@@ -5,6 +5,11 @@ source /network-functions-vrouter-${AGENT_MODE}
 #Agents constants
 REQUIRED_KERNEL_VROUTER_ENCRYPTION='4.4.0'
 
+function get_default_gateway_for_nic() {
+  local nic=$1
+  ip route show dev $nic | grep default | head -n 1 | awk '{print $3}'
+}
+
 function create_vhost_network_functions() {
     local dir=$1
     pushd "$dir"
@@ -66,6 +71,7 @@ function get_bonding_parameters() {
     if [[ -d ${bond_dir} ]] ; then
         local mode="$(cat ${bond_dir}/mode | awk '{print $2}')"
         local policy="$(cat ${bond_dir}/xmit_hash_policy | awk '{print $1}')"
+        local lacp_rate="$(cat ${bond_dir}/lacp_rate | awk '{print $2}')"
         policy=$(convert_bond_policy $policy)
         mode=$(convert_bond_mode $mode)
 
@@ -87,7 +93,7 @@ function get_bonding_parameters() {
         done
         pci_addresses=${pci_addresses#,}
 
-        echo "$mode $policy $slaves $pci_addresses $bond_numa"
+        echo "$mode $policy $slaves $pci_addresses $bond_numa $lacp_rate"
     fi
 }
 
@@ -367,7 +373,7 @@ function read_and_save_dpdk_params() {
         echo "INFO: vlan: echo vlan_id=$vlan_id vlan_parent=$vlan_parent"
     fi
 
-    declare mode policy slaves pci bond_numa
+    declare mode policy slaves pci bond_numa lacp_rate
     if [ -n "$BIND_INT" ] ; then
         # In case of OSP: params come from ifcfg.
         if [ -n "$BOND_MODE" ] ; then
@@ -384,18 +390,19 @@ function read_and_save_dpdk_params() {
             _slave=$(echo ${slaves//,/ } | cut -d ',' -f 1)
             bond_numa=$(get_bond_numa $_slave)
 	        echo "0000:00:00.0"  > $binding_data_dir/${nic}_pci
+            lacp_rate=${LACP_RATE:-0}
         fi
     else
         # read from system
         if is_bonding $phys_int ; then
             wait_bonding_slaves $phys_int
 	        echo "0000:00:00.0"  > $binding_data_dir/${nic}_pci
-            IFS=' ' read -r mode policy slaves pci bond_numa <<< $(get_bonding_parameters $phys_int)
+            IFS=' ' read -r mode policy slaves pci bond_numa lacp_rate <<< $(get_bonding_parameters $phys_int)
         fi
     fi
     if [ -n "$mode" ] ; then
-        echo "$mode $policy $slaves $pci $bond_numa" > $binding_data_dir/${nic}_bond
-        echo "INFO: bonding: $mode $policy $slaves $pci $bond_numa"
+        echo "$mode $policy $slaves $pci $bond_numa $lacp_rate" > $binding_data_dir/${nic}_bond
+        echo "INFO: bonding: $mode $policy $slaves $pci $bond_numa $lacp_rate"
     fi
 
     # Save this file latest because it is used
@@ -713,7 +720,7 @@ function init_decrypt0() {
         echo "INFO: $decrypt_intf already exists"
     else
         local mtu=`cat /sys/class/net/vhost0/mtu`
-        local l_ip=$(get_listen_ip_for_nic vhost0)
+        local l_ip=$(get_ip_for_nic vhost0)
         ip tunnel add $decrypt_intf local $l_ip mode vti key $key || { echo "ERROR: Failed to initialize tunnel interface $decrypt_intf" && return 1; }
         ip link set dev $decrypt_intf mtu $mtu up
         ip link set dev ip_vti0 mtu $mtu up
@@ -771,4 +778,24 @@ function check_and_launch_dhcp_clients() {
 function add_k8s_pod_cidr_route() {
     local pod_cidr=${KUBERNETES_POD_SUBNETS:-"10.32.0.0/12"}
     ip route add $pod_cidr via $VROUTER_GATEWAY dev vhost0
+}
+
+function mask2cidr() {
+  local nbits=0
+  local IFS=.
+  for dec in $1 ; do
+        case $dec in
+            255) let nbits+=8;;
+            254) let nbits+=7;;
+            252) let nbits+=6;;
+            248) let nbits+=5;;
+            240) let nbits+=4;;
+            224) let nbits+=3;;
+            192) let nbits+=2;;
+            128) let nbits+=1;;
+            0);;
+            *) echo "Error: $dec is not recognised"; exit 1
+        esac
+  done
+  echo "$nbits"
 }

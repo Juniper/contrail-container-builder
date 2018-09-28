@@ -64,12 +64,16 @@ $xmpp_certs_config
 config_db_server_list=$configdb_cql_servers
 # config_db_username=
 # config_db_password=
+config_db_use_ssl=${CASSANDRA_SSL_ENABLE,,}
+config_db_ca_certs=$CASSANDRA_SSL_CA_CERTFILE
 
 rabbitmq_server_list=$rabbitmq_server_list
 $rabbitmq_config
 $rabbitmq_ssl_config
 
 $sandesh_client_config
+
+$collector_stats_config
 EOM
 
 add_ini_params_from_env DNS /etc/contrail/contrail-dns.conf

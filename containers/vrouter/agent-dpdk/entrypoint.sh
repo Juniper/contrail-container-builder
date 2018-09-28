@@ -138,9 +138,10 @@ if [[ -n "$bond_data" ]] ; then
     mode=$(echo "$bond_data" | cut -d ' ' -f 1)
     policy=$(echo "$bond_data" | cut -d ' ' -f 2)
     numa=$(echo "$bond_data" | cut -d ' ' -f 5)
+    lacp_rate=$(echo "$bond_data" | cut -d ' ' -f 6)
     # use list of slaves pci for next check of bind
     pci_address=$(echo "$bond_data" | cut -d ' ' -f 4)
-    cmd+=" --vdev eth_bond_${_bond_nic},mode=${mode},xmit_policy=${policy},socket_id=${numa},mac=$phys_int_mac"
+    cmd+=" --vdev eth_bond_${_bond_nic},mode=${mode},xmit_policy=${policy},socket_id=${numa},mac=$phys_int_mac,lacp_rate=${lacp_rate:-0}"
     for s in ${pci_address//,/ } ; do
         cmd+=",slave=${s}"
     done

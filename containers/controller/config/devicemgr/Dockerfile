@@ -4,10 +4,13 @@ FROM ${CONTRAIL_REGISTRY}/contrail-controller-config-base:${CONTRAIL_CONTAINER_T
 
 ARG CONTAINER_NAME
 
-COPY entrypoint.sh /
-
-RUN yum clean all -y && \
+RUN easy_install pip && \
+    pip install "inflection>=0.3.1" "jxmlease>=1.0.1" "junos-eznc>=2.1.7" "timeout_decorator>=0.4.0" "python-jsonschema-objects>=0.3.3" && \
+    ansible-galaxy install Juniper.junos && \
+    yum clean all -y && \
     rm -rf /var/cache/yum
+
+COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/python","/usr/bin/contrail-device-manager","--conf_file","/etc/contrail/contrail-device-manager.conf","--conf_file","/etc/contrail/contrail-keystone-auth.conf"]

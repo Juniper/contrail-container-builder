@@ -55,8 +55,14 @@ CONTRAIL_SERVICES_TO_SANDESH_SVC = {
         'nodemgr': 'contrail-analytics-nodemgr',
         'api': 'contrail-analytics-api',
         'collector': 'contrail-collector',
-        'query-engine': 'contrail-query-engine',
+    },
+    'analytics-alarm': {
+        'nodemgr': 'contrail-analytics-alarm-nodemgr',
         'alarm-gen': 'contrail-alarm-gen',
+        'kafka': None,
+    },
+    'analytics-snmp': {
+        'nodemgr': 'contrail-analytics-snmp-nodemgr',
         'snmp-collector': 'contrail-snmp-collector',
         'topology': 'contrail-topology',
     },
@@ -65,9 +71,8 @@ CONTRAIL_SERVICES_TO_SANDESH_SVC = {
     },
     'database': {
         'nodemgr': 'contrail-database-nodemgr',
+        'query-engine': 'contrail-query-engine',
         'cassandra': None,
-        'zookeeper': None,
-        'kafka': None,
     },
     'webui': {
         'web': None,
@@ -80,6 +85,11 @@ CONTRAIL_SERVICES_TO_SANDESH_SVC = {
         'plugin': None,
     }
 }
+
+SHARED_SERVICES = [
+    'contrail-external-redis',
+]
+
 # TODO: Include vcenter-plugin
 
 
@@ -387,6 +397,8 @@ def get_containers():
 
     items = dict()
     client = docker.from_env()
+    if hasattr(client, 'api'):
+        client = client.api
     flt = {'label': ['net.juniper.contrail.container.name']}
     for cnt in client.containers(all=True, filters=flt):
         labels = cnt.get('Labels', dict())
@@ -408,6 +420,7 @@ def get_containers():
             'Original Name': name,
             'State': cnt['State'],
             'Status': cnt['Status'],
+            'Id': cnt['Id'][0:12],
             'Created': cnt['Created']
         }
         if key not in items:
@@ -426,9 +439,9 @@ def get_containers():
 
 def print_containers(containers):
     # containers is a dict of dicts
-    hdr = ['Pod', 'Service', 'Original Name', 'State', 'Status']
+    hdr = ['Pod', 'Service', 'Original Name', 'State', 'Id', 'Status']
     items = list()
-    items.extend([v[hdr[0]], v[hdr[1]], v[hdr[2]], v[hdr[3]], v[hdr[4]]]
+    items.extend([v[hdr[0]], v[hdr[1]], v[hdr[2]], v[hdr[3]], v[hdr[4]], v[hdr[5]]]
                  for k, v in six.iteritems(containers))
     items.sort(key=operator.itemgetter(0, 1))
     items.insert(0, hdr)
@@ -490,6 +503,8 @@ def main():
         service = v['Service']
         if pod and service:
             pods.setdefault(pod, dict())[service] = v
+            continue
+        if not pod and v['Original Name'] in SHARED_SERVICES:
             continue
         print("WARNING: container with original name '{}' "
               "have Pod or Service empty. Pod: '{}' / Service: '{}'. "

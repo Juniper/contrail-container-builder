@@ -46,10 +46,14 @@ $rabbit_config
 $kombu_ssl_config
 
 cassandra_server_list=$cassandra_server_list
+cassandra_use_ssl=${CASSANDRA_SSL_ENABLE,,}
+cassandra_ca_certs=$CASSANDRA_SSL_CA_CERTFILE
 collectors=$COLLECTOR_SERVERS
 zk_server_ip=$ZOOKEEPER_SERVERS
 
 $sandesh_client_config
+
+$collector_stats_config
 EOM
 
 if [[ $AUTH_MODE == "keystone" ]]; then

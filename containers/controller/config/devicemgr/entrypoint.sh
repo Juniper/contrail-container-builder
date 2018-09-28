@@ -20,7 +20,15 @@ log_file=$LOG_DIR/contrail-device-manager.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 cassandra_server_list=$cassandra_server_list
+cassandra_use_ssl=${CASSANDRA_SSL_ENABLE,,}
+cassandra_ca_certs=$CASSANDRA_SSL_CA_CERTFILE
 zk_server_ip=$ZOOKEEPER_SERVERS
+
+# configure directories for job manager
+# the same directories must be mounted to dnsmasq and DM container
+dnsmasq_conf_dir=/etc/dnsmasq
+tftp_dir=/etc/tftp
+dhcp_leases_file=/var/lib/dnsmasq/dnsmasq.leases
 
 rabbit_server=$RABBITMQ_SERVERS
 $rabbit_config
@@ -29,9 +37,21 @@ $kombu_ssl_config
 collectors=$COLLECTOR_SERVERS
 
 $sandesh_client_config
+
+$collector_stats_config
 EOM
 
 add_ini_params_from_env DEVICE_MANAGER /etc/contrail/contrail-device-manager.conf
+
+cat > contrail-fabric-ansible.conf <<EOM
+[DEFAULTS]
+log_file=$LOG_DIR/contrail-fabric-ansible.log
+log_level=$LOG_LEVEL
+log_local=$LOG_LOCAL
+collectors=$COLLECTOR_SERVERS
+
+$sandesh_client_config
+EOM
 
 set_third_party_auth_config
 set_vnc_api_lib_ini

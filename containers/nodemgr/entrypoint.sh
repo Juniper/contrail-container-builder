@@ -41,19 +41,21 @@ log_file=$LOG_DIR/$NODEMGR_NAME.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 hostip=${hostip}
-#contrail_databases=config analytics
-#minimum_diskGB=4
-#log_category =
 db_port=${CASSANDRA_CQL_PORT}
 db_jmx_port=${CASSANDRA_JMX_LOCAL_PORT}
+db_use_ssl=$(format_boolean $CASSANDRA_SSL_ENABLE)
 
 [COLLECTOR]
 server_list=${COLLECTOR_SERVERS}
 
 $sandesh_client_config
+
+$collector_stats_config
 EOM
 
 add_ini_params_from_env ${ntype}_NODEMGR /etc/contrail/$NODEMGR_NAME.conf
+
+cat /etc/contrail/$NODEMGR_NAME.conf
 
 set_vnc_api_lib_ini
 

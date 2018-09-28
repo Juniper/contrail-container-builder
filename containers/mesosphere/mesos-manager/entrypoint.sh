@@ -22,7 +22,8 @@ admin_tenant=admin
 rabbit_server=$RABBITMQ_NODES
 rabbit_port=$RABBITMQ_NODE_PORT
 cassandra_server_list=$cassandra_server_list
-$sandesh_client_config
+cassandra_use_ssl=${CASSANDRA_SSL_ENABLE,,}
+cassandra_ca_certs=$CASSANDRA_SSL_CA_CERTFILE
 
 [DEFAULTS]
 disc_server_ip=127.0.0.1
@@ -31,12 +32,9 @@ log_local=$LOG_LOCAL
 log_level=$LOG_LEVEL
 log_file=$LOG_DIR/contrail-mesos-manager.log
 
-[SANDESH]
-#sandesh_ssl_enable=False
-#introspect_ssl_enable=False
-#sandesh_keyfile=/etc/contrail/ssl/private/server-privkey.pem
-#sandesh_certfile=/etc/contrail/ssl/certs/server.pem
-#sandesh_ca_cert=/etc/contrail/ssl/certs/ca-cert.pem
+$sandesh_client_config
+
+$collector_stats_config
 EOM
 
 add_ini_params_from_env MESOSPHERE /etc/contrail/contrail-mesos.conf
