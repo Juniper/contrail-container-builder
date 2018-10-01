@@ -346,7 +346,7 @@ def contrail_service_status(pods, pod, options):
                 options.certfile, options.cacert)
         else:
             fn_name = "{}_{}".format(pod, service).replace('-', '_')
-            fn = locals().get(fn_name)
+            fn = globals().get(fn_name)
             if fn:
                 status = fn(status, options.detail, options.timeout,
                     options.keyfile, options.certfile, options.cacert)
