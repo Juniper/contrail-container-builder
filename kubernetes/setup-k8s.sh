@@ -57,11 +57,12 @@ function install_for_ubuntu() {
   echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" >/etc/apt/sources.list.d/kubernetes.list
 
   apt-get update -y &>>$HOME/apt.log
+  k8s_version="${K8S_VERSION}-00"
   apt-get install -y \
     docker.io ntp \
     apt-transport-https \
     ca-certificates \
-    kubectl kubelet kubeadm &>>$HOME/apt.log
+    kubectl=$k8s_version kubelet=$k8s_version kubeadm=$k8s_version &>>$HOME/apt.log
 }
 
 function install_for_centos() {
@@ -90,7 +91,8 @@ EOF
     echo "SELINUX=permissive" >> /etc/selinux/config
   fi
 
-  pkgs_to_install='kubelet kubeadm kubectl ntp'
+  k8s_version="${K8S_VERSION}-0"
+  pkgs_to_install="kubelet-$k8s_version kubeadm-$k8s_version kubectl-$k8s_version ntp"
   if ! docker --version 2>&1 ; then
     pkgs_to_install+=' docker'
   fi
