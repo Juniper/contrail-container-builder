@@ -22,6 +22,7 @@ cloud_admin_role=$CLOUD_ADMIN_ROLE
 global_read_only_role=$GLOBAL_READ_ONLY_ROLE
 cassandra_server_list=$cassandra_server_list
 zk_server_ip=$ZOOKEEPER_SERVERS
+analytics_server_list=$ANALYTICS_SERVERS
 
 rabbit_server=$RABBITMQ_SERVERS
 $rabbit_config
