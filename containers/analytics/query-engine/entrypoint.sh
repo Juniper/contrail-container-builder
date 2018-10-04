@@ -26,7 +26,6 @@ collectors=$COLLECTOR_SERVERS
 
 [REDIS]
 port=$REDIS_SERVER_PORT
-server=127.0.0.1
 password=$REDIS_SERVER_PASSWORD
 
 $sandesh_client_config
