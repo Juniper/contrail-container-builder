@@ -62,7 +62,7 @@ function install_for_ubuntu() {
     docker.io ntp \
     apt-transport-https \
     ca-certificates \
-    kubectl=$k8s_version kubelet=$k8s_version kubeadm=$k8s_version &>>$HOME/apt.log
+    kubectl=\$k8s_version kubelet=\$k8s_version kubeadm=\$k8s_version &>>$HOME/apt.log
 }
 
 function install_for_centos() {
@@ -92,7 +92,7 @@ EOF
   fi
 
   k8s_version="${K8S_VERSION}-0"
-  pkgs_to_install="kubelet-$k8s_version kubeadm-$k8s_version kubectl-$k8s_version ntp"
+  pkgs_to_install="kubelet-\$k8s_version kubeadm-\$k8s_version kubectl-\$k8s_version ntp"
   if ! docker --version 2>&1 ; then
     pkgs_to_install+=' docker'
   fi
