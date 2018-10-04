@@ -148,6 +148,7 @@ COLLECTOR_SERVERS=${COLLECTOR_SERVERS:-`get_server_list ANALYTICS ":$COLLECTOR_P
 # redis_servers MUST have same IP-s as analytics IP-s
 # but redis must be installed on all nodes where analytics or webui are present
 REDIS_SERVERS=${REDIS_SERVERS:-`get_server_list REDIS ":$REDIS_SERVER_PORT "`}
+REDIS_SERVER_LIST=${REDIS_SERVER_LIST:-`get_server_list REDIS`}
 ANALYTICSDB_SERVERS=${ANALYTICSDB_SERVERS:-`get_server_list ANALYTICSDB ":$ANALYTICSDB_PORT "`}
 ANALYTICSDB_CQL_SERVERS=${ANALYTICSDB_CQL_SERVERS:-`get_server_list ANALYTICSDB ":$ANALYTICSDB_CQL_PORT "`}
 KAFKA_SERVERS=${KAFKA_SERVERS:-`get_server_list KAFKA ":$KAFKA_PORT "`}

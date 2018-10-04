@@ -13,7 +13,11 @@ function get_server_list() {
   local extended_server_list=''
   for server in "${server_list[@]}"; do
     local server_address=`echo ${server}`
-    extended_server_list+=${server_address}${port_with_delim}
+    if [[ -z "$port_with_delim" ]]; then
+        extended_server_list+=${server_address}" "
+    else
+        extended_server_list+=${server_address}${port_with_delim}
+    fi
   done
   [ -n "$extended_server_list" ] && echo "${extended_server_list::-1}"
 }
