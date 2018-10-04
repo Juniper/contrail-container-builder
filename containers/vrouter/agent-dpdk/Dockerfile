@@ -4,7 +4,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-vrouter-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
 
-RUN yum install -y contrail-vrouter-dpdk contrail-vrouter-dpdk-init && \
+RUN yum install -y dhclient NetworkManager contrail-vrouter-dpdk contrail-vrouter-dpdk-init && \
     yum clean all && \
     rm -rf /var/cache/yum && \
     ldconfig
