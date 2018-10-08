@@ -4,7 +4,8 @@ FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
 
-RUN yum install -y contrail-k8s-cni && \
+RUN wget -nv -P /opt https://github.com/containernetworking/cni/releases/download/v0.3.0/cni-v0.3.0.tgz && \
+    yum install -y contrail-k8s-cni && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 
