@@ -336,7 +336,33 @@ echo "INFO: /etc/contrail/contrail-vrouter-agent.conf"
 cat /etc/contrail/contrail-vrouter-agent.conf
 
 set_vnc_api_lib_ini
-create_lbaas_auth_conf
+
+if [[ -z "$K8S_TOKEN" ]]; then
+    k8s_token_file=${K8S_TOKEN_FILE:-'/var/run/secrets/kubernetes.io/serviceaccount/token'}
+    if [[ -f "$k8s_token_file" ]]; then
+        K8S_TOKEN=`cat "$k8s_token_file"`
+    fi
+fi
+cat << EOM > /etc/contrail/contrail-lbaas-auth.conf
+[BARBICAN]
+admin_tenant_name = service
+admin_user = ${BARBICAN_USER}
+admin_password = ${BARBICAN_PASSWORD}
+auth_url = $KEYSTONE_AUTH_PROTO://${KEYSTONE_AUTH_HOST}:${KEYSTONE_AUTH_ADMIN_PORT}${KEYSTONE_AUTH_URL_VERSION}
+region = $KEYSTONE_AUTH_REGION_NAME
+user_domain_name = $KEYSTONE_AUTH_USER_DOMAIN_NAME
+project_domain_name = $KEYSTONE_AUTH_PROJECT_DOMAIN_NAME
+region_name = $KEYSTONE_AUTH_REGION_NAME
+insecure = ${KEYSTONE_AUTH_INSECURE}
+certfile = $KEYSTONE_AUTH_CERTFILE
+keyfile = $KEYSTONE_AUTH_KEYFILE
+cafile = $KEYSTONE_AUTH_CA_CERTFILE
+[KUBERNETES]
+kubernetes_token=$K8S_TOKEN
+kubernetes_api_server=${KUBERNETES_API_SERVER:-${KUBERNETES_SERVICE_HOST:-${DEFAULT_LOCAL_IP}}}
+kubernetes_api_port=${KUBERNETES_API_PORT:-8080}
+kubernetes_api_secure_port=${KUBERNETES_API_SECURE_PORT:-${KUBERNETES_PORT_443_TCP_PORT:-6443}}
+EOM
 
 # spin up vrouter-agent as a child process
 $@ &

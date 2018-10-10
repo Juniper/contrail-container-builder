@@ -34,7 +34,7 @@ function fail() {
 }
 
 cert_dir_name=$(dirname $SERVER_CERTFILE)
-SERVER_CA_CERTFILE=${SERVER_CA_CERTFILE:-"${cert_dir_name}/ca-cert.pem"}
+SERVER_CA_CERTFILE=${SERVER_CA_CERTFILE:-"$cert_dir_name/ca-cert.pem"}
 
 mkdir -p $cert_dir_name
 mkdir -p $(dirname $SERVER_KEYFILE)
