@@ -55,9 +55,6 @@ k8s_ca_file=${K8S_CA_FILE:-'/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
 if [[ -f "$k8s_token_file"  && -f "$k8s_ca_file" ]] ; then
   echo "INFO: K8S deployment, use K8S facilities for cert-generation"
   ca_provider='kubernetes'
-  # update CA file
-  cp -f "$k8s_ca_file" "${SERVER_CA_CERTFILE}.tmp"
-  mv "${SERVER_CA_CERTFILE}.tmp" "${SERVER_CA_CERTFILE}"
 fi
 
 full_host_name="$(hostname -f)"
@@ -70,7 +67,7 @@ alt_name_num=1
 alt_names="DNS.${alt_name_num} = $full_host_name"
 (( alt_name_num+=1 ))
 if [[ "$full_host_name" != "$short_host_name" ]] ; then
-  alt_names="\nDNS.${alt_name_num} = $short_host_name"
+  alt_names+="\nDNS.${alt_name_num} = $short_host_name"
   (( alt_name_num+=1 ))
 fi
 # start IP.x from 1
@@ -162,7 +159,7 @@ EOF
 echo "INFO: openssl config file"
 cat "$openssl_config_file"
 
-if [[ "$ca_provider" != 'kubernetes' ]] ; then
+function generate_local_ca() {
   #generate local self-signed CA if requested
   if [[ ! -f "${SERVER_CA_KEYFILE}" ]] ; then
     openssl genrsa -out $SERVER_CA_KEYFILE $CA_PRIVATE_KEY_BITS || fail "Failed to generate CA key file"
@@ -172,6 +169,10 @@ if [[ "$ca_provider" != 'kubernetes' ]] ; then
     chmod 644 $SERVER_CA_CERTFILE || fail "Failed to chmod 644 on $SERVER_CA_CERTFILE"
   fi
   [[ -f "${SERVER_CA_CERTFILE}" && -f "${SERVER_CA_KEYFILE}" ]] || fail "'${SERVER_CA_CERTFILE}' or '${SERVER_CA_KEYFILE}' doesnt exist"
+}
+
+if [[ "$ca_provider" != 'kubernetes' ]] ; then
+  generate_local_ca
 fi
 
 # generate server certificate signing request
@@ -180,11 +181,12 @@ openssl genrsa -out ${SERVER_KEYFILE}.tmp $PRIVATE_KEY_BITS || fail "Failed to g
 chmod 600 ${SERVER_KEYFILE}.tmp || fail "Failed to chmod 600 on ${SERVER_KEYFILE}.tmp"
 openssl req -config $openssl_config_file -key ${SERVER_KEYFILE}.tmp -new  -out $csr_file || fail "Failed to create CSR"
 
-if [[ "$ca_provider" != 'kubernetes' ]] ; then
+function sign_csr_local_ca() {
   # sign csr by local CA
   yes | openssl ca -config $openssl_config_file -extensions v3_req -days 365 -in $csr_file -out ${SERVER_CERTFILE}.tmp || fail "Failed to sign certificate"
-  chmod 644 ${SERVER_CERTFILE}.tmp || fail "Failed to chmod 644 on ${SERVER_CERTFILE}.tmp"
-else
+}
+
+function sign_csr_k8s_ca() {
   # sign by K8S CA
   k8s_host=${KUBERNETES_API_SERVER:-${KUBERNETES_SERVICE_HOST:-${DEFAULT_LOCAL_IP}}}
   k8s_port=${KUBERNETES_API_PORT:-${KUBERNETES_PORT_443_TCP_PORT:-'6443'}}
@@ -250,9 +252,29 @@ else
 
   echo "INFO: download approved certificate"
   csr_response=$(curl --cacert $k8s_ca_file -H "Authorization: Bearer $k8s_token" -H "Content-Type: application/json" ${k8s_base_url}/${k8s_cert_name})
+
+  if ! echo "$csr_response" | grep -q '"certificate":' ; then
+    return 1
+  fi
   echo "$csr_response" | awk '/"certificate":/{print($2)}' | tr -d '"' | base64 -d > ${SERVER_CERTFILE}.tmp
-  chmod 644 ${SERVER_CERTFILE}.tmp
+}
+
+if [[ "$ca_provider" != 'kubernetes' ]] ; then
+  sign_csr_local_ca
+else
+  if sign_csr_k8s_ca ; then
+    # update CA file
+    cp -f "$k8s_ca_file" "${SERVER_CA_CERTFILE}.tmp"
+    mv "${SERVER_CA_CERTFILE}.tmp" "${SERVER_CA_CERTFILE}"
+  else
+    echo -e "WARNING: failed to sign CSR by K8S CA.\n"\
+            "The Kubernetes controller responsible of approving the certificates could be disabled.\n"\
+            "Fallback to local self-signed CA."
+    generate_local_ca
+    sign_csr_local_ca
+  fi
 fi
 
+chmod 644 ${SERVER_CERTFILE}.tmp || fail "Failed to chmod 644 on ${SERVER_CERTFILE}.tmp"
 mv ${SERVER_KEYFILE}.tmp ${SERVER_KEYFILE}
 mv ${SERVER_CERTFILE}.tmp ${SERVER_CERTFILE}

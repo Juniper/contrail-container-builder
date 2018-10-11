@@ -51,7 +51,7 @@ function get_default_gateway_for_nic_metric() {
 }
 
 function get_local_ips() {
-  cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}'
+  cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}' | grep -vi 'host' | sort | uniq
 }
 
 function find_my_ip_and_order_for_node() {
