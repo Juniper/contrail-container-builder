@@ -22,6 +22,8 @@ mkdir -p /var/lib/contrail/ports/vm
 cp /usr/bin/contrail-k8s-cni /host/opt_cni_bin
 chmod 0755 /host/opt_cni_bin/contrail-k8s-cni
 
+tar -C /host/opt_cni_bin -xzf /opt/cni-v0.3.0.tgz
+
 if [ $KUBEMANAGER_NESTED_MODE == '0' ]; then
 
 # Not executing in nested mode. Populate CNI config accordingly.
