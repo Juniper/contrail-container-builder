@@ -359,9 +359,9 @@ keyfile = $KEYSTONE_AUTH_KEYFILE
 cafile = $KEYSTONE_AUTH_CA_CERTFILE
 [KUBERNETES]
 kubernetes_token=$K8S_TOKEN
-kubernetes_api_server=${KUBERNETES_API_SERVER:-${KUBERNETES_SERVICE_HOST:-${DEFAULT_LOCAL_IP}}}
+kubernetes_api_server=${KUBERNETES_API_SERVER:-${DEFAULT_LOCAL_IP}}
 kubernetes_api_port=${KUBERNETES_API_PORT:-8080}
-kubernetes_api_secure_port=${KUBERNETES_API_SECURE_PORT:-${KUBERNETES_PORT_443_TCP_PORT:-6443}}
+kubernetes_api_secure_port=${KUBERNETES_API_SECURE_PORT:-6443}
 EOM
 
 # spin up vrouter-agent as a child process
