@@ -309,7 +309,7 @@ $priority_group_option
 
 $crypt_interface_option
 
-[SESSION_DESTINATION]
+[SESSION]
 slo_destination = $SLO_DESTINATION
 sample_destination = $SAMPLE_DESTINATION
 
