@@ -60,9 +60,6 @@ fi
 full_host_name="$(hostname -f)"
 short_host_name="$(hostname -s)"
 
-common_name=$DEFAULT_HOSTNAME
-org_name='ContrailCluster'
-
 alt_name_num=1
 alt_names="DNS.${alt_name_num} = $full_host_name"
 (( alt_name_num+=1 ))
@@ -100,8 +97,12 @@ distinguished_name = req_distinguished_name
 x509_extensions = v3_ca
 
 [ req_distinguished_name ]
-0.organizationName = $org_name
-commonName = $common_name
+commonName              = Contrail
+countryName             = US
+stateOrProvinceName     = CA
+organizationName        = JuniperNetworks
+organizationalUnitName  = JuniperCA
+localityName            = Sunnyvale
 
 [ v3_req ]
 basicConstraints = CA:false
@@ -145,6 +146,7 @@ organizationName       = optional
 organizationalUnitName = optional
 commonName             = supplied
 emailAddress           = optional
+localityName           = optional
 
 [ v3_ca]
 # Extensions for a typical CA
