@@ -104,16 +104,18 @@ function start_dpdk_container() {
         return 0
     fi
 
+    mkdir -p /var/log/containers/contrail
     eval "docker run \
         --detach \
         --name contrail-vrouter-agent-dpdk \
         --net host --privileged \
         --restart always \
-        -v /dev/:/dev/ \
-        -v /etc/sysconfig/network-scripts/:/etc/sysconfig/network-scripts/ \
-        -v /lib/modules/:/lib/modules/ \
-        -v /var/run/vrouter:/var/run/vrouter \
-        -v /var/log/contrail/agent/:/var/log/contrail/ \
+        -v /dev:/dev \
+        -v /etc/sysconfig/network-scripts:/etc/sysconfig/network-scripts \
+        -v /lib/modules:/lib/modules \
+        -v /var/run:/var/run \
+        -v /var/log/containers/contrail:/var/log/contrail \
+        -v /var/crashes:/var/crashes \
         ${env_options} \
         ${CONTRAIL_VROUTER_AGENT_DPDK_DOCKER_IMAGE}"
 }
