@@ -114,7 +114,6 @@ if [ "$CLOUD_ORCHESTRATOR" == "vcenter" ] && ! is_tsn; then
     HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'vmware'}
     vmware_phys_int=$(get_vmware_physical_iface)
     disable_chksum_offload $phys_int
-    disable_lro_offload $vmware_phys_int
     read -r -d '' vmware_options << EOM || true
 vmware_physical_interface = $vmware_phys_int
 vmware_mode = vcenter
