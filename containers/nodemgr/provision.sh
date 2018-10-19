@@ -93,20 +93,26 @@ analytics)
   ;;
 
 control)
-  host_ip=$(get_listen_ip_for_node CONTROL)
   if [[ "$BGP_AUTO_MESH" == 'true' ]] ; then
     ibgp_auto_mesh_opt='--ibgp_auto_mesh'
   else
     ibgp_auto_mesh_opt='--no_ibgp_auto_mesh'
   fi
+
+  # this is done so in order to _set_ the global asn number to BGP_ASN.
+  # this call must be separate due to provision_control.py implementation
+  provision provision_control.py --router_asn ${BGP_ASN} $ibgp_auto_mesh_opt
+
   subcluster_name=''
   if [[ -n ${SUBCLUSTER} ]]; then
     subcluster_name="--sub_cluster_name ${SUBCLUSTER}"
     subcluster_option="$subcluster_name --sub_cluster_asn ${BGP_ASN}"
     provision_subcluster provision_sub_cluster.py ${subcluster_option}
   fi
+
+  host_ip=$(get_listen_ip_for_node CONTROL)
   provision_node provision_control.py $host_ip $DEFAULT_HOSTNAME \
-    --router_asn ${BGP_ASN} $ibgp_auto_mesh_opt \
+    --router_asn ${BGP_ASN} \
     --bgp_server_port ${BGP_PORT} ${subcluster_name}
   ;;
 
