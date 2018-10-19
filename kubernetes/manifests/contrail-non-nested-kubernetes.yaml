@@ -85,6 +85,9 @@ spec:
       - key: node-role.kubernetes.io/master
         operator: Exists
         effect: NoSchedule
+      - key: node.kubernetes.io/not-ready
+        operator: Exists
+        effect: NoSchedule
       automountServiceAccountToken: false
       hostNetwork: true
       initContainers:
@@ -152,6 +155,10 @@ spec:
                 operator: NotIn
                 values:
                 - "true"
+      tolerations:
+      - key: node.kubernetes.io/not-ready
+        operator: Exists
+        effect: NoSchedule
       automountServiceAccountToken: false
       hostNetwork: true
       initContainers:
