@@ -555,7 +555,6 @@ function init_vhost0() {
             # TODO: switch off dhcp on phys_int permanently
             kill_dhcp_clients ${phys_int}
         fi
-        set_dev_routes vhost0 "$routes"
         echo "INFO: Changing physical interface to vhost in ip table"
         echo "$addrs" | while IFS= read -r line ; do
             if ! is_dpdk ; then
@@ -569,6 +568,7 @@ function init_vhost0() {
             echo "INFO: set mtu"
             ip link set dev vhost0 mtu $mtu
         fi
+        set_dev_routes vhost0 "$routes"
     fi
     # Remove all routes from phys iface if any.
     # One case is centos: it may assign 192.254.0.0/16 to ethX as a Zeroconf route.
