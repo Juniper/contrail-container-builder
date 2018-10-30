@@ -4,15 +4,7 @@
 #
 [mlnx_ofed_latest]
 name=Mellanox Technologies rhel7.5-$basearch mlnx_ofed latest version
-baseurl=http://linux.mellanox.com/public/repo/mlnx_ofed/latest/rhel7.5/$basearch
-enabled=0
-gpgkey=http://www.mellanox.com/downloads/ofed/RPM-GPG-KEY-Mellanox
-gpgcheck=1
-
-[mlnx_ofed_4.3-3.0.2.1_base]
-name=Mellanox Technologies rhel7.5-$basearch mlnx_ofed 4.3-3.0.2.1 GA
-baseurl=http://linux.mellanox.com/public/repo/mlnx_ofed/4.3-3.0.2.1/rhel7.5/$basearch
+baseurl=http://linux.mellanox.com/public/repo/mlnx_ofed_dpdk_upstream_libs/latest-contrail/rhel7.5/$basearch
 enabled=1
 gpgkey=http://www.mellanox.com/downloads/ofed/RPM-GPG-KEY-Mellanox
-gpgcheck=1
-
+gpgcheck=0
