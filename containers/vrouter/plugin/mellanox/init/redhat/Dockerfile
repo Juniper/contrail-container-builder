@@ -8,7 +8,7 @@ ARG CONTAINER_NAME
 COPY *.repo /etc/yum.repos.d/
 
 RUN yum update -y && \
-    yum install --downloadonly -y mlnx-ofed-kernel-only
+    yum install --downloadonly -y mlnx-ofed-dpdk-upstream-libs
 
 COPY entrypoint.sh /
 
