@@ -3,7 +3,4 @@
 # For more information, refer to http://linux.mellanox.com
 #
 #[mlnx_ofed_latest]
-#deb http://linux.mellanox.com/public/repo/mlnx_ofed/latest/ubuntu16.04/$(ARCH) ./
-
-# [mlnx_ofed_4.3-1.0.1.0_base]
-deb http://linux.mellanox.com/public/repo/mlnx_ofed/4.3-1.0.1.0/ubuntu16.04/$(ARCH) ./
+deb [trusted=yes] http://linux.mellanox.com/public/repo/mlnx_ofed_dpdk_upstream_libs/latest-contrail/ubuntu18.04/$(ARCH) ./

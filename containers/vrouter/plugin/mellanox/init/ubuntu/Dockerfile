@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 ARG CONTAINER_NAME
 
@@ -14,15 +14,14 @@ COPY mellanox_mlnx_ofed.list /etc/apt/sources.list.d/
 # install.
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
-    mkdir /store && cd /store && \
-    apt-get --allow-unauthenticated download mlnx-ofed-kernel-dkms && \
-    apt-get --allow-unauthenticated download mlnx-ofed-kernel-utils && \
+    mkdir /store && cd /store && touch /store/Release && \
+    apt-get --allow-unauthenticated download mlnx-ofed-dpdk-upstream-libs && \
     apt-get -y install dkms && \
     apt-get -y install dpkg-dev && \
-    apt-get -y install file libexpat1 libffi6 libicu55 libmagic1 libpci3 && \
+    apt-get -y install file libexpat1 libffi6 libicu60 libmagic1 libpci3 && \
     apt-get -y install libpython-stdlib libpython2.7 libpython2.7-minimal && \
     apt-get -y install libpython2.7-stdlib libsqlite3-0 libssl1.0.0 libxml2 && \
-    apt-get -y install linux-headers-4.4.0-130 linux-headers-4.4.0-130-generic && \
+    apt-get -y install linux-headers-4.15.0-38 linux-headers-4.15.0-38-generic && \
     apt-get -y install linux-headers-generic lsof mime-support pciutils python && \
     apt-get -y install python-libxml2 python-minimal python2.7 python2.7-minimal && \
     apt-get -y install sgml-base xml-core && \
@@ -30,7 +29,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 
 COPY local_store.list /etc/apt/sources.list.d/
 
-RUN apt-get update && apt-get clean
+RUN apt-get clean
 
 COPY entrypoint.sh /
 
