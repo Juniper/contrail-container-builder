@@ -44,6 +44,8 @@ $kombu_ssl_config
 cassandra_server_list=$cassandra_server_list
 collectors=$COLLECTOR_SERVERS
 zk_server_ip=$ZOOKEEPER_SERVERS
+
+$sandesh_client_config
 EOM
 
 if [[ $AUTH_MODE == "keystone" ]]; then
