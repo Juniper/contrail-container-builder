@@ -7,6 +7,9 @@ pre_start_init
 hostip=$(get_listen_ip_for_node CONTROL)
 rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')
 configdb_cql_servers=$(echo $CONFIGDB_CQL_SERVERS | sed 's/,/ /g')
+if [[ "$SECURE_INTROSPECT" == True ]]; then
+  CONTROL_INTROSPECT_IP=${hostip}
+fi
 
 DNS_NAMED_CONFIG_FILE=${DNS_NAMED_CONFIG_FILE:-'contrail-named.conf'}
 DNS_NAMED_CONFIG_DIRECTORY=${DNS_NAMED_CONFIG_DIRECTORY:-'/etc/contrail/dns'}
@@ -41,6 +44,7 @@ named_retransmission_interval=${DNS_RETRANSMISSION_INTERVAL:-1000} # msec
 hostip=${hostip}
 hostname=${DEFAULT_HOSTNAME}
 http_server_port=${DNS_INTROSPECT_LISTEN_PORT:-$DNS_INTROSPECT_PORT}
+http_server_ip=${CONTROL_INTROSPECT_IP:-0.0.0.0}
 dns_server_port=$DNS_SERVER_PORT
 log_file=$LOG_DIR/contrail-dns.log
 log_level=$LOG_LEVEL
