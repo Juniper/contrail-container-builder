@@ -6,8 +6,14 @@ pre_start_init
 
 cassandra_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
 
+host_ip=$(get_listen_ip_for_node CONFIG)
+if [[ "$SECURE_INTROSPECT" == True ]]; then
+  CONFIG_INTROSPECT_IP=${host_ip}
+fi
+
 cat > /etc/contrail/contrail-schema.conf << EOM
 [DEFAULTS]
+http_server_ip=${CONFIG_INTROSPECT_IP:-0.0.0.0}
 api_server_ip=$CONFIG_NODES
 api_server_port=$CONFIG_API_PORT
 log_file=$LOG_DIR/contrail-schema.log
