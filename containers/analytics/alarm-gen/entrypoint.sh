@@ -6,11 +6,15 @@ pre_start_init
 
 host_ip=$(get_listen_ip_for_node ANALYTICS)
 config_db_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
+if [[ "$SECURE_INTROSPECT" == True ]]; then
+  ANALYTICS_INTROSPECT_IP=$(get_listen_ip_for_node ANALYTICS_INTROSPECT)
+fi
 
 cat > /etc/contrail/contrail-alarm-gen.conf << EOM
 [DEFAULTS]
 host_ip=${host_ip}
 partitions=${ALARMGEN_partitions:-30}
+http_server_ip=${ANALYTICS_INTROSPECT_IP:-0.0.0.0}
 http_server_port=${ALARMGEN_INTROSPECT_LISTEN_PORT:-$ALARMGEN_INTROSPECT_PORT}
 log_file=$LOG_DIR/contrail-alarm-gen.log
 log_level=$LOG_LEVEL
