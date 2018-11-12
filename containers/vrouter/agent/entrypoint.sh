@@ -254,6 +254,11 @@ crypt_interface=$VROUTER_CRYPT_INTERFACE
 EOM
 fi
 
+introspect_ip='0.0.0.0'
+if ! is_enabled INTROSPECT_LISTEN_ALL ; then
+  introspect_ip=$vrouter_ip
+fi
+
 echo "INFO: Preparing /etc/contrail/contrail-vrouter-agent.conf"
 cat << EOM > /etc/contrail/contrail-vrouter-agent.conf
 [CONTROL-NODE]
@@ -261,6 +266,7 @@ servers=${XMPP_SERVERS:-`get_server_list CONTROL ":$XMPP_SERVER_PORT "`}
 $subcluster_option
 
 [DEFAULT]
+http_server_ip=$introspect_ip
 collectors=$COLLECTOR_SERVERS
 log_file=$LOG_DIR/contrail-vrouter-agent.log
 log_level=$LOG_LEVEL

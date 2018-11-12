@@ -42,6 +42,7 @@ named_retransmission_interval=${DNS_RETRANSMISSION_INTERVAL:-1000} # msec
 hostip=${hostip}
 hostname=${hostname:-$DEFAULT_HOSTNAME}
 http_server_port=${DNS_INTROSPECT_LISTEN_PORT:-$DNS_INTROSPECT_PORT}
+http_server_ip=$(get_introspect_listen_ip_for_node CONTROL)
 dns_server_port=$DNS_SERVER_PORT
 log_file=$LOG_DIR/contrail-dns.log
 log_level=$LOG_LEVEL
