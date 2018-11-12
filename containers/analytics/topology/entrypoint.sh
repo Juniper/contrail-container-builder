@@ -13,6 +13,7 @@ cat > /etc/contrail/contrail-topology.conf << EOM
 host_ip=${host_ip}
 scan_frequency=${TOPOLOGY_SCAN_FREQUENCY:-600}
 http_server_port=${TOPOLOGY_INTROSPECT_LISTEN_PORT:-$TOPOLOGY_INTROSPECT_PORT}
+http_server_ip=${ANALYTICS_INTROSPECT_IP:-0.0.0.0}
 log_file=$LOG_DIR/contrail-topology.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL

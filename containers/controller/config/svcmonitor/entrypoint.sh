@@ -10,6 +10,7 @@ cassandra_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
 cat > /etc/contrail/contrail-svc-monitor.conf << EOM
 [DEFAULTS]
 host_ip=${host_ip}
+http_server_ip=${CONFIG_INTROSPECT_IP:-0.0.0.0}
 api_server_ip=$CONFIG_NODES
 api_server_port=$CONFIG_API_PORT
 log_file=$LOG_DIR/contrail-svc-monitor.log
