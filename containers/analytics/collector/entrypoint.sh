@@ -5,6 +5,9 @@ source /common.sh
 pre_start_init
 
 hostip=$(get_listen_ip_for_node ANALYTICS)
+if [[ "$SECURE_INTROSPECT" == True ]]; then
+  ANALYTICS_INTROSPECT_IP=$(get_listen_ip_for_node ANALYTICS_INTROSPECT)
+fi
 rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')
 configdb_cql_servers=$(echo $CONFIGDB_CQL_SERVERS | sed 's/,/ /g')
 
@@ -18,6 +21,7 @@ partitions=${ANALYTICS_UVE_PARTITIONS:-30}
 hostip=${hostip}
 hostname=${DEFAULT_HOSTNAME}
 http_server_port=${COLLECTOR_INTROSPECT_LISTEN_PORT:-$COLLECTOR_INTROSPECT_PORT}
+http_server_ip=${ANALYTICS_INTROSPECT_IP:-0.0.0.0}
 syslog_port=${COLLECTOR_SYSLOG_LISTEN_PORT:-$COLLECTOR_SYSLOG_PORT}
 sflow_port=${COLLECTOR_SFLOW_LISTEN_PORT:-$COLLECTOR_SFLOW_PORT}
 ipfix_port=${COLLECTOR_IPFIX_LISTEN_PORT:-$COLLECTOR_IPFIX_PORT}
@@ -34,7 +38,7 @@ zookeeper_server_list=$ZOOKEEPER_ANALYTICS_SERVERS
 
 [COLLECTOR]
 port=${COLLECTOR_LISTEN_PORT:-$COLLECTOR_PORT}
-server=${COLLECTOR_SERVER_LISTEN_IP:-0.0.0.0}
+server=${COLLECTOR_SERVER_LISTEN_IP:-${hostip}}
 protobuf_port=${COLLECTOR_PROTOBUF_LISTEN_PORT:-$COLLECTOR_PROTOBUF_PORT}
 
 [STRUCTURED_SYSLOG_COLLECTOR]
