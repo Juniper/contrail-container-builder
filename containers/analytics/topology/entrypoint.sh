@@ -6,11 +6,15 @@ pre_start_init
 
 rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')
 config_db_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
+if [[ "$SECURE_INTROSPECT" == True ]]; then
+  ANALYTICS_INTROSPECT_IP=$(get_listen_ip_for_node ANALYTICS_INTROSPECT)
+fi
 
 cat > /etc/contrail/contrail-topology.conf << EOM
 [DEFAULTS]
 scan_frequency=${TOPOLOGY_SCAN_FREQUENCY:-600}
 http_server_port=${TOPOLOGY_INTROSPECT_LISTEN_PORT:-$TOPOLOGY_INTROSPECT_PORT}
+http_server_ip=${ANALYTICS_INTROSPECT_IP:-0.0.0.0}
 log_file=$LOG_DIR/contrail-topology.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
