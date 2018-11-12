@@ -5,11 +5,15 @@ source /common.sh
 pre_start_init
 
 host_ip=$(get_listen_ip_for_node ANALYTICS)
+if [[ "$SECURE_INTROSPECT" == True ]]; then
+  ANALYTICS_INTROSPECT_IP=$(get_listen_ip_for_node ANALYTICS_INTROSPECT)
+fi
 
 cat > /etc/contrail/contrail-analytics-api.conf << EOM
 [DEFAULTS]
 host_ip=${host_ip}
 http_server_port=${ANALYTICS_API_INTROSPECT_LISTEN_PORT:-$ANALYTICS_API_INTROSPECT_PORT}
+http_server_ip=${ANALYTICS_INTROSPECT_IP:-0.0.0.0}
 rest_api_port=${ANALYTICS_API_LISTEN_PORT:-$ANALYTICS_API_PORT}
 rest_api_ip=${ANALYTICS_API_LISTEN_IP:-$host_ip}
 partitions=${ANALYTICS_UVE_PARTITIONS:-30}

@@ -6,12 +6,16 @@ pre_start_init
 
 hostip=$(get_listen_ip_for_node ANALYTICS)
 hostname=$(resolve_hostname_by_ip $hostip)
+if [[ "$SECURE_INTROSPECT" == True ]]; then
+  ANALYTICS_INTROSPECT_IP=$(get_listen_ip_for_node ANALYTICS_INTROSPECT)
+fi
 
 cat > /etc/contrail/contrail-query-engine.conf << EOM
 [DEFAULT]
 analytics_data_ttl=${ANALYTICS_DATA_TTL:-48}
 hostip=${hostip}
 hostname=${hostname:-$DEFAULT_HOSTNAME}
+http_server_ip=${ANALYTICS_INTROSPECT_IP:-0.0.0.0}
 http_server_port=${QUERYENGINE_INTROSPECT_LISTEN_PORT:-$QUERYENGINE_INTROSPECT_PORT}
 log_file=$LOG_DIR/contrail-query-engine.log
 log_level=$LOG_LEVEL
