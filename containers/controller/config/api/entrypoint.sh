@@ -12,6 +12,7 @@ cat > /etc/contrail/contrail-api.conf << EOM
 listen_ip_addr=${host_ip}
 listen_port=$CONFIG_API_PORT
 http_server_port=${CONFIG_API_INTROSPECT_PORT}
+http_server_ip=${CONFIG_INTROSPECT_IP:-0.0.0.0}
 log_file=$LOG_DIR/contrail-api.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
