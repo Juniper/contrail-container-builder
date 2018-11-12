@@ -12,6 +12,7 @@ cat > /etc/contrail/contrail-query-engine.conf << EOM
 analytics_data_ttl=${ANALYTICS_DATA_TTL:-48}
 hostip=${hostip}
 hostname=${hostname:-$DEFAULT_HOSTNAME}
+http_server_ip=${ANALYTICS_INTROSPECT_IP:-0.0.0.0}
 http_server_port=${QUERYENGINE_INTROSPECT_LISTEN_PORT:-$QUERYENGINE_INTROSPECT_PORT}
 log_file=$LOG_DIR/contrail-query-engine.log
 log_level=$LOG_LEVEL
