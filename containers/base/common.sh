@@ -302,3 +302,8 @@ PRIORITY_TAGGING=${PRIORITY_TAGGING:-True}
 # Session logging options
 SLO_DESTINATION=${SLO_DESTINATION:-"collector"}
 SAMPLE_DESTINATION=${SAMPLE_DESTINATION:-"collector"}
+
+# Set this to False if introspect services is required to be on specific
+# interface IP. The default is to listen on 0.0.0.0
+INTROSPECT_LISTEN_ALL=${INTROSPECT_LISTEN_ALL:-True}
+

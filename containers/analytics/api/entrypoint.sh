@@ -10,6 +10,7 @@ cat > /etc/contrail/contrail-analytics-api.conf << EOM
 [DEFAULTS]
 host_ip=${host_ip}
 http_server_port=${ANALYTICS_API_INTROSPECT_LISTEN_PORT:-$ANALYTICS_API_INTROSPECT_PORT}
+http_server_ip=$(get_introspect_listen_ip_for_node ANALYTICS)
 rest_api_port=${ANALYTICS_API_LISTEN_PORT:-$ANALYTICS_API_PORT}
 rest_api_ip=${ANALYTICS_API_LISTEN_IP:-$host_ip}
 partitions=${ANALYTICS_UVE_PARTITIONS:-30}
