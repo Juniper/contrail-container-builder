@@ -14,15 +14,29 @@ NODEMGR_NAME=${NODEMGR_TYPE}-nodemgr
 ntype=`echo ${NODE_TYPE^^} | tr '-' '_'`
 
 if [[ $ntype == 'VROUTER' ]]; then
+  htype='VROUTER'
   hostip=$(get_ip_for_vrouter_from_control)
 else
   # nodes list var name is a ANALYTICSDB_NODES (not DATABASE_NODES)
-  if [[ $ntype == 'DATABASE' ]] ; then htype='ANALYTICSDB' ; else htype="$ntype" ; fi
+  if [[ $ntype == 'DATABASE' ]] ; then
+    htype='ANALYTICSDB'
+  elif [[ $ntype == 'CONFIG_DATABASE' ]] ; then
+    htype='CONFIGDB'
+  else
+    htype="$ntype"
+  fi
+
   hostip=$(get_listen_ip_for_node ${htype})
+fi
+
+if [[ "$SECURE_INTROSPECT" == True ]]; then
+  introspect_ip=$(get_listen_ip_for_node ${htype}_INTROSPECT)
+  NODEMGR_INTROSPECT_IP=${introspect_ip}
 fi
 
 cat > /etc/contrail/$NODEMGR_NAME.conf << EOM
 [DEFAULTS]
+http_server_ip=${NODEMGR_INTROSPECT_IP:-0.0.0.0}
 log_file=$LOG_DIR/$NODEMGR_NAME.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
