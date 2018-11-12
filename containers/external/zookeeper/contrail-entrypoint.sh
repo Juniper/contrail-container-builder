@@ -18,6 +18,7 @@ for i in {1..10} ; do
     if srv_ip=`/hostname_to_ip_alpine $srv` \
         && [[ "$local_ips" =~ ",$srv_ip," ]] ; then
       echo "INFO: found '$srv/$srv_ip' in local IPs '$local_ips'"
+      export MY_ZOO_IP=${srv_ip}
       my_ord=$ord
     fi
     ord=$((ord+1))
@@ -46,5 +47,23 @@ export ZOO_MY_ID=$my_ord
 echo "INFO: ZOO_MY_ID=$ZOO_MY_ID, ZOO_PORT=$ZOO_PORT"
 echo "INFO: ZOO_SERVERS=$ZOO_SERVERS"
 echo "INFO: /docker-entrypoint.sh $@"
+
+# Generate the config file
+CONFIG="$ZOO_CONF_DIR/zoo.cfg"
+
+echo "clientPort=$ZOO_PORT" >> "$CONFIG"
+echo "clientPortAddress=$MY_ZOO_IP" >> "$CONFIG"
+echo "dataDir=$ZOO_DATA_DIR" >> "$CONFIG"
+echo "dataLogDir=$ZOO_DATA_LOG_DIR" >> "$CONFIG"
+
+echo "tickTime=$ZOO_TICK_TIME" >> "$CONFIG"
+echo "initLimit=$ZOO_INIT_LIMIT" >> "$CONFIG"
+echo "syncLimit=$ZOO_SYNC_LIMIT" >> "$CONFIG"
+
+echo "maxClientCnxns=$ZOO_MAX_CLIENT_CNXNS" >> "$CONFIG"
+
+for server in $ZOO_SERVERS; do
+    echo "$server" >> "$CONFIG"
+done
 
 exec /docker-entrypoint.sh "$@"
