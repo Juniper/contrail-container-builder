@@ -7,11 +7,15 @@ pre_start_init
 
 rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')
 config_db_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
+if [[ "$SECURE_INTROSPECT" == True ]]; then
+  ANALYTICS_INTROSPECT_IP=$(get_listen_ip_for_node ANALYTICS_INTROSPECT)
+fi
 
 cat > /etc/contrail/contrail-snmp-collector.conf << EOM
 [DEFAULTS]
 scan_frequency=${SNMPCOLLECTOR_SCAN_FREQUENCY:-600}
 fast_scan_frequency=${SNMPCOLLECTOR_FAST_SCAN_FREQUENCY:-60}
+http_server_ip=${ANALYTICS_INTROSPECT_IP:-0.0.0.0}
 http_server_port=${SNMPCOLLECTOR_INTROSPECT_LISTEN_PORT:-$SNMPCOLLECTOR_INTROSPECT_PORT}
 log_file=$LOG_DIR/contrail-snmp-collector.log
 log_level=$LOG_LEVEL
