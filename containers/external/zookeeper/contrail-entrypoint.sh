@@ -2,6 +2,7 @@
 
 ZOOKEEPER_PORT=${ZOOKEEPER_PORT:-2181}
 ZOOKEEPER_PORTS=${ZOOKEEPER_PORTS:-'2888:3888'}
+MY_ZOO_IP="0.0.0.0"
 
 # In all in one deployment there is the race between vhost0 initialization
 # and own IP detection, so there is 10 retries
@@ -18,6 +19,7 @@ for i in {1..10} ; do
     if srv_ip=`/hostname_to_ip_alpine $srv` \
         && [[ "$local_ips" =~ ",$srv_ip," ]] ; then
       echo "INFO: found '$srv/$srv_ip' in local IPs '$local_ips'"
+      export MY_ZOO_IP=${srv}
       my_ord=$ord
     fi
     ord=$((ord+1))
@@ -46,5 +48,27 @@ export ZOO_MY_ID=$my_ord
 echo "INFO: ZOO_MY_ID=$ZOO_MY_ID, ZOO_PORT=$ZOO_PORT"
 echo "INFO: ZOO_SERVERS=$ZOO_SERVERS"
 echo "INFO: /docker-entrypoint.sh $@"
+
+# Generate the config only if it doesn't exist
+if [[ ! -f "$ZOO_CONF_DIR/zoo.cfg" ]]; then
+    CONFIG="$ZOO_CONF_DIR/zoo.cfg"
+
+    echo "clientPort=$ZOO_PORT" >> "$CONFIG"
+    if [[ $MY_ZOO_IP != '0.0.0.0' ]] ; then
+      echo "clientPortAddress=$MY_ZOO_IP" >> "$CONFIG"
+    fi
+    echo "dataDir=$ZOO_DATA_DIR" >> "$CONFIG"
+    echo "dataLogDir=$ZOO_DATA_LOG_DIR" >> "$CONFIG"
+
+    echo "tickTime=$ZOO_TICK_TIME" >> "$CONFIG"
+    echo "initLimit=$ZOO_INIT_LIMIT" >> "$CONFIG"
+    echo "syncLimit=$ZOO_SYNC_LIMIT" >> "$CONFIG"
+
+    echo "maxClientCnxns=$ZOO_MAX_CLIENT_CNXNS" >> "$CONFIG"
+
+    for server in $ZOO_SERVERS; do
+        echo "$server" >> "$CONFIG"
+    done
+fi
 
 exec /docker-entrypoint.sh "$@"

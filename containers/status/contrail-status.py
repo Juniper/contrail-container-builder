@@ -1,4 +1,5 @@
 from optparse import OptionParser
+from netifaces import interfaces, ifaddresses, AF_INET
 import subprocess
 import ConfigParser
 import operator
@@ -219,15 +220,68 @@ def get_http_server_port(svc_name):
     print_debug('{0}: Introspect port not found'.format(svc_name))
     return None
 
+def my_ip_addresses():
+    ip_list = []
+    for interface in interfaces():
+        for link in ifaddresses(interface).get(AF_INET, []):
+            ip_list.append(link['addr'])
+    return ip_list
 
-def get_svc_uve_status(svc_name, timeout, keyfile, certfile, cacert):
+def get_my_ip_from_node_list(node_list):
+    if len(node_list) == 1:
+        return node_list[0]
+    else:
+        my_ips = my_ip_addresses()
+        for ip in node_list:
+            if ip in my_ips:
+                return ip
+        return '0.0.0.0'
+
+def get_vhost_ip():
+    ip_list = []
+    for link in ifaddresses('vhost0').get(AF_INET, []):
+        ip_list.append(link['addr'])
+    if len(ip_list) == 0:
+        ip_list.append('0.0.0.0')
+    return ','.join(ip_list)
+
+def get_http_server_ip_for_pod(pod):
+    if pod == 'control':
+       node_ips = os.environ.get('CONTROL_INTROSPECT_NODES', \
+               os.environ.get('CONTROL_NODES', '0.0.0.0'))
+       return get_my_ip_from_node_list(node_ips.split(','))
+    if pod == 'database':
+       node_ips = os.environ.get('ANALYTICSDB_INTROSPECT_NODES', \
+               os.environ.get('ANALYTICSDB_NODES', '0.0.0.0'))
+       return get_my_ip_from_node_list(node_ips.split(','))
+    if pod == 'config-database':
+       node_ips = os.environ.get('CONFIGDB_INTROSPECT_NODES', \
+               os.environ.get('CONFIGDB_NODES', '0.0.0.0'))
+       return get_my_ip_from_node_list(node_ips.split(','))
+    if pod == 'analytics':
+       node_ips = os.environ.get('ANALYTICS_INTROSPECT_NODES', \
+               os.environ.get('ANALYTICS_NODES', '0.0.0.0'))
+       return get_my_ip_from_node_list(node_ips.split(','))
+    if pod == 'config':
+       node_ips = os.environ.get('CONFIG_INTROSPECT_NODES', \
+               os.environ.get('CONFIG_NODES', '0.0.0.0'))
+       return get_my_ip_from_node_list(node_ips.split(','))
+    if pod == 'vrouter':
+       node_ips = os.environ.get('VROUTER_INTROSPECT_NODES', get_vhost_ip())
+       return get_my_ip_from_node_list(node_ips.split(','))
+    else:
+       return '0.0.0.0'
+
+def get_svc_uve_status(pod, svc_name, timeout, keyfile, certfile, cacert):
+
     # Get the HTTP server (introspect) port for the service
     http_server_port = get_http_server_port(svc_name)
     if not http_server_port:
         return None, None
-    host = socket.getfqdn()
+    http_server_ip = get_http_server_ip_for_pod(pod)
+
     # Now check the NodeStatus UVE
-    svc_introspect = IntrospectUtil(host, http_server_port,
+    svc_introspect = IntrospectUtil(http_server_ip, http_server_port,
                                     timeout, keyfile, certfile, cacert)
     node_status = svc_introspect.get_uve('NodeStatus')
     if node_status is None:
@@ -248,7 +302,7 @@ def get_svc_uve_status(svc_name, timeout, keyfile, certfile, cacert):
     return process_status_info[0]['state'], description
 
 
-def get_svc_uve_info(svc_name, svc_status, detail, timeout, keyfile,
+def get_svc_uve_info(pod, svc_name, svc_status, detail, timeout, keyfile,
                      certfile, cacert):
     # Extract UVE state only for running processes
     svc_uve_description = None
@@ -260,7 +314,7 @@ def get_svc_uve_info(svc_name, svc_status, detail, timeout, keyfile,
 
     try:
         svc_uve_status, svc_uve_description = \
-            get_svc_uve_status(svc_name, timeout, keyfile, certfile, cacert)
+            get_svc_uve_status(pod,svc_name, timeout, keyfile, certfile, cacert)
     except (requests.ConnectionError,IOError), e:
         print_debug('Socket Connection error : %s' % (str(e)))
         svc_uve_status = "connection-error"
@@ -341,7 +395,7 @@ def contrail_service_status(pods, pod, options):
         if container and container.get('State') == 'running':
             status = 'active'
         if internal_svc_name:
-            status = get_svc_uve_info(internal_svc_name, status,
+            status = get_svc_uve_info(pod, internal_svc_name, status,
                 options.detail, options.timeout, options.keyfile,
                 options.certfile, options.cacert)
         else:
