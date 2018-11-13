@@ -118,6 +118,10 @@ done
 [ -z "${dpdk_socket_mem}" ] && dpdk_socket_mem="${DPDK_MEM_PER_SOCKET}"
 cmd+=" --socket-mem $dpdk_socket_mem"
 
+if is_enabled ${NIC_OFFLOAD_ENABLE} ; then
+    cmd+=" --offloads"
+fi
+
 # update command with vlan & bond options
 if [[ -n "$vlan_data" ]] ; then
     vlan_id=$(echo "$vlan_data" | cut -d ' ' -f 1)
