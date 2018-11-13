@@ -12,7 +12,10 @@ export NODEMGR_TYPE=contrail-${NODE_TYPE}
 NODEMGR_NAME=${NODEMGR_TYPE}-nodemgr
 
 ntype=`echo ${NODE_TYPE^^} | tr '-' '_'`
-hostip=$(get_listen_ip_for_node ${ntype})
+
+# nodes list var name is a ANALYTICSDB_NODES (not DATABASE_NODES)
+if [[ $ntype == 'DATABASE' ]] ; then htype='ANALYTICSDB' ; else htype="$ntype" ; fi
+hostip=$(get_listen_ip_for_node ${htype})
 
 cat > /etc/contrail/$NODEMGR_NAME.conf << EOM
 [DEFAULTS]
