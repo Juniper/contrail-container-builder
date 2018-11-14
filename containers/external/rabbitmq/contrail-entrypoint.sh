@@ -47,6 +47,10 @@ RABBITMQ_NODE_PORT=${RABBITMQ_NODE_PORT:-5673}
 RABBITMQ_DIST_PORT=$((RABBITMQ_NODE_PORT+20000))
 RABBITMQ_HEARTBEAT_INTERVAL=${RABBITMQ_HEARTBEAT_INTERVAL:-10}
 
+export RABBITMQ_DEFAULT_USER=${RABBITMQ_USER:-guest}
+export RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD:-guest}
+export RABBITMQ_NODE_IP_ADDRESS=${my_ip}
+
 echo "INFO: RABBITMQ_NODENAME=$RABBITMQ_NODENAME, RABBITMQ_NODE_PORT=$RABBITMQ_NODE_PORT"
 
 # to be able to run rabbitmqctl without params
@@ -101,5 +105,8 @@ cat << EOF > /etc/rabbitmq/rabbitmq.config
 ].
 EOF
 
+chmod 666 /etc/rabbitmq/rabbitmq.config
+
 echo "INFO: $(date): /docker-entrypoint.sh $@"
+echo "INFO: user/pass = $RABBITMQ_DEFAULT_USER/$RABBITMQ_DEFAULT_PASS"
 exec /docker-entrypoint.sh "$@"
