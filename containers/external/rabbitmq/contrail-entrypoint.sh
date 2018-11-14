@@ -51,6 +51,9 @@ echo "INFO: RABBITMQ_NODENAME=$RABBITMQ_NODENAME, RABBITMQ_NODE_PORT=$RABBITMQ_N
 
 # to be able to run rabbitmqctl without params
 echo "RABBITMQ_NODENAME=contrail@$my_node" > /etc/rabbitmq/rabbitmq-env.conf
+echo "CONFIG_FILE=/etc/rabbitmq/rabbitmq.config" >> /etc/rabbitmq/rabbitmq-env.conf
+echo "RABBITMQ_NODE_IP_ADDRESS=${my_ip}" >> /etc/rabbitmq/rabbitmq-env.conf
+echo "RABBITMQ_NODE_PORT=${RABBITMQ_NODE_PORT}" >> /etc/rabbitmq/rabbitmq-env.conf
 
 # save cookie to file (otherwise rabbitmqctl set it to wrong value)
 if [[ -n "$RABBITMQ_ERLANG_COOKIE" ]] ; then

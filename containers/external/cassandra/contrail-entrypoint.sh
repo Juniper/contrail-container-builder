@@ -27,6 +27,7 @@ fi
 # use first two servers as seeds
 export CASSANDRA_SEEDS=$(echo $CASSANDRA_SEEDS | cut -d ',' -f 1,2)
 export CASSANDRA_LISTEN_ADDRESS=$my_ip
+export CASSANDRA_RPC_ADDRESS=$my_ip
 
 export JVM_EXTRA_OPTS="${JVM_EXTRA_OPTS} -Dcassandra.rpc_port=${CASSANDRA_PORT:-9160} \
   -Dcassandra.native_transport_port=${CASSANDRA_CQL_PORT:-9042} \
