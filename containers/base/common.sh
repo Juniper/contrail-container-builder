@@ -186,7 +186,7 @@ introspect_ssl_enable=${INTROSPECT_SSL_ENABLE}
 sandesh_ssl_enable=${SANDESH_SSL_ENABLE}
 sandesh_keyfile=${SANDESH_KEYFILE}
 sandesh_certfile=${SANDESH_CERTFILE}
-sandesh_ca_cert=${SANDESH_CA_CERTFILE}
+sandesh_ca_cert=
 EOM
 else
   read -r -d '' sandesh_client_config << EOM || true
@@ -200,7 +200,7 @@ if is_enabled ${XMPP_SSL_ENABLE} ; then
   read -r -d '' xmpp_certs_config << EOM || true
 xmpp_server_cert=${XMPP_SERVER_CERTFILE}
 xmpp_server_key=${XMPP_SERVER_KEYFILE}
-xmpp_ca_cert=${XMPP_SERVER_CA_CERTFILE}
+xmpp_ca_cert=
 EOM
 else
   xmpp_certs_config=''
