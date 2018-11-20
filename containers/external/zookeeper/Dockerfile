@@ -3,6 +3,7 @@ FROM zookeeper:3.4.10
 ARG CONTAINER_NAME
 
 COPY *.sh /
+COPY hostname_to_ip_alpine /
 
 ENTRYPOINT ["/contrail-entrypoint.sh"]
 CMD ["zkServer.sh", "start-foreground"]

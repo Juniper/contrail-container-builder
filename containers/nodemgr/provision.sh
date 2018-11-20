@@ -46,7 +46,8 @@ case $NODE_TYPE in
 
 config)
   host_ip=$(get_listen_ip_for_node CONFIG)
-  provision_node provision_config_node.py $host_ip $DEFAULT_HOSTNAME
+  host_name=$(resolve_hostname_by_ip $host_ip)
+  provision_node provision_config_node.py $host_ip ${host_name:-$DEFAULT_HOSTNAME}
 
   if [[ -n "$IPFABRIC_SERVICE_HOST" ]]; then
     fabric_host_arg=''
@@ -84,12 +85,14 @@ config)
 
 database)
   host_ip=$(get_listen_ip_for_node ANALYTICSDB)
-  provision_node provision_database_node.py $host_ip $DEFAULT_HOSTNAME
+  host_name=$(resolve_hostname_by_ip $host_ip)
+  provision_node provision_database_node.py $host_ip ${host_name:-$DEFAULT_HOSTNAME}
   ;;
 
 analytics)
   host_ip=$(get_listen_ip_for_node ANALYTICS)
-  provision_node provision_analytics_node.py $host_ip $DEFAULT_HOSTNAME
+  host_name=$(resolve_hostname_by_ip $host_ip)
+  provision_node provision_analytics_node.py $host_ip ${host_name:-$DEFAULT_HOSTNAME}
   ;;
 
 control)
@@ -111,7 +114,8 @@ control)
   fi
 
   host_ip=$(get_listen_ip_for_node CONTROL)
-  provision_node provision_control.py $host_ip $DEFAULT_HOSTNAME \
+  host_name=$(resolve_hostname_by_ip $host_ip)
+  provision_node provision_control.py $host_ip ${host_name:-$DEFAULT_HOSTNAME} \
     --router_asn ${BGP_ASN} \
     --bgp_server_port ${BGP_PORT} ${subcluster_name}
 
@@ -155,6 +159,7 @@ vrouter)
     params="$params --enable_vhost_vmi_policy"
   fi
   params="$params --ip_fabric_subnet $ip_fabric_subnet"
-  provision_node provision_vrouter.py $host_ip ${VROUTER_HOSTNAME:-${DEFAULT_HOSTNAME}} $params
+  host_name=$(resolve_hostname_by_ip $host_ip)
+  provision_node provision_vrouter.py $host_ip ${VROUTER_HOSTNAME:-${host_name:-${DEFAULT_HOSTNAME}}} $params
 
 esac
