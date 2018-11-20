@@ -44,10 +44,10 @@ function get_default_gateway_for_nic() {
 }
 
 function get_default_gateway_for_nic_metric() {
-    local nic=$1
-    local default_gw=`get_default_gateway_for_nic $nic`
-    local default_gw_metric=`ip route show dev $nic | grep default | head -1 | grep -o "metric [0-9]*"`
-    echo "$default_gw $default_gw_metric"
+  local nic=$1
+  local default_gw=`get_default_gateway_for_nic $nic`
+  local default_gw_metric=`ip route show dev $nic | grep default | head -1 | grep -o "metric [0-9]*"`
+  echo "$default_gw $default_gw_metric"
 }
 
 function get_local_ips() {
@@ -61,8 +61,9 @@ function find_my_ip_and_order_for_node() {
   local local_ips=",$(get_local_ips | tr '\n' ','),"
   local ord=1
   for server in "${server_list[@]}"; do
-    if [[ "$local_ips" =~ ",$server," ]] ; then
-      echo $server $ord
+    server_ip=`python -c "import socket; print(socket.gethostbyname('$server'))"`
+    if [[ "$local_ips" =~ ",$server_ip," ]] ; then
+      echo $server_ip $ord
       return
     fi
     (( ord+=1 ))
