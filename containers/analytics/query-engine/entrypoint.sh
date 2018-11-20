@@ -5,12 +5,13 @@ source /common.sh
 pre_start_init
 
 hostip=$(get_listen_ip_for_node ANALYTICS)
+hostname=$(resolve_hostname_by_ip $hostip)
 
 cat > /etc/contrail/contrail-query-engine.conf << EOM
 [DEFAULT]
 analytics_data_ttl=${ANALYTICS_DATA_TTL:-48}
 hostip=${hostip}
-hostname=${DEFAULT_HOSTNAME}
+hostname=${hostname}
 http_server_port=${QUERYENGINE_INTROSPECT_LISTEN_PORT:-$QUERYENGINE_INTROSPECT_PORT}
 log_file=$LOG_DIR/contrail-query-engine.log
 log_level=$LOG_LEVEL

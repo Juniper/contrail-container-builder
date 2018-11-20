@@ -5,6 +5,7 @@ source /common.sh
 pre_start_init
 
 hostip=$(get_listen_ip_for_node CONTROL)
+hostname=$(resolve_hostname_by_ip $hostip)
 rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')
 configdb_cql_servers=$(echo $CONFIGDB_CQL_SERVERS | sed 's/,/ /g')
 
@@ -39,7 +40,7 @@ named_max_retransmissions=${DNS_NAMED_MAX_RETRANSMISSIONS:-12}
 named_retransmission_interval=${DNS_RETRANSMISSION_INTERVAL:-1000} # msec
 
 hostip=${hostip}
-hostname=${DEFAULT_HOSTNAME}
+hostname=${hostname}
 http_server_port=${DNS_INTROSPECT_LISTEN_PORT:-$DNS_INTROSPECT_PORT}
 dns_server_port=$DNS_SERVER_PORT
 log_file=$LOG_DIR/contrail-dns.log
