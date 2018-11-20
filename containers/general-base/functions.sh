@@ -44,10 +44,10 @@ function get_default_gateway_for_nic() {
 }
 
 function get_default_gateway_for_nic_metric() {
-    local nic=$1
-    local default_gw=`get_default_gateway_for_nic $nic`
-    local default_gw_metric=`ip route show dev $nic | grep default | head -1 | grep -o "metric [0-9]*"`
-    echo "$default_gw $default_gw_metric"
+  local nic=$1
+  local default_gw=`get_default_gateway_for_nic $nic`
+  local default_gw_metric=`ip route show dev $nic | grep default | head -1 | grep -o "metric [0-9]*"`
+  echo "$default_gw $default_gw_metric"
 }
 
 function get_local_ips() {
@@ -61,8 +61,10 @@ function find_my_ip_and_order_for_node() {
   local local_ips=",$(get_local_ips | tr '\n' ','),"
   local ord=1
   for server in "${server_list[@]}"; do
-    if [[ "$local_ips" =~ ",$server," ]] ; then
-      echo $server $ord
+    local server_ip=''
+    if server_ip=`python -c "import socket; print(socket.gethostbyname('$server'))"` \
+        && [[ "$local_ips" =~ ",$server_ip," ]] ; then
+      echo $server_ip $ord
       return
     fi
     (( ord+=1 ))
@@ -101,7 +103,7 @@ function resolve_hostname_by_ip() {
   local host_entry=$(getent hosts $ip | head -n 1)
   local name=''
   if  [ $? -eq 0 ] ; then
-    name=$(echo $host_entry | awk '{print $2}' | awk -F '.' '{print $1}')
+    name=$(echo $host_entry | awk '{print $2}')
   else
     host_entry=$(host -4 $server)
     if [ $? -eq 0 ] ; then
@@ -112,24 +114,6 @@ function resolve_hostname_by_ip() {
   if [[ "$name" != '' ]] ; then
     echo $name
   fi
-}
-
-# Generates a name by rule node-<ip>
-# replacing '.' with '-' and sets it in the /etc/hosts
-function generate_hostname_by_ip() {
-  local ip=$1
-  local name="node-"$(echo $srv | tr '.' '-')
-  echo "$ip   $name" >> /etc/hosts
-  echo $name
-}
-
-function get_hostname_by_ip() {
-  local ip=$1
-  local name=$(resolve_hostname_by_ip $ip)
-  if [[ -z "$name" ]] ; then
-    name=$(generate_hostname_for_ip $ip)
-  fi
-  echo $name
 }
 
 function get_iface_for_vrouter_from_control() {
