@@ -18,9 +18,9 @@ if [[ -z "$REDIS_LISTEN_ADDRESS" && -n "$REDIS_NODES" ]]; then
     local_ips=",$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}' | tr '\n' ','),"
     redis_servers=''
     for srv in "${srv_list[@]}"; do
-      if [[ "$local_ips" =~ ",$srv," ]] ; then
-         redis_node_ip=${srv}
-        echo "INFO: found '$srv' in local IPs '$local_ips'"
+      if srv_ip=`perl -MSocket -le 'print inet_ntoa inet_aton shift' $srv` && [[ "$local_ips" =~ ",$srv_ip," ]] ; then
+        redis_node_ip=${srv_ip}
+        echo "INFO: found '$srv/$srv_ip' in local IPs '$local_ips'"
         my_ord=$ord
       fi
       ord=$((ord+1))
