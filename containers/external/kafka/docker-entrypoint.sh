@@ -25,9 +25,9 @@ if [ "$KAFKA_LISTEN_ADDRESS" = 'auto' ]; then
     my_ip=''
     IFS=',' read -ra server_list <<< "$KAFKA_NODES"
     for server in "${server_list[@]}"; do
-      if [[ "$local_ips" =~ ",$server," ]] ; then
-        echo "INFO: found '$server' in local IPs '$local_ips'"
-        my_ip=$server
+      if server_ip=`python -c "import socket; print(socket.gethostbyname('$server'))"` && [[ "$local_ips" =~ ",$server_ip," ]] ; then
+        echo "INFO: found '$server/$server_ip' in local IPs '$local_ips'"
+        my_ip=$server_ip
         break
       fi
       (( my_index+=1 ))

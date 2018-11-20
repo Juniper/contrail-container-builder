@@ -25,10 +25,10 @@ for i in {1..10} ; do
     fi
     cluster_nodes+="'contrail@${server_hostname}',"
     server_names_list=($server_names_list $server_hostname)
-    if [[ "$local_ips" =~ ",$server," ]] ; then
-      my_ip=$server
+    if server_ip=`perl -MSocket -le 'print inet_ntoa inet_aton shift' $server` && [[ "$local_ips" =~ ",$server_ip," ]] ; then
+      my_ip=$server_ip
       my_node=$server_hostname
-      echo "INFO: my_ip=$server my_node=$server_hostname"
+      echo "INFO: my_ip=$server_ip my_node=$server_hostname"
     fi
   done
   if [ -n "$my_ip" ] ; then
