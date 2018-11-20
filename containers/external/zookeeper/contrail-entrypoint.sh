@@ -15,8 +15,8 @@ for i in {1..10} ; do
     if [[ -z "$ZOO_SERVERS" ]] ; then
       zoo_servers+="server.${ord}=${srv}:${ZOOKEEPER_PORTS} "
     fi
-    if [[ "$local_ips" =~ ",$srv," ]] ; then
-      echo "INFO: found '$srv' in local IPs '$local_ips'"
+    if srv_ip=`/hostname_to_ip_alpine $srv` && [[ "$local_ips" =~ ",$srv_ip," ]] ; then
+      echo "INFO: found '$srv/$srv_ip' in local IPs '$local_ips'"
       my_ord=$ord
     fi
     ord=$((ord+1))
