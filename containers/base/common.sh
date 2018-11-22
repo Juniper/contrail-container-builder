@@ -13,7 +13,7 @@ LOG_LOCAL=${LOG_LOCAL:-1}
 
 DEFAULT_IFACE=$(get_default_nic)
 DEFAULT_LOCAL_IP=$(get_default_ip)
-DEFAULT_HOSTNAME=`uname -n`
+DEFAULT_HOSTNAME=`hostname -f`
 
 CLOUD_ORCHESTRATOR=${CLOUD_ORCHESTRATOR:-none}
 AAA_MODE=${AAA_MODE:-'no-auth'}
