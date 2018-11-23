@@ -225,7 +225,7 @@ def get_svc_uve_status(svc_name, timeout, keyfile, certfile, cacert):
     http_server_port = get_http_server_port(svc_name)
     if not http_server_port:
         return None, None
-    host = socket.gethostname()
+    host = socket.getfqdn()
     # Now check the NodeStatus UVE
     svc_introspect = IntrospectUtil(host, http_server_port,
                                     timeout, keyfile, certfile, cacert)
@@ -289,7 +289,7 @@ def vcenter_plugin(svc_status, detail, timeout,
                    keyfile, certfile, cacert):
     svc_name = "vcenter-plugin"
     try:
-        host = socket.gethostname()
+        host = socket.getfqdn()
         # Now check the NodeStatus UVE
         svc_introspect = IntrospectUtil(
             host, 8234, timeout, keyfile, certfile, cacert)
