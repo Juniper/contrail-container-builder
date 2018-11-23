@@ -5,6 +5,7 @@ source /common.sh
 pre_start_init
 
 hostip=$(get_listen_ip_for_node ANALYTICS)
+hostname=$(resolve_hostname_by_ip $hostip)
 rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')
 configdb_cql_servers=$(echo $CONFIGDB_CQL_SERVERS | sed 's/,/ /g')
 
@@ -16,7 +17,7 @@ analytics_statistics_ttl=${ANALYTICS_STATISTICS_TTL:-168}
 analytics_flow_ttl=${ANALYTICS_FLOW_TTL:-2}
 partitions=${ANALYTICS_UVE_PARTITIONS:-30}
 hostip=${hostip}
-hostname=${DEFAULT_HOSTNAME}
+hostname=${hostname:-$DEFAULT_HOSTNAME}
 http_server_port=${COLLECTOR_INTROSPECT_LISTEN_PORT:-$COLLECTOR_INTROSPECT_PORT}
 syslog_port=${COLLECTOR_SYSLOG_LISTEN_PORT:-$COLLECTOR_SYSLOG_PORT}
 sflow_port=${COLLECTOR_SFLOW_LISTEN_PORT:-$COLLECTOR_SFLOW_PORT}
