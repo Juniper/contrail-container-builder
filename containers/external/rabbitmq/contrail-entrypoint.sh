@@ -42,15 +42,14 @@ if [ -z "$my_ip" ] ; then
   echo "ERROR: Cannot find self ips ('$local_ips') in RabbitMQ nodes ('$RABBITMQ_NODES')"
   exit -1
 fi
+dist_ip=$(echo $my_ip | tr '.' ',')
 
 RABBITMQ_NODENAME=contrail@$my_node
 RABBITMQ_NODE_PORT=${RABBITMQ_NODE_PORT:-5673}
 RABBITMQ_DIST_PORT=$((RABBITMQ_NODE_PORT+20000))
 RABBITMQ_HEARTBEAT_INTERVAL=${RABBITMQ_HEARTBEAT_INTERVAL:-10}
-
-export RABBITMQ_DEFAULT_USER=${RABBITMQ_USER:-guest}
-export RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD:-guest}
-export RABBITMQ_NODE_IP_ADDRESS=${my_ip}
+RABBITMQ_USER=${RABBITMQ_USER:-'guest'}
+RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD:-'guest'}
 
 echo "INFO: RABBITMQ_NODENAME=$RABBITMQ_NODENAME, RABBITMQ_NODE_PORT=$RABBITMQ_NODE_PORT"
 
@@ -98,16 +97,15 @@ cat << EOF > /etc/rabbitmq/rabbitmq.config
                           {keepalive, true}
                          ]
               },
-              {collect_statistics_interval, 60000}
+              {collect_statistics_interval, 60000},
+              {default_user, <<"${RABBITMQ_USER}">>},
+              {default_pass, <<"${RABBITMQ_PASSWORD}">>}
             ]
    },
    {rabbitmq_management_agent, [ {force_fine_statistics, true} ] },
-   {kernel, [{net_ticktime,  60}, {inet_dist_listen_min, ${RABBITMQ_DIST_PORT}}, {inet_dist_listen_max, ${RABBITMQ_DIST_PORT}}]}
+   {kernel, [{net_ticktime,  60}, {inet_dist_use_interface, {${dist_ip}}}, {inet_dist_listen_min, ${RABBITMQ_DIST_PORT}}, {inet_dist_listen_max, ${RABBITMQ_DIST_PORT}}]}
 ].
 EOF
 
-chmod 666 /etc/rabbitmq/rabbitmq.config
-
 echo "INFO: $(date): /docker-entrypoint.sh $@"
-echo "INFO: user/pass = $RABBITMQ_DEFAULT_USER/$RABBITMQ_DEFAULT_PASS"
 exec /docker-entrypoint.sh "$@"
