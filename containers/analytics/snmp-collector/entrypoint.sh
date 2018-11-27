@@ -5,11 +5,13 @@ export SNMPCONFPATH=${SNMPCONFPATH:-/etc/contrail}
 
 pre_start_init
 
+host_ip=$(get_listen_ip_for_node ANALYTICS)
 rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')
 config_db_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
 
 cat > /etc/contrail/contrail-snmp-collector.conf << EOM
 [DEFAULTS]
+host_ip=${host_ip}
 scan_frequency=${SNMPCOLLECTOR_SCAN_FREQUENCY:-600}
 fast_scan_frequency=${SNMPCOLLECTOR_FAST_SCAN_FREQUENCY:-60}
 http_server_port=${SNMPCOLLECTOR_INTROSPECT_LISTEN_PORT:-$SNMPCOLLECTOR_INTROSPECT_PORT}
