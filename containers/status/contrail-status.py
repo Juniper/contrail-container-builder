@@ -165,8 +165,7 @@ class EtreeToDict(object):
 
 
 class IntrospectUtil(object):
-    def __init__(self, ip, port, timeout, keyfile, certfile, cacert):
-        self._ip = ip
+    def __init__(self, port, timeout, keyfile, certfile, cacert):
         self._port = port
         self._timeout = timeout
         self._certfile = certfile
@@ -175,10 +174,31 @@ class IntrospectUtil(object):
     #end __init__
 
     def _mk_url_str(self, path, secure=False):
-        if secure:
-            return "https://%s:%d/%s" % (self._ip, self._port, path)
-        return "http://%s:%d/%s" % (self._ip, self._port, path)
+        proto = "https" if secure else "http"
+        ip = self._get_addr_to_connect()
+        return "%s://%s:%d/%s" % (proto, ip, self._port, path)
     #end _mk_url_str
+
+    def _get_addr_to_connect(self):
+        default_addr = socket.getfqdn()
+        port = ':{0}'.format(self._port)
+        try:
+            lsof = (subprocess.Popen(
+                ['lsof', '-Pn', '-sTCP:LISTEN', '-i' + port.format(self._port)],
+                stdout=subprocess.PIPE).communicate()[0])
+            lsof_lines = lsof.splitlines()[1:]
+            if not len(lsof_lines):
+                return default_addr
+            items = lsof_lines[0].split()
+            for item in items:
+                if port in item:
+                    ip = item.split(':')[0]
+                    if ip == '*':
+                        return default_addr
+                    return socket.getfqdn(ip)
+        except Exception as ex:
+            pass
+        return default_addr
 
     def _load(self, path):
         url = self._mk_url_str(path)
@@ -225,10 +245,8 @@ def get_svc_uve_status(svc_name, timeout, keyfile, certfile, cacert):
     http_server_port = get_http_server_port(svc_name)
     if not http_server_port:
         return None, None
-    host = socket.getfqdn()
     # Now check the NodeStatus UVE
-    svc_introspect = IntrospectUtil(host, http_server_port,
-                                    timeout, keyfile, certfile, cacert)
+    svc_introspect = IntrospectUtil(http_server_port, timeout, keyfile, certfile, cacert)
     node_status = svc_introspect.get_uve('NodeStatus')
     if node_status is None:
         print_debug('{0}: NodeStatusUVE not found'.format(svc_name))
@@ -289,10 +307,8 @@ def vcenter_plugin(svc_status, detail, timeout,
                    keyfile, certfile, cacert):
     svc_name = "vcenter-plugin"
     try:
-        host = socket.getfqdn()
         # Now check the NodeStatus UVE
-        svc_introspect = IntrospectUtil(
-            host, 8234, timeout, keyfile, certfile, cacert)
+        svc_introspect = IntrospectUtil(8234, timeout, keyfile, certfile, cacert)
         node_status = svc_introspect.get_data("Snh_VCenterPluginInfo", 'VCenterPlugin')
     except (requests.ConnectionError,IOError), e:
         print_debug('Socket Connection error : %s' % (str(e)))
