@@ -4,11 +4,13 @@ source /common.sh
 
 pre_start_init
 
+host_ip=$(get_listen_ip_for_node ANALYTICS)
 rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')
 config_db_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
 
 cat > /etc/contrail/contrail-topology.conf << EOM
 [DEFAULTS]
+host_ip=${host_ip}
 scan_frequency=${TOPOLOGY_SCAN_FREQUENCY:-600}
 http_server_port=${TOPOLOGY_INTROSPECT_LISTEN_PORT:-$TOPOLOGY_INTROSPECT_PORT}
 log_file=$LOG_DIR/contrail-topology.log
