@@ -102,14 +102,11 @@ function resolve_hostname_by_ip() {
   local ip=$1
   local host_entry=$(getent hosts $ip | head -n 1)
   local name=''
-  if  [ $? -eq 0 ] ; then
+  if [[ -n "$host_entry" ]] ; then
     name=$(echo $host_entry | awk '{print $2}')
-  else
-    host_entry=$(host -4 $server)
-    if [ $? -eq 0 ] ; then
-      name=$(echo $host_entry | awk '{print $5}')
-      name=${name::-1}
-    fi
+  elif host_entry=$(host -4 $server) ; then
+    name=$(echo $host_entry | awk '{print $5}')
+    name=${name::-1}
   fi
   if [[ "$name" != '' ]] ; then
     echo $name
