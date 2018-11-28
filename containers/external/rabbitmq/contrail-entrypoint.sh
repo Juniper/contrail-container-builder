@@ -88,14 +88,10 @@ cat << EOF > /etc/rabbitmq/rabbitmq.config
               {delegate_count,20},
               {channel_max,5000},
               {tcp_listen_options,
-                        [binary,
-                          {packet, raw},
-                          {reuseaddr, true},
-                          {backlog, 128},
-                          {nodelay, true},
-                          {exit_on_close, false},
-                          {keepalive, true}
-                         ]
+                        [{backlog, 128},
+                         {nodelay, true},
+                         {exit_on_close, false},
+                         {keepalive, true}]
               },
               {collect_statistics_interval, 60000},
               {default_user, <<"${RABBITMQ_USER}">>},
