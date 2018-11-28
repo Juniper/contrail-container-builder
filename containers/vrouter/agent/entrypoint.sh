@@ -267,6 +267,7 @@ log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 
 hostname=${hostname:-$DEFAULT_HOSTNAME}
+agent_name=${hostname:-$DEFAULT_HOSTNAME}
 
 xmpp_dns_auth_enable=${XMPP_SSL_ENABLE}
 xmpp_auth_enable=${XMPP_SSL_ENABLE}
