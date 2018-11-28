@@ -44,6 +44,8 @@ if [ -z "$my_ip" ] ; then
 fi
 dist_ip=$(echo $my_ip | tr '.' ',')
 
+export -n RABBITMQ_NODE_PORT RABBITMQ_DIST_PORT RABBITMQ_DEFAULT_USER RABBITMQ_DEFAULT_PASS RABBITMQ_DEFAULT_VHOST
+
 RABBITMQ_NODENAME=contrail@$my_node
 RABBITMQ_NODE_PORT=${RABBITMQ_NODE_PORT:-5673}
 RABBITMQ_DIST_PORT=$((RABBITMQ_NODE_PORT+20000))
@@ -88,14 +90,10 @@ cat << EOF > /etc/rabbitmq/rabbitmq.config
               {delegate_count,20},
               {channel_max,5000},
               {tcp_listen_options,
-                        [binary,
-                          {packet, raw},
-                          {reuseaddr, true},
-                          {backlog, 128},
-                          {nodelay, true},
-                          {exit_on_close, false},
-                          {keepalive, true}
-                         ]
+                        [{backlog, 128},
+                         {nodelay, true},
+                         {exit_on_close, false},
+                         {keepalive, true}]
               },
               {collect_statistics_interval, 60000},
               {default_user, <<"${RABBITMQ_USER}">>},
