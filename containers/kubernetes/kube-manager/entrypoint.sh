@@ -7,10 +7,12 @@ pre_start_init
 K8S_TOKEN_FILE=${K8S_TOKEN_FILE:-'/var/run/secrets/kubernetes.io/serviceaccount/token'}
 K8S_TOKEN=${K8S_TOKEN:-"$(cat $K8S_TOKEN_FILE)"}
 
+host_ip=$(get_listen_ip_for_node KUBEMANAGER)
 cassandra_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
 
 cat > /etc/contrail/contrail-kubernetes.conf << EOM
 [DEFAULTS]
+host_ip=${host_ip}
 orchestrator=${CLOUD_ORCHESTRATOR}
 token=$K8S_TOKEN
 log_file=$LOG_DIR/contrail-kube-manager.log
