@@ -13,9 +13,13 @@ NODEMGR_NAME=${NODEMGR_TYPE}-nodemgr
 
 ntype=`echo ${NODE_TYPE^^} | tr '-' '_'`
 
-# nodes list var name is a ANALYTICSDB_NODES (not DATABASE_NODES)
-if [[ $ntype == 'DATABASE' ]] ; then htype='ANALYTICSDB' ; else htype="$ntype" ; fi
-hostip=$(get_listen_ip_for_node ${htype})
+if [[ $ntype == 'VROUTER' ]]; then
+  hostip=$(get_ip_for_vrouter_from_control)
+else
+  # nodes list var name is a ANALYTICSDB_NODES (not DATABASE_NODES)
+  if [[ $ntype == 'DATABASE' ]] ; then htype='ANALYTICSDB' ; else htype="$ntype" ; fi
+  hostip=$(get_listen_ip_for_node ${htype})
+fi
 
 cat > /etc/contrail/$NODEMGR_NAME.conf << EOM
 [DEFAULTS]
