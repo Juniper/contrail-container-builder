@@ -603,6 +603,11 @@ function cleanup_contrail_cni_config() {
     rm -f /etc/cni/net.d/10-contrail.conf
 }
 
+function cleanup_mesos_cni_config() {
+    rm -f /opt/mesosphere/active/cni/contrail-cni-plugin
+    rm -f /opt/mesosphere/etc/dcos/network/cni/contrail-cni-plugin.conf
+}
+
 # generic remove vhost functionality
 function remove_vhost0() {
     if is_dpdk ; then

@@ -155,7 +155,7 @@ vrouter)
   if [[ -n ${SUBCLUSTER} ]]; then
     params="$params --sub_cluster_name ${SUBCLUSTER}"
   fi
-  if [[ ${CLOUD_ORCHESTRATOR} == "kubernetes" ]]; then
+  if [[ ${CLOUD_ORCHESTRATOR} == "kubernetes" ]] || [[ ${CLOUD_ORCHESTRATOR} == "mesos" ]]; then
     params="$params --enable_vhost_vmi_policy"
   fi
   params="$params --ip_fabric_subnet $ip_fabric_subnet"
