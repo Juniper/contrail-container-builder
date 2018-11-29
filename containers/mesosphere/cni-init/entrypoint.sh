@@ -2,8 +2,10 @@
 
 source /common.sh
 
+VROUTER_IP=${VROUTER_IP:-$(get_ip_for_vrouter_from_control)}
 VROUTER_PORT=${VROUTER_PORT:-9091}
-MESOS_IP=${MESOS_IP:-'localhost'}
+
+MESOS_IP=${MESOS_IP:-$(get_default_ip)}
 MESOS_PORT=${MESOS_PORT:-6991}
 CLUSTER_NAME=${CLUSTER_NAME:-'mesos'}
 
@@ -37,11 +39,11 @@ cat << EOM > /host/opt_mesos_etc_dcos_network/cni/contrail-cni-plugin.conf
         "log-file"      : "/var/log/contrail/cni/opencontrail.log",
         "log-level"     : "4",
         "vrouter-port"  : $VROUTER_PORT,
-        "vrouter-ip"    : "127.0.0.1",
+        "vrouter-ip"    : "$VROUTER_IP",
         "mode"          : "mesos",
-        "cluster-name"  : $CLUSTER_NAME,
-        "mesos-ip"      : $MESOS_IP,
-        "mesos-port"    : $MESOS_PORT
+        "cluster-name"  : "$CLUSTER_NAME",
+        "mesos-ip"      : "$MESOS_IP",
+        "mesos-port"    : "$MESOS_PORT"
     },
 
     "name": "contrail-cni-plugin",
