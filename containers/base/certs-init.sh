@@ -39,6 +39,9 @@ SERVER_CA_CERTFILE=${SERVER_CA_CERTFILE:-"$cert_dir_name/ca-cert.pem"}
 mkdir -p $cert_dir_name
 mkdir -p $(dirname $SERVER_KEYFILE)
 mkdir -p $(dirname $SERVER_CA_CERTFILE)
+grep -q -E "^contrail:" /etc/group || groupadd -g 1011 contrail
+chgrp contrail $(dirname $SERVER_KEYFILE)
+chmod 750 $(dirname $SERVER_KEYFILE)
 
 tmp_lock_name=$(mktemp -p $cert_dir_name .lock.XXXXXXXX)
 lock_file_name="${SERVER_CERTFILE}.lock"
@@ -165,7 +168,8 @@ function generate_local_ca() {
   #generate local self-signed CA if requested
   if [[ ! -f "${SERVER_CA_KEYFILE}" ]] ; then
     openssl genrsa -out $SERVER_CA_KEYFILE $CA_PRIVATE_KEY_BITS || fail "Failed to generate CA key file"
-    chmod 600 $SERVER_CA_KEYFILE || fail "Failed to to chmod 600 on $SERVER_CA_KEYFILE"
+    chgrp contrail $SERVER_CA_KEYFILE || fail "Failed to set group contrail on $SERVER_CA_KEYFILE"
+    chmod 640 $SERVER_CA_KEYFILE || fail "Failed to to chmod 640 on $SERVER_CA_KEYFILE"
     # it is needed always to re-create ca if new key is generated
     openssl req -config $openssl_config_file -new -x509 -days 365 -extensions v3_ca -key $SERVER_CA_KEYFILE -out $SERVER_CA_CERTFILE || fail "Failed to generate CA cert"
     chmod 644 $SERVER_CA_CERTFILE || fail "Failed to chmod 644 on $SERVER_CA_CERTFILE"
@@ -279,4 +283,6 @@ fi
 
 chmod 644 ${SERVER_CERTFILE}.tmp || fail "Failed to chmod 644 on ${SERVER_CERTFILE}.tmp"
 mv ${SERVER_KEYFILE}.tmp ${SERVER_KEYFILE}
+chgrp contrail $SERVER_KEYFILE || fail "Failed to set group contrail on $SERVER_CA_KEYFILE"
+chmod 640 ${SERVER_KEYFILE} || fail "Failed to chmod 640 on ${SERVER_KEYFILE}"
 mv ${SERVER_CERTFILE}.tmp ${SERVER_CERTFILE}

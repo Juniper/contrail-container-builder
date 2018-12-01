@@ -16,7 +16,6 @@ log_file=$LOG_DIR/contrail-alarm-gen.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 collectors=$COLLECTOR_SERVERS
-kafka_broker_list=$KAFKA_SERVERS
 zk_list=$ZOOKEEPER_ANALYTICS_SERVERS_SPACE_DELIM
 
 [API_SERVER]
@@ -28,6 +27,11 @@ api_server_use_ssl=${CONFIG_API_USE_SSL:-False}
 redis_server_port=$REDIS_SERVER_PORT
 redis_uve_list=$REDIS_SERVERS
 redis_password=$REDIS_SERVER_PASSWORD
+
+[KAFKA]
+kafka_broker_list=$KAFKA_SERVERS
+kafka_ssl_enable=${KAFKA_SSL_ENABLE:-${SSL_ENABLE:-False}}
+${kafka_ssl_config}
 
 [CONFIGDB]
 config_db_server_list=$config_db_server_list
