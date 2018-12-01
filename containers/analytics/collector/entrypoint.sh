@@ -30,7 +30,6 @@ log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 # sandesh_send_rate_limit=
 cassandra_server_list=$ANALYTICSDB_CQL_SERVERS
-kafka_broker_list=$KAFKA_SERVERS
 zookeeper_server_list=$ZOOKEEPER_ANALYTICS_SERVERS
 
 [COLLECTOR]
@@ -82,6 +81,11 @@ low_watermark2.message_severity_level=${COLLECTOR_low_watermark2_message_severit
 port=$REDIS_SERVER_PORT
 server=127.0.0.1
 password=$REDIS_SERVER_PASSWORD
+
+[KAFKA]
+kafka_broker_list=$KAFKA_SERVERS
+kafka_ssl_enable=${KAFKA_SSL_ENABLE:-${SSL_ENABLE:-False}}
+${kafka_ssl_config}
 
 [CONFIGDB]
 config_db_server_list=$configdb_cql_servers
