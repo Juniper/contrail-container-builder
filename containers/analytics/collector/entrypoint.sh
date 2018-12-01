@@ -83,6 +83,11 @@ port=$REDIS_SERVER_PORT
 server=127.0.0.1
 password=$REDIS_SERVER_PASSWORD
 
+[KAFKA]
+kafka_broker_list=$KAFKA_SERVERS
+kafka_ssl_enable=${KAFKA_SSL_ENABLE:-${SSL_ENABLE:-False}}
+${kafka_ssl_config}
+
 [CONFIGDB]
 config_db_server_list=$configdb_cql_servers
 
