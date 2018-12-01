@@ -225,6 +225,11 @@ RABBITMQ_CLIENT_SSL_KEYFILE=${RABBITMQ_CLIENT_SSL_KEYFILE:-${SERVER_KEYFILE}}
 RABBITMQ_CLIENT_SSL_CACERTFILE=${RABBITMQ_CLIENT_SSL_CACERTFILE:-${SERVER_CA_CERTFILE}}
 RABBITMQ_HEARTBEAT_INTERVAL=${RABBITMQ_HEARTBEAT_INTERVAL:-10}
 
+KAFKA_SSL_ENABLE=${KAFKA_SSL_ENABLE:-${SSL_ENABLE:-False}}
+KAFKA_SSL_CERTFILE=${KAFKA_SSL_CERTFILE:-${SERVER_CERTFILE}}
+KAFKA_SSL_KEYFILE=${KAFKA_SSL_KEYFILE:-${SERVER_KEYFILE}}
+KAFKA_SSL_CACERTFILE=${KAFKA_SSL_CACERTFILE:-${SERVER_CA_CERTFILE}}
+
 # first group is used in analytics and control services
 # second group is used in config service, kubernetes_manager, ironic_notification_manager
 read -r -d '' rabbitmq_config << EOM || true
@@ -253,6 +258,14 @@ kombu_ssl_version=$RABBITMQ_SSL_VER
 kombu_ssl_certfile=$RABBITMQ_CLIENT_SSL_CERTFILE
 kombu_ssl_keyfile=$RABBITMQ_CLIENT_SSL_KEYFILE
 kombu_ssl_ca_certs=$RABBITMQ_CLIENT_SSL_CACERTFILE
+EOM
+fi
+
+if is_enabled ${KAFKA_SSL_ENABLE} ; then
+  read -r -d '' kafka_ssl_config << EOM || true
+kafka_keyfile=$KAFKA_SSL_KEYFILE
+kafka_certfile=$KAFKA_SSL_CERTFILE
+kafka_ca_cert=$KAFKA_SSL_CACERTFILE
 EOM
 fi
 
