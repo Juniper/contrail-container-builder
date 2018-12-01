@@ -29,6 +29,11 @@ redis_server_port=$REDIS_SERVER_PORT
 redis_uve_list=$REDIS_SERVERS
 redis_password=$REDIS_SERVER_PASSWORD
 
+[KAFKA]
+kafka_broker_list=$KAFKA_SERVERS
+kafka_ssl_enable=${KAFKA_SSL_ENABLE:-${SSL_ENABLE:-False}}
+${kafka_ssl_config}
+
 [CONFIGDB]
 config_db_server_list=$config_db_server_list
 
