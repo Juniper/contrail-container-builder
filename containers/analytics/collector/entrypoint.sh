@@ -30,7 +30,6 @@ log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 # sandesh_send_rate_limit=
 cassandra_server_list=$ANALYTICSDB_CQL_SERVERS
-kafka_broker_list=$KAFKA_SERVERS
 zookeeper_server_list=$ZOOKEEPER_ANALYTICS_SERVERS
 
 [COLLECTOR]

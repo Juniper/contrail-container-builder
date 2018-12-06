@@ -16,7 +16,6 @@ log_file=$LOG_DIR/contrail-alarm-gen.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 collectors=$COLLECTOR_SERVERS
-kafka_broker_list=$KAFKA_SERVERS
 zk_list=$ZOOKEEPER_ANALYTICS_SERVERS_SPACE_DELIM
 
 [API_SERVER]
