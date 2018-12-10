@@ -48,6 +48,7 @@ export -n RABBITMQ_NODE_PORT RABBITMQ_DIST_PORT RABBITMQ_DEFAULT_USER RABBITMQ_D
 
 RABBITMQ_NODENAME=contrail@$my_node
 RABBITMQ_NODE_PORT=${RABBITMQ_NODE_PORT:-5673}
+RABBITMQ_MGMT_PORT=$((RABBITMQ_NODE_PORT+10000))
 RABBITMQ_DIST_PORT=$((RABBITMQ_NODE_PORT+20000))
 RABBITMQ_HEARTBEAT_INTERVAL=${RABBITMQ_HEARTBEAT_INTERVAL:-10}
 RABBITMQ_USER=${RABBITMQ_USER:-'guest'}
@@ -100,6 +101,7 @@ cat << EOF > /etc/rabbitmq/rabbitmq.config
               {default_pass, <<"${RABBITMQ_PASSWORD}">>}
             ]
    },
+   {rabbitmq_management, [{listener, [{port, ${RABBITMQ_MGMT_PORT}}]}]},
    {rabbitmq_management_agent, [ {force_fine_statistics, true} ] },
    {kernel, [{net_ticktime,  60}, {inet_dist_use_interface, {${dist_ip}}}, {inet_dist_listen_min, ${RABBITMQ_DIST_PORT}}, {inet_dist_listen_max, ${RABBITMQ_DIST_PORT}}]}
 ].

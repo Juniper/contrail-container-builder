@@ -1,4 +1,4 @@
-FROM rabbitmq:3.6.10
+FROM rabbitmq:3.6.10-management
 
 ARG CONTAINER_NAME
 
