@@ -33,6 +33,7 @@ ip_fabric_subnets=${KUBERNETES_IP_FABRIC_SUBNETS:-"10.64.0.0/12"}
 service_subnets=${KUBERNETES_SERVICE_SUBNETS:-"10.96.0.0/12"}
 ip_fabric_forwarding=${KUBERNETES_IP_FABRIC_FORWARDING:-"false"}
 ip_fabric_snat=${KUBERNETES_IP_FABRIC_SNAT:-"false"}
+host_network_service=${KUBERNETES_HOST_NETWORK_SERVICE:-"false"}
 
 [VNC]
 public_fip_pool=${KUBERNETES_PUBLIC_FIP_POOL:-"{}"}
