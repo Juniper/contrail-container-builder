@@ -10,6 +10,7 @@ cassandra_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
 cat > /etc/contrail/contrail-schema.conf << EOM
 [DEFAULTS]
 host_ip=${host_ip}
+http_server_ip=$(get_introspect_listen_ip_for_node CONFIG)
 api_server_ip=$CONFIG_NODES
 api_server_port=$CONFIG_API_PORT
 log_file=$LOG_DIR/contrail-schema.log

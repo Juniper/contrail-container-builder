@@ -19,6 +19,7 @@ log_file=$LOG_DIR/contrail-kube-manager.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 nested_mode=${KUBEMANAGER_NESTED_MODE:-"0"}
+http_server_ip=$(get_introspect_listen_ip_for_node KUBEMANAGER)
 
 [KUBERNETES]
 kubernetes_api_server=${KUBERNETES_API_SERVER:-${DEFAULT_LOCAL_IP}}

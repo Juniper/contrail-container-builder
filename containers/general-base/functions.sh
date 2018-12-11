@@ -88,6 +88,14 @@ function get_listen_ip_for_node() {
   echo $ip
 }
 
+function get_introspect_listen_ip_for_node() {
+  local ip='0.0.0.0'
+  if ! is_enabled ${INTROSPECT_LISTEN_ALL} ; then
+    ip=$(get_listen_ip_for_node $1)
+  fi
+  echo $ip
+}
+
 function get_order_for_node() {
   local order=$(find_my_ip_and_order_for_node $1 | cut -d ' ' -f 2)
   if [[ -z "$order" ]] ; then

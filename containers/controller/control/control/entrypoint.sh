@@ -19,6 +19,7 @@ collectors=$COLLECTOR_SERVERS
 # gr_helper_xmpp_disable=0
 hostip=${hostip}
 hostname=${hostname:-$DEFAULT_HOSTNAME}
+http_server_ip=$(get_introspect_listen_ip_for_node CONTROL)
 http_server_port=${CONTROL_INTROSPECT_LISTEN_PORT:-$CONTROL_INTROSPECT_PORT}
 log_file=$LOG_DIR/contrail-control.log
 log_level=$LOG_LEVEL
