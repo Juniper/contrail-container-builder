@@ -35,7 +35,7 @@ sandesh:
   introspect_port: 9090
   logging_level: $LOG_LEVEL
   log_file: $LOG_DIR/contrail-vcenter-manager.log
-
+  http_server_ip: $(get_introspect_listen_ip_for_node VCENTER_MANAGER)
 
 EOM
 
