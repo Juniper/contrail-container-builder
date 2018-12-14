@@ -4,7 +4,8 @@ FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
 
-RUN yum install -y --setopt=obsoletes=0 contrail-nodemgr python-docker-py && \
+# install chrony, ntp and iputils-clockdiff to enable checking time sync by nodemgr
+RUN yum install -y --setopt=obsoletes=0 contrail-nodemgr python-docker-py chrony ntp && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 
