@@ -22,6 +22,7 @@ api.port=$CONFIG_API_PORT
 
 zookeeper.serverlist=$ZOOKEEPER_SERVERS
 
+$collector_stats_config
 EOM
 
 add_ini_params_from_env VCENTER_PLUGIN /etc/contrail/contrail-vcenter-plugin.conf

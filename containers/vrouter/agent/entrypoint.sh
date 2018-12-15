@@ -323,6 +323,7 @@ $crypt_interface_option
 slo_destination = $SLO_DESTINATION
 sample_destination = $SAMPLE_DESTINATION
 
+$collector_stats_config
 EOM
 
 cleanup_lbaas_netns_config
@@ -372,6 +373,7 @@ kubernetes_token=$K8S_TOKEN
 kubernetes_api_server=${KUBERNETES_API_SERVER:-${DEFAULT_LOCAL_IP}}
 kubernetes_api_port=${KUBERNETES_API_PORT:-8080}
 kubernetes_api_secure_port=${KUBERNETES_API_SECURE_PORT:-6443}
+
 EOM
 
 # spin up vrouter-agent as a child process

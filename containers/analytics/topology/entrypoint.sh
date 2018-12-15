@@ -33,6 +33,8 @@ $rabbitmq_config
 $rabbitmq_ssl_config
 
 $sandesh_client_config
+
+$collector_stats_config
 EOM
 
 add_ini_params_from_env TOPOLOGY /etc/contrail/contrail-topology.conf
