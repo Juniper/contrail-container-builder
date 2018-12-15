@@ -70,14 +70,6 @@ if [[ "$full_host_name" != "$short_host_name" ]] ; then
   alt_names+="\nDNS.${alt_name_num} = $short_host_name"
   (( alt_name_num+=1 ))
 fi
-# start IP.x from 1
-alt_name_num=1
-for ip in $(get_local_ips) ; do
-  if [[ "$ip" != '127.0.0.1' ]] ; then
-    alt_names+="\nIP.${alt_name_num} = $ip"
-    (( alt_name_num+=1 ))
-  fi
-done
 
 working_dir='/tmp/contrail_ssl_gen'
 SERVER_CA_KEYFILE=${SERVER_CA_KEYFILE:-"$working_dir/certs/ca.key.pem"}
