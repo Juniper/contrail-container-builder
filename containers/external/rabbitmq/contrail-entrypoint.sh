@@ -1,5 +1,10 @@
 #!/bin/bash -e
 
+function is_enabled() {
+  local val=${1,,}
+  [[ "${val}" == 'true' || "${val}" == 'yes' || "${val}" == 'enabled' ]]
+}
+
 # In all in one deployment there is the race between vhost0 initialization
 # and own IP detection, so there is 10 retries
 for i in {1..10} ; do
@@ -44,8 +49,7 @@ if [ -z "$my_ip" ] ; then
 fi
 dist_ip=$(echo $my_ip | tr '.' ',')
 
-export -n RABBITMQ_NODE_PORT RABBITMQ_DIST_PORT RABBITMQ_DEFAULT_USER RABBITMQ_DEFAULT_PASS RABBITMQ_DEFAULT_VHOST
-
+# copy-paste of common.sh as this file doesn't have access to common.sh
 RABBITMQ_NODENAME=contrail@$my_node
 RABBITMQ_NODE_PORT=${RABBITMQ_NODE_PORT:-5673}
 RABBITMQ_MGMT_PORT=$((RABBITMQ_NODE_PORT+10000))
@@ -54,10 +58,39 @@ RABBITMQ_HEARTBEAT_INTERVAL=${RABBITMQ_HEARTBEAT_INTERVAL:-10}
 RABBITMQ_USER=${RABBITMQ_USER:-'guest'}
 RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD:-'guest'}
 
+SERVER_CERTFILE=${SERVER_CERTFILE:-'/etc/contrail/ssl/certs/server.pem'}
+SERVER_KEYFILE=${SERVER_KEYFILE:-'/etc/contrail/ssl/private/server-privkey.pem'}
+SERVER_CA_CERTFILE=${SERVER_CA_CERTFILE-'/etc/contrail/ssl/certs/ca-cert.pem'}
+RABBITMQ_SSL_CERTFILE=${RABBITMQ_SSL_CERTFILE:-${SERVER_CERTFILE}}
+RABBITMQ_SSL_KEYFILE=${RABBITMQ_SSL_KEYFILE:-${SERVER_KEYFILE}}
+RABBITMQ_SSL_CACERTFILE=${RABBITMQ_SSL_CACERTFILE:-${SERVER_CA_CERTFILE}}
+RABBITMQ_SSL_FAIL_IF_NO_PEER_CERT=${RABBITMQ_SSL_FAIL_IF_NO_PEER_CERT:-true}
+
+# check ssl settings consistency
+if is_enabled $RABBITMQ_USE_SSL ; then
+  for cert in CERTFILE KEYFILE CACERTFILE ; do
+    var="RABBITMQ_SSL_${cert}"
+    val="${!var}"
+    if [[ -z "$val" || ! -f "$val" ]] ; then
+      echo "ERROR: SSL is requested, but missing required configuration: $var (value is empty or file couldn't be found"
+      exit -1
+    fi
+  done
+fi
+
+# un-export all rabbitmq variables - if entrypoint of rabbitmq founds them then it creates own config and rewrites own
+export -n RABBITMQ_NODE_PORT RABBITMQ_DIST_PORT RABBITMQ_DEFAULT_USER RABBITMQ_DEFAULT_PASS RABBITMQ_DEFAULT_VHOST
+for name in CACERTFILE CERTFILE KEYFILE DEPTH FAIL_IF_NO_PEER_CERT VERIFY ; do
+  export -n RABBITMQ_SSL_$name RABBITMQ_MANAGEMENT_SSL_$name
+done
+
 echo "INFO: RABBITMQ_NODENAME=$RABBITMQ_NODENAME, RABBITMQ_NODE_PORT=$RABBITMQ_NODE_PORT"
 
 # to be able to run rabbitmqctl without params
 echo "RABBITMQ_NODENAME=contrail@$my_node" > /etc/rabbitmq/rabbitmq-env.conf
+if is_enabled $RABBITMQ_USE_SSL ; then
+  echo 'RABBITMQ_CTL_ERL_ARGS="-proto_dist inet_tls"' >> /etc/rabbitmq/rabbitmq-env.conf
+fi
 
 # save cookie to file (otherwise rabbitmqctl set it to wrong value)
 if [[ -n "$RABBITMQ_ERLANG_COOKIE" ]] ; then
@@ -80,9 +113,29 @@ if [[ "${server_names_list[0]}" != "$my_node" ]] ; then
     fi
   done
 fi
-cat << EOF > /etc/rabbitmq/rabbitmq.config
+if is_enabled $RABBITMQ_USE_SSL ; then
+  cat << EOF > /etc/rabbitmq/rabbitmq.config
 [
-   {rabbit, [ {tcp_listeners, [{"${my_ip}", ${RABBITMQ_NODE_PORT}}]}, {cluster_partition_handling, autoheal},{loopback_users, []},
+   {rabbit, [ {tcp_listeners, [ ]},
+              {ssl_listeners, [{"${my_ip}", ${RABBITMQ_NODE_PORT}}]},
+              {ssl_options,
+                        [{cacertfile, "${RABBITMQ_SSL_CACERTFILE}"},
+                         {certfile, "${RABBITMQ_SSL_CERTFILE}"},
+                         {keyfile, "${RABBITMQ_SSL_KEYFILE}"},
+                         {verify, verify_peer},
+                         {fail_if_no_peer_cert, ${RABBITMQ_SSL_FAIL_IF_NO_PEER_CERT}}]
+              },
+EOF
+else
+  cat << EOF > /etc/rabbitmq/rabbitmq.config
+[
+   {rabbit, [ {tcp_listeners, [{"${my_ip}", ${RABBITMQ_NODE_PORT}}]},
+              {ssl_listeners, [ ]},
+EOF
+fi
+cat << EOF >> /etc/rabbitmq/rabbitmq.config
+              {cluster_partition_handling, autoheal},
+              {loopback_users, []},
               {cluster_nodes, {[${cluster_nodes::-1}], disc}},
               {vm_memory_high_watermark, 0.8},
               {disk_free_limit,50000000},
@@ -106,6 +159,22 @@ cat << EOF > /etc/rabbitmq/rabbitmq.config
    {kernel, [{net_ticktime,  60}, {inet_dist_use_interface, {${dist_ip}}}, {inet_dist_listen_min, ${RABBITMQ_DIST_PORT}}, {inet_dist_listen_max, ${RABBITMQ_DIST_PORT}}]}
 ].
 EOF
+
+# copy-paste from base container because there is no way to reach this blocks of code there
+if is_enabled $RABBITMQ_USE_SSL && [[ "$1" == rabbitmq* ]]; then
+  mkdir -p /tmp/rabbitmq-ssl/
+  combinedSsl='/tmp/rabbitmq-ssl/combined.pem'
+  # Create combined cert
+  cat "$RABBITMQ_SSL_CERTFILE" "$RABBITMQ_SSL_KEYFILE" > "$combinedSsl"
+  chmod 0400 "$combinedSsl"
+  # More ENV vars for make clustering happiness
+  # we don't handle clustering in this script, but these args should ensure
+  # clustered SSL-enabled members will talk nicely
+  export ERL_SSL_PATH="$(erl -eval 'io:format("~p", [code:lib_dir(ssl, ebin)]),halt().' -noshell)"
+  sslErlArgs="-pa $ERL_SSL_PATH -proto_dist inet_tls -ssl_dist_opt server_certfile $combinedSsl -ssl_dist_opt server_secure_renegotiate true client_secure_renegotiate true"
+  export RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS="${RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS:-} $sslErlArgs"
+  export RABBITMQ_CTL_ERL_ARGS="${RABBITMQ_CTL_ERL_ARGS:-} $sslErlArgs"
+fi
 
 echo "INFO: $(date): /docker-entrypoint.sh $@"
 exec /docker-entrypoint.sh "$@"
