@@ -95,6 +95,18 @@ analytics)
   provision_node provision_analytics_node.py $host_ip ${host_name:-$DEFAULT_HOSTNAME}
   ;;
 
+analytics-snmp)
+  host_ip=$(get_listen_ip_for_node ANALYTICS_SNMP)
+  host_name=$(resolve_hostname_by_ip $host_ip)
+  provision_node provision_analytics_snmp_node.py $host_ip ${host_name:-$DEFAULT_HOSTNAME}
+  ;;
+
+analytics-alarm)
+  host_ip=$(get_listen_ip_for_node ANALYTICS_ALARM)
+  host_name=$(resolve_hostname_by_ip $host_ip)
+  provision_node provision_analytics_alarm_node.py $host_ip ${host_name:-$DEFAULT_HOSTNAME}
+  ;;
+
 control)
   if [[ "$BGP_AUTO_MESH" == 'true' ]] ; then
     ibgp_auto_mesh_opt='--ibgp_auto_mesh'

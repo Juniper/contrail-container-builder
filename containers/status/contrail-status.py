@@ -55,8 +55,14 @@ CONTRAIL_SERVICES_TO_SANDESH_SVC = {
         'nodemgr': 'contrail-analytics-nodemgr',
         'api': 'contrail-analytics-api',
         'collector': 'contrail-collector',
-        'query-engine': 'contrail-query-engine',
+    },
+    'analytics-alarm': {
+        'nodemgr': 'contrail-analytics-alarm-nodemgr',
         'alarm-gen': 'contrail-alarm-gen',
+        'kafka': None,
+    },
+    'analytics-snmp': {
+        'nodemgr': 'contrail-analytics-snmp-nodemgr',
         'snmp-collector': 'contrail-snmp-collector',
         'topology': 'contrail-topology',
     },
@@ -65,9 +71,8 @@ CONTRAIL_SERVICES_TO_SANDESH_SVC = {
     },
     'database': {
         'nodemgr': 'contrail-database-nodemgr',
+        'query-engine': 'contrail-query-engine',
         'cassandra': None,
-        'zookeeper': None,
-        'kafka': None,
     },
     'webui': {
         'web': None,
@@ -80,6 +85,7 @@ CONTRAIL_SERVICES_TO_SANDESH_SVC = {
         'plugin': None,
     }
 }
+
 # TODO: Include vcenter-plugin
 
 

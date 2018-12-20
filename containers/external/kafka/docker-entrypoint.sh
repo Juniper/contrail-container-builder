@@ -13,13 +13,12 @@ CONTROLLER_NODES=${CONTROLLER_NODES:-${default_ip_address}}
 ANALYTICS_NODES=${ANALYTICS_NODES:-${CONTROLLER_NODES}}
 ANALYTICSDB_NODES=${ANALYTICSDB_NODES:-${ANALYTICS_NODES}}
 KAFKA_NODES=${KAFKA_NODES:-${ANALYTICSDB_NODES}}
-ZOOKEEPER_ANALYTICS_NODES=${ZOOKEEPER_ANALYTICS_NODES:-${ANALYTICSDB_NODES}}
-ZOOKEEPER_ANALYTICS_PORT=${ZOOKEEPER_ANALYTICS_PORT:-2182}
+ZOOKEEPER_NODES=${ZOOKEEPER_NODES:-${ANALYTICSDB_NODES}}
+ZOOKEEPER_PORT=${ZOOKEEPER_PORT:-2182}
 KAFKA_SSL_ENABLE=${KAFKA_SSL_ENABLE:-${SSL_ENABLE:-False}}
 KAFKA_SSL_CERTFILE=${KAFKA_SSL_CERTFILE:-${SERVER_CERTFILE:-'/etc/contrail/ssl/certs/server.pem'}}
 KAFKA_SSL_KEYFILE=${KAFKA_SSL_KEYFILE:-${SERVER_KEYFILE:-'/etc/contrail/ssl/private/server-privkey.pem'}}
 KAFKA_SSL_CACERTFILE=${KAFKA_SSL_CACERTFILE:-${SERVER_CA_CERTFILE:-'/etc/contrail/ssl/certs/ca-cert.pem'}}
-
 
 : ${KAFKA_LISTEN_ADDRESS='auto'}
 my_index=1
@@ -54,9 +53,9 @@ fi
 
 zk_server_list=''
 # zk_chroot_list=''
-IFS=',' read -ra server_list <<< "${ZOOKEEPER_ANALYTICS_NODES}"
+IFS=',' read -ra server_list <<< "${ZOOKEEPER_NODES}"
 for server in "${server_list[@]}"; do
-  zk_server_list+=${server}:${ZOOKEEPER_ANALYTICS_PORT},
+  zk_server_list+=${server}:${ZOOKEEPER_PORT},
 done
 
 zk_list="${zk_server_list::-1}"
