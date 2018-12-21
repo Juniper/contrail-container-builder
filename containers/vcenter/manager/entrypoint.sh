@@ -2,6 +2,11 @@
 
 source /common.sh
 
+introspect_ip='0.0.0.0'
+if ! is_enabled ${INTROSPECT_LISTEN_ALL} ; then
+  introspect_ip=$(get_ip_for_vrouter_from_control)
+fi
+
 cat > /etc/contrail/contrail-vcenter-manager/config.yaml << EOM
 esxi:
   host: $ESXI_HOST
@@ -35,7 +40,7 @@ sandesh:
   introspect_port: 9090
   logging_level: $LOG_LEVEL
   log_file: $LOG_DIR/contrail-vcenter-manager.log
-
+  http_server_ip: $introspect_ip
 
 EOM
 
