@@ -392,6 +392,7 @@ def get_containers():
             'Original Name': name,
             'State': cnt['State'],
             'Status': cnt['Status'],
+            'Id': cnt['Id'][0:12],
             'Created': cnt['Created']
         }
         if key not in items:
@@ -410,9 +411,9 @@ def get_containers():
 
 def print_containers(containers):
     # containers is a dict of dicts
-    hdr = ['Pod', 'Service', 'Original Name', 'State', 'Status']
+    hdr = ['Pod', 'Service', 'Original Name', 'State', 'Id', 'Status']
     items = list()
-    items.extend([v[hdr[0]], v[hdr[1]], v[hdr[2]], v[hdr[3]], v[hdr[4]]]
+    items.extend([v[hdr[0]], v[hdr[1]], v[hdr[2]], v[hdr[3]], v[hdr[4]], v[hdr[5]]]
                  for k, v in six.iteritems(containers))
     items.sort(key=operator.itemgetter(0, 1))
     items.insert(0, hdr)
