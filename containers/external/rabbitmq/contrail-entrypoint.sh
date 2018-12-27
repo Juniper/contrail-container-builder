@@ -1,70 +1,54 @@
 #!/bin/bash -e
 
-function is_enabled() {
-  local val=${1,,}
-  [[ "${val}" == 'true' || "${val}" == 'yes' || "${val}" == 'enabled' ]]
-}
+source /common.sh
+
+pre_start_init
 
 # In all in one deployment there is the race between vhost0 initialization
 # and own IP detection, so there is 10 retries
 for i in {1..10} ; do
-  server_names_list=()
-  cluster_nodes=''
-  local_ips=",$(cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}' | tr '\n' ','),"
-  IFS=',' read -ra server_list <<< "${RABBITMQ_NODES}"
-  my_ip=''
-  my_node=''
-  rabbit_node_list=''
-  for server in ${server_list[@]}; do
-    server_hostname=''
-    if getent hosts $server ; then
-      server_hostname=$(getent hosts $server | awk '{print $2}' | awk -F '.' '{print $1}')
-    else
-      if host -4 $server ; then
-        server_hostname=$(host -4 $server | cut -d" " -f5 | awk '{print $1}')
-        server_hostname=${server_hostname::-1}
-      fi
-    fi
-    if [[ "$server_hostname" == '' ]] ; then
-      echo "WARNING: hostname for $server is not resolved properly, cluster setup will not be functional."
-    fi
-    cluster_nodes+="'contrail@${server_hostname}',"
-    server_names_list=($server_names_list $server_hostname)
-    if server_ip=`perl -MSocket -le 'print inet_ntoa inet_aton shift' $server` \
-        && [[ "$local_ips" =~ ",$server_ip," ]] ; then
-      my_ip=$server_ip
-      my_node=$server_hostname
-      echo "INFO: my_ip=$server_ip my_node=$server_hostname"
-    fi
-  done
-  if [ -n "$my_ip" ] ; then
+  my_ip_and_order=$(find_my_ip_and_order_for_node RABBITMQ)
+  if [ -n "$my_ip_and_order" ]; then
     break
   fi
   sleep 1
 done
-
-if [ -z "$my_ip" ] ; then
-  echo "ERROR: Cannot find self ips ('$local_ips') in RabbitMQ nodes ('$RABBITMQ_NODES')"
+if [ -z "$my_ip_and_order" ]; then
+  echo "ERROR: Cannot find self ips ('$(get_local_ips)') in Rabbitmq nodes ('$RABBITMQ_NODES')"
   exit -1
 fi
+my_ip=$(echo $my_ip_and_order | cut -d ' ' -f 1)
+echo "INFO: my_ip=$my_ip"
+
+server_names_list=()
+cluster_nodes=''
+my_node=''
+for server in $(echo ${RABBITMQ_NODES} | tr ',' ' '); do
+  server_hostname=''
+  if getent hosts $server ; then
+    server_hostname=$(getent hosts $server | awk '{print $2}' | awk -F '.' '{print $1}')
+  else
+    if host -4 $server ; then
+      server_hostname=$(host -4 $server | cut -d" " -f5 | awk '{print $1}')
+      server_hostname=${server_hostname::-1}
+    fi
+  fi
+  if [[ "$server_hostname" == '' ]] ; then
+    echo "WARNING: hostname for $server is not resolved properly, cluster setup will not be functional."
+  fi
+  cluster_nodes+="'contrail@${server_hostname}',"
+  server_names_list=($server_names_list $server_hostname)
+  if server_ip=`hostname_to_ip $server` && [[ "$server_ip" =~ "$my_ip" ]] ; then
+    my_node=$server_hostname
+    echo "INFO: my_node=$server_hostname"
+  fi
+done
+
 dist_ip=$(echo $my_ip | tr '.' ',')
 
-# copy-paste of common.sh as this file doesn't have access to common.sh
 RABBITMQ_NODENAME=contrail@$my_node
-RABBITMQ_NODE_PORT=${RABBITMQ_NODE_PORT:-5673}
 RABBITMQ_MGMT_PORT=$((RABBITMQ_NODE_PORT+10000))
 RABBITMQ_DIST_PORT=$((RABBITMQ_NODE_PORT+20000))
-RABBITMQ_HEARTBEAT_INTERVAL=${RABBITMQ_HEARTBEAT_INTERVAL:-10}
-RABBITMQ_USER=${RABBITMQ_USER:-'guest'}
-RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD:-'guest'}
-
-SERVER_CERTFILE=${SERVER_CERTFILE:-'/etc/contrail/ssl/certs/server.pem'}
-SERVER_KEYFILE=${SERVER_KEYFILE:-'/etc/contrail/ssl/private/server-privkey.pem'}
-SERVER_CA_CERTFILE=${SERVER_CA_CERTFILE-'/etc/contrail/ssl/certs/ca-cert.pem'}
-RABBITMQ_SSL_CERTFILE=${RABBITMQ_SSL_CERTFILE:-${SERVER_CERTFILE}}
-RABBITMQ_SSL_KEYFILE=${RABBITMQ_SSL_KEYFILE:-${SERVER_KEYFILE}}
-RABBITMQ_SSL_CACERTFILE=${RABBITMQ_SSL_CACERTFILE-${SERVER_CA_CERTFILE}}
-RABBITMQ_SSL_FAIL_IF_NO_PEER_CERT=${RABBITMQ_SSL_FAIL_IF_NO_PEER_CERT:-true}
 
 # check ssl settings consistency
 if is_enabled $RABBITMQ_USE_SSL ; then
