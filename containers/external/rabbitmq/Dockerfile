@@ -4,7 +4,8 @@ ARG CONTAINER_NAME
 
 RUN apt-get update && apt-get -fy install bind9-host
 
-COPY contrail-entrypoint.sh /
+COPY *.sh hostname_to_ip /
+RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done'
 
 ENTRYPOINT ["/contrail-entrypoint.sh"]
 CMD ["rabbitmq-server"]

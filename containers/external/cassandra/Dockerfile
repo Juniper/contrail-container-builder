@@ -3,6 +3,7 @@ FROM cassandra:3.11.2
 ARG CONTAINER_NAME
 
 COPY *.sh /
+RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done'
 
 ENTRYPOINT ["/contrail-entrypoint.sh"]
 CMD ["cassandra", "-f"]
