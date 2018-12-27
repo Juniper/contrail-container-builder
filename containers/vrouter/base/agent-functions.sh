@@ -421,7 +421,8 @@ function check_vrouter_agent_settings() {
         return 1
     fi
 
-    local iface=`ip route get ${nodes[0]} | grep -o "dev.*" | awk '{print $2}'`
+    local node_ip=`python -c "import socket; print(socket.gethostbyname('${nodes[0]}'))"`
+    local iface=`ip route get ${node_ip} | grep -o "dev.*" | awk '{print $2}'`
     if [[ "$iface" == 'lo' ]]; then
         iface='vhost0'
     fi
@@ -430,7 +431,8 @@ function check_vrouter_agent_settings() {
     fi
     if (( ${#nodes} > 1 )); then
         for node in ${nodes[@]} ; do
-            local cur_iface=`ip route get $node | grep -o "dev.*" | awk '{print $2}'`
+            local node_ip=`python -c "import socket; print(socket.gethostbyname('$node'))"`
+            local cur_iface=`ip route get $node_ip | grep -o "dev.*" | awk '{print $2}'`
             if [[ "$cur_iface" == 'lo' ]]; then
                 cur_iface='vhost0'
             fi
