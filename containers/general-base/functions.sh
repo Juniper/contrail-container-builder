@@ -62,6 +62,14 @@ function find_my_ip_and_order_for_node() {
   local ord=1
   for server in "${server_list[@]}"; do
     local server_ip=''
+    local attempt=1
+    until nslookup $server > /dev/null 2>&1; do
+      sleep 2
+      (( attempt+=1 ))
+      if [[ $attempt -eq 20 ]]; then
+        break
+      fi
+    done
     if server_ip=`python -c "import socket; print(socket.gethostbyname('$server'))"` \
         && [[ "$local_ips" =~ ",$server_ip," ]] ; then
       echo $server_ip $ord
@@ -104,17 +112,16 @@ function get_order_for_node() {
   echo $order
 }
 
-# It tries to resolve IP via local DBs (/etc/hosts, etc)
-# if fails it then tries DNS lookup via the tool 'host'
+# It tries to DNS lookup via the tool 'host'
+# if fails it then tries to resolve IP via local DBs (/etc/hosts, etc)
 function resolve_hostname_by_ip() {
   local ip=$1
-  local host_entry=$(getent hosts $ip | head -n 1)
   local name=''
-  if [[ -n "$host_entry" ]] ; then
-    name=$(echo $host_entry | awk '{print $2}')
-  elif host_entry=$(host -4 $server) ; then
+  if host_entry=$(host -4 $ip) ; then
     name=$(echo $host_entry | awk '{print $5}')
     name=${name::-1}
+  elif host_entry=$(getent hosts $ip) ; then
+    name=$(echo $host_entry | awk '{print $2}')
   fi
   if [[ "$name" != '' ]] ; then
     echo $name
