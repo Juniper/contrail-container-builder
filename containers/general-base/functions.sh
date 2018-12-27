@@ -56,14 +56,24 @@ function get_local_ips() {
 
 function find_my_ip_and_order_for_node() {
   local server_typ=$1_NODES
+  find_my_ip_and_order_for_node_list ${!server_typ} 
+}
+
+function find_my_ip_and_order_for_node_list() {
+  local servers=$1
   local server_list=''
-  IFS=',' read -ra server_list <<< "${!server_typ}"
+  IFS=',' read -ra server_list <<< "$servers"
   local local_ips=",$(get_local_ips | tr '\n' ','),"
   local ord=1
   for server in "${server_list[@]}"; do
     local server_ip=''
-    if server_ip=`python -c "import socket; print(socket.gethostbyname('$server'))"` \
-        && [[ "$local_ips" =~ ",$server_ip," ]] ; then
+    local ret=0
+    if [ -f /hostname_to_ip ]; then
+      server_ip=`/hostname_to_ip $server` || ret=$?
+    else
+      server_ip=`python -c "import socket; print(socket.gethostbyname('$server'))"` || ret=$?
+    fi
+    if [[ $ret == 0 && "$local_ips" =~ ",$server_ip," ]] ; then
       echo $server_ip $ord
       return
     fi
