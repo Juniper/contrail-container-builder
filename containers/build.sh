@@ -73,6 +73,15 @@ function process_container() {
   [ -n "$PYTHON_PIP_VENV" ] && build_arg_opts+=" --build-arg PYTHON_PIP_VENV=$PYTHON_PIP_VENV"
   build_arg_opts+=" --build-arg CONTAINER_NAME=${container_name}"
 
+  if [[ -f ./$dir/.externals ]]; then
+    local item=''
+    for item in `cat ./$dir/.externals` ; do
+      src=`echo $item | cut -d ':' -f 1`
+      dst=`echo $item | cut -d ':' -f 2`
+      cp ./$dir/$src ./$dir/$dst
+    done
+  fi
+
   local logfile='build-'$container_name'.log'
   docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} \
     ${build_arg_opts} -f $docker_file ${opts} $dir |& tee $logfile

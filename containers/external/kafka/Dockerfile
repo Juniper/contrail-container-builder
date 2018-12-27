@@ -23,7 +23,8 @@ RUN yum install -y java java-1.8.0-openjdk-devel iproute openssl && \
     chown -R kafka:kafka $LOG_DIR && \
     chown -R kafka:kafka $KAFKA_DIR
 
-COPY docker-entrypoint.sh /
+COPY *.sh /
+RUN /bin/bash -c 'for item in `ls __*` ; do mv $item ${item:2} ; done'
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 WORKDIR $KAFKA_DIR

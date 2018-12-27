@@ -2,8 +2,8 @@ FROM zookeeper:3.4.10
 
 ARG CONTAINER_NAME
 
-COPY *.sh /
-COPY hostname_to_ip_alpine /
+COPY *.sh hostname_to_ip /
+RUN /bin/bash -c 'for item in `ls __*` ; do mv $item ${item:2} ; done'
 
 ENTRYPOINT ["/contrail-entrypoint.sh"]
 CMD ["zkServer.sh", "start-foreground"]
