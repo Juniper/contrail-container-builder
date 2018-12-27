@@ -114,17 +114,16 @@ function get_order_for_node() {
   echo $order
 }
 
-# It tries to resolve IP via local DBs (/etc/hosts, etc)
-# if fails it then tries DNS lookup via the tool 'host'
+# It tries to DNS lookup via the tool 'host'
+# if fails it then tries to resolve IP via local DBs (/etc/hosts, etc)
 function resolve_hostname_by_ip() {
   local ip=$1
-  local host_entry=$(getent hosts $ip | head -n 1)
   local name=''
-  if [[ -n "$host_entry" ]] ; then
-    name=$(echo $host_entry | awk '{print $2}')
-  elif host_entry=$(host -4 $server) ; then
+  if host_entry=$(host -4 $ip) ; then
     name=$(echo $host_entry | awk '{print $5}')
     name=${name::-1}
+  elif host_entry=$(getent hosts $ip) ; then
+    name=$(echo $host_entry | awk '{print $2}')
   fi
   if [[ "$name" != '' ]] ; then
     echo $name
@@ -136,6 +135,7 @@ function get_iface_for_vrouter_from_control() {
   if [[ -z "$node_ip" ]] ; then
     node_ip=`echo $CONTROL_NODES | cut -d ',' -f 1`
   fi
+  node_ip=`python -c "import socket; print(socket.gethostbyname('$node_ip'))"`
   local iface=$(ip route get $node_ip | grep -o "dev.*" | awk '{print $2}')
   if [[ "$iface" == 'lo' ]] ; then
     # ip is belong to this machine
