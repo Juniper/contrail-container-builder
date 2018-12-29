@@ -1,0 +1,2 @@
+#!/bin/bash -e
+perl -MSocket -le 'print inet_ntoa inet_aton shift' $1
