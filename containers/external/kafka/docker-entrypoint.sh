@@ -4,8 +4,6 @@ set -e
 
 source /common.sh
 
-pre_start_init
-
 : ${KAFKA_LISTEN_ADDRESS='auto'}
 my_ip=''
 my_index=1
