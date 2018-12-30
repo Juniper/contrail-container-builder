@@ -2,8 +2,6 @@
 
 source /common.sh
 
-pre_start_init
-
 # In all in one deployment there is the race between vhost0 initialization
 # and own IP detection, so there is 10 retries
 for i in {1..10} ; do
