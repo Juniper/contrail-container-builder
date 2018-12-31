@@ -463,8 +463,8 @@ function kill_dhcp_clients() {
 
 function init_vhost0() {
     # Probe vhost0
-    local vrouter_cidr="$(get_cidr_for_nic vhost0)"
-    if [[ "$vrouter_cidr" != '' ]] ; then
+    local vrouter_cidr="$(get_net_cidr_for_nic vhost0)"
+    if [[ -n "$vrouter_cidr" ]] ; then
         echo "INFO: vhost0 is already up"
         return 0
     fi
@@ -713,7 +713,7 @@ function init_decrypt0() {
         echo "INFO: $decrypt_intf already exists"
     else
         local mtu=`cat /sys/class/net/vhost0/mtu`
-        local l_ip=$(get_listen_ip_for_nic vhost0)
+        local l_ip=$(get_ip_for_nic vhost0)
         ip tunnel add $decrypt_intf local $l_ip mode vti key $key || { echo "ERROR: Failed to initialize tunnel interface $decrypt_intf" && return 1; }
         ip link set dev $decrypt_intf mtu $mtu up
         ip link set dev ip_vti0 mtu $mtu up
