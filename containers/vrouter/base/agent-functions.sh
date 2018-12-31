@@ -469,7 +469,7 @@ function kill_dhcp_clients() {
 function init_vhost0() {
     # Probe vhost0
     local vrouter_cidr="$(get_cidr_for_nic vhost0)"
-    if [[ "$vrouter_cidr" != '' ]] ; then
+    if [[ -n "$vrouter_cidr" ]] ; then
         echo "INFO: vhost0 is already up"
         return 0
     fi

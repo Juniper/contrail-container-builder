@@ -6,6 +6,8 @@ source /contrail-functions.sh
 LOG_LEVEL=${LOG_LEVEL:-SYS_NOTICE}
 if [[ "${LOG_LEVEL}" == "SYS_DEBUG" ]] ; then
   set -x
+  cat /proc/net/route
+  cat /proc/net/fib_trie
 fi
 
 LOG_DIR=${LOG_DIR:-"/var/log/contrail"}

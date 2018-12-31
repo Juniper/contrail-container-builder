@@ -110,6 +110,13 @@ vrouter_cidr=$(get_cidr_for_nic 'vhost0')
 echo "INFO: Physical interface: $phys_int, mac=$phys_int_mac, pci=$pci_address"
 echo "INFO: vhost0 cidr $vrouter_cidr, gateway $VROUTER_GATEWAY"
 
+if [[ -z "$vrouter_cidr" ]] ; then
+    echo "ERROR: vhost0 interface is down or has no assigned IP"
+    exit 1
+fi
+vrouter_ip=${vrouter_cidr%/*}
+hostname=$(resolve_hostname_by_ip $vrouter_ip)
+
 if [ "$CLOUD_ORCHESTRATOR" == "vcenter" ] && ! is_tsn; then
     HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'vmware'}
     vmware_phys_int=$(get_vmware_physical_iface)
@@ -122,13 +129,6 @@ EOM
 else
     HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'kvm'}
 fi
-
-if [[ -z "$vrouter_cidr" ]] ; then
-    echo "ERROR: vhost0 interface is down or has no assigned IP"
-    exit 1
-fi
-vrouter_ip=${vrouter_cidr%/*}
-hostname=$(resolve_hostname_by_ip $vrouter_ip)
 
 # Google has point to point DHCP address to the VM, but we need to initialize
 # with the network address mask. This is needed for proper forwarding of pkts

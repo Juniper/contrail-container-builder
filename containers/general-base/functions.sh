@@ -18,13 +18,36 @@ function get_server_list() {
   [ -n "$extended_server_list" ] && echo "${extended_server_list::-1}"
 }
 
+function get_routes() {
+  local opt=''
+  if awk --help | grep "non-decimal-data" ; then
+    # new versions of awk requires to specify this option to be able to convert hex to dec
+    opt='--non-decimal-data'
+  fi
+  awk $opt 'NR==1{for(i=1;i<=NF;i++){if($i=="Iface"){col1=i};if($i=="Destination"){col2=i};if($i=="Mask"){col3=i};if($i=="Metric"){col4=i}}} NR>1{gsub(/../,"0x& ",$col2);gsub(/../,"& ",$col3);FS=" ";split($col2,a);split($col3,b);mask=int(sprintf("0x%s%s%s%s", b[4], b[3], b[2], b[1])); bits=0;while(mask){bits+=(mask%2);mask=int(mask/2)};  printf("%s %d.%d.%d.%d/%d %s\n", $col1, a[4], a[3], a[2], a[1], bits, $col4)}' /proc/net/route
+}
+
 function get_default_nic() {
-  ip route get 1 | grep -o "dev.*" | awk '{print $2}'
+  get_routes | awk '/0.0.0.0\/0/{print $1}'
+}
+
+function get_nic_cidrs() {
+  # returns all 
+  local nic=$1
+  get_routes | awk -v nic=$nic '{if($1==nic && $2!="0.0.0.0/0"){print($2)}}'
 }
 
 function get_cidr_for_nic() {
   local nic=$1
-  ip addr show dev $nic | grep "inet " | awk '{print $2}' | head -n 1
+  local cidrs=`get_nic_cidrs $nic`
+  local cidr=''
+  for cidr in $cidrs ; do
+    local ip=`awk -v cidr="$cidr" -v flag="0" '{if($2 == cidr){flag=1}; if(flag==1 && $1=="/32" && $2=="host"){print f;flag=0} {f=$2}}' /proc/net/fib_trie | head -1`
+    if [[ -n "$ip" ]]; then
+      echo "$ip/$(echo $cidr | cut -d '/' -f 2)"
+      return
+    fi
+  done
 }
 
 function get_ip_for_nic() {
