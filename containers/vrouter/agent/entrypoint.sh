@@ -106,9 +106,16 @@ if [ "$CLOUD_ORCHESTRATOR" == "kubernetes" ] && [ ! -z $VROUTER_GATEWAY ]; then
 fi
 
 VROUTER_GATEWAY=${VROUTER_GATEWAY:-`get_default_gateway_for_nic 'vhost0'`}
-vrouter_cidr=$(get_cidr_for_nic 'vhost0')
+vrouter_ip=$(get_ip_for_nic 'vhost0')
 echo "INFO: Physical interface: $phys_int, mac=$phys_int_mac, pci=$pci_address"
-echo "INFO: vhost0 cidr $vrouter_cidr, gateway $VROUTER_GATEWAY"
+echo "INFO: vhost0 cidr $vrouter_ip, gateway $VROUTER_GATEWAY"
+
+if [[ -z "$vrouter_ip" ]] ; then
+    echo "ERROR: vhost0 interface is down or has no assigned IP"
+    exit 1
+fi
+hostname=$(resolve_hostname_by_ip $vrouter_ip)
+vrouter_mask=$(get_mask_net_for_nic 'vhost0' | cut -d ' ' -f 1)
 
 if [ "$CLOUD_ORCHESTRATOR" == "vcenter" ] && ! is_tsn; then
     HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'vmware'}
@@ -123,13 +130,6 @@ else
     HYPERVISOR_TYPE=${HYPERVISOR_TYPE:-'kvm'}
 fi
 
-if [[ -z "$vrouter_cidr" ]] ; then
-    echo "ERROR: vhost0 interface is down or has no assigned IP"
-    exit 1
-fi
-vrouter_ip=${vrouter_cidr%/*}
-hostname=$(resolve_hostname_by_ip $vrouter_ip)
-
 # Google has point to point DHCP address to the VM, but we need to initialize
 # with the network address mask. This is needed for proper forwarding of pkts
 # at the vrouter interface
@@ -138,8 +138,8 @@ if [ "$gcp" == "Google" ]; then
     intfs=$(curl -s http://metadata.google.internal/computeMetadata/v1beta1/instance/network-interfaces/)
     for intf in $intfs ; do
         if [[ $phys_int_mac == "$(curl -s http://metadata.google.internal/computeMetadata/v1beta1/instance/network-interfaces/${intf}/mac)" ]]; then
-            mask=$(curl -s http://metadata.google.internal/computeMetadata/v1beta1/instance/network-interfaces/${intf}/subnetmask)
-            vrouter_cidr=$vrouter_ip/$(mask2cidr $mask)
+            vrouter_mask=$(curl -s http://metadata.google.internal/computeMetadata/v1beta1/instance/network-interfaces/${intf}/subnetmask)
+            vrouter_mask=$vrouter_ip/$(mask2cidr $vrouter_mask)
         fi
     done
 fi
@@ -297,7 +297,7 @@ $metadata_ssl_conf
 
 [VIRTUAL-HOST-INTERFACE]
 name=vhost0
-ip=$vrouter_cidr
+ip=$vrouter_ip/$vrouter_mask
 physical_interface=$phys_int
 gateway=$VROUTER_GATEWAY
 compute_node_address=$vrouter_ip

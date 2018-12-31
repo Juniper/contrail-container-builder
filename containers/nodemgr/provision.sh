@@ -143,8 +143,7 @@ control)
 vrouter)
   host_ip=$(get_ip_for_vrouter_from_control)
   vhost_if=$(get_iface_for_vrouter_from_control)
-  if_cidr=$(get_cidr_for_nic $vhost_if)
-  ip_fabric_subnet=`python -c "import ipaddress; print str(ipaddress.ip_network(u'$if_cidr', strict=False))"`
+  ip_fabric_subnet=$(get_subnet_for_nic $vhost_if)
   params=''
   if is_dpdk ; then
     params="$params --dpdk_enabled"
