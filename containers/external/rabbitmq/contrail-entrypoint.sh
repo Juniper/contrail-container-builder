@@ -22,17 +22,10 @@ server_names_list=()
 cluster_nodes=''
 my_node=''
 for server in $(echo ${RABBITMQ_NODES} | tr ',' ' '); do
-  server_hostname=''
-  if getent hosts $server ; then
-    server_hostname=$(getent hosts $server | awk '{print $2}' | awk -F '.' '{print $1}')
-  else
-    if host -4 $server ; then
-      server_hostname=$(host -4 $server | cut -d" " -f5 | awk '{print $1}')
-      server_hostname=${server_hostname::-1}
-    fi
-  fi
-  if [[ "$server_hostname" == '' ]] ; then
-    echo "WARNING: hostname for $server is not resolved properly, cluster setup will not be functional."
+  server_hostname=$(resolve_hostname_by_ip $server | cut -d '.' -f 1)
+  if [[ -z "$server_hostname" ]] ; then
+    echo "ERROR: hostname for $server is not resolved properly, cluster can't be set up properly."
+    exit -1
   fi
   cluster_nodes+="'contrail@${server_hostname}',"
   server_names_list=($server_names_list $server_hostname)
@@ -44,6 +37,8 @@ done
 
 dist_ip=$(echo $my_ip | tr '.' ',')
 
+# tell rabbitmq use FQDN for all connections
+export RABBITMQ_USE_LONGNAME=true
 RABBITMQ_NODENAME=contrail@$my_node
 RABBITMQ_MGMT_PORT=$((RABBITMQ_NODE_PORT+10000))
 RABBITMQ_DIST_PORT=$((RABBITMQ_NODE_PORT+20000))
