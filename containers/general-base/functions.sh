@@ -38,18 +38,6 @@ function get_default_ip() {
   get_cidr_for_nic $nic | cut -d '/' -f 1
 }
 
-function get_default_gateway_for_nic() {
-  local nic=$1
-  ip route show dev $nic | grep default | head -n 1 | awk '{print $3}'
-}
-
-function get_default_gateway_for_nic_metric() {
-  local nic=$1
-  local default_gw=`get_default_gateway_for_nic $nic`
-  local default_gw_metric=`ip route show dev $nic | grep default | head -1 | grep -o "metric [0-9]*"`
-  echo "$default_gw $default_gw_metric"
-}
-
 function get_local_ips() {
   cat "/proc/net/fib_trie" | awk '/32 host/ { print f } {f=$2}' | grep -vi 'host' | sort | uniq
 }

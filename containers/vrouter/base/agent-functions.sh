@@ -5,6 +5,11 @@ source /network-functions-vrouter-${AGENT_MODE}
 #Agents constants
 REQUIRED_KERNEL_VROUTER_ENCRYPTION='4.4.0'
 
+function get_default_gateway_for_nic() {
+  local nic=$1
+  ip route show dev $nic | grep default | head -n 1 | awk '{print $3}'
+}
+
 function create_vhost_network_functions() {
     local dir=$1
     pushd "$dir"
