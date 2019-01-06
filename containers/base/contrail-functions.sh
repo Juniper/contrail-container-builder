@@ -162,6 +162,24 @@ function add_ini_params_from_env() {
   done
 }
 
+function get_iface_for_vrouter_from_control() {
+  local node_ip=`echo $VROUTER_GATEWAY`
+  if [[ -z "$node_ip" ]] ; then
+    node_ip=`echo $CONTROL_NODES | cut -d ',' -f 1`
+  fi
+  local iface=$(ip route get $node_ip | grep -o "dev.*" | awk '{print $2}')
+  if [[ "$iface" == 'lo' ]] ; then
+    # ip is belong to this machine
+    iface=`ip address show | grep "inet .*${node_ip}" | awk '{print($NF)}'`
+  fi
+  echo $iface
+}
+
+function get_ip_for_vrouter_from_control() {
+  local iface=$(get_iface_for_vrouter_from_control)
+  get_ip_for_nic $iface
+}
+
 function get_vrouter_physical_iface() {
   local iface=$PHYSICAL_INTERFACE
   if [[ -z "$iface" ]]; then
