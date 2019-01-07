@@ -13,7 +13,14 @@ http_server_port=${ANALYTICS_API_INTROSPECT_LISTEN_PORT:-$ANALYTICS_API_INTROSPE
 http_server_ip=$(get_introspect_listen_ip_for_node ANALYTICS)
 rest_api_port=${ANALYTICS_API_LISTEN_PORT:-$ANALYTICS_API_PORT}
 rest_api_ip=${ANALYTICS_API_LISTEN_IP:-$host_ip}
+EOM
+if [[ $ANALYTICS_ALARM_ENABLED == 'True' ]] ; then
+cat >> /etc/contrail/contrail-analytics-api.conf << EOM
 partitions=${ANALYTICS_UVE_PARTITIONS:-30}
+EOM
+fi
+
+cat >> /etc/contrail/contrail-analytics-api.conf << EOM
 aaa_mode=$AAA_MODE
 log_file=$LOG_DIR/contrail-analytics-api.log
 log_level=$LOG_LEVEL
@@ -22,12 +29,18 @@ log_local=$LOG_LOCAL
 # second. System logs are dropped if the sending rate is exceeded
 #sandesh_send_rate_limit =
 collectors=$COLLECTOR_SERVERS
-cassandra_server_list=$ANALYTICSDB_CQL_SERVERS
 api_server=$CONFIG_SERVERS
-zk_list=$ZOOKEEPER_ANALYTICS_SERVERS_SPACE_DELIM
+zk_list=$ZOOKEEPER_SERVERS_SPACE_DELIM
 
 [REDIS]
+EOM
+
+if [[ $ANALYTICSDB_ENABLED == 'True' ]] ; then
+cat >> /etc/contrail/contrail-analytics-api.conf << EOM
 redis_query_port=$REDIS_SERVER_PORT
+EOM
+fi
+cat >> /etc/contrail/contrail-analytics-api.conf << EOM
 redis_uve_list=$REDIS_SERVERS
 redis_password=$REDIS_SERVER_PASSWORD
 
