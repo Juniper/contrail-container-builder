@@ -1,6 +1,45 @@
 #!/bin/bash
 
 source /common.sh
+source /functions.sh
+
+function install_cni_binaries() {
+
+  #
+  # function to download cni binaries which are common for all cni providers
+  #
+  # This script will download cni binaries from https://github.com/containernetworking/cni/
+  #
+  # The cni binaries will be downloaded based on 2 variables
+  #
+  #       INSTALL_CNI_BINARIES -> flag to invoke the install or not
+  #       CNI_VERSION          -> the version of the binaries to be installed
+  #                               this will be defaulted to "v0.5.2"
+  #
+
+  local VERSION=${CNI_VERSION:-'v0.5.2'}
+  local URL='https://github.com/containernetworking/cni/releases/download/'
+  local cni_url=${URL}${VERSION}'/cni-'${VERSION}'.tgz'
+  cd /host/opt_cni_bin
+  wget $cni_url
+  if [ $? -ne 0 ]; then
+    echo "Error cannot wget $cni_url"
+    echo "Exiting with failure."
+    exit 1
+  fi
+  tar -xvf 'cni-'${VERSION}'.tgz'
+  if [ $? -ne 0 ]; then
+    echo "Error cannot tar $cni_url"
+    echo "Exiting with failure."
+    exit 1
+  fi
+  rm -rf 'cni-'${VERSION}'.tgz'
+
+}
+
+if is_enabled $INSTALL_CNI_BINARIES; then
+  install_cni_binaries
+fi
 
 VROUTER_PORT=${VROUTER_PORT:-9091}
 KUBEMANAGER_NESTED_MODE=${KUBEMANAGER_NESTED_MODE:-'0'}
