@@ -1,6 +1,0 @@
-#
-# Mellanox Technologies Ltd. public repository configuration file.
-# For more information, refer to http://linux.mellanox.com
-#
-#[mlnx_ofed_latest]
-deb [trusted=yes] http://linux.mellanox.com/public/repo/mlnx_ofed_dpdk_upstream_libs/latest-contrail/ubuntu16.04/$(ARCH) ./
