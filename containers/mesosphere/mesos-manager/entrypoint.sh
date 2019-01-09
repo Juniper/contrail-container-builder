@@ -22,6 +22,8 @@ admin_tenant=admin
 rabbit_server=$RABBITMQ_NODES
 rabbit_port=$RABBITMQ_NODE_PORT
 cassandra_server_list=$cassandra_server_list
+cassandra_use_ssl=${CASSANDRA_SSL_ENABLE,,}
+cassandra_ca_certs=$CASSANDRA_SSL_CA_CERTFILE
 
 [DEFAULTS]
 disc_server_ip=127.0.0.1
