@@ -5,6 +5,11 @@ source /network-functions-vrouter-${AGENT_MODE}
 #Agents constants
 REQUIRED_KERNEL_VROUTER_ENCRYPTION='4.4.0'
 
+function get_default_gateway_for_nic() {
+  local nic=$1
+  ip route show dev $nic | grep default | head -n 1 | awk '{print $3}'
+}
+
 function create_vhost_network_functions() {
     local dir=$1
     pushd "$dir"
@@ -713,7 +718,7 @@ function init_decrypt0() {
         echo "INFO: $decrypt_intf already exists"
     else
         local mtu=`cat /sys/class/net/vhost0/mtu`
-        local l_ip=$(get_listen_ip_for_nic vhost0)
+        local l_ip=$(get_ip_for_nic vhost0)
         ip tunnel add $decrypt_intf local $l_ip mode vti key $key || { echo "ERROR: Failed to initialize tunnel interface $decrypt_intf" && return 1; }
         ip link set dev $decrypt_intf mtu $mtu up
         ip link set dev ip_vti0 mtu $mtu up
@@ -771,4 +776,24 @@ function check_and_launch_dhcp_clients() {
 function add_k8s_pod_cidr_route() {
     local pod_cidr=${KUBERNETES_POD_SUBNETS:-"10.32.0.0/12"}
     ip route add $pod_cidr via $VROUTER_GATEWAY dev vhost0
+}
+
+function mask2cidr() {
+  local nbits=0
+  local IFS=.
+  for dec in $1 ; do
+        case $dec in
+            255) let nbits+=8;;
+            254) let nbits+=7;;
+            252) let nbits+=6;;
+            248) let nbits+=5;;
+            240) let nbits+=4;;
+            224) let nbits+=3;;
+            192) let nbits+=2;;
+            128) let nbits+=1;;
+            0);;
+            *) echo "Error: $dec is not recognised"; exit 1
+        esac
+  done
+  echo "$nbits"
 }
