@@ -22,6 +22,8 @@ aaa_mode=$AAA_MODE
 cloud_admin_role=$CLOUD_ADMIN_ROLE
 global_read_only_role=$GLOBAL_READ_ONLY_ROLE
 cassandra_server_list=$cassandra_server_list
+cassandra_use_ssl=${CASSANDRA_SSL_ENABLE,,}
+cassandra_ca_certs=$CASSANDRA_SSL_CA_CERTFILE
 zk_server_ip=$ZOOKEEPER_SERVERS
 
 rabbit_server=$RABBITMQ_SERVERS

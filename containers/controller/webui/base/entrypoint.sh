@@ -178,6 +178,8 @@ config.cassandra = {};
 config.cassandra.server_ips = ${cassandra_server_ips:-`get_server_json_list CONFIGDB`};
 config.cassandra.server_port = ${cassandra_server_port:-"'"$CONFIGDB_CQL_PORT"'"};
 config.cassandra.enable_edit = ${cassandra_enable_edit};
+config.cassandra.use_ssl = ${CASSANDRA_SSL_ENABLE,,};
+config.cassandra.ca_certs = '${CASSANDRA_SSL_CA_CERTFILE}';
 
 config.kue = {};
 config.kue.ui_port = '$KUE_UI_PORT'

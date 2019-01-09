@@ -27,6 +27,8 @@ api_server_use_ssl=${CONFIG_API_USE_SSL:-False}
 
 [CONFIGDB]
 config_db_server_list=$config_db_server_list
+config_db_use_ssl=${CASSANDRA_SSL_ENABLE,,}
+config_db_ca_certs=$CASSANDRA_SSL_CA_CERTFILE
 
 rabbitmq_server_list=$rabbitmq_server_list
 $rabbitmq_config

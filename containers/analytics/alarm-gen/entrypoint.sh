@@ -32,11 +32,13 @@ redis_password=$REDIS_SERVER_PASSWORD
 
 [KAFKA]
 kafka_broker_list=$KAFKA_SERVERS
-kafka_ssl_enable=${KAFKA_SSL_ENABLE:-${SSL_ENABLE:-False}}
+kafka_ssl_enable=$KAFKA_SSL_ENABLE
 ${kafka_ssl_config}
 
 [CONFIGDB]
 config_db_server_list=$config_db_server_list
+config_db_use_ssl=${CASSANDRA_SSL_ENABLE,,}
+config_db_ca_certs=$CASSANDRA_SSL_CA_CERTFILE
 
 rabbitmq_server_list=$RABBITMQ_SERVERS
 $rabbitmq_config
