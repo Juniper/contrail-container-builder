@@ -5,6 +5,15 @@ function is_enabled() {
   [[ "${val}" == 'true' || "${val}" == 'yes' || "${val}" == 'enabled' ]]
 }
 
+function format_boolean() {
+  # python's ConfigParser understand only True/False in PascalCase
+  if is_enabled $1 ; then
+    echo 'True'
+  else
+    echo 'False'
+  fi
+}
+
 function get_server_list() {
   local server_typ=$1_NODES
   local port_with_delim=$2
