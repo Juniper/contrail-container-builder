@@ -26,6 +26,10 @@ start_time=${QUERYENGINE_START_TIME:-0}
 cassandra_server_list=$ANALYTICSDB_CQL_SERVERS
 collectors=$COLLECTOR_SERVERS
 
+[CASSANDRA]
+cassandra_use_ssl=${CASSANDRA_SSL_ENABLE,,}
+cassandra_ca_certs=$CASSANDRA_SSL_CA_CERTFILE
+
 [REDIS]
 port=$REDIS_SERVER_PORT
 server=127.0.0.1
