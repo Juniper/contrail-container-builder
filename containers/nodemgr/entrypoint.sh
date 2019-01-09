@@ -46,6 +46,7 @@ hostip=${hostip}
 #log_category =
 db_port=${CASSANDRA_CQL_PORT}
 db_jmx_port=${CASSANDRA_JMX_LOCAL_PORT}
+db_use_ssl=$(format_boolean $CASSANDRA_SSL_ENABLE)
 
 [COLLECTOR]
 server_list=${COLLECTOR_SERVERS}
@@ -56,6 +57,8 @@ $collector_stats_config
 EOM
 
 add_ini_params_from_env ${ntype}_NODEMGR /etc/contrail/$NODEMGR_NAME.conf
+
+cat /etc/contrail/$NODEMGR_NAME.conf
 
 set_vnc_api_lib_ini
 

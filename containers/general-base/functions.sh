@@ -5,6 +5,11 @@ function is_enabled() {
   [[ "${val}" == 'true' || "${val}" == 'yes' || "${val}" == 'enabled' ]]
 }
 
+function format_boolean() {
+  local val=${1,,}
+  echo ${val~}
+}
+
 function get_server_list() {
   local server_typ=$1_NODES
   local port_with_delim=$2
