@@ -46,6 +46,7 @@ hostip=${hostip}
 #log_category =
 db_port=${CASSANDRA_CQL_PORT}
 db_jmx_port=${CASSANDRA_JMX_LOCAL_PORT}
+db_use_ssl=${CASSANDRA_SSL_ENABLE,,}
 
 [COLLECTOR]
 server_list=${COLLECTOR_SERVERS}
@@ -58,6 +59,13 @@ EOM
 add_ini_params_from_env ${ntype}_NODEMGR /etc/contrail/$NODEMGR_NAME.conf
 
 set_vnc_api_lib_ini
+
+if is_enabled $CASSANDRA_SSL_ENABLE ; then
+  cat >/etc/contrail/cqlshrc << EOM
+[ssl]
+certfile = $CASSANDRA_SSL_CA_CERTFILE
+EOM
+fi
 
 if [[ ${MAINTENANCE_MODE^^} == 'TRUE' ]]; then
   echo "WARNING: MAINTENANCE_MODE is switched on - provision.sh is not called."
