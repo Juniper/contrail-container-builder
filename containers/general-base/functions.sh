@@ -105,7 +105,7 @@ function resolve_hostname_by_ip() {
     name=$(echo $host_entry | awk '{print $5}')
     name=${name::-1}
   fi
-  if [[ "$name" != '' ]] ; then
+  if [[ -n "$name" ]] ; then
     echo $name
   fi
 }
