@@ -24,6 +24,8 @@ start_time=${QUERYENGINE_START_TIME:-0}
 # second. System logs are dropped if the sending rate is exceeded
 # sandesh_send_rate_limit=
 cassandra_server_list=$ANALYTICSDB_CQL_SERVERS
+cassandra_use_ssl=${CASSANDRA_SSL_ENABLE,,}
+cassandra_ca_certs=$CASSANDRA_SSL_CA_CERTFILE
 collectors=$COLLECTOR_SERVERS
 
 [REDIS]
