@@ -33,6 +33,10 @@ log_local=$LOG_LOCAL
 cassandra_server_list=$ANALYTICSDB_CQL_SERVERS
 zookeeper_server_list=$ZOOKEEPER_ANALYTICS_SERVERS
 
+[CASSANDRA]
+cassandra_use_ssl=${CASSANDRA_SSL_ENABLE,,}
+cassandra_ca_certs=$CASSANDRA_SSL_CA_CERTFILE
+
 [COLLECTOR]
 port=${COLLECTOR_LISTEN_PORT:-$COLLECTOR_PORT}
 server=${hostip}
@@ -90,6 +94,8 @@ ${kafka_ssl_config}
 
 [CONFIGDB]
 config_db_server_list=$configdb_cql_servers
+config_db_use_ssl=${CASSANDRA_SSL_ENABLE,,}
+config_db_ca_certs=$CASSANDRA_SSL_CA_CERTFILE
 
 rabbitmq_server_list=$rabbitmq_server_list
 $rabbitmq_config
