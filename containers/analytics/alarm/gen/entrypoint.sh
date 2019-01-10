@@ -5,20 +5,20 @@ export ALARMGEN_REDIS_AGGREGATE_DB_OFFSET=${ALARMGEN_REDIS_AGGREGATE_DB_OFFSET:-
 
 pre_start_init
 
-host_ip=$(get_listen_ip_for_node ANALYTICS)
+host_ip=$(get_listen_ip_for_node ANALYTICS_ALARM)
 config_db_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
 
 cat > /etc/contrail/contrail-alarm-gen.conf << EOM
 [DEFAULTS]
 host_ip=${host_ip}
 partitions=${ALARMGEN_partitions:-30}
-http_server_ip=$(get_introspect_listen_ip_for_node ANALYTICS)
+http_server_ip=$(get_introspect_listen_ip_for_node ANALYTICS_ALARM)
 http_server_port=${ALARMGEN_INTROSPECT_LISTEN_PORT:-$ALARMGEN_INTROSPECT_PORT}
 log_file=$LOG_DIR/contrail-alarm-gen.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 collectors=$COLLECTOR_SERVERS
-zk_list=$ZOOKEEPER_ANALYTICS_SERVERS_SPACE_DELIM
+zk_list=$ZOOKEEPER_SERVERS_SPACE_DELIM
 
 [API_SERVER]
 # List of api-servers in ip:port format separated by space

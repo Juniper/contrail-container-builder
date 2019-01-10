@@ -1,7 +1,6 @@
 #!/bin/bash
 
 source /common.sh
-export SNMPCONFPATH=${SNMPCONFPATH:-/etc/contrail}
 
 pre_start_init
 
@@ -9,18 +8,18 @@ host_ip=$(get_listen_ip_for_node ANALYTICS)
 rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')
 config_db_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
 
-cat > /etc/contrail/contrail-snmp-collector.conf << EOM
+cat > /etc/contrail/contrail-topology.conf << EOM
 [DEFAULTS]
 host_ip=${host_ip}
-scan_frequency=${SNMPCOLLECTOR_SCAN_FREQUENCY:-600}
-fast_scan_frequency=${SNMPCOLLECTOR_FAST_SCAN_FREQUENCY:-60}
+scan_frequency=${TOPOLOGY_SCAN_FREQUENCY:-600}
+http_server_port=${TOPOLOGY_INTROSPECT_LISTEN_PORT:-$TOPOLOGY_INTROSPECT_PORT}
 http_server_ip=$(get_introspect_listen_ip_for_node ANALYTICS)
-http_server_port=${SNMPCOLLECTOR_INTROSPECT_LISTEN_PORT:-$SNMPCOLLECTOR_INTROSPECT_PORT}
-log_file=$LOG_DIR/contrail-snmp-collector.log
+log_file=$LOG_DIR/contrail-topology.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
+analytics_api=${TOPOLOGY_ANALYTICS_API_SERVERS:-127.0.0.1:$ANALYTICS_API_PORT}
 collectors=$COLLECTOR_SERVERS
-zookeeper=$ZOOKEEPER_ANALYTICS_SERVERS
+zookeeper=$ZOOKEEPER_SERVERS
 
 [API_SERVER]
 api_server_list=$CONFIG_SERVERS
@@ -40,7 +39,7 @@ $sandesh_client_config
 $collector_stats_config
 EOM
 
-add_ini_params_from_env SNMP_COLLECTOR /etc/contrail/contrail-snmp-collector.conf
+add_ini_params_from_env TOPOLOGY /etc/contrail/contrail-topology.conf
 
 set_third_party_auth_config
 set_vnc_api_lib_ini
