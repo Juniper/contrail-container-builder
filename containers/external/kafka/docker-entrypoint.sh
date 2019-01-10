@@ -86,7 +86,7 @@ else
     (grep -q '^security.inter.broker.protocol' ${CONFIG} && sed -i 's|^security.inter.broker.protocol.*$|security.inter.broker.protocol=SSL|' ${CONFIG}) || echo "security.inter.broker.protocol=SSL" >> ${CONFIG}
 fi
 
-sed -i "s)^zookeeper.connect=.*$)zookeeper.connect=$ZOOKEEPER_ANALYTICS_SERVERS)g" ${CONFIG}
+sed -i "s)^zookeeper.connect=.*$)zookeeper.connect=$ZOOKEEPER_SERVERS)g" ${CONFIG}
 sed -i "s/#advertised.host.name=.*$/advertised.host.name=$my_ip/g" ${CONFIG}
 sed -i "s/^#log.retention.bytes=.*$/log.retention.bytes=$KAFKA_log_retention_bytes/g" ${CONFIG}
 sed -i "s/^log.retention.hours=.*$/log.retention.hours=$KAFKA_log_retention_hours/g" ${CONFIG}
