@@ -1,3 +1,5 @@
 #!/bin/bash -e
 
-exec "$@"
+CONTRAIL_STATUS_OPTS=${CONTRAIL_STATUS_OPTS:-""}
+exec $@ $CONTRAIL_STATUS_OPTS
+

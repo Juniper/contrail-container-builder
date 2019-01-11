@@ -16,6 +16,7 @@ if [ -f /host/usr/bin/contrail-status ]; then
    exit
 fi
 
+env_opts=''
 vol_opts='-v /var/run/docker.sock:/var/run/docker.sock'
 # ssl folder is always to mounted: in case of IPA init container
 # should not generate cert and is_ssl_enabled is false for this container,
@@ -26,8 +27,10 @@ vol_opts+=' -v /etc/localtime:/etc/localtime:ro'
 if [[ -n "${SERVER_CA_CERTFILE}" ]] ; then
   # In case of FreeIPA CA file is palced in /etc/ipa/ca.crt
   # and should be mounted additionally
+  # There is no way to add parameter to call of:
   if [[ ! "${SERVER_CA_CERTFILE}" =~ "/etc/contrail/ssl" ]] ; then
     vol_opts+=" -v ${SERVER_CA_CERTFILE}:${SERVER_CA_CERTFILE}:ro"
+    env_opts+="-e CONTRAIL_STATUS_OPTS='--cacert ${SERVER_CA_CERTFILE}'"
   fi
 fi
 
@@ -37,7 +40,7 @@ fi
 tmp_file=/host/usr/bin/contrail-status.tmp
 cat > $tmp_file << EOM
 #!/bin/bash -e
-docker run --rm --name contrail-status $vol_opts --pid host --net host --privileged ${CONTRAIL_STATUS_IMAGE}
+docker run --rm --name contrail-status $vol_opts $env_opts --pid host --net host --privileged ${CONTRAIL_STATUS_IMAGE}
 EOM
 
 chmod 755 $tmp_file
