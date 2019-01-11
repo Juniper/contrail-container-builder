@@ -22,6 +22,12 @@ log_local=$LOG_LOCAL
 cassandra_server_list=$cassandra_server_list
 zk_server_ip=$ZOOKEEPER_SERVERS
 
+# configure directories for job manager
+# the same directories must be mounted to dnsmasq and DM container
+dnsmasq_conf_dir=/etc/dnsmasq
+tftp_dir=/etc/tftp
+dhcp_lease_file=/var/lib/misc
+
 rabbit_server=$RABBITMQ_SERVERS
 $rabbit_config
 $kombu_ssl_config
