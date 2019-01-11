@@ -16,6 +16,7 @@ if [ -f /host/usr/bin/contrail-status ]; then
    exit
 fi
 
+env_opts=''
 vol_opts='-v /var/run/docker.sock:/var/run/docker.sock'
 # ssl folder is always to mounted: in case of IPA init container
 # should not generate cert and is_ssl_enabled is false for this container,
@@ -28,6 +29,7 @@ if [[ -n "${SERVER_CA_CERTFILE}" ]] ; then
   # and should be mounted additionally
   if [[ ! "${SERVER_CA_CERTFILE}" =~ "/etc/contrail/ssl" ]] ; then
     vol_opts+=" -v ${SERVER_CA_CERTFILE}:${SERVER_CA_CERTFILE}:ro"
+    env_opts+="-e CONTRAIL_STATUS_OPTS='--cacert ${SERVER_CA_CERTFILE}'"
   fi
 fi
 
@@ -37,7 +39,7 @@ fi
 tmp_file=/host/usr/bin/contrail-status.tmp
 cat > $tmp_file << EOM
 #!/bin/bash -e
-docker run --rm --name contrail-status $vol_opts --pid host --net host --privileged ${CONTRAIL_STATUS_IMAGE}
+docker run --rm --name contrail-status $vol_opts $env_opts --pid host --net host --privileged ${CONTRAIL_STATUS_IMAGE}
 EOM
 
 chmod 755 $tmp_file
