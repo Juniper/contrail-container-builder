@@ -65,8 +65,6 @@ export BASE_EXTRA_RPMS=${BASE_EXTRA_RPMS="https://repos.fedorapeople.org/repos/o
 export DOCKER_REPO=${DOCKER_REPO='https://download.docker.com/linux/centos/docker-ce.repo'}
 export YUM_ENABLE_REPOS=${YUM_ENABLE_REPOS:-}
 if [[ "$LINUX_DISTR" == 'rhel'* ]] ; then
-  export PYTHON_PIP_RPM='python27-python-pip'
-  export PYTHON_PIP_VENV='/opt/rh/python27/enable'
   export RHEL_FORCE_REGISTRATION=${RHEL_FORCE_REGISTRATION:-'false'}
   export RHEL_USER_NAME=${RHEL_USER_NAME:-}
   export RHEL_USER_PASSWORD=${RHEL_USER_PASSWORD:-}
