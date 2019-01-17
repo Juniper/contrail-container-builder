@@ -51,7 +51,7 @@ kafka_partitions=${KAFKA_PARTITIONS:-30}
 [API_SERVER]
 # List of api-servers in ip:port format separated by space
 api_server_list=$CONFIG_SERVERS
-api_server_use_ssl=${CONFIG_API_USE_SSL:-False}
+api_server_use_ssl=${CONFIG_API_SSL_ENABLE:-False}
 
 [DATABASE]
 # disk usage percentage
