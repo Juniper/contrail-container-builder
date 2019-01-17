@@ -52,6 +52,16 @@ function wait_certs_if_ssl_enabled() {
   fi
 }
 
+function wait_config_api_certs_if_ssl_enabled() {
+  if ! is_enabled ${CONFIG_API_SSL_ENABLE} ; then
+    return
+  fi
+
+  if [[ "$SERVER_KEYFILE" != "$CONFIG_API_SERVER_CERTFILE" ]] ; then
+    is_enabled $CONFIG_API_SSL_ENABLE && wait_files "$CONFIG_API_SERVER_CERTFILE" "$CONFIG_API_SERVER_KEYFILE"
+  fi
+}
+
 function pre_start_init() {
   wait_certs_if_ssl_enabled
 }
