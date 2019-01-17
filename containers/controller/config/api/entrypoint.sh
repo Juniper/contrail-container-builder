@@ -3,9 +3,19 @@
 source /common.sh
 
 pre_start_init
+wait_config_api_certs_if_ssl_enabled
 
 host_ip=$(get_listen_ip_for_node CONFIG)
 cassandra_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
+if is_enabled ${CONFIG_API_SSL_ENABLE} ; then
+  read -r -d '' config_api_certs_config << EOM || true
+config_api_ssl_certfile=${CONFIG_API_SERVER_CERTFILE}
+config_api_ssl_keyfile=${CONFIG_API_SERVER_KEYFILE}
+config_api_ssl_ca_cert=${CONFIG_API_SERVER_CA_CERTFILE}
+EOM
+else
+  config_api_certs_config=''
+fi
 
 cat > /etc/contrail/contrail-api.conf << EOM
 [DEFAULTS]
@@ -25,6 +35,9 @@ cassandra_server_list=$cassandra_server_list
 cassandra_use_ssl=${CASSANDRA_SSL_ENABLE,,}
 cassandra_ca_certs=$CASSANDRA_SSL_CA_CERTFILE
 zk_server_ip=$ZOOKEEPER_SERVERS
+
+config_api_ssl_enable=${CONFIG_API_SSL_ENABLE}
+$config_api_certs_config
 
 rabbit_server=$RABBITMQ_SERVERS
 $rabbit_config
