@@ -24,6 +24,9 @@ global_read_only_role=$GLOBAL_READ_ONLY_ROLE
 cassandra_server_list=$cassandra_server_list
 zk_server_ip=$ZOOKEEPER_SERVERS
 
+config_api_ssl_enable=${CONFIG_API_SSL_ENABLE}
+$config_api_certs_config
+
 rabbit_server=$RABBITMQ_SERVERS
 $rabbit_config
 $kombu_ssl_config
