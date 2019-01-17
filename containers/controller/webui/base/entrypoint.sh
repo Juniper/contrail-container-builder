@@ -36,6 +36,8 @@ if [[ "${INTROSPECT_SSL_INSECURE,,}" == 'false' ]]; then
   introspect_strict_ssl=true
 fi
 
+config_api_strict_ssl=${CONFIG_API_SSL_ENABLE,,}
+
 identityManager_strict_ssl=false
 if [[ "${KEYSTONE_AUTH_INSECURE,,}" == 'false' ]] ; then
   identityManager_strict_ssl=true
@@ -58,7 +60,6 @@ set_to_lower networkManager_strictSSL false
 set_to_lower imageManager_strictSSL false
 set_to_lower computeManager_strictSSL false
 set_to_lower storageManager_strictSSL false
-set_to_lower cnfg_strictSSL false
 set_to_lower analytics_strictSSL false
 set_to_lower cassandra_enable_edit false
 set_to_lower WEBUI_INSECURE_ACCESS false
@@ -132,8 +133,8 @@ config.cnfg = {};
 config.cnfg.server_ip = ${CONFIG_API_VIP:-`get_server_json_list CONFIG`};
 config.cnfg.server_port = "$CONFIG_API_PORT";
 config.cnfg.authProtocol = "${cnfg_authProtocol:-http}";
-config.cnfg.strictSSL = ${cnfg_strictSSL};
-config.cnfg.ca = ${cnfg_ca:-''};
+config.cnfg.strictSSL = $config_api_strict_ssl;
+config.cnfg.ca = ${CONFIG_API_SERVER_CA_CERTFILE};
 config.cnfg.statusURL = ${cnfg_statusURL:-'"/global-system-configs"'};
 
 config.analytics = {};
