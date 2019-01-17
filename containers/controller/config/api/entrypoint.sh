@@ -3,6 +3,7 @@
 source /common.sh
 
 pre_start_init
+wait_config_api_certs_if_ssl_enabled
 
 host_ip=$(get_listen_ip_for_node CONFIG)
 cassandra_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
@@ -23,6 +24,9 @@ cloud_admin_role=$CLOUD_ADMIN_ROLE
 global_read_only_role=$GLOBAL_READ_ONLY_ROLE
 cassandra_server_list=$cassandra_server_list
 zk_server_ip=$ZOOKEEPER_SERVERS
+
+config_api_ssl_enable=${CONFIG_API_SSL_ENABLE}
+$config_api_certs_config
 
 rabbit_server=$RABBITMQ_SERVERS
 $rabbit_config

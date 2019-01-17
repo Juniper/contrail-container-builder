@@ -14,6 +14,7 @@ function set_ctl() {
 function is_ssl_enabled() {
   is_enabled "$SSL_ENABLE" \
    || is_enabled "$XMPP_SSL_ENABLE" \
+   || is_enabled "$CONFIG_API_SSL_ENABLE" \
    || is_enabled "$INTROSPECT_SSL_ENABLE" \
    || is_enabled "$SANDESH_SSL_ENABLE"
 }
@@ -49,6 +50,16 @@ function wait_certs_if_ssl_enabled() {
   fi
   if [[ "$SERVER_KEYFILE" != "$SANDESH_CERTFILE" ]] ; then
     is_enabled $SANDESH_SSL_ENABLE && wait_files "$SANDESH_CERTFILE" "$SANDESH_KEYFILE"
+  fi
+}
+
+function wait_config_api_certs_if_ssl_enabled() {
+  if ! is_ssl_enabled ; then
+    return
+  fi
+
+  if [[ "$SERVER_KEYFILE" != "$CONFIG_API_SERVER_CERTFILE" ]] ; then
+    is_enabled $CONFIG_API_SSL_ENABLE && wait_files "$CONFIG_API_SERVER_CERTFILE" "$CONFIG_API_SERVER_KEYFILE"
   fi
 }
 
