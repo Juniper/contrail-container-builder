@@ -18,6 +18,8 @@ token=$K8S_TOKEN
 log_file=$LOG_DIR/contrail-kube-manager.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
+db_driver=$DB_DRIVER
+notification_driver=$NOTIFICATION_DRIVER
 nested_mode=${KUBEMANAGER_NESTED_MODE:-"0"}
 http_server_ip=$(get_introspect_listen_ip_for_node KUBEMANAGER)
 
@@ -44,6 +46,7 @@ rabbit_server=$RABBITMQ_NODES
 rabbit_port=$RABBITMQ_NODE_PORT
 $rabbit_config
 $kombu_ssl_config
+$etcd_config
 
 cassandra_server_list=$cassandra_server_list
 collectors=$COLLECTOR_SERVERS

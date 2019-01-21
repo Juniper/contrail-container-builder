@@ -57,6 +57,8 @@ DNS_SERVER_PORT=${DNS_SERVER_PORT:-53}
 DNS_INTROSPECT_PORT=${DNS_INTROSPECT_PORT:-8092}
 CONFIG_API_PORT=${CONFIG_API_PORT:-8082}
 CONFIG_API_INTROSPECT_PORT=${CONFIG_API_INTROSPECT_PORT:-8084}
+DB_DRIVER=${DB_DRIVER:-'cassandra'}
+NOTIFICATION_DRIVER=${NOTIFICATION_DRIVER:-'rabbit'}
 RABBITMQ_NODE_PORT=${RABBITMQ_NODE_PORT:-5673}
 CONFIGDB_PORT=${CONFIGDB_PORT:-9161}
 CONFIGDB_CQL_PORT=${CONFIGDB_CQL_PORT:-9041}
@@ -268,6 +270,19 @@ kafka_certfile=$KAFKA_SSL_CERTFILE
 kafka_ca_cert=$KAFKA_SSL_CACERTFILE
 EOM
 fi
+
+read -r -d '' etcd_config << EOM || true
+etcd_server=${ETCD_SERVER:-localhost}
+etcd_port=${ETCD_PORT:-2379}
+etcd_user=${ETCD_USER:-}
+etcd_password=${ETCD_PASSWORD:-}
+etcd_use_ssl=${ETCD_USE_SSL:-false}
+etcd_ssl_ca_cert=${ETCD_SSL_CA_CERT:-/etc/kubernetes/pki/etcd/ca.crt}
+etcd_ssl_keyfile=${ETCD_SSL_KEYFILE:-/etc/kubernetes/pki/etcd/peer.key}
+etcd_ssl_certfile=${ETCD_SSL_CERTFILE:-/etc/kubernetes/pki/etcd/peer.crt}
+etcd_prefix=${ETCD_PREFIX:-/contrail}
+etcd_kv_store=${ETCD_KV_STORE:-/vnc}
+EOM
 
 # Agent options
 AGENT_MODE=${AGENT_MODE:-'kernel'}
