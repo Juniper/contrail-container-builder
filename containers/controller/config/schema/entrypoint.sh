@@ -16,6 +16,8 @@ api_server_port=$CONFIG_API_PORT
 log_file=$LOG_DIR/contrail-schema.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
+db_driver=$DB_DRIVER
+notification_driver=$NOTIFICATION_DRIVER
 cassandra_server_list=$cassandra_server_list
 zk_server_ip=$ZOOKEEPER_SERVERS
 
