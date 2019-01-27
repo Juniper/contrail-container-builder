@@ -71,6 +71,7 @@ function get_bonding_parameters() {
     if [[ -d ${bond_dir} ]] ; then
         local mode="$(cat ${bond_dir}/mode | awk '{print $2}')"
         local policy="$(cat ${bond_dir}/xmit_hash_policy | awk '{print $1}')"
+        local lacp_rate="$(cat ${bond_dir}/lacp_rate | awk '{print $2}')"
         policy=$(convert_bond_policy $policy)
         mode=$(convert_bond_mode $mode)
 
@@ -92,7 +93,7 @@ function get_bonding_parameters() {
         done
         pci_addresses=${pci_addresses#,}
 
-        echo "$mode $policy $slaves $pci_addresses $bond_numa"
+        echo "$mode $policy $slaves $pci_addresses $bond_numa $lacp_rate"
     fi
 }
 
@@ -372,7 +373,7 @@ function read_and_save_dpdk_params() {
         echo "INFO: vlan: echo vlan_id=$vlan_id vlan_parent=$vlan_parent"
     fi
 
-    declare mode policy slaves pci bond_numa
+    declare mode policy slaves pci bond_numa lacp_rate
     if [ -n "$BIND_INT" ] ; then
         # In case of OSP: params come from ifcfg.
         if [ -n "$BOND_MODE" ] ; then
@@ -389,18 +390,19 @@ function read_and_save_dpdk_params() {
             _slave=$(echo ${slaves//,/ } | cut -d ',' -f 1)
             bond_numa=$(get_bond_numa $_slave)
 	        echo "0000:00:00.0"  > $binding_data_dir/${nic}_pci
+            lacp_rate=${LACP_RATE:-0}
         fi
     else
         # read from system
         if is_bonding $phys_int ; then
             wait_bonding_slaves $phys_int
 	        echo "0000:00:00.0"  > $binding_data_dir/${nic}_pci
-            IFS=' ' read -r mode policy slaves pci bond_numa <<< $(get_bonding_parameters $phys_int)
+            IFS=' ' read -r mode policy slaves pci bond_numa lacp_rate <<< $(get_bonding_parameters $phys_int)
         fi
     fi
     if [ -n "$mode" ] ; then
-        echo "$mode $policy $slaves $pci $bond_numa" > $binding_data_dir/${nic}_bond
-        echo "INFO: bonding: $mode $policy $slaves $pci $bond_numa"
+        echo "$mode $policy $slaves $pci $bond_numa $lacp_rate" > $binding_data_dir/${nic}_bond
+        echo "INFO: bonding: $mode $policy $slaves $pci $bond_numa $lacp_rate"
     fi
 
     # Save this file latest because it is used
