@@ -26,15 +26,19 @@ CONFIG=${1}
 
 need_config "${CONFIG}"
 
+[ -f ./network-functions-vrouter-ffu-env-pre ] && source ./network-functions-vrouter-ffu-env-pre
+
 source_config
+    
+[ -f ./network-functions-vrouter-ffu-env-post ] && source ./network-functions-vrouter-ffu-env-post
+# os-net-config uses 'kernel_mode' instead of 'kernel'
+[ "${TYPE}" == 'kernel_mode' ] && TYPE='kernel'
+[ -f ./network-functions-vrouter-${TYPE}-env ] && source ./network-functions-vrouter-${TYPE}-env
+[ -f ./network-functions-vrouter-${TYPE} ] && source ./network-functions-vrouter-${TYPE}
 
 if [ "${BOOTPROTO}" = "bootp" -o "${BOOTPROTO}" = "dhcp" ]; then
     DYNCONFIG=true
 fi
-
-# os-net-config uses 'kernel_mode' instead of 'kernel'
-[ "${TYPE}" == 'kernel_mode' ] && TYPE='kernel'
-. ./network-functions-vrouter-${TYPE}
 
 ifup_init_vhost
 
