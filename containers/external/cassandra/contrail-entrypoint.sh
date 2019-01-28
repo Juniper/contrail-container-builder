@@ -1,6 +1,17 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+
+set -e
 
 source /common.sh
+
+CONFIG=/etc/cassandra/cassandra.yaml
+
+change_variable()
+{
+  VARIABLE_NAME=$1
+  VARIABLE_VALUE=$2
+  sed -i "s/.*\($VARIABLE_NAME\):.*\([0-9a-z]\)/\1: $VARIABLE_VALUE/g" $CONFIG
+}
 
 # In all in one deployment there is the race between vhost0 initialization
 # and own IP detection, so there is 10 retries
@@ -47,7 +58,6 @@ if is_enabled $CASSANDRA_SSL_ENABLE ; then
           -srcstorepass ${CASSANDRA_SSL_TRUSTSTORE_PASSWORD} -srckeystore TmpFile \
           -srcstoretype PKCS12 -alias $(hostname -f)
 
-  CONFIG=/etc/cassandra/cassandra.yaml
   # remove encryption sections
   cp $CONFIG $CONFIG.bak
   cat $CONFIG.bak | awk 'NR==1{flag=1} {if(flag==0 && substr($0,1,1)!=" "){flag=1}; if($1=="client_encryption_options:"||$1=="server_encryption_options:"){flag=0}; if(flag==1){print($0)}}' > $CONFIG
@@ -82,6 +92,17 @@ client_encryption_options:
     store_type: JKS
     cipher_suites: ${CASSANDRA_SSL_CIPHER_SUITES}
 EOF
+
+  # Number of flush writers should match number of vCPUs if ssd disks are used
+  # We are using safe values
+  change_variable memtable_flush_writers 4
+  # For compaction operation there is a need for more capacity
+  change_variable concurrent_compactors 4
+  # Increasing throughput for writes and reads
+  change_variable concurrent_reads 96
+  change_variable concurrent_writes 96
+  # We are reducing GC pressure
+  change_variable memtable_allocation_type offheap_objects
 
   # prepare settings for cqlsh
   cat >/root/.cqlshrc << EOM
