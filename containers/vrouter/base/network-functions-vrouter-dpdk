@@ -98,6 +98,8 @@ function start_dpdk_container() {
     [ -n "$DRIVER" ] && env_options+=" -e DPDK_UIO_DRIVER=$DRIVER"
     [ -n "$CPU_LIST" ] && env_options+=" -e CPU_CORE_MASK=$CPU_LIST"
     [ -n "$DPDK_COMMAND_ADDITIONAL_ARGS" ] && env_options+=" -e \"DPDK_COMMAND_ADDITIONAL_ARGS=$DPDK_COMMAND_ADDITIONAL_ARGS\""
+    [ -n "$NIC_OFFLOAD_ENABLE" ] && env_options+=" -e \"NIC_OFFLOAD_ENABLE=$NIC_OFFLOAD_ENABLE\""
+    [ -n "$LACP_RATE" ] && env_options+=" -e \"LACP_RATE=$LACP_RATE\""
 
     if docker inspect contrail-vrouter-agent-dpdk 2>&1 | grep -io 'status.*running' ; then
         echo "INFO: container contrail-vrouter-agent-dpdk is already up"
@@ -208,7 +210,7 @@ function ifdown_vhost() {
     [ -n "$CONTRAIL_DPDK_CONTAINER_CONTEXT" ] && {
         echo "ERROR: container context... should not be called from container" && return 1 ; }
     [ -f ./network-functions-vrouter-${TYPE}-env ] && . ./network-functions-vrouter-${TYPE}-env
-    remove_docker_container $CONTRAIL_VROUTER_AGENT_CONTAINER_NAME SIGTERM
+    stop_docker_container $CONTRAIL_VROUTER_AGENT_CONTAINER_NAME SIGTERM
     remove_docker_container $CONTRAIL_VROUTER_AGENT_DPDK_CONTAINER_NAME SIGTERM
 }
 
