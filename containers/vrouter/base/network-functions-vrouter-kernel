@@ -79,7 +79,7 @@ function ifup_init_vhost() {
 # ifdown interface
 function ifdown_vhost() {
     # Use SIGTERM to remove vhost and reinit bind_int via ifup in ifdown_vhost_post
-    remove_docker_container $CONTRAIL_VROUTER_AGENT_CONTAINER_NAME SIGTERM
+    stop_docker_container $CONTRAIL_VROUTER_AGENT_CONTAINER_NAME SIGTERM
     remove_vhost0_kernel
 }
 

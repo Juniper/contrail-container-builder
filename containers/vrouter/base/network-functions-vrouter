@@ -173,7 +173,7 @@ function restore_phys_int() {
     fi
 }
 
-function remove_docker_container() {
+function stop_docker_container() {
     local container=$1
     local signal=$2
     [ -z "$container" ] && { echo "ERROR: container id/name must be provided" && return 1 ; }
@@ -184,6 +184,13 @@ function remove_docker_container() {
             echo "INFO: wait container $container finishes"
             docker wait "$container"
         fi
+    fi
+}
+
+function remove_docker_container() {
+    local container=$1
+    local signal=$2
+    if stop_docker_container $container $signal ; then
         echo "INFO: remove the container $container"
         docker rm --force "$container"
     fi
