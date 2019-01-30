@@ -1,0 +1,72 @@
+# contrail-kube-manager parameters
+
+| parameter                         | default |
+| --------------------------------- | ------- |
+| **Authentication**                |         |
+| AUTH_MODE                         |         |
+| **Cloud orchestration**           |         |
+| CLOUD_ORCHESTRATOR                |         |
+| **TF collector**                  |         |
+| COLLECTOR_SERVERS                 |         |
+| **TF config**                     |         |
+| CONFIGDB_SERVERS                  |         |
+| CONFIG_API_PORT                   |         |
+| CONFIG_NODES                      |         |
+| **Host**                          |         |
+| DEFAULT_LOCAL_IP                  |         |
+| **Keystone authentication**       |         |
+| KEYSTONE_AUTH_ADMIN_PASSWORD      |         |
+| KEYSTONE_AUTH_ADMIN_PORT          |         |
+| KEYSTONE_AUTH_ADMIN_TENANT        |         |
+| KEYSTONE_AUTH_ADMIN_USER          |         |
+| KEYSTONE_AUTH_CA_CERTFILE         |         |
+| KEYSTONE_AUTH_CERTFILE            |         |
+| KEYSTONE_AUTH_HOST                |         |
+| KEYSTONE_AUTH_INSECURE            |         |
+| KEYSTONE_AUTH_KEYFILE             |         |
+| KEYSTONE_AUTH_PROJECT_DOMAIN_NAME |         |
+| KEYSTONE_AUTH_PROTO               |         |
+| KEYSTONE_AUTH_REGION_NAME         |         |
+| KEYSTONE_AUTH_URL_TOKENS          |         |
+| KEYSTONE_AUTH_URL_VERSION         |         |
+| KEYSTONE_AUTH_USER_DOMAIN_NAME    |         |
+| **Kubernetes**                    |         |
+| K8S_TOKEN                         |         |
+| K8S_TOKEN_FILE                    |         |
+| KUBEMANAGER_NESTED_MODE           |         |
+| KUBERNETES_API_PORT               |         |
+| KUBERNETES_API_SECURE_PORT        |         |
+| KUBERNETES_API_SERVER             |         |
+| KUBERNETES_CLUSTER_NAME           |         |
+| KUBERNETES_CLUSTER_NETWORK        |         |
+| KUBERNETES_CLUSTER_PROJECT        |         |
+| KUBERNETES_IP_FABRIC_FORWARDING   |         |
+| KUBERNETES_IP_FABRIC_SNAT         |         |
+| KUBERNETES_IP_FABRIC_SUBNETS      |         |
+| KUBERNETES_POD_SUBNETS            |         |
+| KUBERNETES_PUBLIC_FIP_POOL        |         |
+| KUBERNETES_SERVICE_SUBNETS        |         |
+| **Logging**                       |         |
+| LOG_DIR                           |         |
+| LOG_LEVEL                         |         |
+| LOG_LOCAL                         |         |
+| **RabbitMQ**                      |         |
+| RABBITMQ_CLIENT_SSL_CACERTFILE    |         |
+| RABBITMQ_CLIENT_SSL_CERTFILE      |         |
+| RABBITMQ_CLIENT_SSL_KEYFILE       |         |
+| RABBITMQ_HEARTBEAT_INTERVAL       |         |
+| RABBITMQ_NODES                    |         |
+| RABBITMQ_NODE_PORT                |         |
+| RABBITMQ_PASSWORD                 |         |
+| RABBITMQ_SSL_VER                  |         |
+| RABBITMQ_USER                     |         |
+| RABBITMQ_USE_SSL                  |         |
+| RABBITMQ_VHOST                    |         |
+| **Sandesh**                       |         |
+| INTROSPECT_SSL_ENABLE             |         |
+| SANDESH_CA_CERTFILE               |         |
+| SANDESH_CERTFILE                  |         |
+| SANDESH_KEYFILE                   |         |
+| SANDESH_SSL_ENABLE                |         |
+| **Zookeeper**                     |         |
+| ZOOKEEPER_SERVERS                 |         |
