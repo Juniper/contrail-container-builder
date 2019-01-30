@@ -5,7 +5,7 @@ source /common.sh
 pre_start_init
 
 # Env variables:
-# NODE_TYPE = name of the component [vrouter, config, control, analytics, database, config-database, toragent]
+# NODE_TYPE = name of the component [vrouter, config, control, analytics, database, config-database, toragent, analytics-alarm, analytics-snmp, device-manager]
 
 set_vnc_api_lib_ini
 
