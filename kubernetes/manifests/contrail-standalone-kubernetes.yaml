@@ -18,6 +18,7 @@ data:
   CLOUD_ORCHESTRATOR: {{ CLOUD_ORCHESTRATOR }}
   CONFIG_API_VIP: "{{ CONFIG_API_VIP }}"
   CONFIG_NODES: {{ CONFIG_NODES }}
+  DEVICE_MANAGER_NODES: {{ DEVICE_MANAGER_NODES }}
   CONFIGDB_NODES: {{ CONFIGDB_NODES }}
   CONTROL_NODES: {{ CONTROL_NODES }}
   CONTROLLER_NODES: {{ CONTROLLER_NODES }}
@@ -755,8 +756,6 @@ spec:
         - configMapRef:
             name: env
         - configMapRef:
-            name: configzookeeperenv
-        - configMapRef:
             name: nodemgr-config
         env:
         - name: NODE_TYPE
@@ -841,17 +840,6 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: config-logs
-      - name: contrail-controller-config-devicemgr
-        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-config-devicemgr:{{CONTRAIL_CONTAINER_TAG}}"
-        imagePullPolicy: ""
-        envFrom:
-        - configMapRef:
-            name: env
-        - configMapRef:
-            name: configzookeeperenv
-        volumeMounts:
-        - mountPath: /var/log/contrail
-          name: config-logs
       - name: contrail-controller-config-schema
         image: "{{CONTRAIL_REGISTRY}}/contrail-controller-config-schema:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -881,8 +869,6 @@ spec:
         - configMapRef:
             name: env
         - configMapRef:
-            name: configzookeeperenv
-        - configMapRef:
             name: nodemgr-config
         env:
         - name: NODE_TYPE
@@ -906,6 +892,126 @@ spec:
       imagePullSecrets:
       - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
+      - name: config-logs
+        hostPath:
+          path: /var/log/contrail/config
+      - name: docker-unix-socket
+        hostPath:
+          path: /var/run
+      - name: host-usr-bin
+        hostPath:
+          path: /usr/bin
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: contrail-controller-device-manager
+  namespace: kube-system
+  labels:
+    app: contrail-controller-device-manager
+spec:
+  template:
+    metadata:
+      labels:
+        app: contrail-controller-device-manager
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: "node-role.opencontrail.org/device-manager"
+                operator: Exists
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      - key: node.kubernetes.io/not-ready
+        operator: Exists
+        effect: NoSchedule
+      hostNetwork: true
+      initContainers:
+      - name: contrail-node-init
+        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        securityContext:
+          privileged: true
+        env:
+        - name: CONTRAIL_STATUS_IMAGE
+          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+        envFrom:
+        - configMapRef:
+            name: env
+        volumeMounts:
+        - mountPath: /host/usr/bin
+          name: host-usr-bin
+      containers:
+      - name: contrail-controller-device-manager-devicemgr
+        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-devicemgr:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        envFrom:
+        - configMapRef:
+            name: env
+        - configMapRef:
+            name: configzookeeperenv
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: config-logs
+        - mountPath: /etc/dnsmasq
+          name: dnsmasq
+        - mountPath: /etc/tftp
+          name: dnsmasq
+        - mountPath: /var/lib/misc
+          name: dhcp-leases
+      - name: contrail-controller-device-manager-dnsmasq
+        image: "{{CONTRAIL_REGISTRY}}/contrail-external-dnsmasq:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        securityContext:
+          capabilities:
+            add: ["NET_ADMIN", "NET_RAW"]
+        envFrom:
+        - configMapRef:
+            name: env
+        env:
+        - name: NODE_TYPE
+          value: device-manager
+        volumeMounts:
+        - mountPath: /etc/dnsmasq
+          name: dnsmasq
+        - mountPath: /etc/tftp
+          name: dnsmasq
+        - mountPath: /var/lib/misc
+          name: dhcp-leases
+      - name: contrail-controller-device-manager-nodemgr
+        image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        envFrom:
+        - configMapRef:
+            name: env
+        - configMapRef:
+            name: nodemgr-config
+        env:
+        - name: NODE_TYPE
+          value: device-manager
+# todo: there is type Socket in new kubernetes, it is possible to use full
+# path:
+# hostPath:
+#   path: /var/run/docker.sock and
+#   type: Socket
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: config-logs
+        - mountPath: /mnt
+          name: docker-unix-socket
+      imagePullSecrets:
+      - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
+      volumes:
+      - name: dnsmasq
+        emptyDir: {}
+      - name: tftp
+        emptyDir: {}
+      - name: dhcp-leases
+        emptyDir: {}
       - name: config-logs
         hostPath:
           path: /var/log/contrail/config
