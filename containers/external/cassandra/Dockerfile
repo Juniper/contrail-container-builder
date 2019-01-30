@@ -1,4 +1,4 @@
-FROM cassandra:3.11.2
+FROM cassandra:3.11.3
 
 ARG CONTAINER_NAME
 
