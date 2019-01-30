@@ -1,0 +1,58 @@
+# contrail-controller-config-devicemgr parameters
+
+| | default |
+|---|---|
+| **TF analytics** | |
+| ANALYTICS_API_PORT | |
+| ANALYTICS_NODES | |
+| **Authentication** | |
+| AUTH_MODE | |
+| **TF collector** | |
+| COLLECTOR_SERVERS | |
+| **TF config** | |
+| CONFIGDB_SERVERS | |
+| CONFIG_API_PORT | |
+| CONFIG_API_PORT | |
+| CONFIG_NODES |  |
+| CONFIG_NODES | |
+| **Keystone authentication** | |
+| KEYSTONE_AUTH_ADMIN_PASSWORD | |
+| KEYSTONE_AUTH_ADMIN_PORT | |
+| KEYSTONE_AUTH_ADMIN_TENANT | |
+| KEYSTONE_AUTH_ADMIN_USER | |
+| KEYSTONE_AUTH_CA_CERTFILE | |
+| KEYSTONE_AUTH_CERTFILE | |
+| KEYSTONE_AUTH_HOST | |
+| KEYSTONE_AUTH_INSECURE | |
+| KEYSTONE_AUTH_KEYFILE | |
+| KEYSTONE_AUTH_PROJECT_DOMAIN_NAME | |
+| KEYSTONE_AUTH_PROTO | |
+| KEYSTONE_AUTH_REGION_NAME | |
+| KEYSTONE_AUTH_URL_TOKENS | |
+| KEYSTONE_AUTH_URL_VERSION | |
+| KEYSTONE_AUTH_USER_DOMAIN_NAME | |
+| **Logging** | |
+| LOG_DIR | |
+| LOG_LEVEL | |
+| LOG_LOCAL | |
+| **RabbitMQ** | |
+| RABBITMQ_CLIENT_SSL_CACERTFILE | |
+| RABBITMQ_CLIENT_SSL_CERTFILE | |
+| RABBITMQ_CLIENT_SSL_KEYFILE | |
+| RABBITMQ_HEARTBEAT_INTERVAL | |
+| RABBITMQ_PASSWORD | |
+| RABBITMQ_SERVERS | |
+| RABBITMQ_SSL_VER | |
+| RABBITMQ_USER | |
+| RABBITMQ_USE_SSL | |
+| RABBITMQ_VHOST | |
+| **Sandesh** | |
+| INTROSPECT_SSL_ENABLE | |
+| SANDESH_CA_CERTFILE | |
+| SANDESH_CERTFILE | |
+| SANDESH_KEYFILE | |
+| SANDESH_SSL_ENABLE | |
+| **Zookeeper** | |
+| ZOOKEEPER_SERVERS | |
+
+add_ini_params_from_env DEVICE_MANAGER /etc/contrail/contrail-device-manager.conf

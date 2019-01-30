@@ -1,0 +1,127 @@
+# contrail-webui-xxx parameters
+
+| | default |
+|---|---|
+| **TF analytics** | |
+| ANALYTICS_API_PORT | |
+| ANALYTICS_API_VIP | |
+| ANALYTICS_NODES |  |
+| analytics_authProtocol | |
+| analytics_ca | |
+| analytics_statusURL | |
+| analytics_strictSSL | |
+| **Authentication** | |
+| AUTH_MODE | |
+| **Cassandra** | |
+| cassandra_enable_edit | |
+| cassandra_server_ips | |
+| cassandra_server_port | |
+| **Cloud orchestration** | |
+| CLOUD_ORCHESTRATOR | |
+| orchestrationModuleEndPointFromConfig | |
+| **TF config** | |
+| CONFIGDB_CQL_PORT | |
+| CONFIGDB_NODES |  |
+| CONFIG_API_PORT | |
+| CONFIG_API_VIP | |
+| CONFIG_NODES |  |
+| cnfg_authProtocol | |
+| cnfg_ca | |
+| cnfg_statusURL | |
+| cnfg_strictSSL | |
+| **DNS** | |
+| dns_server_ip | |
+| dns_server_port | |
+| dns_statusURL | |
+| **Host** | |
+| DEFAULT_LOCAL_IP | |
+| **Keystone authentication** | |
+| KEYSTONE_AUTH_ADMIN_PASSWORD | |
+| KEYSTONE_AUTH_ADMIN_PORT | |
+| KEYSTONE_AUTH_ADMIN_TENANT | |
+| KEYSTONE_AUTH_ADMIN_USER | |
+| KEYSTONE_AUTH_CA_CERTFILE | |
+| KEYSTONE_AUTH_CERTFILE | |
+| KEYSTONE_AUTH_HOST | |
+| KEYSTONE_AUTH_INSECURE | |
+| KEYSTONE_AUTH_KEYFILE | |
+| KEYSTONE_AUTH_PROJECT_DOMAIN_NAME | |
+| KEYSTONE_AUTH_PROTO | |
+| KEYSTONE_AUTH_PUBLIC_PORT | |
+| KEYSTONE_AUTH_URL_TOKENS | |
+| KEYSTONE_AUTH_URL_VERSION | |
+| **Kubernetes** | |
+| K8S_CA_FILE | |
+| K8S_TOKEN_FILE | |
+| KUBERNETES_API_PORT | |
+| KUBERNETES_API_SERVER | |
+| KUBERNETES_PORT_443_TCP_PORT | |
+| KUBERNETES_SERVICE_HOST | |
+| **Logging** | |
+| WEBUI_LOG_LEVEL | |
+| **OpenStack** | |
+| computeManager_apiVersion | |
+| computeManager_authProtocol | |
+| computeManager_ca | |
+| computeManager_ip | |
+| computeManager_port | |
+| computeManager_strictSSL | |
+| computeManager_strictSSL | |
+| identityManager_apiVersion | |
+| identityManager_strict_ssl | |
+| imageManager_apiVersion | |
+| imageManager_authProtocol | |
+| imageManager_ca | |
+| imageManager_ip | |
+| imageManager_port | |
+| imageManager_strictSSL | |
+| imageManager_strictSSL | |
+| networkManager_apiVersion | |
+| networkManager_authProtocol | |
+| networkManager_ca | |
+| networkManager_ip | |
+| networkManager_port | |
+| networkManager_strictSSL | |
+| networkManager_strictSSL | |
+| regionsFromConfig | |
+| regions_RegionOne | |
+| serviceEndPointTakePublicURL | |
+| storageManager_apiVersion | |
+| storageManager_authProtocol | |
+| storageManager_ca | |
+| storageManager_ip | |
+| storageManager_port | |
+| storageManager_strictSSL | |
+| storageManager_strictSSL | |
+| **Redis** | |
+| REDIS_SERVER_PASSWORD | |
+| REDIS_SERVER_PORT | |
+| **Server SSL** | |
+| CA_PRIVATE_KEY_BITS| |
+| FORCE_GENERATE_CERT| |
+| INTROSPECT_CA_CERTFILE | |
+| INTROSPECT_CERTFILE | |
+| INTROSPECT_KEYFILE | |
+| INTROSPECT_SSL_ENABLE | |
+| INTROSPECT_SSL_INSECURE | |
+| PRIVATE_KEY_BITS| |
+| SERVER_CA_KEYFILE| |
+| WEBUI_SSL_CERT_FILE | |
+| WEBUI_SSL_CIPHERS | |
+| WEBUI_SSL_KEY_FILE | |
+| **vCenter** | |
+| VCENTER_AUTH_PROTOCOL | |
+| VCENTER_DATACENTER | |
+| VCENTER_DVSWITCH | |
+| VCENTER_SERVER | |
+| VCENTER_WSDL_PATH | |
+| **TF web UI** | |
+| KUE_UI_PORT | |
+| WEBUI_HTTPS_LISTEN_PORT | |
+| WEBUI_HTTP_LISTEN_PORT | |
+| WEBUI_INSECURE_ACCESS | |
+| WEBUI_JOB_SERVER_PORT | |
+| WEBUI_LISTEN_ADDRESSES | |
+| WEBUI_NODES | |
+| contrailEndPointFromConfig | |
+| endpoints_apiServiceType | |
