@@ -49,7 +49,7 @@ For multi-node deployment on other kubernetes nodes:
   ``` ./resolve-manifest.sh contrail-standalone-kubernetes.yaml > contrail.yaml```
 * Run ```./set-node-labels.sh``` to allow kubernetes to apply labels according to ```common.env```.
 * Deploy Contrail:
-  
+
   ```kubectl apply -f contrail.yaml```
 * Check the deployment by:
 
@@ -91,7 +91,7 @@ This repo consists of the following:
 
 ### Container
 
-Containers here should comply with microservice-based architecture (https://en.wikipedia.org/wiki/Microservices). It means running a single process App inside each container. 
+Containers here should comply with microservice-based architecture (https://en.wikipedia.org/wiki/Microservices). It means running a single process App inside each container.
 Containers are based mostly on "base" (contrail-specific) or "general-base" (generic) containers. They, in turn, are based on CentOS image (except for several Ubuntu-specific ones)
 
 A container usually consists of the following:
@@ -99,7 +99,9 @@ A container usually consists of the following:
   - installs everything during build process, defines the command to run a process
 * entrypoint.sh (or similar name)
   - startup script for each container invoked from dockerfile and handling incoming env parameters
-* other scripts and files (if applicable) 
+* other scripts and files (if applicable)
+* PARAMS.md
+  - list of environment parameters (see [README-PARAMS.md](README-PARAMS.md) for details)
 
 ### Tools
 
@@ -119,7 +121,7 @@ Each manifest is a template which can be resolved by script ./manifests/resolve-
 
 Manifests are designed in a way prescribing kubernetes to lay out Contrail roles according to labels specified in the manifest.
 
-Examples of deployment are described in sections in the beginning. 
+Examples of deployment are described in sections in the beginning.
 
 ### Adding new container
 
@@ -140,9 +142,10 @@ To implement new container the following can be done:
 * Consider implementing init_container if you need one-time action at the beginning (like vrouter/kernel-init), use "-init" postfix for the name
 * Update kubernetes manifests and configs to deploy your new container
 * Define new nodemgr type (see containers/nodemgr/entrypoint.sh) if you're adding a new pod and add your pod with your container and new nodemgr container into manifests
+* Write PARAMS.md
 
 
-While adding new container DO NOT break the microservices paradigm - don't try to start more than one process inside one container. Don't overcomplicate it: if you need it to run other service then most probably you need to create more than one container. Pass parameters through env variables only. 
+While adding new container DO NOT break the microservices paradigm - don't try to start more than one process inside one container. Don't overcomplicate it: if you need it to run other service then most probably you need to create more than one container. Pass parameters through env variables only.
 
 Ask for advice if you still have questions (see contacts at the end)
 
