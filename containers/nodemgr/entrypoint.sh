@@ -5,7 +5,7 @@ source /common.sh
 pre_start_init
 
 # Env variables:
-# NODE_TYPE = name of the component [vrouter, config, control, analytics, database, config-database]
+# NODE_TYPE = name of the component [vrouter, config, control, analytics, database, config-database, analytics-alarm, analytics-snmp, device-manager]
 
 # ToDo - decide how to resolve this for non-contrail parts
 export NODEMGR_TYPE=contrail-${NODE_TYPE}
