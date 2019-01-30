@@ -6,7 +6,7 @@
 
 label_prefix="node-role.opencontrail.org/"
 
-declare -a pod_types=( CONFIG CONTROL WEBUI ANALYTICS AGENT CONFIGDB ANALYTICSDB )
+declare -a pod_types=( CONFIG DEVICE_MANAGER CONTROL WEBUI ANALYTICS AGENT CONFIGDB ANALYTICSDB )
 
 manifest_dir="${BASH_SOURCE%/*}"
 if [[ ! -d "$manifest_dir" ]]; then manifest_dir="$PWD"; fi
@@ -53,7 +53,7 @@ check_specified_ips() {
 update_node_label() {
   local _pod_type=${1,,}
   local _nodes=${_pod_type^^}_NODES
-  local _label=${label_prefix}${_pod_type}
+  local _label=$(echo ${label_prefix}${_pod_type} | tr '_' '-')
   for _node in "${!node_ips[@]}"; do
     if [[ "${!_nodes}" =~ "${node_ips[${_node}]}" ]]; then
       if [[ "${node_labels[${_node}]}" =~ "${_label}=" ]]; then
