@@ -43,7 +43,11 @@ CONTRAIL_SERVICES_TO_SANDESH_SVC = {
         'api': 'contrail-api',
         'schema': 'contrail-schema',
         'svc-monitor': 'contrail-svc-monitor',
+    },
+    'device-manager': {
+        'nodemgr': 'contrail-device-manager-nodemgr',
         'device-manager': 'contrail-device-manager',
+        'dnsmasq': None,
     },
     'config-database': {
         'nodemgr': 'contrail-config-database-nodemgr',
@@ -85,8 +89,6 @@ CONTRAIL_SERVICES_TO_SANDESH_SVC = {
         'plugin': None,
     }
 }
-
-# TODO: Include vcenter-plugin
 
 
 debug_output = False
