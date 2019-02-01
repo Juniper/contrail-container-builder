@@ -10,4 +10,6 @@ ret=0
 
 /files-init.sh || ret=1
 
+/iptables-init.sh || ret=1
+
 exit $ret
