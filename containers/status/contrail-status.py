@@ -393,6 +393,8 @@ def get_containers():
 
     items = dict()
     client = docker.from_env()
+    if hasattr(client, 'api'):
+        client = client.api
     flt = {'label': ['net.juniper.contrail.container.name']}
     for cnt in client.containers(all=True, filters=flt):
         labels = cnt.get('Labels', dict())
