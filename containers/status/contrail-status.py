@@ -86,6 +86,10 @@ CONTRAIL_SERVICES_TO_SANDESH_SVC = {
     }
 }
 
+SHARED_SERVICES = [
+    'contrail-external-redis',
+]
+
 # TODO: Include vcenter-plugin
 
 
@@ -497,6 +501,8 @@ def main():
         service = v['Service']
         if pod and service:
             pods.setdefault(pod, dict())[service] = v
+            continue
+        if not pod and v['Original Name'] in SHARED_SERVICES:
             continue
         print("WARNING: container with original name '{}' "
               "have Pod or Service empty. Pod: '{}' / Service: '{}'. "
