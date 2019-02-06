@@ -58,7 +58,7 @@ set_to_lower networkManager_strictSSL false
 set_to_lower imageManager_strictSSL false
 set_to_lower computeManager_strictSSL false
 set_to_lower storageManager_strictSSL false
-set_to_lower cnfg_strictSSL false
+set_to_lower cnfg_strictSSL ${CONFIG_API_SSL_ENABLE}
 set_to_lower analytics_strictSSL false
 set_to_lower cassandra_enable_edit false
 set_to_lower WEBUI_INSECURE_ACCESS false
@@ -133,7 +133,7 @@ config.cnfg.server_ip = ${CONFIG_API_VIP:-`get_server_json_list CONFIG`};
 config.cnfg.server_port = "$CONFIG_API_PORT";
 config.cnfg.authProtocol = "${cnfg_authProtocol:-http}";
 config.cnfg.strictSSL = ${cnfg_strictSSL};
-config.cnfg.ca = ${cnfg_ca:-''};
+config.cnfg.ca = "${cnfg_ca:-$CONFIG_API_SERVER_CA_CERTFILE}";
 config.cnfg.statusURL = ${cnfg_statusURL:-'"/global-system-configs"'};
 
 config.analytics = {};

@@ -52,6 +52,16 @@ function wait_certs_if_ssl_enabled() {
   fi
 }
 
+function wait_config_api_certs_if_ssl_enabled() {
+  if ! is_enabled ${CONFIG_API_SSL_ENABLE} ; then
+    return
+  fi
+
+  if [[ "$SERVER_KEYFILE" != "$CONFIG_API_SERVER_CERTFILE" ]] ; then
+    wait_files "$CONFIG_API_SERVER_CERTFILE" "$CONFIG_API_SERVER_KEYFILE"
+  fi
+}
+
 function pre_start_init() {
   wait_certs_if_ssl_enabled
 }
@@ -111,7 +121,13 @@ function set_vnc_api_lib_ini(){
 WEB_SERVER = $CONFIG_NODES
 WEB_PORT = ${CONFIG_API_PORT:-8082}
 BASE_URL = /
+use_ssl = $CONFIG_API_SSL_ENABLE
 EOM
+  if [[ $CONFIG_API_SSL_ENABLE ]]; then
+    cat >> $tmp_file << EOM
+cafile = $CONFIG_API_SERVER_CA_CERTFILE
+EOM
+  fi
 
   if [[ $AUTH_MODE == "keystone" ]]; then
     cat >> $tmp_file << EOM
