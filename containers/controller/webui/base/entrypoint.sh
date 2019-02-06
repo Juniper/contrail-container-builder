@@ -236,6 +236,17 @@ config.server_options.ciphers = '$WEBUI_SSL_CIPHERS';
 module.exports = config;
 EOM
 
+if [[ "$AUTH_MODE" == 'noauth' ]] ; then
+  cat >> /etc/contrail/config.global.js << EOM
+
+config.staticAuth = [];
+config.staticAuth[0] = {};
+config.staticAuth[0].username = '$WEBUI_STATIC_AUTH_USER';
+config.staticAuth[0].password = '$WEBUI_STATIC_AUTH_PASSWORD';
+config.staticAuth[0].roles = ['$WEBUI_STATIC_AUTH_ROLE'];
+EOM
+fi
+
 echo "INFO: config /etc/contrail/config.global.js"
 cat /etc/contrail/config.global.js
 
