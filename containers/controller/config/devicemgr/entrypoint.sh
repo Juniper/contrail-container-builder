@@ -28,7 +28,7 @@ zk_server_ip=$ZOOKEEPER_SERVERS
 # the same directories must be mounted to dnsmasq and DM container
 dnsmasq_conf_dir=/etc/dnsmasq
 tftp_dir=/etc/tftp
-dhcp_lease_file=/var/lib/misc
+dhcp_leases_file=/var/lib/misc
 
 rabbit_server=$RABBITMQ_SERVERS
 $rabbit_config
