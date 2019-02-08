@@ -14,6 +14,11 @@ data:
   ANALYTICS_API_VIP: "{{ ANALYTICS_API_VIP }}"
   ANALYTICS_NODES: {{ ANALYTICS_NODES }}
   ANALYTICSDB_NODES: {{ ANALYTICSDB_NODES }}
+  ANALYTICS_SNMP_NODES: {{ ANALYTICS_SNMP_NODES }}
+  ANALYTICS_ALARM_NODES: {{ ANALYTICS_ALARM_NODES}}
+  ANALYTICSDB_ENABLE: "true"
+  ANALYTICS_ALARM_ENABLE: "true"
+  ANALYTICS_SNMP_ENABLE: "true"
   AUTH_MODE: {{ AUTH_MODE }}
   CLOUD_ORCHESTRATOR: {{ CLOUD_ORCHESTRATOR }}
   CONFIG_API_VIP: "{{ CONFIG_API_VIP }}"
@@ -626,8 +631,8 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: analytics-logs
-      - name: contrail-analytics-topology
-        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-topology:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: contrail-analytics-snmp-topology
+        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-snmp-topology:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -1387,4 +1392,3 @@ metadata:
   annotations:
     kubernetes.io/service-account.name: contrail-kube-manager
 type: kubernetes.io/service-account-token
-
