@@ -351,3 +351,6 @@ INTROSPECT_LISTEN_ALL=${INTROSPECT_LISTEN_ALL:-True}
 # Set this to True to enable adding all local IP-s to self-signed certs
 # that are created by certs-init.sh
 SELFSIGNED_CERTS_WITH_IPS=${SELFSIGNED_CERTS_WITH_IPS:-True}
+
+# iptables configure options
+CONFIGURE_IPTABLES=${CONFIGURE_IPTABLES:-'false'}
