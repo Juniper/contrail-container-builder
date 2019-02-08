@@ -123,7 +123,7 @@ WEB_PORT = ${CONFIG_API_PORT:-8082}
 BASE_URL = /
 use_ssl = $CONFIG_API_SSL_ENABLE
 EOM
-  if [[ $CONFIG_API_SSL_ENABLE ]]; then
+  if is_enabled ${CONFIG_API_SSL_ENABLE}; then
     cat >> $tmp_file << EOM
 cafile = $CONFIG_API_SERVER_CA_CERTFILE
 EOM
