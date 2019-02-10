@@ -161,9 +161,8 @@ fi
 
 tsn_agent_mode=""
 if is_tsn ; then
-    TSN_AGENT_MODE="tsn-no-forwarding"
     read -r -d '' tsn_agent_mode << EOM || true
-agent_mode = tsn-no-forwarding
+agent_mode = ${TSN_AGENT_MODE}
 EOM
 fi
 
