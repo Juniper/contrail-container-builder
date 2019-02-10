@@ -16,4 +16,10 @@ for k_dir in `ls -d /lib/modules/*` ; do
 done
 depmod -a
 
+# OPTIONAL vrouter limit parameter
+rm -rf /etc/modprobe.d/vrouter.conf
+touch /etc/modprobe.d/vrouter.conf
+vrouter_params="options vrouter $VR_MPLS_LABELS $VR_NEXTHOPS $VR_VRFS $VR_BRIDGE_ENTRIES $VR_FLOW_ENTRIES"
+echo ${VR_FLOW_ENTRIES} > /etc/modprobe.d/vrouter.conf
+
 exec $@
