@@ -67,7 +67,8 @@ function pre_start_init() {
 }
 
 function is_tsn() {
-  [[ $TSN_EVPN_MODE =~ ^[Tt][Rr][Uu][Ee]$ ]]
+  is_enabled "$TSN_EVPN_MODE" \
+  || is_enabled "$TSN_MODE"
 }
 
 function is_dpdk() {

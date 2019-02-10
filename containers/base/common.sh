@@ -354,3 +354,23 @@ SELFSIGNED_CERTS_WITH_IPS=${SELFSIGNED_CERTS_WITH_IPS:-True}
 
 # iptables configure options
 CONFIGURE_IPTABLES=${CONFIGURE_IPTABLES:-'false'}
+
+# Tor agent options
+# Tor Agent OVSDB keepalive timer in milli seconds
+TOR_AGENT_OVS_KA=${TOR_AGENT_OVS_KA:-'10000'}
+TOR_TYPE=${TOR_TYPE:-'ovs'}
+TSN_MODE=${TSN_MODE:-False}
+TORAGENT_SSL_ENABLE=${TORAGENT_SSL_ENABLE:-False}
+TORAGENT_SSL_CERTFILE=${TORAGENT_SSL_CERTFILE:-${SERVER_CERTFILE}}
+TORAGENT_SSL_KEYFILE=${TORAGENT_SSL_KEYFILE:-${SERVER_KEYFILE}}
+TORAGENT_SSL_CACERTFILE=${TORAGENT_SSL_CACERTFILE:-${SERVER_CA_CERTFILE}}
+
+if is_enabled ${TORAGENT_SSL_ENABLE} ; then
+  read -r -d '' toragent_ssl_config << EOM || true
+toragent_keyfile=$TORAGENT_SSL_KEYFILE
+toragent_certfile=$TORAGENT_SSL_CERTFILE
+toragent_ca_cert=$TORAGENT_SSL_CACERTFILE
+EOM
+else
+  toragent_ssl_config=''
+fi
