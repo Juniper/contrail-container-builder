@@ -39,15 +39,10 @@ fi
 export CONTRAIL_VERSION=${CONTRAIL_VERSION:-'4.1.0.0-8'}
 export K8S_VERSION=${K8S_VERSION:-'1.11.2'}
 export OPENSTACK_VERSION=${OPENSTACK_VERSION:-'queens'}
-default_tag="${OPENSTACK_VERSION}-${CONTRAIL_VERSION}"
+default_tag="${CONTRAIL_VERSION}"
 export CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG:-$default_tag}
 
-declare -A _os_subversions
-_os_subversions=([newton]=5 [ocata]=3 [pike]=1 [queens]=1 [rocky]=0)
-_os_subversion="${_os_subversions[$OPENSTACK_VERSION]}"
-export OPENSTACK_SUBVERSION=${OPENSTACK_SUBVERSION:-"$_os_subversion"}
-
-default_packages_url="https://s3-us-west-2.amazonaws.com/contrailrhel7/contrail-install-packages-${CONTRAIL_VERSION}~${OPENSTACK_VERSION}.el7.noarch.rpm"
+default_packages_url="https://s3-us-west-2.amazonaws.com/contrailrhel7/contrail-install-packages-${CONTRAIL_VERSION}.el7.noarch.rpm"
 export CONTRAIL_INSTALL_PACKAGES_URL=${CONTRAIL_INSTALL_PACKAGES_URL:-$default_packages_url}
 export CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY:-'auto'}
 export CONTRAIL_REGISTRY_PUSH=${CONTRAIL_REGISTRY_PUSH:-1}
@@ -57,14 +52,19 @@ if [[ $CONTRAIL_REGISTRY == 'auto' ]] ; then
   export CONTRAIL_REGISTRY="${default_registry_ip}:5000"
 fi
 if [[ $CONTRAIL_REPOSITORY == 'auto' ]] ; then
-  export CONTRAIL_REPOSITORY="http://${default_registry_ip}/${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
+  export CONTRAIL_REPOSITORY="http://${default_registry_ip}/${CONTRAIL_VERSION}"
 fi
 
-export GENERAL_EXTRA_RPMS=${GENERAL_EXTRA_RPMS="https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"}
-export BASE_EXTRA_RPMS=${BASE_EXTRA_RPMS="https://repos.fedorapeople.org/repos/openstack/openstack-$OPENSTACK_VERSION/rdo-release-$OPENSTACK_VERSION-$OPENSTACK_SUBVERSION.noarch.rpm"}
-export DOCKER_REPO=${DOCKER_REPO='https://download.docker.com/linux/centos/docker-ce.repo'}
+export GENERAL_EXTRA_RPMS=${GENERAL_EXTRA_RPMS:-""}
+# use some stable OpenStack repo for Contrail's dependencies
+export BASE_EXTRA_RPMS=${BASE_EXTRA_RPMS:-"https://repos.fedorapeople.org/repos/openstack/openstack-queens/rdo-release-queens-1.noarch.rpm"}
+export DOCKER_REPO=${DOCKER_REPO:-'https://download.docker.com/linux/centos/docker-ce.repo'}
 export YUM_ENABLE_REPOS=${YUM_ENABLE_REPOS:-}
-if [[ "$LINUX_DISTR" == 'rhel'* ]] ; then
+if [[ "$LINUX_DISTR" == 'centos'* ]] ; then
+  # use all supported OpenStack repos
+  export OPENSTACK_EXTRA_RPMS=${OPENSTACK_EXTRA_RPMS:-"https://repos.fedorapeople.org/repos/openstack/EOL/openstack-newton/rdo-release-newton-5.noarch.rpm,https://repos.fedorapeople.org/repos/openstack/openstack-ocata/rdo-release-ocata-3.noarch.rpm,https://repos.fedorapeople.org/repos/openstack/openstack-pike/rdo-release-pike-1.noarch.rpm,https://repos.fedorapeople.org/repos/openstack/openstack-queens/rdo-release-queens-1.noarch.rpm,https://repos.fedorapeople.org/repos/openstack/openstack-rocky/rdo-release-rocky-0.noarch.rpm"}
+elif [[ "$LINUX_DISTR" == 'rhel'* ]] ; then
+  export OPENSTACK_EXTRA_RPMS=""
   export RHEL_FORCE_REGISTRATION=${RHEL_FORCE_REGISTRATION:-'false'}
   export RHEL_USER_NAME=${RHEL_USER_NAME:-}
   export RHEL_USER_PASSWORD=${RHEL_USER_PASSWORD:-}
@@ -86,6 +86,9 @@ if [[ "$LINUX_DISTR" == 'rhel'* ]] ; then
         ;;
       queens)
         rhel_os_repo_num='13'
+        ;;
+      rocky)
+        rhel_os_repo_num='14'
         ;;
       *)
         echo "ERROR: unsupported OS $OPENSTACK_VERSION for RHEL"
