@@ -47,22 +47,11 @@ data:
   VROUTER_GATEWAY: {{ VROUTER_GATEWAY }}
   WEBUI_NODES: {{ WEBUI_NODES }}
   WEBUI_VIP: "{{ WEBUI_VIP }}"
-  ZOOKEEPER_ANALYTICS_PORT: "{{ ZOOKEEPER_ANALYTICS_PORT }}"
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: configzookeeperenv
-  namespace: kube-system
-data:
-  ZOOKEEPER_NODES: {{ CONFIGDB_NODES }}
-  ZOOKEEPER_PORT: "{{ ZOOKEEPER_PORT }}"
-  ZOOKEEPER_PORTS: "{{ ZOOKEEPER_PORTS }}"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: analyticszookeeperenv
   namespace: kube-system
 data:
   ZOOKEEPER_NODES: {{ CONFIGDB_NODES }}
@@ -280,7 +269,7 @@ spec:
         - configMapRef:
             name: env
         - configMapRef:
-            name: analyticszookeeperenv
+            name: configzookeeperenv
         volumeMounts:
         - mountPath: /var/log/contrail
           name: analyticsdb-logs
@@ -489,7 +478,7 @@ spec:
         - configMapRef:
             name: env
         - configMapRef:
-            name: analyticszookeeperenv
+            name: configzookeeperenv
         volumeMounts:
         - mountPath: /var/log/contrail
           name: analytics-logs
@@ -509,7 +498,7 @@ spec:
         - configMapRef:
             name: env
         - configMapRef:
-            name: analyticszookeeperenv
+            name: configzookeeperenv
         - configMapRef:
             name: nodemgr-config
         env:
@@ -716,7 +705,7 @@ spec:
         - configMapRef:
             name: env
         - configMapRef:
-            name: analyticszookeeperenv
+            name: configzookeeperenv
       - name: contrail-analytics-alarm-gen
         image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-alarm-gen:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -726,7 +715,7 @@ spec:
         - configMapRef:
             name: env
         - configMapRef:
-            name: analyticszookeeperenv
+            name: configzookeeperenv
         volumeMounts:
         - mountPath: /var/log/contrail
           name: analytics-alarm-logs

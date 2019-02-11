@@ -10,7 +10,8 @@ ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/contrail-query-engine","--conf_file","/etc/contrail/contrail-query-engine.conf"]
 
 ENV NODE_TYPE=database
-ENV SERVICE_NAME=query-engine
 LABEL net.juniper.contrail.pod=$NODE_TYPE
+
+ENV SERVICE_NAME=query-engine
 LABEL net.juniper.contrail.service=$SERVICE_NAME
 LABEL net.juniper.contrail.container.name=$CONTAINER_NAME
