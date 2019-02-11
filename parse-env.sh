@@ -60,8 +60,8 @@ if [[ $CONTRAIL_REPOSITORY == 'auto' ]] ; then
   export CONTRAIL_REPOSITORY="http://${default_registry_ip}/${CONTRAIL_VERSION}-${OPENSTACK_VERSION}"
 fi
 
-export GENERAL_EXTRA_RPMS=${GENERAL_EXTRA_RPMS="https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"}
-export BASE_EXTRA_RPMS=${BASE_EXTRA_RPMS="https://repos.fedorapeople.org/repos/openstack/openstack-$OPENSTACK_VERSION/rdo-release-$OPENSTACK_VERSION-$OPENSTACK_SUBVERSION.noarch.rpm"}
+#export GENERAL_EXTRA_RPMS=${GENERAL_EXTRA_RPMS="https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"}
+#export BASE_EXTRA_RPMS=${BASE_EXTRA_RPMS="https://repos.fedorapeople.org/repos/openstack/openstack-$OPENSTACK_VERSION/rdo-release-$OPENSTACK_VERSION-$OPENSTACK_SUBVERSION.noarch.rpm"}
 export DOCKER_REPO=${DOCKER_REPO='https://download.docker.com/linux/centos/docker-ce.repo'}
 export YUM_ENABLE_REPOS=${YUM_ENABLE_REPOS:-}
 if [[ "$LINUX_DISTR" == 'rhel'* ]] ; then
