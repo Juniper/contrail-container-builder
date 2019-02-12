@@ -52,6 +52,16 @@ EOM
 
 add_ini_params_from_env API /etc/contrail/contrail-api.conf
 
+cat > contrail-fabric-ansible.conf <<EOM
+[DEFAULTS]
+log_file=$LOG_DIR/contrail-fabric-ansible.log
+log_level=$LOG_LEVEL
+log_local=$LOG_LOCAL
+collectors=$COLLECTOR_SERVERS
+
+$sandesh_client_config
+EOM
+
 set_third_party_auth_config
 set_vnc_api_lib_ini
 
