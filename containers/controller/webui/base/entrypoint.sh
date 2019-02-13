@@ -31,6 +31,10 @@ if [[ -n "$KEYSTONE_AUTH_URL_VERSION" ]] ; then
   identityManager_apiVersion="['${KEYSTONE_AUTH_URL_VERSION#/}']"
 fi
 
+if is_enabled ${CONFIG_API_SSL_ENABLE} ; then
+  cnfg_authProtocol='https'
+fi
+
 introspect_strict_ssl=false
 if [[ "${INTROSPECT_SSL_INSECURE,,}" == 'false' ]]; then
   introspect_strict_ssl=true
