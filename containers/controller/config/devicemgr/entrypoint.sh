@@ -43,7 +43,7 @@ EOM
 
 add_ini_params_from_env DEVICE_MANAGER /etc/contrail/contrail-device-manager.conf
 
-cat > contrail-fabric-ansible.conf <<EOM
+cat > /etc/contrail/contrail-fabric-ansible.conf <<EOM
 [DEFAULTS]
 log_file=$LOG_DIR/contrail-fabric-ansible.log
 log_level=$LOG_LEVEL
