@@ -23,7 +23,7 @@ zookeeper=$ZOOKEEPER_SERVERS
 
 [API_SERVER]
 api_server_list=$CONFIG_SERVERS
-api_server_use_ssl=${CONFIG_API_SSL_ENABLE:-False}
+api_server_use_ssl=${CONFIG_API_SSL_ENABLE}
 
 [CONFIGDB]
 config_db_server_list=$config_db_server_list

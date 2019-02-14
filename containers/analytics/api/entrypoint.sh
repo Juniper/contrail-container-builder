@@ -30,6 +30,7 @@ log_local=$LOG_LOCAL
 #sandesh_send_rate_limit =
 collectors=$COLLECTOR_SERVERS
 api_server=$CONFIG_SERVERS
+api_server_use_ssl=${CONFIG_API_SSL_ENABLE}
 zk_list=$ZOOKEEPER_SERVERS_SPACE_DELIM
 
 [REDIS]

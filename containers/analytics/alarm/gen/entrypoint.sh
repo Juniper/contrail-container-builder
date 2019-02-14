@@ -23,7 +23,7 @@ zk_list=$ZOOKEEPER_SERVERS_SPACE_DELIM
 [API_SERVER]
 # List of api-servers in ip:port format separated by space
 api_server_list=$CONFIG_SERVERS
-api_server_use_ssl=${CONFIG_API_SSL_ENABLE:-False}
+api_server_use_ssl=${CONFIG_API_SSL_ENABLE}
 
 [REDIS]
 redis_server_port=$REDIS_SERVER_PORT
