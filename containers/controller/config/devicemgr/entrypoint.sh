@@ -13,6 +13,7 @@ host_ip=${host_ip}
 http_server_ip=$(get_introspect_listen_ip_for_node CONFIG)
 api_server_ip=$CONFIG_NODES
 api_server_port=$CONFIG_API_PORT
+api_server_use_ssl=${CONFIG_API_SSL_ENABLE:-False}
 analytics_server_ip=$ANALYTICS_NODES
 analytics_server_port=$ANALYTICS_API_PORT
 push_mode=1
