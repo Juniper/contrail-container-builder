@@ -13,6 +13,7 @@ config_api_ssl_enable=${CONFIG_API_SSL_ENABLE}
 config_api_ssl_certfile=${CONFIG_API_SERVER_CERTFILE}
 config_api_ssl_keyfile=${CONFIG_API_SERVER_KEYFILE}
 config_api_ssl_ca_cert=${CONFIG_API_SERVER_CA_CERTFILE}
+api_server_use_ssl=${CONFIG_API_SSL_ENABLE}
 EOM
 else
   config_api_certs_config=''
