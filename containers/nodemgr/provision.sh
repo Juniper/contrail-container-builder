@@ -174,4 +174,13 @@ vrouter)
   host_name=$(resolve_hostname_by_ip $host_ip)
   provision_node provision_vrouter.py $host_ip ${VROUTER_HOSTNAME:-${host_name:-${DEFAULT_HOSTNAME}}} $params
 
+  ;;
+
+toragent)
+
+  #TODO: add provisioning code
+  echo "TODO: add provisioning code for toragent"
+
+  ;;
+
 esac
