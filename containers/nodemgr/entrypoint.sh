@@ -5,7 +5,21 @@ source /common.sh
 pre_start_init
 
 # Env variables:
-# NODE_TYPE = name of the component [vrouter, config, control, analytics, database, config-database]
+# NODE_TYPE = name of the component [vrouter, config, control, analytics, database, config-database, toragent]
+
+set_vnc_api_lib_ini
+
+if is_enabled ${MAINTENANCE_MODE} ; then
+  echo "WARNING: MAINTENANCE_MODE is switched on - provision.sh is not called."
+elif ! /provision.sh ; then
+  echo "ERROR: provision.sh was failed. Exiting..."
+  exit 1
+fi
+
+if [[ $NODE_TYPE == 'toragent' ]]; then
+  # we don't have support of this node_type in nodemgr itself.
+  exit 0
+fi
 
 # ToDo - decide how to resolve this for non-contrail parts
 export NODEMGR_TYPE=contrail-${NODE_TYPE}
@@ -57,14 +71,4 @@ add_ini_params_from_env ${ntype}_NODEMGR /etc/contrail/$NODEMGR_NAME.conf
 
 cat /etc/contrail/$NODEMGR_NAME.conf
 
-set_vnc_api_lib_ini
-
-if [[ ${MAINTENANCE_MODE^^} == 'TRUE' ]]; then
-  echo "WARNING: MAINTENANCE_MODE is switched on - provision.sh is not called."
-elif ! /provision.sh ; then
-  echo "ERROR: provision.sh was failed. Exiting..."
-  exit 1
-fi
-
 exec "$@"
-
