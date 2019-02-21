@@ -377,9 +377,9 @@ fi
 
 if is_enabled ${TORAGENT_SSL_ENABLE} ; then
   read -r -d '' toragent_ssl_config << EOM || true
-toragent_keyfile=$TORAGENT_SSL_KEYFILE
-toragent_certfile=$TORAGENT_SSL_CERTFILE
-toragent_ca_cert=$TORAGENT_SSL_CACERTFILE
+ssl_privkey=$TORAGENT_SSL_KEYFILE
+ssl_cert=$TORAGENT_SSL_CERTFILE
+ssl_cacert=$TORAGENT_SSL_CACERTFILE
 EOM
 else
   toragent_ssl_config=''

@@ -177,9 +177,23 @@ vrouter)
   ;;
 
 toragent)
+  params=''
+  vhost_if=$(get_iface_for_vrouter_from_control)
+  if_cidr=$(get_cidr_for_nic $vhost_if)
+  ip_fabric_subnet=`python -c "import ipaddress; print str(ipaddress.ip_network(u'$if_cidr', strict=False))"`
+  host_ip=$(get_ip_for_vrouter_from_control)
+  params="$params --router_type tor-agent  --disable_vhost_vmi"
+  params="$params --ip_fabric_subnet $ip_fabric_subnet"
+  provision_node provision_vrouter.py ${host_ip} ${TOR_AGENT_NAME} $params
 
-  #TODO: add provisioning code
-  echo "TODO: add provisioning code for toragent"
+  tor_switch_params=''
+  host_name=$(resolve_hostname_by_ip $host_ip)
+  tor_switch_params="$tor_switch_params --device_name ${TOR_NAME} --vendor_name ${TOR_VENDOR_NAME} --device_mgmt_ip ${TOR_IP} --device_tunnel_ip ${TOR_TUNNEL_IP}"
+  tor_switch_params="$tor_switch_params --device_tor_agent ${TOR_AGENT_NAME} --device_tsn ${VROUTER_HOSTNAME:-${host_name:-${DEFAULT_HOSTNAME}}} "
+  if [[ -n "${TOR_PRODUCT_NAME}" ]]; then
+    tor_switch_params="$tor_switch_params --product_name ${TOR_PRODUCT_NAME}"
+  fi
+  provision provision_physical_device.py $tor_switch_params
 
   ;;
 
