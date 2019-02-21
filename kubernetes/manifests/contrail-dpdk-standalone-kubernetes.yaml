@@ -65,10 +65,9 @@ metadata:
   name: analyticszookeeperenv
   namespace: kube-system
 data:
-  ZOOKEEPER_NODES: {{ ANALYTICSDB_NODES }}
-  ZOOKEEPER_PORT: "{{ ZOOKEEPER_ANALYTICS_PORT }}"
-  ZOOKEEPER_PORTS: "4888:5888"
-
+  ZOOKEEPER_NODES: {{ CONFIGDB_NODES }}
+  ZOOKEEPER_PORT: "{{ ZOOKEEPER_PORT }}"
+  ZOOKEEPER_PORTS: "{{ ZOOKEEPER_PORTS }}"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -188,104 +187,6 @@ spec:
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: analytics-zookeeper
-  namespace: kube-system
-  labels:
-    app: analytics-zookeeper
-spec:
-  template:
-    metadata:
-      labels:
-        app: analytics-zookeeper
-    spec:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: "node-role.opencontrail.org/analyticsdb"
-                operator: Exists
-      tolerations:
-      - key: node-role.kubernetes.io/master
-        operator: Exists
-        effect: NoSchedule
-      - key: node.kubernetes.io/not-ready
-        operator: Exists
-        effect: NoSchedule
-      hostNetwork: true
-      containers:
-      - name: analytics-zookeeper
-        image: "{{CONTRAIL_REGISTRY}}/contrail-external-zookeeper:{{CONTRAIL_CONTAINER_TAG}}"
-        imagePullPolicy: ""
-        env:
-        - name: NODE_TYPE
-          value: database
-        envFrom:
-        - configMapRef:
-            name: env
-        - configMapRef:
-            name: analyticszookeeperenv
-        volumeMounts:
-        - mountPath: /var/lib/zookeeper
-          name: zookeeper-data
-        - mountPath: /var/log/zookeeper
-          name: zookeeper-logs
-      imagePullSecrets:
-      - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
-      volumes:
-      - name: zookeeper-data
-        hostPath:
-          path: /var/lib/contrail/analytics-zookeeper
-      - name: zookeeper-logs
-        hostPath:
-          path: /var/log/contrail/analytics-zookeeper
----
-apiVersion: extensions/v1beta1
-kind: DaemonSet
-metadata:
-  name: kafka
-  namespace: kube-system
-  labels:
-    app: kafka
-spec:
-  template:
-    metadata:
-      labels:
-        app: kafka
-    spec:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: "node-role.opencontrail.org/analyticsdb"
-                operator: Exists
-      tolerations:
-      - key: node-role.kubernetes.io/master
-        operator: Exists
-        effect: NoSchedule
-      - key: node.kubernetes.io/not-ready
-        operator: Exists
-        effect: NoSchedule
-      hostNetwork: true
-      containers:
-      - name: kafka
-        image: "{{CONTRAIL_REGISTRY}}/contrail-external-kafka:{{CONTRAIL_CONTAINER_TAG}}"
-        imagePullPolicy: ""
-        env:
-        - name: NODE_TYPE
-          value: analytics-alarm
-        - name: KAFKA_NODES
-          value: {{ KAFKA_NODES}}
-        - name: ZOOKEEPER_NODES
-          value: {{ ANALYTICSDB_NODES}}
-        envFrom:
-        - configMapRef:
-            name: env
----
-apiVersion: extensions/v1beta1
-kind: DaemonSet
-metadata:
   name: contrail-analyticsdb
   namespace: kube-system
   labels:
@@ -311,7 +212,48 @@ spec:
         operator: Exists
         effect: NoSchedule
       hostNetwork: true
+      initContainers:
+      - name: contrail-node-init
+        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        env:
+        - name: NODE_TYPE
+          value: "database"
+        - name: CONTRAIL_STATUS_IMAGE
+          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+        envFrom:
+        - configMapRef:
+            name: contrail-analyticsdb-config
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /host/usr/bin
+          name: host-usr-bin
+        - mountPath: /host/var/lib
+          name: host-var-lib
       containers:
+      - name: contrail-analyticsdb-nodemgr
+        image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        securityContext:
+          privileged: true
+        envFrom:
+        - configMapRef:
+            name: env
+        - configMapRef:
+            name: nodemgr-config
+        - configMapRef:
+            name: contrail-analyticsdb-config
+        env:
+        - name: NODE_TYPE
+          value: database
+        - name: DATABASE_NODEMGR__DEFAULTS__minimum_diskGB
+          value: "2"
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: analyticsdb-logs
+        - mountPath: /mnt
+          name: docker-unix-socket
       - name: contrail-analyticsdb
         image: "{{CONTRAIL_REGISTRY}}/contrail-external-cassandra:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -326,6 +268,22 @@ spec:
           name: analyticsdb-data
         - mountPath: /var/log/cassandra
           name: analyticsdb-logs
+      - name: contrail-analytics-query-engine
+        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-query-engine:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        securityContext:
+          privileged: true
+        env:
+        - name: NODE_TYPE
+          value: database
+        envFrom:
+        - configMapRef:
+            name: env
+        - configMapRef:
+            name: analyticszookeeperenv
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: analyticsdb-logs
       imagePullSecrets:
       - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
@@ -335,6 +293,15 @@ spec:
       - name: analyticsdb-logs
         hostPath:
           path: /var/log/contrail/analyticsdb
+      - name: docker-unix-socket
+        hostPath:
+          path: /var/run
+      - name: host-usr-bin
+        hostPath:
+          path: /usr/bin
+      - name: host-var-lib
+        hostPath:
+          path: /var/lib
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -388,88 +355,6 @@ spec:
       - name: configdb-logs
         hostPath:
           path: /var/log/contrail/configdb
----
-apiVersion: extensions/v1beta1
-kind: DaemonSet
-metadata:
-  name: contrail-database-nodemgr
-  namespace: kube-system
-  labels:
-    app: contrail-database-nodemgr
-spec:
-  template:
-    metadata:
-      labels:
-        app: contrail-database-nodemgr
-    spec:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: "node-role.opencontrail.org/analyticsdb"
-                operator: Exists
-      tolerations:
-      - key: node-role.kubernetes.io/master
-        operator: Exists
-        effect: NoSchedule
-      - key: node.kubernetes.io/not-ready
-        operator: Exists
-        effect: NoSchedule
-      hostNetwork: true
-      initContainers:
-      - name: contrail-node-init
-        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
-        imagePullPolicy: ""
-        securityContext:
-          privileged: true
-        env:
-        - name: CONTRAIL_STATUS_IMAGE
-          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
-        envFrom:
-        - configMapRef:
-            name: env
-        volumeMounts:
-        - mountPath: /host/usr/bin
-          name: host-usr-bin
-      containers:
-      - name: contrail-database-nodemgr
-        image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
-        imagePullPolicy: ""
-        envFrom:
-        - configMapRef:
-            name: env
-        - configMapRef:
-            name: nodemgr-config
-        - configMapRef:
-            name: contrail-analyticsdb-config
-        env:
-        - name: NODE_TYPE
-          value: database
-        - name: DATABASE_NODEMGR__DEFAULTS__minimum_diskGB
-          value: "2"
-# todo: there is type Socket in new kubernetes, it is possible to use full
-# path:
-# hostPath:
-#   path: /var/run/docker.sock and
-#   type: Socket
-        volumeMounts:
-        - mountPath: /var/log/contrail
-          name: analyticsdb-logs
-        - mountPath: /mnt
-          name: docker-unix-socket
-      imagePullSecrets:
-      - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
-      volumes:
-      - name: analyticsdb-logs
-        hostPath:
-          path: /var/log/contrail/analyticsdb
-      - name: docker-unix-socket
-        hostPath:
-          path: /var/run
-      - name: host-usr-bin
-        hostPath:
-          path: /usr/bin
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -617,54 +502,6 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: analytics-logs
-      - name: contrail-analytics-alarm-gen
-        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-alarm-gen:{{CONTRAIL_CONTAINER_TAG}}"
-        imagePullPolicy: ""
-        envFrom:
-        - configMapRef:
-            name: env
-        volumeMounts:
-        - mountPath: /var/log/contrail
-          name: analytics-logs
-        env:
-        - name: NODE_TYPE
-          value: analytics-alarm
-      - name: contrail-analytics-query-engine
-        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-query-engine:{{CONTRAIL_CONTAINER_TAG}}"
-        imagePullPolicy: ""
-        envFrom:
-        - configMapRef:
-            name: env
-        volumeMounts:
-        - mountPath: /var/log/contrail
-          name: analytics-logs
-        env:
-        - name: NODE_TYPE
-          value: database
-      - name: contrail-analytics-snmp-collector
-        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-snmp-collector:{{CONTRAIL_CONTAINER_TAG}}"
-        imagePullPolicy: ""
-        envFrom:
-        - configMapRef:
-            name: env
-        volumeMounts:
-        - mountPath: /var/log/contrail
-          name: analytics-logs
-        env:
-        - name: NODE_TYPE
-          value: analytics-snmp
-      - name: contrail-analytics-snmp-topology
-        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-snmp-topology:{{CONTRAIL_CONTAINER_TAG}}"
-        imagePullPolicy: ""
-        envFrom:
-        - configMapRef:
-            name: env
-        volumeMounts:
-        - mountPath: /var/log/contrail
-          name: analytics-logs
-        env:
-        - name: NODE_TYPE
-          value: analytics-snmp
       - name: contrail-analytics-nodemgr
         image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -694,6 +531,237 @@ spec:
       - name: analytics-logs
         hostPath:
           path: /var/log/contrail/analytics
+      - name: docker-unix-socket
+        hostPath:
+          path: /var/run
+      - name: host-usr-bin
+        hostPath:
+          path: /usr/bin
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: contrail-analytics-snmp
+  namespace: kube-system
+  labels:
+    app: contrail-analytics-snmp
+spec:
+  template:
+    metadata:
+      labels:
+        app: contrail-analytics-snmp
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: "node-role.opencontrail.org/analytics_snmp"
+                operator: Exists
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      - key: node.kubernetes.io/not-ready
+        operator: Exists
+        effect: NoSchedule
+      hostNetwork: true
+      initContainers:
+      - name: contrail-node-init
+        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        env:
+        - name: NODE_TYPE
+          value: "analytics-snmp"
+        - name: CONTRAIL_STATUS_IMAGE
+          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+        envFrom:
+        - configMapRef:
+            name: env
+        - configMapRef:
+            name: contrail-analyticsdb-config
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /host/usr/bin
+          name: host-usr-bin
+        - mountPath: /host/var/lib
+          name: host-var-lib
+      containers:
+      - name: contrail-analytics-snmp-collector
+        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-snmp-collector:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        securityContext:
+          privileged: true
+        envFrom:
+        - configMapRef:
+            name: env
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: analytics-snmp-logs
+        env:
+        - name: NODE_TYPE
+          value: analytics-snmp
+      - name: contrail-analytics-snmp-topology
+        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-snmp-topology:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        securityContext:
+          privileged: true
+        envFrom:
+        - configMapRef:
+            name: env
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: analytics-snmp-logs
+        env:
+        - name: NODE_TYPE
+          value: analytics-snmp
+      - name: contrail-analytics-snmp-nodemgr
+        image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        securityContext:
+          privileged: true
+        envFrom:
+        - configMapRef:
+            name: env
+        - configMapRef:
+            name: nodemgr-config
+        - configMapRef:
+            name: contrail-analyticsdb-config
+        env:
+        - name: NODE_TYPE
+          value: analytics-snmp
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: analytics-snmp-logs
+        - mountPath: /mnt
+          name: docker-unix-socket
+      imagePullSecrets:
+      - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
+      volumes:
+      - name: analytics-snmp-logs
+        hostPath:
+          path: /var/log/contrail/analytics-snmp
+      - name: host-var-lib
+        hostPath:
+          path: /var/lib
+      - name: docker-unix-socket
+        hostPath:
+          path: /var/run
+      - name: host-usr-bin
+        hostPath:
+          path: /usr/bin
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: contrail-analytics-alarm
+  namespace: kube-system
+  labels:
+    app: contrail-analytics-alarm
+spec:
+  template:
+    metadata:
+      labels:
+        app: contrail-analytics-alarm
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: "node-role.opencontrail.org/analytics_alarm"
+                operator: Exists
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      - key: node.kubernetes.io/not-ready
+        operator: Exists
+        effect: NoSchedule
+      hostNetwork: true
+      initContainers:
+      - name: contrail-node-init
+        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        env:
+        - name: NODE_TYPE
+          value: "analytics-alarm"
+        - name: CONTRAIL_STATUS_IMAGE
+          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+        envFrom:
+        - configMapRef:
+            name: env
+        - configMapRef:
+            name: contrail-analyticsdb-config
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /host/usr/bin
+          name: host-usr-bin
+        - mountPath: /host/var/lib
+          name: host-var-lib
+      containers:
+      - name: kafka
+        image: "{{ CONTRAIL_REGISTRY }}/contrail-external-kafka:{{ CONTRAIL_CONTAINER_TAG }}"
+        imagePullPolicy: "IfNotPresent"
+        securityContext:
+          privileged: true
+        env:
+        - name: NODE_TYPE
+          value: analytics-alarm
+        - name: KAFKA_NODES
+          value: {{ KAFKA_NODES}}
+        envFrom:
+        - configMapRef:
+            name: env
+        - configMapRef:
+            name: analyticszookeeperenv
+      - name: contrail-analytics-alarm-gen
+        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-alarm-gen:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        securityContext:
+          privileged: true
+        envFrom:
+        - configMapRef:
+            name: env
+        - configMapRef:
+            name: analyticszookeeperenv
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: analytics-alarm-logs
+        env:
+        - name: NODE_TYPE
+          value: analytics-alarm
+      - name: contrail-analytics-alarm-nodemgr
+        image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        securityContext:
+          privileged: true
+        envFrom:
+        - configMapRef:
+            name: env
+        - configMapRef:
+            name: contrail-analyticsdb-config
+        - configMapRef:
+            name: nodemgr-config
+        env:
+        - name: NODE_TYPE
+          value: analytics-alarm
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: analytics-alarm-logs
+        - mountPath: /mnt
+          name: docker-unix-socket
+      imagePullSecrets:
+      - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
+      volumes:
+      - name: analytics-alarm-logs
+        hostPath:
+          path: /var/log/contrail/analytics-alarm
+      - name: host-var-lib
+        hostPath:
+          path: /var/lib
       - name: docker-unix-socket
         hostPath:
           path: /var/run
