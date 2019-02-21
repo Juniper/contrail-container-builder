@@ -177,9 +177,18 @@ vrouter)
   ;;
 
 toragent)
+  params=''
+  params="$params --router_type tor-agent  --disable_vhost_vmi"
+  provision_node provision_vrouter.py ${TOR_TSN_IP} ${TOR_AGENT_NAME} $params
 
-  #TODO: add provisioning code
-  echo "TODO: add provisioning code for toragent"
+  tor_switch_params=''
+  host_name=$(resolve_hostname_by_ip $TOR_TSN_IP)
+  tor_switch_params="$tor_switch_params --device_name ${TOR_NAME} --vendor_name ${TOR_VENDOR_NAME} --device_mgmt_ip ${TOR_IP} --device_tunnel_ip ${TOR_TUNNEL_IP}"
+  tor_switch_params="$tor_switch_params --device_tor_agent ${TOR_AGENT_NAME} --device_tsn  ${TOR_TSN_NAME:-${host_name:-${DEFAULT_HOSTNAME}}} "
+  if [[ -n "${TOR_PRODUCT_NAME}" ]]; then
+    tor_switch_params="$tor_switch_params --product_name ${TOR_PRODUCT_NAME}"
+  fi
+  provision provision_physical_device.py $tor_switch_params
 
   ;;
 
