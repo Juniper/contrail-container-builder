@@ -18,6 +18,15 @@ else
   config_api_certs_config=''
 fi
 
+if is_enabled ${NEUTRON_FWAAS_ENABLE} ; then
+  read -r -d '' neutron_section << EOM || true
+[NEUTRON]
+fwaas_enabled=True
+EOM
+else
+  neutron_section=''
+fi
+
 cat > /etc/contrail/contrail-api.conf << EOM
 [DEFAULTS]
 listen_ip_addr=${host_ip}
@@ -48,6 +57,8 @@ collectors=$COLLECTOR_SERVERS
 $sandesh_client_config
 
 $collector_stats_config
+
+$neutron_section
 EOM
 
 add_ini_params_from_env API /etc/contrail/contrail-api.conf
