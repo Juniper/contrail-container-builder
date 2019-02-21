@@ -384,3 +384,6 @@ EOM
 else
   toragent_ssl_config=''
 fi
+
+#fwaas options
+NEUTRON_FWAAS_ENABLE=${FWAAS_ENABLE:-False}
