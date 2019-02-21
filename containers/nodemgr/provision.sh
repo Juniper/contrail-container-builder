@@ -89,6 +89,12 @@ database)
   provision_node provision_database_node.py $host_ip ${host_name:-$DEFAULT_HOSTNAME}
   ;;
 
+config-database)
+  host_ip=$(get_listen_ip_for_node CONFIGDB)
+  host_name=$(resolve_hostname_by_ip $host_ip)
+  provision_node provision_config_database_node.py $host_ip ${host_name:-$DEFAULT_HOSTNAME}
+  ;;
+
 analytics)
   host_ip=$(get_listen_ip_for_node ANALYTICS)
   host_name=$(resolve_hostname_by_ip $host_ip)
