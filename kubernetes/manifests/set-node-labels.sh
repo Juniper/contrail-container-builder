@@ -6,7 +6,7 @@
 
 label_prefix="node-role.opencontrail.org/"
 
-declare -a pod_types=( CONFIG CONTROL WEBUI ANALYTICS AGENT CONFIGDB ANALYTICSDB )
+declare -a pod_types=( CONFIG CONTROL WEBUI ANALYTICS AGENT CONFIGDB ANALYTICSDB ANALYTICS_ALARM ANALYTICS_SNMP)
 
 manifest_dir="${BASH_SOURCE%/*}"
 if [[ ! -d "$manifest_dir" ]]; then manifest_dir="$PWD"; fi
