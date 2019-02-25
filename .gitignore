@@ -12,4 +12,6 @@ contrail.gpg
 contrail.gpg.md5
 contrailtpc.repo
 contrailtpc.repo.md5
-__*
+.project
+.pydevproject
+*.pyc
