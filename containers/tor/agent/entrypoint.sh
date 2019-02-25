@@ -2,6 +2,15 @@
 
 source /common.sh
 
+toragent_ssl_config=''
+if [ "$TOR_OVS_PROTOCOL" == "pssl" ]; then
+  read -r -d '' toragent_ssl_config << EOM || true
+ssl_privkey=$TORAGENT_SSL_KEYFILE
+ssl_cert=$TORAGENT_SSL_CERTFILE
+ssl_cacert=$TORAGENT_SSL_CACERTFILE
+EOM
+fi
+
 echo "INFO: Preparing /etc/contrail/contrail-tor-agent.conf"
 cat > /etc/contrail/contrail-tor-agent.conf << EOM
 [CONTROL-NODE]
