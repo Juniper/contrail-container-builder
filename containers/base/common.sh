@@ -361,7 +361,7 @@ CONFIGURE_IPTABLES=${CONFIGURE_IPTABLES:-'false'}
 # Tor Agent OVSDB keepalive timer in milli seconds
 TOR_AGENT_OVS_KA=${TOR_AGENT_OVS_KA:-'10000'}
 TOR_TYPE=${TOR_TYPE:-'ovs'}
-TORAGENT_SSL_ENABLE=${TORAGENT_SSL_ENABLE:-False}
+TOR_OVS_PROTOCOL=${TOR_OVS_PROTOCOL:-'tcp'}
 TORAGENT_SSL_CERTFILE=${TORAGENT_SSL_CERTFILE:-${SERVER_CERTFILE}}
 TORAGENT_SSL_KEYFILE=${TORAGENT_SSL_KEYFILE:-${SERVER_KEYFILE}}
 TORAGENT_SSL_CACERTFILE=${TORAGENT_SSL_CACERTFILE:-${SERVER_CA_CERTFILE}}
@@ -373,16 +373,6 @@ if [[ -z ${TSN_AGENT_MODE+x} ]]; then
   else
     export TSN_AGENT_MODE=""
   fi
-fi
-
-if is_enabled ${TORAGENT_SSL_ENABLE} ; then
-  read -r -d '' toragent_ssl_config << EOM || true
-ssl_privkey=$TORAGENT_SSL_KEYFILE
-ssl_cert=$TORAGENT_SSL_CERTFILE
-ssl_cacert=$TORAGENT_SSL_CACERTFILE
-EOM
-else
-  toragent_ssl_config=''
 fi
 
 #fwaas options
