@@ -1,0 +1,7 @@
+bottle==0.12.16
+# replaced by /usr/lib64/python2.7/ConfigParser.py
+# configparser==3.7.1
+gevent==1.4.0
+greenlet==0.4.15
+netaddr==0.7.19
+simplejson==3.16.0
