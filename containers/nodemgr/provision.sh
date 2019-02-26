@@ -114,7 +114,7 @@ analytics-alarm)
   ;;
 
 control)
-  if [[ "$BGP_AUTO_MESH" == 'true' ]] ; then
+  if is_enabled $BGP_AUTO_MESH ; then
     ibgp_auto_mesh_opt='--ibgp_auto_mesh'
   else
     ibgp_auto_mesh_opt='--no_ibgp_auto_mesh'
