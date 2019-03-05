@@ -4,7 +4,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-controller-config-base:${CONTRAIL_CONTAINER_T
 
 ARG CONTAINER_NAME
 
-RUN yum install -y python-neutron-lib && \
+RUN yum install --cacheonly -y python-neutron-lib && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 

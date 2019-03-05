@@ -4,7 +4,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-vrouter-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
 
-RUN yum install -y contrail-vrouter-dpdk-init && \
+RUN yum install --cacheonly -y contrail-vrouter-dpdk-init && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 

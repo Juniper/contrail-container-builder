@@ -7,8 +7,8 @@ ARG CONTAINER_NAME
 # this copy should be before yum install
 COPY *.repo /etc/yum.repos.d/
 
-RUN yum update -y && \
-    yum install --downloadonly -y mlnx-ofed-dpdk-upstream-libs
+RUN yum makecache && \
+    yum install --cacheonly --downloadonly -y mlnx-ofed-dpdk-upstream-libs
 
 COPY entrypoint.sh /
 

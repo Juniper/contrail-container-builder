@@ -16,12 +16,14 @@ RUN YUM_ENABLE_REPOS=$(echo $YUM_ENABLE_REPOS | tr -d '"') && \
         yum-config-manager --enable $YUM_ENABLE_REPOS ; \
         yum clean metadata ; \
     fi && \
+    yum makecache && \
     yum update -y && \
-    yum install -y yum-plugin-priorities iproute less hostname && \
+    yum install --cacheonly -y yum-plugin-priorities iproute less hostname && \
     GENERAL_EXTRA_RPMS=$(echo $GENERAL_EXTRA_RPMS | tr -d '"' | tr ',' ' ') && \
     if [[ -n "$GENERAL_EXTRA_RPMS" ]] ; then \
         echo "INFO: contrail-general-base: install $GENERAL_EXTRA_RPMS" && \
         yum install -y $GENERAL_EXTRA_RPMS ; \
+        yum makecache ; \
     fi
 
 COPY *.sh /

@@ -4,7 +4,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
 
-RUN yum install -y contrail-vrouter-agent python-contrail-vrouter-api && \
+RUN yum install --cacheonly -y contrail-vrouter-agent python-contrail-vrouter-api && \
     yum clean all && \
     rm -rf /var/cache/yum
 

@@ -2,7 +2,7 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
-RUN yum install -y nodejs-0.10.35-1contrail.el7 contrail-web-controller contrail-web-core && \
+RUN yum install --cacheonly -y nodejs-0.10.35-1contrail.el7 contrail-web-controller contrail-web-core && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 

@@ -4,7 +4,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
 
-RUN yum install -y python2-docker PyYAML && \
+RUN yum install --cacheonly -y python2-docker PyYAML && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 

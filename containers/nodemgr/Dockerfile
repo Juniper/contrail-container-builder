@@ -5,7 +5,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 ARG CONTAINER_NAME
 
 # install chrony, ntp and iputils-clockdiff to enable checking time sync by nodemgr
-RUN yum install -y contrail-nodemgr python2-docker chrony ntp && \
+RUN yum install --cacheonly -y contrail-nodemgr python2-docker chrony ntp && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 

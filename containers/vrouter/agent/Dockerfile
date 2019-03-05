@@ -4,7 +4,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-vrouter-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
 
-RUN yum install -y dhclient NetworkManager contrail-vrouter-agent haproxy libvirt-client \
+RUN yum install --cacheonly -y dhclient NetworkManager contrail-vrouter-agent haproxy libvirt-client \
       python-opencontrail-vrouter-netns python-contrail-vrouter-api && \
     yum clean all && \
     rm -rf /var/cache/yum && \

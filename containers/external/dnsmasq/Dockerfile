@@ -7,7 +7,7 @@ ARG CONTAINER_NAME
 COPY *.sh /
 
 RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done' && \
-    yum install -y dnsmasq && \
+    yum install --cacheonly -y dnsmasq && \
     echo "conf-dir=/etc/dnsmasq,*.conf" > /etc/dnsmasq.conf && \
     yum clean all -y && \
     rm -rf /var/cache/yum

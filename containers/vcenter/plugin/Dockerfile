@@ -4,7 +4,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
 
-RUN yum install -y java-1.7.0-openjdk \
+RUN yum install --cacheonly -y java-1.7.0-openjdk \
     libcontrail-java-api libcontrail-vijava \
     libcontrail-vrouter-java-api contrail-vcenter-plugin \
     yum clean all && \

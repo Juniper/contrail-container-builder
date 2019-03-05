@@ -4,7 +4,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
 
-RUN yum install -y ironic-notification-manager && \
+RUN yum install --cacheonly -y ironic-notification-manager && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 

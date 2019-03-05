@@ -4,9 +4,9 @@ FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
 
-RUN yum install -y python-eventlet python-setuptools python-kazoo \
-                   python-bitarray python-pycassa python-bitstring \
-                   contrail-mesos-manager python-enum34 && \
+RUN yum install --cacheonly -y python-eventlet python-setuptools python-kazoo \
+        python-bitarray python-pycassa python-bitstring \
+        contrail-mesos-manager python-enum34 && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 

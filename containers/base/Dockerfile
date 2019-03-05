@@ -12,8 +12,9 @@ RUN mkdir -p -m 777 /var/crashes && \
     if [[ -n "$BASE_EXTRA_RPMS" ]] ; then \
         echo "INFO: contrail-base: install $BASE_EXTRA_RPMS" ; \
         yum install -y $BASE_EXTRA_RPMS ; \
+        yum makecache ; \
     fi && \
-    yum install -y contrail-lib contrail-setup contrail-utils python-contrail && \
+    yum install --cacheonly -y contrail-lib contrail-setup contrail-utils python-contrail && \
     ldconfig
 
 COPY *.sh /

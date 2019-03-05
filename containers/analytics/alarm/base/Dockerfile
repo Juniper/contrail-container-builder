@@ -3,7 +3,7 @@ ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 RUN sed -e '/^tsflags=nodocs/d' -i /etc/yum.conf && \
-    yum install -y contrail-analytics python-sqlalchemy && \
+    yum install --cacheonly -y contrail-analytics python-sqlalchemy && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 

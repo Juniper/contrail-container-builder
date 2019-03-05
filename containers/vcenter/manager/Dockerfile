@@ -4,7 +4,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
 
-RUN yum install -y contrail-vcenter-manager && \
+RUN yum install --cacheonly -y contrail-vcenter-manager && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 

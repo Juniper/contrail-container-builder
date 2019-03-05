@@ -10,7 +10,7 @@ ENV KAFKA_DIR=/opt/$KAFKA_DISTRO_NAME \
     LOG_DIR=/var/log/kafka
 
 
-RUN yum install -y java java-1.8.0-openjdk-devel iproute openssl && \
+RUN yum install --cacheonly -y java java-1.8.0-openjdk-devel iproute openssl && \
     curl -o $KAFKA_DISTRO_NAME.tgz http://archive.apache.org/dist/kafka/0.9.0.1/$KAFKA_DISTRO_NAME.tgz && \
     tar -xvf $KAFKA_DISTRO_NAME.tgz && \
     mkdir -p $KAFKA_CONF_DIR && \

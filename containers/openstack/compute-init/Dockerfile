@@ -4,7 +4,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
 
-RUN yum install -y contrail-vrouter-agent contrail-nova-vif && \
+RUN yum install --cacheonly -y contrail-vrouter-agent contrail-nova-vif && \
     mkdir -p /opt/contrail/bin && \
     cp /usr/bin/vrouter-port-control /opt/contrail/bin && \
     yum remove -y contrail-vrouter-agent && \
