@@ -79,7 +79,7 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: "node-role.kubernetes.io/master"
+              - key: "node-role.opencontrail.org/controller"
                 operator: Exists
       tolerations:
       - key: node-role.kubernetes.io/master
