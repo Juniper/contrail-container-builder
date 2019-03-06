@@ -181,7 +181,7 @@ function add_ini_params_from_env() {
 function get_iface_for_vrouter_from_control() {
   local node_ip=`echo $VROUTER_GATEWAY`
   if [[ -z "$node_ip" ]] ; then
-    node_ip=`echo $CONTROL_NODES | cut -d ',' -f 1`
+    node_ip=`python -c "import socket; print(socket.gethostbyname('$CONTROL_NODES'.split(',')[0]))"`
   fi
   local iface=$(ip route get $node_ip | grep -o "dev.*" | awk '{print $2}')
   if [[ "$iface" == 'lo' ]] ; then
