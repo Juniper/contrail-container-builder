@@ -17,7 +17,7 @@ http_server_ip=$(get_introspect_listen_ip_for_node ANALYTICS)
 log_file=$LOG_DIR/contrail-topology.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
-analytics_api=${TOPOLOGY_ANALYTICS_API_SERVERS:-127.0.0.1:$ANALYTICS_API_PORT}
+analytics_api=$ANALYTICS_SERVERS
 collectors=$COLLECTOR_SERVERS
 zookeeper=$ZOOKEEPER_SERVERS
 
