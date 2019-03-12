@@ -3,25 +3,16 @@ ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
-ARG KAFKA_DISTRO_NAME=kafka_2.11-0.9.0.1
+ARG KAFKA_DISTRO_NAME=kafka
 
 ENV KAFKA_DIR=/opt/$KAFKA_DISTRO_NAME \
     KAFKA_CONF_DIR=/opt/$KAFKA_DISTRO_NAME/config \
     LOG_DIR=/var/log/kafka
 
 
-RUN yum install -y java java-1.8.0-openjdk-devel iproute openssl && \
-    curl -o $KAFKA_DISTRO_NAME.tgz http://archive.apache.org/dist/kafka/0.9.0.1/$KAFKA_DISTRO_NAME.tgz && \
-    tar -xvf $KAFKA_DISTRO_NAME.tgz && \
-    mkdir -p $KAFKA_CONF_DIR && \
-    mv $KAFKA_DISTRO_NAME/* $KAFKA_DIR && \
-    rm -f $KAFKA_DISTRO_NAME.tgz && \
+RUN yum install -y java java-1.8.0-openjdk-devel iproute openssl kafka && \
     yum clean all -y && \
-    rm -rf /var/cache/yum && \
-    groupadd -f -g 1011 kafka && adduser -M -g kafka kafka && \
-    mkdir -p $LOG_DIR && \
-    chown -R kafka:kafka $LOG_DIR && \
-    chown -R kafka:kafka $KAFKA_DIR
+    rm -rf /var/cache/yum
 
 COPY *.sh /
 RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done'
