@@ -49,7 +49,7 @@ KAFKA_STORE_PASSWORD=${KAFKA_STORE_PASSWORD:-c0ntrail123}
 CONFIG="$KAFKA_CONF_DIR/server.properties"
 sed -i "s/^broker.id=.*$/broker.id=$KAFKA_BROKER_ID/g" ${CONFIG}
 sed -i "s/#port=.*$/port=$KAFKA_LISTEN_PORT/g" ${CONFIG}
-if [[ ${KAFKA_SSL_ENABLE} == "False" ]] ; then
+if ! is_enabled ${KAFKA_SSL_ENABLE} ; then
     sed -i "s/^listeners=.*$/listeners=PLAINTEXT:\/\/$KAFKA_LISTEN_ADDRESS:$KAFKA_LISTEN_PORT/g" ${CONFIG}
 else
     export RANDFILE=${KAFKA_DIR}/.rnd
