@@ -359,6 +359,7 @@ CONFIGURE_IPTABLES=${CONFIGURE_IPTABLES:-'false'}
 
 # Tor agent options
 # Tor Agent OVSDB keepalive timer in milli seconds
+TSN_SSL_ENABLE=${TSN_SSL_ENABLE:-False}
 TOR_AGENT_OVS_KA=${TOR_AGENT_OVS_KA:-'10000'}
 TOR_TYPE=${TOR_TYPE:-'ovs'}
 TOR_OVS_PROTOCOL=${TOR_OVS_PROTOCOL:-'tcp'}

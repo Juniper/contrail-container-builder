@@ -15,7 +15,8 @@ function is_ssl_enabled() {
   is_enabled "$SSL_ENABLE" \
    || is_enabled "$XMPP_SSL_ENABLE" \
    || is_enabled "$INTROSPECT_SSL_ENABLE" \
-   || is_enabled "$SANDESH_SSL_ENABLE"
+   || is_enabled "$SANDESH_SSL_ENABLE" \
+   || is_enabled "$TSN_SSL_ENABLE"
 }
 
 function wait_files() {
@@ -49,6 +50,9 @@ function wait_certs_if_ssl_enabled() {
   fi
   if [[ "$SERVER_KEYFILE" != "$SANDESH_CERTFILE" ]] ; then
     is_enabled $SANDESH_SSL_ENABLE && wait_files "$SANDESH_CERTFILE" "$SANDESH_KEYFILE"
+  fi
+  if [[ "$SERVER_KEYFILE" != "$TORAGENT_SSL_CERTFILE" ]] ; then
+    is_enabled $TSN_SSL_ENABLE && wait_files "$TORAGENT_SSL_CERTFILE" "$TORAGENT_SSL_KEYFILE"
   fi
 }
 

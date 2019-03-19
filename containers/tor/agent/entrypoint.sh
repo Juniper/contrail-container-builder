@@ -2,6 +2,8 @@
 
 source /common.sh
 
+pre_start_init
+
 toragent_ssl_config=''
 if [ "$TOR_OVS_PROTOCOL" == "pssl" ]; then
   read -r -d '' toragent_ssl_config << EOM || true
