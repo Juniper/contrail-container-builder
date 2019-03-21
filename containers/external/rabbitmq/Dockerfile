@@ -2,7 +2,7 @@ FROM rabbitmq:3.6.10-management
 
 ARG CONTAINER_NAME
 
-RUN apt-get update && apt-get -fy install bind9-host
+RUN apt-get update || apt-get -fy install apt-transport-https bind9-host && apt-get update
 
 COPY *.sh hostname_to_ip /
 RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done'
