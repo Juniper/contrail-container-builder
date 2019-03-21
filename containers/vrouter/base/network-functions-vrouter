@@ -187,6 +187,20 @@ function stop_docker_container() {
     fi
 }
 
+function start_docker_container() {
+    local container=$1
+    [ -z "$container" ] && { echo "WARNING: container id/name is not provided" && return 1 ; }
+    local status=''
+    if ! status=$(docker inspect -f "{{ .State.Status }}" "$container" 2>/dev/null) ; then
+        echo "WARNING: there is not created container $container"
+        return 1
+    fi
+    if [[ ${status,,} != 'running' ]]  ; then
+        docker start "$container"
+    fi
+    return 0
+}
+
 function remove_docker_container() {
     local container=$1
     local signal=$2
@@ -210,4 +224,68 @@ function wait_vhost0() {
     done
     echo "INFO: vhost0 is not ready."
     return 1
+}
+
+# Get dhcp client for physical interface
+# we need this in case of clearing
+function get_dhcp_client_pids() {
+    local pids=$(ps -A -o pid,cmd | grep dhclient | grep ${1} | grep -v grep | awk '{print $1}')
+    echo $pids
+}
+
+function kill_dhcp_clients() {
+    local phys_int=$1
+    local dhcpcl_id=$(get_dhcp_client_pids ${phys_int})
+    if [ -n "$dhcpcl_id" ] ; then
+        echo "INFO: kill dhclient for $phys_int"
+        kill -9 $dhcpcl_id
+    fi
+}
+
+function prepare_ifcfg() {
+    local phys_int=$1
+    local bind_type=$2
+    local bind_int=$3
+    local netscript_dir='/etc/sysconfig/network-scripts'
+    if [[ ! -e "${netscript_dir}/ifcfg-${phys_int}" && ! -e "${netscript_dir}/ifcfg-vhost0" ]] ; then
+        return 0
+    fi
+
+    local ret=0
+    echo "INFO: create ifcfg-vhost0 and patch ifcfg-${phys_int}"
+    pushd "$netscript_dir"
+    if [[ -f route-${phys_int} ]] ; then
+        if [[ ! -f contrail.org.route-${phys_int} ]] ; then
+            mv route-${phys_int} contrail.org.route-${phys_int}
+        fi
+        if [[ ! -f route-vhost0 ]] ; then
+            sed "s/${phys_int}/vhost0/g" contrail.org.route-${phys_int} > route-vhost0.tmp
+            mv route-vhost0.tmp route-vhost0
+        fi
+    fi
+    if [[ -f "ifcfg-${phys_int}" ]] ; then
+        if [[ ! -f "contrail.org.ifcfg-${phys_int}" ]] ; then
+            /bin/cp -f ifcfg-${phys_int} contrail.org.ifcfg-${phys_int}
+        fi
+        local bp=$(grep '^BOOTPROTO' "ifcfg-${phys_int}" | cut -s -d '=' -f 2)
+        local nm=$(grep '^NM_CONTROLLED' "ifcfg-${phys_int}" | cut -s -d '=' -f 2)
+        if [[ "${bp,,}" == 'dhcp' || "${nm,,}" == 'yes' ]] ; then
+            ret=1
+        fi
+        # always recreate ifcfg-${phys_int} becuase cloud-init script restores it on reboot 
+        sed -r "/(DEVICE|TYPE|ONBOOT|MACADDR|HWADDR|BONDING|SLAVE|VLAN|MTU)/! s/^[^#].*/#commented_by_contrail& /" contrail.org.ifcfg-${phys_int} > ifcfg-${phys_int}.tmp
+        echo 'NM_CONTROLLED=no' >> ifcfg-${phys_int}.tmp
+        echo 'BOOTPROTO=none' >> ifcfg-${phys_int}.tmp
+        mv ifcfg-${phys_int}.tmp ifcfg-${phys_int}
+    fi
+    if [[ ! -f ifcfg-vhost0 ]] ; then
+        sed "s/${phys_int}/vhost0/g" contrail.org.ifcfg-${phys_int} > ifcfg-vhost0.tmp
+        sed -ri '/(TYPE|NM_CONTROLLED|MACADDR|HWADDR|BONDING|SLAVE|VLAN)/d' ifcfg-vhost0.tmp
+        echo "TYPE=${bind_type}" >> ifcfg-vhost0.tmp
+        echo 'NM_CONTROLLED=no' >> ifcfg-vhost0.tmp
+        echo "BIND_INT=${bind_int}" >> ifcfg-vhost0.tmp
+        mv ifcfg-vhost0.tmp ifcfg-vhost0
+    fi
+    popd
+    return $ret
 }
