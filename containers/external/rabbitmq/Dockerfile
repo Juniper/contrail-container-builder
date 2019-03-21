@@ -2,7 +2,11 @@ FROM rabbitmq:3.6.10
 
 ARG CONTAINER_NAME
 
-RUN apt-get update && apt-get -fy install bind9-host
+# due to changes in debian repos apt-transport-https is needed for
+# update but it can't be installed without update. thus error in
+# first update should be ignored.
+RUN apt-get update || /bin/true && \
+         apt-get -fy install bind9-host
 
 COPY contrail-entrypoint.sh /
 
