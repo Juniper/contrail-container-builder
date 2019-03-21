@@ -535,9 +535,12 @@ function init_vhost0() {
                 mv route-vhost0.tmp route-vhost0
             fi
         fi
-        if [[ ! -f "contrail.org.ifcfg-${phys_int}" && -f "ifcfg-${phys_int}" ]] ; then
-            /bin/cp -f ifcfg-${phys_int} contrail.org.ifcfg-${phys_int}
-            sed -r "/(DEVICE|TYPE|ONBOOT|MACADDR|HWADDR|BONDING|SLAVE|VLAN|MTU)/! s/^[^#].*/#commented_by_contrail& /" ifcfg-${phys_int} > ifcfg-${phys_int}.tmp
+        if [[ -f "ifcfg-${phys_int}" ]] ; then
+            if [[ ! -f "contrail.org.ifcfg-${phys_int}" ]] ; then
+                /bin/cp -f ifcfg-${phys_int} contrail.org.ifcfg-${phys_int}
+            fi
+            # always recreate ifcfg-${phys_int} becuase cloud-init script restores it on reboot 
+            sed -r "/(DEVICE|TYPE|ONBOOT|MACADDR|HWADDR|BONDING|SLAVE|VLAN|MTU)/! s/^[^#].*/#commented_by_contrail& /" contrail.org.ifcfg-${phys_int} > ifcfg-${phys_int}.tmp
             echo 'NM_CONTROLLED=no' >> ifcfg-${phys_int}.tmp
             echo 'BOOTPROTO=none' >> ifcfg-${phys_int}.tmp
             mv ifcfg-${phys_int}.tmp ifcfg-${phys_int}

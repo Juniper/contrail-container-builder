@@ -187,6 +187,20 @@ function stop_docker_container() {
     fi
 }
 
+function start_docker_container() {
+    local container=$1
+    [ -z "$container" ] && { echo "WARNING: container id/name is not provided" && return 1 ; }
+    local status=''
+    if ! status=$(docker inspect -f "{{ .State.Status }}" "$container" 2>/dev/null) ; then
+        echo "WARNING: there is not created container $container"
+        return 1
+    fi
+    if [[ ${status,,} != 'running' ]]  ; then
+        docker start "$container"
+    fi
+    return 0
+}
+
 function remove_docker_container() {
     local container=$1
     local signal=$2

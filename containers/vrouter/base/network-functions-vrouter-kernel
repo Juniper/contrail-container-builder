@@ -73,6 +73,13 @@ function ifup_init_vhost() {
         addr_to_del=`echo $line | cut -d ' ' -f 1`
         ip address delete $addr_to_del dev $phys_int
     done
+    if start_docker_container $CONTRAIL_VROUTER_AGENT_CONTAINER_NAME ; then
+        # wait till agent initialize vhost0, otherwise do it manually
+        if wait_vhost0 ; then
+            return 0
+        fi
+        echo "WARNING: agen was not able to init vhost0"
+    fi
     create_vhost0 $phys_int $phys_int_mac
 }
 
