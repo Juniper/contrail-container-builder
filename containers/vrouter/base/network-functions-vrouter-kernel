@@ -74,6 +74,7 @@ function ifup_init_vhost() {
         ip address delete $addr_to_del dev $phys_int
     done
     create_vhost0 $phys_int $phys_int_mac
+    start_docker_container $CONTRAIL_VROUTER_AGENT_CONTAINER_NAME
 }
 
 # ifdown interface
