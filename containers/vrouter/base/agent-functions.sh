@@ -447,22 +447,6 @@ function check_vrouter_agent_settings() {
     return 0
 }
 
-# Get dhcp client for physical interface
-# we need this in case of clearing
-function get_dhcp_client_pids() {
-    local pids=$(ps -A -o pid,cmd | grep dhclient | grep ${1} | grep -v grep | awk '{print $1}')
-    echo $pids
-}
-
-function kill_dhcp_clients() {
-    local phys_int=$1
-    local dhcpcl_id=$(get_dhcp_client_pids ${phys_int})
-    if [ -n "$dhcpcl_id" ] ; then
-        echo "INFO: kill dhclient for $phys_int"
-        kill -9 $dhcpcl_id
-    fi
-}
-
 function init_vhost0() {
     # Probe vhost0
     local vrouter_cidr="$(get_cidr_for_nic vhost0)"
@@ -522,30 +506,7 @@ function init_vhost0() {
             ifdown ${phys_int}
             kill_dhcp_clients ${phys_int}
         fi
-        pushd /etc/sysconfig/network-scripts/
-        if [[ ! -f contrail.org.route-${phys_int} && -f route-${phys_int} ]] ; then
-            mv route-${phys_int} contrail.org.route-${phys_int}
-            if [[ ! -f route-vhost0 ]] ; then
-                sed "s/${phys_int}/vhost0/g" contrail.org.route-${phys_int} > route-vhost0.tmp
-                mv route-vhost0.tmp route-vhost0
-            fi
-        fi
-        if [[ ! -f "contrail.org.ifcfg-${phys_int}" && -f "ifcfg-${phys_int}" ]] ; then
-            /bin/cp -f ifcfg-${phys_int} contrail.org.ifcfg-${phys_int}
-            sed -r "/(DEVICE|TYPE|ONBOOT|MACADDR|HWADDR|BONDING|SLAVE|VLAN|MTU)/! s/^[^#].*/#commented_by_contrail& /" ifcfg-${phys_int} > ifcfg-${phys_int}.tmp
-            echo 'NM_CONTROLLED=no' >> ifcfg-${phys_int}.tmp
-            echo 'BOOTPROTO=none' >> ifcfg-${phys_int}.tmp
-            mv ifcfg-${phys_int}.tmp ifcfg-${phys_int}
-        fi
-        if [[ ! -f ifcfg-vhost0 ]] ; then
-            sed "s/${phys_int}/vhost0/g" contrail.org.ifcfg-${phys_int} > ifcfg-vhost0.tmp
-            sed -ri '/(TYPE|NM_CONTROLLED|MACADDR|HWADDR|BONDING|SLAVE|VLAN)/d' ifcfg-vhost0.tmp
-            echo "TYPE=${bind_type}" >> ifcfg-vhost0.tmp
-            echo 'NM_CONTROLLED=no' >> ifcfg-vhost0.tmp
-            echo "BIND_INT=${bind_int}" >> ifcfg-vhost0.tmp
-            mv ifcfg-vhost0.tmp ifcfg-vhost0
-        fi
-        popd
+        prepare_ifcfg $phys_int $bind_type $bind_int || true
         if ! is_dpdk ; then
             ifup ${phys_int} || { echo "ERROR: failed to ifup $phys_int." && ret=1; }
         fi

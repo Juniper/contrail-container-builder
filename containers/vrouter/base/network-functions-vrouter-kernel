@@ -64,6 +64,7 @@ function ifup_init_vhost() {
       parent_dev=`echo $physdev|awk -F"=" '{print $2}'`
       ifup $parent_dev
     fi
+    # up iface to read info from it on next steps
     ifup ${BIND_INT}
     local phys_int_mac=${MACADDR}
     [ -z "$phys_int_mac" ] && phys_int_mac=$(get_iface_mac ${phys_int})
@@ -75,6 +76,12 @@ function ifup_init_vhost() {
         ip address delete $addr_to_del dev $phys_int
     done
     create_vhost0 $phys_int $phys_int_mac
+    if ! prepare_ifcfg $phys_int kernel $phys_int ; then
+        echo "INFO: reinit ${phys_int} to disable NM and dhcp after ifcfg patching"
+        ifdown ${phys_int}
+        kill_dhcp_clients ${phys_int}
+        ifup ${phys_int}
+    fi
 }
 
 # ifdown interface
