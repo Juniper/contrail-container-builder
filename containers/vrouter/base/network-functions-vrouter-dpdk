@@ -201,6 +201,7 @@ function ifup_init_vhost() {
         start_dpdk_container || return 1
         wait_dpdk_start || return 1
         wait_vhost0 || return 1
+        start_docker_container $CONTRAIL_VROUTER_AGENT_CONTAINER_NAME
     fi
 }
 
