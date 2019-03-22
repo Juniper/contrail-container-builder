@@ -80,14 +80,14 @@ function process_container() {
 
   local logfile='build-'$container_name'.log'
   docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} \
+               -t ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag} \
     ${build_arg_opts} -f $docker_file ${opts} $dir |& tee $logfile
   exit_code=${PIPESTATUS[0]}
   if [ ${PIPESTATUS[0]} -eq 0 -a ${CONTRAIL_REGISTRY_PUSH} -eq 1 ]; then
     docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} |& tee -a $logfile
     exit_code=${PIPESTATUS[0]}
-    # temporary solution for current code-base. it will be removed when all other components will be switched to new tags
-    docker tag ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag}
-    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag}
+    # temporary workaround; to be removed when all other components switch to new tags
+    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag} |& tee -a $logfile
   fi
   if [ ${exit_code} -eq 0 ]; then
     rm $logfile
