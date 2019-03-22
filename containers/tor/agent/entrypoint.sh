@@ -2,8 +2,13 @@
 
 source /common.sh
 
+pre_start_init
+
 toragent_ssl_config=''
 if [ "$TOR_OVS_PROTOCOL" == "pssl" ]; then
+  SSL_ENABLE=true \
+  SERVER_CERTFILE="$TORAGENT_SSL_CERTFILE" SERVER_KEYFILE="$TORAGENT_SSL_KEYFILE" \
+  /certs-init.sh
   read -r -d '' toragent_ssl_config << EOM || true
 ssl_privkey=$TORAGENT_SSL_KEYFILE
 ssl_cert=$TORAGENT_SSL_CERTFILE
