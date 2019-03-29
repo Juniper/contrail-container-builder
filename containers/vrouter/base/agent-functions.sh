@@ -10,6 +10,12 @@ function get_default_gateway_for_nic() {
   ip route show dev $nic | grep default | head -n 1 | awk '{print $3}'
 }
 
+function get_default_vrouter_gateway() {
+    local node_ip=$(resolve_1st_control_node_ip)
+    local gw=$(get_gateway_nic_for_ip $node_ip)
+    get_default_gateway_for_nic $gw
+}
+
 function create_vhost_network_functions() {
     local dir=$1
     pushd "$dir"
@@ -428,19 +434,13 @@ function check_vrouter_agent_settings() {
         return 1
     fi
 
-    local iface=`ip route get ${nodes[0]} | grep -o "dev.*" | awk '{print $2}'`
-    if [[ "$iface" == 'lo' ]]; then
-        iface='vhost0'
-    fi
+    local iface=`get_gateway_nic_for_ip ${nodes[0]}`
     if [[ "$iface" != 'vhost0' ]]; then
         echo "WARNING: First control node isn't accessible via vhost0 (or via interface that vhost0 is based on). It's valid for gateway mode and invalid for normal mode."
     fi
     if (( ${#nodes} > 1 )); then
         for node in ${nodes[@]} ; do
-            local cur_iface=`ip route get $node | grep -o "dev.*" | awk '{print $2}'`
-            if [[ "$cur_iface" == 'lo' ]]; then
-                cur_iface='vhost0'
-            fi
+            local cur_iface=`get_gateway_nic_for_ip $node`
             if [[ "$iface" != "$cur_iface" ]]; then
                 echo "ERROR: Control node $node is accessible via different interface ($cur_iface) than first control node ${nodes[0]} ($iface)."
                 echo "ERROR: Please define CONTROL_NODES list correctly."
