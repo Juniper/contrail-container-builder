@@ -27,8 +27,18 @@ function get_server_list() {
   [ -n "$extended_server_list" ] && echo "${extended_server_list::-1}"
 }
 
+function get_gateway_nic_for_ip() {
+    local ip=$1
+    local iface=$(ip route get $ip | grep -o "dev.*" | awk '{print $2}')
+    if [[ "$iface" == 'lo' ]] ; then
+      # ip is belong to this machine
+      iface=$(ip address show | grep "inet .*${ip}" | awk '{print($NF)}')
+    fi
+    echo $iface
+}
+
 function get_default_nic() {
-  ip route get 1 | grep -o "dev.*" | awk '{print $2}'
+  get_gateway_nic_for_ip 1
 }
 
 function get_cidr_for_nic() {

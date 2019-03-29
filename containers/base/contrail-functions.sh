@@ -178,16 +178,22 @@ function add_ini_params_from_env() {
   done
 }
 
+function resolve_host_ip() {
+  local name_or_ip=$1
+  python -c "import socket; print(socket.gethostbyname('$name_or_ip'))"
+}
+
+function resolve_1st_control_node_ip() {
+  local first_item=$(echo $CONTROL_NODES | cut -d ',' -f 1)
+  resolve_host_ip $first_item
+}
+
 function get_iface_for_vrouter_from_control() {
   local node_ip=`echo $VROUTER_GATEWAY`
   if [[ -z "$node_ip" ]] ; then
-    node_ip=`python -c "import socket; print(socket.gethostbyname('$CONTROL_NODES'.split(',')[0]))"`
+    node_ip=$(resolve_1st_control_node_ip)
   fi
-  local iface=$(ip route get $node_ip | grep -o "dev.*" | awk '{print $2}')
-  if [[ "$iface" == 'lo' ]] ; then
-    # ip is belong to this machine
-    iface=`ip address show | grep "inet .*${node_ip}" | awk '{print($NF)}'`
-  fi
+  local iface=$(get_gateway_nic_for_ip $node_ip)
   echo $iface
 }
 
