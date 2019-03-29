@@ -168,6 +168,30 @@ function add_ini_params_from_env() {
   done
 }
 
+function resolve_host_ip() {
+  local name_or_ip=$1
+  python -c "import socket; print(socket.gethostbyname('$name_or_ip'))"
+}
+
+function resolve_1st_control_node_ip() {
+  local first_item=$(echo $CONTROL_NODES | cut -d ',' -f 1)
+  resolve_host_ip $first_item
+}
+
+function get_iface_for_vrouter_from_control() {
+  local node_ip=`echo $VROUTER_GATEWAY`
+  if [[ -z "$node_ip" ]] ; then
+    node_ip=$(resolve_1st_control_node_ip)
+  fi
+  local iface=$(get_gateway_nic_for_ip $node_ip)
+  echo $iface
+}
+
+function get_ip_for_vrouter_from_control() {
+  local iface=$(get_iface_for_vrouter_from_control)
+  get_ip_for_nic $iface
+}
+
 function get_vrouter_physical_iface() {
   local iface=$PHYSICAL_INTERFACE
   if [[ -z "$iface" ]]; then
