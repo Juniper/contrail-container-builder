@@ -5,7 +5,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-controller-config-base:${CONTRAIL_CONTAINER_T
 ARG CONTAINER_NAME
 
 RUN easy_install pip && \
-    pip install "inflection>=0.3.1" "jxmlease>=1.0.1" "junos-eznc>=2.1.7" "timeout_decorator>=0.4.0" "python-jsonschema-objects>=0.3.3" && \
+    pip install "inflection>=0.3.1" "jxmlease>=1.0.1" "junos-eznc>=2.1.7" "timeout_decorator>=0.4.0" "python-jsonschema-objects>=0.3.3" "jsnapy>=1.3.2" && \
     ansible-galaxy install Juniper.junos && \
     yum clean all -y && \
     rm -rf /var/cache/yum
