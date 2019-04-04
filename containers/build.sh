@@ -86,6 +86,7 @@ function process_container() {
     sed -i \
       -e "s|^FROM \${CONTRAIL_REGISTRY}/\([^:]*\):\${CONTRAIL_CONTAINER_TAG}|FROM ${CONTRAIL_REGISTRY}/\1:${tag}|" \
       -e "s|^FROM \$LINUX_DISTR:\$LINUX_DISTR_VER|FROM $LINUX_DISTR:$LINUX_DISTR_VER|" \
+      -e "s|^FROM \$UBUNTU_DISTR:\$UBUNTU_DISTR_VERSION|FROM $UBUNTU_DISTR:$UBUNTU_DISTR_VERSION|" \
       ${docker_file}.nofromargs
     docker_file="${docker_file}.nofromargs"
   fi
@@ -97,6 +98,8 @@ function process_container() {
   build_arg_opts+=" --build-arg BASE_EXTRA_RPMS=\"${BASE_EXTRA_RPMS}\""
   build_arg_opts+=" --build-arg YUM_ENABLE_REPOS=\"$YUM_ENABLE_REPOS\""
   build_arg_opts+=" --build-arg CONTAINER_NAME=${container_name}"
+  build_arg_opts+=" --build-arg UBUNTU_DISTR_VERSION=${UBUNTU_DISTR_VERSION}"
+  build_arg_opts+=" --build-arg UBUNTU_DISTR=${UBUNTU_DISTR}"
 
   if [[ -f ./$dir/.externals ]]; then
     local item=''
