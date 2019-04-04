@@ -27,6 +27,10 @@ declare -A _target_linux_ver_ids
 _target_linux_ver_ids=([centos]='7.4.1708')
 export LINUX_DISTR_VER=${LINUX_DISTR_VER:-${_target_linux_ver_ids[$LINUX_DISTR]}}
 
+# ubuntu version for vrouter kernel build init and mellanox ubuntu containers
+export UBUNTU_DISTR=${UBUNTU_DISTR:-ubuntu}
+export UBUNTU_DISTR_VERSION=${UBUNTU_DISTR_VER:-16.04}
+
 # build platform info
 export LINUX_ID=$linux_id
 export LINUX_VER_ID=$linux_ver_id
