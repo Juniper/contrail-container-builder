@@ -20,6 +20,15 @@ Everything is tested in CentOS 7.4 / Ubuntu 16.04 for deployment to run on one/t
 * Run ```./setup-for-build.sh```
 * Add any number of `*.repo.template` (for CentOS) to the root of repo. These files will be evaluated with current environment and will be placed to containers to yum configuration.
 * Run ```sudo ./build.sh```
+* To use custom images instead of DockerHub images - set environment appropriate variables. For example:
+* - general base
+* export LINUX_DISTR=gcr.io/cloud-marketplace-containers/google/centos7
+* export LINUX_DISTR_VERSION=latest
+* sudo ./build.sh general-base/
+* - kernel build init for ubuntu
+* export UBUNTU_KERNEL_BUILT_INIT=gcr.io/cloud-marketplace-containers/google/ubuntu1604
+* export UBUNTU_VERSION_KERNEL_BUILT_INIT=latest
+* sudo ./build.sh vrouter/kernel-build-init/
 
 If you have a problems with resolving DNS names in build process then you to fix your docker like this - https://development.robinwinslow.uk/2016/06/23/fix-docker-networking-dns/
 
