@@ -8,6 +8,11 @@ DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 source "$DIR/../parse-env.sh"
 
+# prepare if GCP private project is used
+if [[ "$USE_GCP" == 'true' ]] && [[ "$GCP_PRIVATE_PROJECT" == 'true' ]] ; then
+$DIR/prep-gcp.sh
+fi
+
 echo 'Build platform: '$LINUX_ID:$LINUX_VER_ID
 echo 'Target platform: '$LINUX_DISTR:$LINUX_DISTR_VER
 echo 'Contrail version: '$CONTRAIL_VERSION
