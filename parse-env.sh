@@ -21,6 +21,14 @@ else
   linux_ver_id=$(awk -F"=" '/^VERSION_ID=/{print $2}' /etc/os-release | tr -d '"')
 fi
 
+# in case GCP base images are used
+export USE_GCP=${USE_GCP:-false}
+if [[ "$USE_GCP" == true ]] ; then
+  export GCP_MARKETPLACE=gcr.io/cloud-marketplace-containers/google/
+  export LINUX_DISTR=$GCP_MARKETPLACE$GCP_LINUX_DISTR
+  export LINUX_DISTR_VER=latest
+fi
+
 # target platform info
 export LINUX_DISTR=${LINUX_DISTR:-centos}
 declare -A _target_linux_ver_ids
@@ -196,7 +204,7 @@ export METADATA_SSL_CERT_TYPE=${METADATA_SSL_CERT_TYPE:-}
 # VRouter kernel module init image.
 if [[ "$VROUTER_DPDK" == True ]] ; then
     export VROUTER_KERNEL_INIT_IMAGE='contrail-vrouter-kernel-init-dpdk'
-elif [[ "$LINUX_DISTR" == 'ubuntu' ]] ; then
+elif [[ "$LINUX_DISTR" == *'ubuntu'* ]] ; then
     export VROUTER_KERNEL_INIT_IMAGE='contrail-vrouter-kernel-build-init'
 else
     export VROUTER_KERNEL_INIT_IMAGE='contrail-vrouter-kernel-init'
