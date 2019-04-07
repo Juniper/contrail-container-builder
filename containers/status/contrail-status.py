@@ -24,6 +24,7 @@ from lxml import etree
 from sandesh_common.vns.constants import ServiceHttpPortMap
 from sandesh_common.vns.constants import NodeUVEImplementedServices
 from sandesh_common.vns.constants import BackupImplementedServices
+from sandesh_common.vns import constants as vns_constants
 import yaml
 
 
@@ -83,6 +84,9 @@ CONTRAIL_SERVICES_TO_SANDESH_SVC = {
     },
     'vcenter': {
         'plugin': None,
+    },
+    'toragent': {
+        'tor-agent': None,
     }
 }
 
@@ -90,10 +94,14 @@ SHARED_SERVICES = [
     'contrail-external-redis',
 ]
 
-# TODO: Include vcenter-plugin
+INDEXED_SERVICES = [
+    'tor-agent',
+]
 
 
 debug_output = False
+# docker client is used in several places - just cache it at start
+client = None
 
 
 def print_debug(str):
@@ -175,12 +183,12 @@ class EtreeToDict(object):
 
 
 class IntrospectUtil(object):
-    def __init__(self, port, timeout, keyfile, certfile, cacert):
+    def __init__(self, port, options):
         self._port = port
-        self._timeout = timeout
-        self._certfile = certfile
-        self._keyfile = keyfile
-        self._cacert = cacert
+        self._timeout = options.timeout
+        self._certfile = options.certfile
+        self._keyfile = options.keyfile
+        self._cacert = options.cacert
     #end __init__
 
     def _mk_url_str(self, path, secure=False):
@@ -241,22 +249,22 @@ class IntrospectUtil(object):
 #end class IntrospectUtil
 
 
-def get_http_server_port(svc_name):
-    # TODO: additionaly the Introspect port can be obtained from containers env.
-    if svc_name in ServiceHttpPortMap:
-        return ServiceHttpPortMap[svc_name]
+def get_http_server_port(svc_name, env, port_env_key):
+    port = None
+    if port_env_key:
+        port = get_value_from_env(env, port_env_key)
+    if not port:
+        port = ServiceHttpPortMap.get(svc_name)
+    if port:
+        return port
 
     print_debug('{0}: Introspect port not found'.format(svc_name))
     return None
 
 
-def get_svc_uve_status(svc_name, timeout, keyfile, certfile, cacert):
-    # Get the HTTP server (introspect) port for the service
-    http_server_port = get_http_server_port(svc_name)
-    if not http_server_port:
-        return None, None
+def get_svc_uve_status(svc_name, http_server_port, options):
     # Now check the NodeStatus UVE
-    svc_introspect = IntrospectUtil(http_server_port, timeout, keyfile, certfile, cacert)
+    svc_introspect = IntrospectUtil(http_server_port, options)
     node_status = svc_introspect.get_uve('NodeStatus')
     if node_status is None:
         print_debug('{0}: NodeStatusUVE not found'.format(svc_name))
@@ -276,19 +284,30 @@ def get_svc_uve_status(svc_name, timeout, keyfile, certfile, cacert):
     return process_status_info[0]['state'], description
 
 
-def get_svc_uve_info(svc_name, svc_status, detail, timeout, keyfile,
-                     certfile, cacert):
-    # Extract UVE state only for running processes
-    svc_uve_description = None
+def get_status_from_container(container)
+    if container and container.get('State') == 'running':
+        return 'active'
+    return 'inactive'
+
+
+def get_svc_uve_info(svc_name, container, port_env_key, options):
+    svc_status = get_status_from_container(container)
     if svc_status != 'active':
         return svc_status
+    # Extract UVE state only for running processes
+    svc_uve_description = None
     if (svc_name not in NodeUVEImplementedServices
             and svc_name.rsplit('-', 1)[0] not in NodeUVEImplementedServices):
         return svc_status
 
+    svc_uve_status = None
+    svc_uve_description = None
     try:
-        svc_uve_status, svc_uve_description = \
-            get_svc_uve_status(svc_name, timeout, keyfile, certfile, cacert)
+        # Get the HTTP server (introspect) port for the service
+        http_server_port = get_http_server_port(svc_name, container['Env'], port_env_key)
+        if http_server_port:
+            svc_uve_status, svc_uve_description = \
+                get_svc_uve_status(svc_name, http_server_port, options)
     except (requests.ConnectionError,IOError), e:
         print_debug('Socket Connection error : %s' % (str(e)))
         svc_uve_status = "connection-error"
@@ -313,12 +332,11 @@ def get_svc_uve_info(svc_name, svc_status, detail, timeout, keyfile,
     return svc_status
 
 
-def vcenter_plugin(svc_status, detail, timeout,
-                   keyfile, certfile, cacert):
+def vcenter_plugin(container, options):
     svc_name = "vcenter-plugin"
     try:
         # Now check the NodeStatus UVE
-        svc_introspect = IntrospectUtil(8234, timeout, keyfile, certfile, cacert)
+        svc_introspect = IntrospectUtil(8234, options)
         node_status = svc_introspect.get_data("Snh_VCenterPluginInfo", 'VCenterPlugin')
     except (requests.ConnectionError,IOError), e:
         print_debug('Socket Connection error : %s' % (str(e)))
@@ -354,51 +372,66 @@ def vcenter_plugin(svc_status, detail, timeout,
     return "active"
 
 
-def contrail_service_status(pods, pod, options):
-    print("== Contrail {} ==".format(pod))
-    pod_map = CONTRAIL_SERVICES_TO_SANDESH_SVC.get(pod)
+def toragent_tor_agent(container, options):
+    return get_svc_uve_info(vns_constants.SERVICE_TOR_AGENT,
+                            container, 'TOR_HTTP_SERVER_PORT', options)
+
+
+def contrail_pod_status(pod_name, pod_services, options):
+    print("== Contrail {} ==".format(pod_name))
+    pod_map = CONTRAIL_SERVICES_TO_SANDESH_SVC.get(pod_name)
     if not pod_map:
         print('')
         return
 
     for service, internal_svc_name in six.iteritems(pod_map):
-        status = 'inactive'
-        container = pods[pod].get(service)
-        if container and container.get('State') == 'running':
-            status = 'active'
-        if internal_svc_name:
-            status = get_svc_uve_info(internal_svc_name, status,
-                options.detail, options.timeout, options.keyfile,
-                options.certfile, options.cacert)
+        if service not in INDEXED_SERVICES:
+            container = pod_services.get(service)
+            status = contrail_service_status(container, pod_name, service, internal_svc_name, options)
+            print('{}: {}'.format(service, status))
         else:
-            fn_name = "{}_{}".format(pod, service).replace('-', '_')
-            fn = globals().get(fn_name)
-            if fn:
-                status = fn(status, options.detail, options.timeout,
-                    options.keyfile, options.certfile, options.cacert)
-        print('{}: {}'.format(service, status))
+            for srv_key in pod_services:
+                if not srv_key.startswith(service):
+                    continue
+                container = pod_services[srv_key]
+                status = contrail_service_status(container, pod_name, service, internal_svc_name, options)
+                print('{}: {}'.format(service, status))
 
     print('')
 
 
-def get_pod_from_env(client, cid):
-    cnt_full = client.inspect_container(cid)
-    env = cnt_full['Config'].get('Env')
+def contrail_service_status(container, pod_name, service, internal_svc_name, options):
+    status = 'active'
+    if internal_svc_name:
+        # TODO: pass env key for introspect port if needed
+        return get_svc_uve_info(internal_svc_name, container, None, options)
+
+    fn_name = "{}_{}".format(pod_name, service).replace('-', '_')
+    fn = globals().get(fn_name)
+    if fn:
+        return fn(container, options)
+
+    return get_status_from_container(container)
+
+
+def get_value_from_env(env, key):
     if not env:
         return None
-    node_type = next(iter(
-        [i for i in env if i.startswith('NODE_TYPE=')]), None)
-    # for now pod equals to NODE_TYPE
-    return node_type.split('=')[1] if node_type else None
+    value = next(iter(
+        [i for i in env if i.startswith('%s=' % key)]), None)
+    # If env value is not found return none
+    return value.split('=')[1] if value else None
+
+
+def get_full_env_of_container(cid):
+    cnt_full = client.inspect_container(cid)
+    return cnt_full['Config'].get('Env')
 
 
 def get_containers():
     # TODO: try to reuse this logic with nodemgr
 
     items = dict()
-    client = docker.from_env()
-    if hasattr(client, 'api'):
-        client = client.api
     flt = {'label': ['net.juniper.contrail.container.name']}
     for cnt in client.containers(all=True, filters=flt):
         labels = cnt.get('Labels', dict())
@@ -408,20 +441,26 @@ def get_containers():
         if not service:
             # filter only service containers (skip *-init, contrail-status)
             continue
+        full_env = get_full_env_of_container(cnt['Id'])
         pod = labels.get('net.juniper.contrail.pod')
         if not pod:
-            pod = get_pod_from_env(client, cnt['Id'])
+            pod = get_value_from_env(full_env, 'NODE_TYPE')
         name = labels.get('net.juniper.contrail.container.name')
+        env_hash = hash(frozenset(full_env))
 
-        key = '{}.{}'.format(pod, service) if pod and service else name
+        # service is not empty at this point
+        key = '{}.{}'.format(pod, service) if pod else name
+        key += '.{}'.format(env_hash)
         item = {
             'Pod': pod if pod else '',
-            'Service': service if service else '',
+            'Service': service,
             'Original Name': name,
             'State': cnt['State'],
             'Status': cnt['Status'],
             'Id': cnt['Id'][0:12],
-            'Created': cnt['Created']
+            'Created': cnt['Created'],
+            'Env': full_env,
+            'env_hash': env_hash,
         }
         if key not in items:
             items[key] = item
@@ -488,9 +527,14 @@ def parse_args():
 
 def main():
     global debug_output
+    global client
 
     options = parse_args()
     debug_output = options.debug
+
+    client = docker.from_env()
+    if hasattr(client, 'api'):
+        client = client.api
 
     containers = get_containers()
     print_containers(containers)
@@ -501,6 +545,9 @@ def main():
     for k, v in six.iteritems(containers):
         pod = v['Pod']
         service = v['Service']
+        if service in INDEXED_SERVICES:
+            service += '.{}'.format(v['env_hash'])
+        # get_containers always fill service
         if pod and service:
             pods.setdefault(pod, dict())[service] = v
             continue
@@ -533,8 +580,8 @@ def main():
     if 'vrouter' in pods and not vrouter_driver:
         print("vrouter driver is not PRESENT but agent pod is present")
 
-    for pod in pods:
-        contrail_service_status(pods, pod, options)
+    for pod_name in pods:
+        contrail_pod_status(pod_name, pods[pod_name], options)
 
 
 if __name__ == '__main__':
