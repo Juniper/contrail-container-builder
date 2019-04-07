@@ -243,7 +243,20 @@ class IntrospectUtil(object):
 
 def get_http_server_port(svc_name):
     # TODO: additionaly the Introspect port can be obtained from containers env.
-    if svc_name in ServiceHttpPortMap:
+    if 'contrail-tor-agent' in svc_name:
+        client = docker.from_env()
+        if hasattr(client, 'api'):
+            client = client.api
+        toragent = ("toragent_%s_toragent_1" % svc_name.rsplit('-', 1)[1])
+        cnt_full = client.inspect_container(toragent)
+        env = cnt_full['Config'].get('Env')
+        tor_agent_http_port = None
+        if env:
+            tor_agent_http_port = next(iter(
+            [i for i in env if i.startswith('TOR_HTTP_SERVER_PORT=')]), None)
+        if tor_agent_http_port and tor_agent_http_port.split('=')[1]:
+            return int(tor_agent_http_port.split('=')[1])
+    elif svc_name in ServiceHttpPortMap:
         return ServiceHttpPortMap[svc_name]
 
     print_debug('{0}: Introspect port not found'.format(svc_name))
@@ -356,7 +369,14 @@ def vcenter_plugin(svc_status, detail, timeout,
 
 def contrail_service_status(pods, pod, options):
     print("== Contrail {} ==".format(pod))
-    pod_map = CONTRAIL_SERVICES_TO_SANDESH_SVC.get(pod)
+    if pod == 'toragent':
+        pod_map = {}
+        for key in pods[pod].keys():
+            tor_id = key.split('_')[1]
+            internal_svc_name = ("contrail-tor-agent-%s" % tor_id)
+            pod_map[key] = internal_svc_name
+    else:
+        pod_map = CONTRAIL_SERVICES_TO_SANDESH_SVC.get(pod)
     if not pod_map:
         print('')
         return
@@ -412,6 +432,12 @@ def get_containers():
         if not pod:
             pod = get_pod_from_env(client, cnt['Id'])
         name = labels.get('net.juniper.contrail.container.name')
+
+        if pod == 'toragent':
+            if service == 'nodemgr':
+                continue
+            else:
+                service = labels.get('com.docker.compose.project')
 
         key = '{}.{}'.format(pod, service) if pod and service else name
         item = {
