@@ -245,10 +245,25 @@ def get_http_server_port(svc_name):
     # TODO: additionaly the Introspect port can be obtained from containers env.
     if svc_name in ServiceHttpPortMap:
         return ServiceHttpPortMap[svc_name]
+    elif 'contrail-tor-agent' in svc_name:
+         svc_name = ("toragent_%s" % svc_name.rsplit('-', 1)[1])
+         http_port = get_http_server_port_from_env(svc_name, 'TOR_HTTP_SERVER_PORT')
+         if http_port:
+            return int(http_port)
 
     print_debug('{0}: Introspect port not found'.format(svc_name))
     return None
 
+def get_http_server_port_from_env(svc_name, http_env):
+    client = docker.from_env()
+    if hasattr(client, 'api'):
+        client = client.api
+    flt = {'label': ['net.juniper.contrail.service=%s'%svc_name]}
+    cnt = client.containers(all=True, filters=flt)
+    if cnt:
+        return get_pod_from_env(client, cnt[0]['Id'],  http_env)
+
+    return None
 
 def get_svc_uve_status(svc_name, timeout, keyfile, certfile, cacert):
     # Get the HTTP server (introspect) port for the service
@@ -356,7 +371,15 @@ def vcenter_plugin(svc_status, detail, timeout,
 
 def contrail_service_status(pods, pod, options):
     print("== Contrail {} ==".format(pod))
-    pod_map = CONTRAIL_SERVICES_TO_SANDESH_SVC.get(pod)
+    if pod == 'toragent':
+        pod_map = {}
+        for key in pods[pod].keys():
+          if 'toragent' in key:
+            tor_id = key.split('_')[1]
+            internal_svc_name = ("contrail-tor-agent-%s" % tor_id)
+            pod_map[key] = internal_svc_name
+    else:
+        pod_map = CONTRAIL_SERVICES_TO_SANDESH_SVC.get(pod)
     if not pod_map:
         print('')
         return
@@ -381,15 +404,15 @@ def contrail_service_status(pods, pod, options):
     print('')
 
 
-def get_pod_from_env(client, cid):
+def get_pod_from_env(client, cid, env_key):
     cnt_full = client.inspect_container(cid)
     env = cnt_full['Config'].get('Env')
     if not env:
         return None
-    node_type = next(iter(
-        [i for i in env if i.startswith('NODE_TYPE=')]), None)
-    # for now pod equals to NODE_TYPE
-    return node_type.split('=')[1] if node_type else None
+    env_value = next(iter(
+        [i for i in env if i.startswith('%s='%env_key)]), None)
+    # If env value is not found return none
+    return env_value.split('=')[1] if env_value else None
 
 
 def get_containers():
@@ -410,7 +433,7 @@ def get_containers():
             continue
         pod = labels.get('net.juniper.contrail.pod')
         if not pod:
-            pod = get_pod_from_env(client, cnt['Id'])
+            pod = get_pod_from_env(client, cnt['Id'], 'NODE_TYPE')
         name = labels.get('net.juniper.contrail.container.name')
 
         key = '{}.{}'.format(pod, service) if pod and service else name

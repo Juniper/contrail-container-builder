@@ -16,3 +16,5 @@ CMD ["/usr/bin/contrail-tor-agent","--config_file","/etc/contrail/contrail-tor-a
 ENV SERVICE_NAME=tor-agent
 LABEL net.juniper.contrail.service=$SERVICE_NAME
 LABEL net.juniper.contrail.container.name=$CONTAINER_NAME
+ENV NODE_TYPE=toragent
+LABEL net.juniper.contrail.pod=$NODE_TYPE
