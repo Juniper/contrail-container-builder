@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9f5c4f37_232b0e95",
+        "filename": "README.md",
+        "patchSetId": 7
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-04-08T11:36:18Z",
+      "side": 1,
+      "message": "we have LINUX_DISTR_VER",
+      "range": {
+        "startLine": 25,
+        "startChar": 9,
+        "endLine": 25,
+        "endChar": 28
+      },
+      "revId": "68602e7eba9bb2dfe2761eea421858ec2e8c7549",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    }
+  ]
+}
