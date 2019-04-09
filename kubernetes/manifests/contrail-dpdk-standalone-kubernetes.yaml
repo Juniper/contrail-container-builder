@@ -1309,11 +1309,14 @@ spec:
         volumeMounts:
         - mountPath: /dev
           name: dev
-        # TODO: to access /etc/sysctl.conf , ifcfg & alike file on host, /etc/os-release
-        - mountPath: /etc
-          name: etc
         - mountPath: /lib/modules
           name: lib-modules
+        - mountPath: /host/bin
+          name: host-usr-bin
+        - mountPath: /host/etc/contrail
+          name: host-etc-contrail
+        - mountPath: /var/run
+          name: var-run
       - name: contrail-kubernetes-cni-init
         image: "{{CONTRAIL_REGISTRY}}/contrail-kubernetes-cni-init:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -1426,9 +1429,6 @@ spec:
       - name: dev
         hostPath:
           path: /dev
-      - name: etc
-        hostPath:
-          path: /etc
       - name: etc-net-scripts
         hostPath:
           path: /etc/sysconfig/network-scripts
@@ -1465,6 +1465,9 @@ spec:
       - name: host-usr-bin
         hostPath:
           path: /usr/bin
+      - name: host-etc-contrail
+        hostPath:
+          path: /etc/contrail
 
 # Meta information section
 ---
