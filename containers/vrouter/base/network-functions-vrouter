@@ -77,8 +77,9 @@ function prepare_vif_config() {
     # this is for vif tool
     # in agent container this is re-written by container at latest step
     local type=$1
-    mkdir -p /etc/contrail
-    cat << EOM > /etc/contrail/contrail-vrouter-agent.conf
+    local folder_prefix=${2:-''}
+    mkdir -p $folder_prefix/etc/contrail
+    cat << EOM > $folder_prefix/etc/contrail/contrail-vrouter-agent.conf
 [DEFAULT]
 platform=$type
 EOM
