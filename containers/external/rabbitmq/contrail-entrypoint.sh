@@ -22,7 +22,7 @@ server_names_list=()
 cluster_nodes=''
 my_node=''
 for server in $(echo ${RABBITMQ_NODES} | tr ',' ' '); do
-  server_hostname=$(resolve_hostname_by_ip $server | cut -d '.' -f 1)
+  server_hostname=`/getfqdn $server`
   if [[ -z "$server_hostname" ]] ; then
     echo "ERROR: hostname for $server is not resolved properly, cluster can't be set up properly."
     exit -1

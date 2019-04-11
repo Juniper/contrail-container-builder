@@ -8,7 +8,7 @@ ARG CONTAINER_NAME
 RUN apt-get update || /bin/true && \
          apt-get -fy install bind9-host
 
-COPY *.sh hostname_to_ip /
+COPY *.sh hostname_to_ip getfqdn /
 RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done'
 
 ENTRYPOINT ["/contrail-entrypoint.sh"]

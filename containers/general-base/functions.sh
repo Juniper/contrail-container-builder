@@ -102,18 +102,9 @@ function get_order_for_node() {
   echo $order
 }
 
-# It tries to resolve IP via local DBs (/etc/hosts, etc)
-# if fails it then tries DNS lookup via the tool 'host'
 function resolve_hostname_by_ip() {
   local ip=$1
-  local host_entry=$(getent hosts $ip | head -n 1)
-  local name=''
-  if [[ -n "$host_entry" ]] ; then
-    name=$(echo $host_entry | awk '{print $2}')
-  elif host_entry=$(host -4 $server) ; then
-    name=$(echo $host_entry | awk '{print $5}')
-    name=${name::-1}
-  fi
+  local name=`python -c "import socket; print(socket.getfqdn('$ip'))"` || ret=$?
   if [[ -n "$name" ]] ; then
     echo $name
   fi
