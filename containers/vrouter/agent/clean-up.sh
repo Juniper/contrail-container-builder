@@ -11,4 +11,11 @@ if [[ ${CLOUD_ORCHESTRATOR} == "mesos" ]]; then
     cleanup_mesos_cni_config
 fi
 
-quit_root_process
+echo "INFO: Going to remove vhost0 interface"
+
+remove_vhost0
+
+cleanup_vrouter_agent_files
+
+echo "INFO: starting to uninstall kernel module"
+unload_kernel_module vrouter
