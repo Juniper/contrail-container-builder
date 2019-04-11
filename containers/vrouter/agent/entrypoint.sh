@@ -6,7 +6,6 @@ source /agent-functions.sh
 echo "INFO: agent started in $AGENT_MODE mode"
 
 function trap_vrouter_agent_quit() {
-    term_process $vrouter_agent_process
     remove_vhost0
     cleanup_vrouter_agent_files
     exit 0
