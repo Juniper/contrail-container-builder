@@ -3,6 +3,10 @@ ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
+LABEL name=$CONTAINER_NAME \
+      summary="Init container for OpenStack neutron-server" \
+      description="Sidecar container with libraries for neutron-server."
+
 ARG LINUX_DISTR
 
 COPY *.sh /
