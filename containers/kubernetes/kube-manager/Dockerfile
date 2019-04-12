@@ -3,6 +3,9 @@ ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
+LABEL name=$CONTAINER_NAME \
+      summary="Contrail Manager for kubernetes deployments" \
+      description="contrail-kube-manager runs in a Docker container to listen to the messages from the Kubernetes API server."
 
 RUN yum install -y python-eventlet python-setuptools python-kazoo \
                    python-bitarray python-pycassa python-bitstring \
