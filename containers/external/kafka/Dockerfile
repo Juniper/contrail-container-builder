@@ -3,6 +3,10 @@ ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
+LABEL name=$CONTAINER_NAME \
+      summary="Kafka is used for streaming data in Analytics DB component" \
+      description="Contrail Networking supports integration with other analytics platforms like streaming analytics through technologies like Apache Kafka"
+
 ARG KAFKA_DISTRO_NAME=kafka_2.11-0.9.0.1
 
 ENV KAFKA_DIR=/opt/$KAFKA_DISTRO_NAME \
