@@ -3,6 +3,9 @@ ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
+LABEL name=$CONTAINER_NAME \
+      summary="Contrail Dnsmasq" \
+      description="Contrail Dnsmasq provides network infrastructure: DNS, DHCP, router advertisement and network boot."
 
 COPY *.sh /
 

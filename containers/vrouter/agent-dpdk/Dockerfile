@@ -3,6 +3,9 @@ ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-vrouter-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
+LABEL name=$CONTAINER_NAME \
+      summary="DPDK support for Contrail vrouter agent" \
+      description="DPDK mode for vrouter agent"
 
 # contrail-vrouter-dpdk-init contains dpdk_nic_bind.py that is used by this container.
 RUN yum install -y dhclient NetworkManager contrail-vrouter-dpdk contrail-vrouter-dpdk-init && \
