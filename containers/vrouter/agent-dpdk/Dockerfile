@@ -2,6 +2,10 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-vrouter-base:${CONTRAIL_CONTAINER_TAG}
 
+LABEL name="contrail-vrouter-agent-dpdk" \
+      summary="The Data Plane Development Kit for vrouter agent" \
+      description="DPDK mode for vrouter agent"
+
 ARG CONTAINER_NAME
 
 # contrail-vrouter-dpdk-init contains dpdk_nic_bind.py that is used by this container.

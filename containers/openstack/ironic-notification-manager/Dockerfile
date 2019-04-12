@@ -2,6 +2,11 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
+LABEL name="contrail-openstack-ironic-notification-manager" \
+      summary="Contrail Openstack Ironic Notification Manager" \
+      description="OpenStack bare metal provisioning a.k.a Ironic is an integrated OpenStack program \n\
+      which aims to provision bare metal machines instead of virtual machines, forked from the Nova baremetal driver."
+
 ARG CONTAINER_NAME
 
 RUN yum install -y ironic-notification-manager && \

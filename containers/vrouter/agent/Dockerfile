@@ -2,6 +2,10 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-vrouter-base:${CONTRAIL_CONTAINER_TAG}
 
+LABEL name="contrail-vrouter-agent" \
+      summary="Contrail Vrouter Agent" \
+      description="The vRouter agent is a user space process running inside Linux. It acts as the local, lightweight control plane."
+
 ARG CONTAINER_NAME
 
 RUN yum install -y dhclient NetworkManager contrail-vrouter-agent haproxy libvirt-client \

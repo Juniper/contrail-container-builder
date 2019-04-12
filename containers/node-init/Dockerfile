@@ -2,6 +2,10 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
+LABEL name="contrail-node-init" \
+      summary="Contrail Node Initialisation" \
+      description="Container for controlling node initialisation."
+
 ARG CONTAINER_NAME
 
 RUN yum install -y openssl && \

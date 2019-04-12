@@ -2,6 +2,10 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
+LABEL name="contrail-nodemgr" \
+      summary="Contrail node manager" \
+      description="Node manager is a monitor process per contrail virtual node that tracks the running state of the processes."
+
 ARG CONTAINER_NAME
 
 # install chrony, ntp and iputils-clockdiff to enable checking time sync by nodemgr

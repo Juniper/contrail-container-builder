@@ -2,6 +2,10 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-controller-webui-base:${CONTRAIL_CONTAINER_TAG}
 
+LABEL name="contrail-controller-webui-web" \
+      summary="Controller WEB UI" \
+      description="Controller WEB UI provides the WebUI service to end user."
+
 ARG CONTAINER_NAME
 
 ENTRYPOINT ["/entrypoint.sh"]

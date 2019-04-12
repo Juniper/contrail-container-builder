@@ -1,6 +1,13 @@
 FROM ubuntu:16.04
-
 ARG CONTAINER_NAME
+
+ARG CONTRAIL_CONTAINER_TAG
+LABEL vendor="Juniper" \
+      version=${CONTRAIL_CONTAINER_TAG} \
+      release="5.1.0" \
+      name="contrail-plugin-mellanox-init--ubuntu" \
+      summary="mellanox vrouter kernel module for ubuntu" \
+      description="this image is used to build vrouter.ko for current ubuntu OS that it's running on."
 
 # This image is used to build vrouter.ko for current ubuntu OS that it's running on.
 # This container uses rpm packages to obtain source of vrouter kernel driver.

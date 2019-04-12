@@ -2,6 +2,10 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
+LABEL name="contrail-vcenter-plugin" \
+      summary="VMware vCenter plugin" \
+      description="VMware vCenter plugin workflows are represented as simple workflows in vRO plugin."
+
 ARG CONTAINER_NAME
 
 RUN yum install -y java-1.7.0-openjdk \

@@ -2,6 +2,10 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-controller-webui-base:${CONTRAIL_CONTAINER_TAG}
 
+LABEL name="contrail-controller-webui-job" \
+      summary="Controller WEB UI middleware" \
+      description="Controller WEB UI middleware handles jobs from the WebUI service and contacts other contrail services to execute them."
+
 ARG CONTAINER_NAME
 
 ENTRYPOINT ["/entrypoint.sh"]

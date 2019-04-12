@@ -2,6 +2,10 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
+LABEL name="contrail-openstack-heat-init" \
+      summary="Contrail Openstack Heat templates" \
+      description="Contrail supports a set of resources for networking and security that can be controlled using OpenStack Heat templates."
+
 ARG CONTAINER_NAME
 
 RUN yum install -y contrail-heat && \

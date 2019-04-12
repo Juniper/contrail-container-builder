@@ -2,6 +2,10 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-controller-control-base:${CONTRAIL_CONTAINER_TAG}
 
+LABEL name="contrail-controller-control-dns" \
+      summary="Controller DNS" \
+      description="Controller DNS provides DNS service to the VMs spawned on different compute nodes."
+
 ARG CONTAINER_NAME
 
 COPY entrypoint.sh /

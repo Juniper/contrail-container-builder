@@ -2,6 +2,10 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
 
+LABEL name="contrail-plugin-mellanox-init-redhat" \
+      summary="Mellanox plugin for RedHat" \
+      description="DPDK Mellanox kernel module for RedHat."
+
 ARG CONTAINER_NAME
 
 # this copy should be before yum install

@@ -2,6 +2,12 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
+LABEL name="contrail-status" \
+      summary="contrail status" \
+      description="Display a list of all components of a Contrail server node \n\
+                  (such as control, configuration, database, Web-UI, analytics, or vrouter) \n\
+                  and report their current status of active or inactive."
+
 ARG CONTAINER_NAME
 
 RUN yum install -y python2-docker PyYAML && \

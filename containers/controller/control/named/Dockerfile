@@ -2,6 +2,10 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-controller-control-base:${CONTRAIL_CONTAINER_TAG}
 
+LABEL name="contrail-controller-control-named" \
+      summary="Controller Named" \
+      description="Controller Named complements Controller DNS process."
+
 ARG CONTAINER_NAME
 
 COPY entrypoint.sh /

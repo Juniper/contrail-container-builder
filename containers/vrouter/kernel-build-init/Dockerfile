@@ -1,5 +1,13 @@
 FROM ubuntu:16.04
 
+ARG CONTRAIL_CONTAINER_TAG
+LABEL vendor="Juniper" \
+      version=${CONTRAIL_CONTAINER_TAG} \
+      release="5.1.0" \
+      name="contrail-vrouter-kernel-build-init" \
+      summary="vrouter kernel module for ubuntu" \
+      description="This image is used to build vrouter.ko for current ubuntu OS that it's running on."
+
 ARG CONTAINER_NAME
 
 # This image is used to build vrouter.ko for current ubuntu OS that it's running on.

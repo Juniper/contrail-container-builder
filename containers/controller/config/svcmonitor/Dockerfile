@@ -2,6 +2,10 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-controller-config-base:${CONTRAIL_CONTAINER_TAG}
 
+LABEL name="contrail-controller-config-svcmonitor" \
+      summary="Controller Configuration Service Monitor" \
+      description="Controller Configuration Service Monitor brings up and monitors any service instance that are spawned."
+
 ARG CONTAINER_NAME
 
 COPY entrypoint.sh /

@@ -2,6 +2,10 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
+LABEL name="contrail-openstack-compute-init" \
+      summary="Contrail Openstack Compute" \
+      description="The OpenStack compute service."
+
 ARG CONTAINER_NAME
 
 RUN yum install -y contrail-vrouter-agent contrail-nova-vif && \

@@ -2,6 +2,10 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-analytics-base:${CONTRAIL_CONTAINER_TAG}
 
+LABEL name="contrail-analytics-query-engine" \
+      summary="Analytics Query" \
+      description="Analytics Query interacts with Analytics API Server via Redis and with Analytics Db"
+
 ARG CONTAINER_NAME
 
 COPY entrypoint.sh /

@@ -2,6 +2,10 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-controller-config-base:${CONTRAIL_CONTAINER_TAG}
 
+LABEL name="contrail-controller-config-schema" \
+      summary="Controller Configuration Schema" \
+      description="Controller Configuration Schema provides the data model schema file for Controller Configuration REST API autogeneration."
+
 ARG CONTAINER_NAME
 
 COPY entrypoint.sh /
