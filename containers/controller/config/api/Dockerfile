@@ -3,6 +3,9 @@ ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-controller-config-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
+LABEL name=$CONTAINER_NAME \
+      summary="Controller Configuration REST API" \
+      description="All configuration cluster is available through a REST API that is accessed on port 8082 of the external virtual IP address."
 
 RUN yum install -y python-neutron-lib && \
     yum clean all -y && \

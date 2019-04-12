@@ -3,6 +3,9 @@ ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
+LABEL name=$CONTAINER_NAME \
+      summary="Contrail Node Initialisation" \
+      description="Container for controlling node initialisation."
 
 RUN yum install -y openssl && \
     yum install -y --downloadonly --downloaddir=/ contrail-tripleo-puppet && \
