@@ -3,6 +3,9 @@ ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
+LABEL name=$CONTAINER_NAME \
+      summary="Mesosphere Manager" \
+      description="In Mesos, mesos manager will update all information regarding task (universal docker) to Contrail Controller via API server."
 
 RUN yum install -y python-eventlet python-setuptools python-kazoo \
                    python-bitarray python-pycassa python-bitstring \

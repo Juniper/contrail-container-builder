@@ -3,6 +3,9 @@ ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-analytics-snmp-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
+LABEL name=$CONTAINER_NAME \
+      summary="Analytics SNMP Topology" \
+      description="Analytics SNMP Topology periodically looks at snmp info and corelate and update topology table, which is used by UI to draw maps."
 
 COPY entrypoint.sh /
 

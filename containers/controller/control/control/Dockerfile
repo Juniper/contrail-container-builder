@@ -3,6 +3,9 @@ ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-controller-control-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
+LABEL name=$CONTAINER_NAME \
+      summary="Controller Control" \
+      description="Controller Control accepts XMPP connections from vrouter nodes."
 
 COPY entrypoint.sh /
 
