@@ -3,6 +3,9 @@ ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
+LABEL name=$CONTAINER_NAME \
+      summary="Contrail image for debug purposes" \
+      description="The image contains debug symbols for build and may be used to debug Contrail processes."
 
 RUN yum install -y contrail-debuginfo contrail-vrouter-dpdk-debuginfo contrail-manifest
 RUN ln -s /opt/contrail/manifest.xml /manifest.xml

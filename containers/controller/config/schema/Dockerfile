@@ -3,6 +3,9 @@ ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-controller-config-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
+LABEL name=$CONTAINER_NAME \
+      summary="Contrail VNC Configuration Schema Transformer" \
+      description="Contrail Schema Transformer provides the data model schema file for Controller Configuration REST API autogeneration."
 
 COPY entrypoint.sh /
 
