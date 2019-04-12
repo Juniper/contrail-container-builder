@@ -1,5 +1,8 @@
 FROM zookeeper:3.4.10
 
+LABEL summary="zookeeper" \
+	  description="zookeeper distributes SNMP polling across nodes." \
+	
 ARG CONTAINER_NAME
 
 COPY *.sh hostname_to_ip /

@@ -2,6 +2,9 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
 
+LABEL summary="DNSMASQ" \
+	  description="DNSMASQ interacts with DHCP agent in OpenStack Neutron." \
+	
 ARG CONTAINER_NAME
 
 COPY *.sh /

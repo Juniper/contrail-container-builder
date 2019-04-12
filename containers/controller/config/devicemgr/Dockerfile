@@ -2,6 +2,11 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-controller-config-base:${CONTRAIL_CONTAINER_TAG}
 
+LABEL summary="Controller Configuration Device Manager" \
+	  description="In any datacenter, there is a need for some VMs to access external IP addresses, \n\
+	  and for users outside the datacenter to access some VMs via public IP addresses. \n\
+	  Controller Configuration Device Manager provides several ways to achieve this" \
+	  
 ARG CONTAINER_NAME
 
 RUN easy_install pip && \

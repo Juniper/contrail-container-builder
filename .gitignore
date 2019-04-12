@@ -13,3 +13,11 @@ contrail.gpg.md5
 contrailtpc.repo
 contrailtpc.repo.md5
 __*
+.gitignore.swp
+.project
+containers/MOK.der
+containers/MOK.priv
+containers/contrail-install-packages_*
+containers/vrouter_test.sh
+contrailtpc.repo.template
+

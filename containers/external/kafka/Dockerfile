@@ -2,6 +2,9 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
 
+LABEL summary="Kafka DB" \
+	  description="Kafka DB provides streaming data for Analytics DB" \
+	
 ARG CONTAINER_NAME
 ARG KAFKA_DISTRO_NAME=kafka_2.11-0.9.0.1
 

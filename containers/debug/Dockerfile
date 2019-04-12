@@ -2,6 +2,10 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
 
+# TODO
+LABEL summary="" \
+	  description="" \
+	
 ARG CONTAINER_NAME
 
 RUN yum install -y contrail-debuginfo contrail-vrouter-dpdk-debuginfo contrail-manifest

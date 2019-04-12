@@ -1,5 +1,8 @@
 FROM rabbitmq:3.6.10-management
 
+LABEL summary="RabbitMQ server" \
+	  description="The message bus that different process subscribe to" \
+	
 ARG CONTAINER_NAME
 
 # due to changes in debian repos apt-transport-https is needed for

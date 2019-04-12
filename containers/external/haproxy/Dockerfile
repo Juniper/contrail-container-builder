@@ -1,5 +1,8 @@
 FROM haproxy:1.7
 
+LABEL summary="HAProxy" \
+	  description="HAProxy runs on nodes to load balance the connections across multiple instances of the services." \
+	
 ARG CONTAINER_NAME
 
 COPY *.sh /

@@ -2,6 +2,11 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-vrouter-base:${CONTRAIL_CONTAINER_TAG}
 
+# TODO 
+# fill summary and description
+LABEL summary="" \
+	  description="" \
+	
 ARG CONTAINER_NAME
 
 # contrail-vrouter-dpdk-init contains dpdk_nic_bind.py that is used by this container.

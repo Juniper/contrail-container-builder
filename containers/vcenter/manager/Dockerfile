@@ -2,6 +2,11 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
+# TODO 
+# fill summary and description
+LABEL summary="" \
+	  description="" \
+	
 ARG CONTAINER_NAME
 
 RUN yum install -y contrail-vcenter-manager && \

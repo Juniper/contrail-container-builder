@@ -2,6 +2,9 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-analytics-snmp-base:${CONTRAIL_CONTAINER_TAG}
 
+LABEL summary="Analytics SNMP Collector" \
+	  description="Analytics SNMP Collector collects data from switches(Spine/Leaf) and passes to Analytics Collector." \
+	  
 ARG CONTAINER_NAME
 
 COPY entrypoint.sh /

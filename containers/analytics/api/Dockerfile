@@ -2,6 +2,9 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-analytics-base:${CONTRAIL_CONTAINER_TAG}
 
+LABEL summary="Analytics REST API" \
+	  description="The analytics data collected can be accessed through a REST API on port 8082 of the external virtual IP address. "\
+	  
 ARG CONTAINER_NAME
 
 COPY entrypoint.sh /

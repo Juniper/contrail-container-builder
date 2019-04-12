@@ -2,6 +2,11 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-analytics-base:${CONTRAIL_CONTAINER_TAG}
 
+LABEL summary="Analytics Alarm Gen" \
+	  description="Responsibility for alarm generation is distributed across nodes, \n\
+	              so the Alarm Generation function subscribes to the Kafka buses in Analyticsdb nodes in order to observe the data needed to calculate \n\
+	              if an alarm condition is met, since this data may be collected by other nodes."\
+	  
 # TODO: split contrail-analytics package to several small packages and use contrail-base then
 # FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 

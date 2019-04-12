@@ -1,5 +1,8 @@
 FROM redis:4.0.2 
 
+LABEL summary="Redis Server" \
+	  description="Redis server supports query engine and caches UVEs." \
+	
 ARG CONTAINER_NAME
 
 COPY *.sh hostname_to_ip /
