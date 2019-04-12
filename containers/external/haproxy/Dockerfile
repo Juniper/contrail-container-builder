@@ -1,6 +1,13 @@
 FROM haproxy:1.7
 
 ARG CONTAINER_NAME
+ARG CONTRAIL_CONTAINER_TAG
+LABEL vendor="Juniper" \
+      version=$CONTRAIL_CONTAINER_TAG \
+      release="5.1.0" \
+      name=$CONTAINER_NAME \
+      summary="Contrail HAProxy" \
+      description="Contrail HAProxy supports high availability for Contrail container subsystems."
 
 COPY *.sh /
 

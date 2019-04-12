@@ -1,6 +1,13 @@
 FROM ubuntu:16.04
 
+ARG CONTRAIL_CONTAINER_TAG
 ARG CONTAINER_NAME
+LABEL vendor="Juniper" \
+      version=$CONTRAIL_CONTAINER_TAG \
+      release="5.1.0" \
+      name=$CONTAINER_NAME \
+      summary="Contrail vrouter kernel module for ubuntu" \
+      description="This image is used to build vrouter.ko for current ubuntu operating system that it's running on."
 
 # This image is used to build vrouter.ko for current ubuntu OS that it's running on.
 # This container uses rpm packages to obtain source of vrouter kernel driver.
