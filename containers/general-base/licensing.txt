@@ -1,0 +1,334 @@
+IMPORTANT -- READ THIS AGREEMENT BEFORE DOWNLOADING, INSTALLING, OR USING THE SOFTWARE. JUNIPER NETWORKS IS WILLING TO LICENSE THE SOFTWARE TO YOU OR THE ENTITY YOU REPRESENT THAT WILL BE LICENSED TO USE THE SOFTWARE (COLLECTIVELY "YOU" or "YOUR") AND MAKE AVAILABLE ASSOCIATED MAINTENANCE SERVICES ONLY IF YOU ACCEPT ALL OF THE TERMS OF THIS AGREEMENT. YOU REPRESENT AND WARRANT THAT YOU HAVE THE RIGHT, POWER AND AUTHORITY TO ACT ON BEHALF OF AND BIND THE ENTITY THAT YOU REPRESENT.
+
+YOU SHALL HAVE NO RIGHT TO INSTALL OR USE THE SOFTWARE OR TO RECEIVE ANY MAINTENANCE SERVICES THAT YOU MAY HAVE ORDERED UNLESS YOU HAVE RECEIVED A COPY OF THE SOFTWARE FROM JUNIPER NETWORKS OR A JUNIPER NETWORKS-AUTHORIZED RESELLER (COLLECTIVELY, AN "APPROVED SOURCE"), AND (II) YOU ACCEPT ALL TERMS OF THIS AGREEMENT.
+
+IF YOU DO NOT AGREE TO ALL TERMS OF THE AGREEMENT, OR IF YOU HAVE ORDERED THE SOFTWARE FROM SOMEONE WHO IS NOT AN APPROVED SOURCE, THEN (A) DO NOT DOWNLOAD, INSTALL, OR USE THE SOFTWARE (AND, IF THE SOFTWARE WAS DELIVERED TO YOU EMBEDDED IN A JUNIPER HARDWARE PRODUCT, DO NOT INSTALL OR USE THAT HARDWARE PRODUCT) OR REQUEST ANY MAINTENANCE SERVICES, AND (B) WITHIN 30 DAYS AFTER PLACING YOUR ORDER FOR THE SOFTWARE (AND, IF APPLICABLE, THE HARDWARE PRODUCT IN WHICH IT WAS DELIVERED EMBEDDED), (I) RETURN THE HARDWARE PRODUCT, IF APPLICABLE, (II) RETURN OR DESTROY ALL COPIES OF THE SOFTWARE AND REQUEST FULL REFUND OF THE SOFTWARE LICENSE FEE (AND, IF APPLICABLE, ASSOCIATED SOFTWARE MAINTENANCE SERVICE FEE AND THE PURCHASE PRICE OF THE HARDWARE PRODUCT) FROM THE PARTY THAT FURNISHED YOU THE SOFTWARE. BY INSTALLING OR USING ANY SOFTWARE, USING THE HARDWARE PRODUCT IN WHICH IT WAS DELIVERED EMBEDDED, IF APPLICABLE, OR BY USING ANY MAINTENANCE SERVICES YOU WILL BE DEEMED TO HAVE ACCEPTED THIS AGREEMENT.
+
+IF YOU AND JUNIPER NETWORKS HAVE SIGNED A SEPARATE WRITTEN AGREEMENT COVERING YOUR RIGHTS AND DUTIES WITH RESPECT TO THE SOFTWARE, THEN THAT WRITTEN AGREEMENT TAKES PRECEDENCE OVER ANY CONFLICTING TERMS OF THIS AGREEMENT.
+
+END USER LICENSE AGREEMENT
+(April 2018 Release)
+
+This Agreement governs Your rights and duties with respect to the Software. Capitalized terms used in this Agreement are defined in Section 1 (Definitions).
+
+1.
+Definitions.
+
+a.
+"Affiliate" means any entity and its successors which directly or indirectly controls, is controlled by, or is under common control with the subject entity. "Control" for purposes of this definition, means direct or indirect ownership or control of more than 50% of the voting interests of the subject entity. An entity shall be considered an Affiliate only so long as such entity continues to meet the foregoing definition.
+
+b.
+"Agreement" means this End User License Agreement ("EULA") together with a SKU or associated SSLA (if any), License Entitlement (if any), Product Warranty Policy, and any other documents, policies or website content linked in this EULA and hereby incorporated by reference.
+
+c.
+"Approved Source" means Juniper or an Authorized Reseller
+
+d.
+"Authorized Reseller"means a distributor or reseller authorized by Juniper to distribute and resell licenses to the Software in the territory in which You are purchasing such Software license.
+
+e.
+"Commercial Cloud Services" means a service offered and administered by Juniper, or an authorized third party, whereby You may without downloading or otherwise taking delivery of a copy of the Software use and access Instances of Software running in a virtual machine environment resident in a networked cloud facility or group of facilities.
+
+f.
+"Embedded Software License" means the limited right to Use the operating system Software installed on the Juniper Platform and included in the purchase of the Juniper Platform but does not include the right to Use the Separately Licensable Features and may not be Used on more than the number of ports, if any, identified in the SKU or associated SSLA (if any) for the Juniper Platform. Embedded Software Licenses are Perpetual unless the Juniper hardware is leased or provided for demonstration purposes, in which case the Embedded Software License term shall follow the lease term or demonstration period and shall terminate automatically upon the expiration of the lease term or demonstration period.
+
+g.
+"Feature Set License" means the limited right to Use solely the certain set of features and functionalities of the Software as described in the License Entitlement and SKU or associated SSLA (if any), regardless of whether any additional feature or functionality is unlocked and thus accessible to You in the Software. Feature Set Licenses may also be combined with other Juniper Software licenses.
+
+h.
+"Instance" means each time the Software runs on any device.
+
+=
+i.
+"Juniper Networks" or "Juniper" means: (a) Juniper Networks (US), Inc. if Products and/or Services will be shipped to, deployed or rendered in North America, Central America or South America; (b) Juniper Networks International B.V., if products and/or services will be shipped to, deployed or rendered in Europe (excluding the United Kingdom), the Middle East or Africa; or the Asia Pacific region (excluding Australia and India), (c) Juniper Networks (UK) Limited if product and/or services will be shipped to, deployed or rendered in the United Kingdom, (d) Juniper Networks Australia Pty Ltd if product and/or services will be shipped to, deployed or rendered in Australia, or (e) Juniper Networks Solution India Private Limited if product and/or services will be shipped to, deployed or rendered in India; and in each case, any Juniper Affiliate of the applicable Juniper Networks entity to whom this Agreement may be assigned.  As used in connection with the provision of Services, the term "Juniper Networks" or "Juniper" under this Agreement may include authorized services representatives of Juniper.
+
+j.
+"Juniper Platform" means any Juniper-provided, but not any third-party-provided, hardware.
+
+k.
+"License Entitlement" means the email document that includes the License Term, SKU or associated SSLA (if any), License Metric and Licensed Units (if any) found in the Model Description.
+
+l.
+"License Metric" means a unit of measurement that restricts the scope of use of the Software (e.g., Feature Set License, Instance, Network Element or Node, Session Socket or CPU Socket or Throughput or any other unit of measurement set forth in a SKU or associated SSLA (if any) or License Entitlement).
+
+m.
+"License Term" means the period of time that the Software is licensed to be Used by You, subject to the terms and conditions of this Agreement.
+
+n.
+"Licensed Units" mean a number of units under a License Metric that limits the Use of the licensed Software (e.g. 10M, 50 Nodes, 1000 Sessions or any other units under a License Metric set forth in a SKU or associated SSLA (if any) or License Entitlement).
+
+o.
+"Maintenance Services" means those services described in Section 6 below.
+
+p.
+"Model Description" means a field in the License Entitlement that will denote the applicable License Metric and maximum Licensed Units (if any), and, if a Subscription, the period of time that shall be the fixed term.
+
+q.
+"Network Element" or "Node" means a physical or virtual device that is recognizable by the Software as a unique device that the Software may directly or indirectly administer, monitor, manage, provision, or configure.
+
+r.
+"Perpetual" license means a license that continues until the first to occur of termination by Juniper or Your violation of any term or condition of this Agreement, unless such violation is waived in writing by Juniper.
+
+s.
+"Separately Licensable Features" means specific features and functionalities of the Software that may only be Used if a Feature Set License is obtained and such features and functionalities are expressly set forth in a SKU or associated SSLA (if any) or License Entitlement.
+
+t.
+"Session" means a stateful information exchange connection established for communication between two devices through a gateway.
+
+u.
+"SKU" means a stock-keeping unit or unique identifier for each distinct product and service that can be purchased and any summary description of such product or service associated therewith.
+
+v.
+"Socket" or "CPU Socket" means a mechanical component that provides electrical connectivity between a microprocessor and a printed circuit board.
+
+w.
+"Software" means the software product and version number that is either identified in Your License Entitlement or licensed pursuant to the Embedded Software License, and includes 1) machine-readable instructions and data, 2) components, files, and modules, 3) any accompanying audio-visual content, 4) accompanying activation keys, if any, and 5) associated documentation. Except where the context otherwise requires, Software includes any Update of that Software that You are entitled to through Maintenance Services.
+
+x.
+"Software Specific License Addendum" or "SSLA" means the additional terms and conditions (if any), applicable to certain Software, which may be found at https://www.juniper.net/documentation/en_US/release-independent/licenses/ssla/software-specific-license-addenda.html. SSLAs (if any) are referenced in the License Entitlement and/or SKU. If there is any conflict between the SSLA and this EULA, the SSLA shall take precedence with respect to the specific Software to which it pertains.
+
+y.
+"Subscription" license means a license to Use the Software with accompanying Maintenance Services solely during a fixed Subscription Term, unless terminated earlier by Juniper pursuant to the terms and conditions of this Agreement.
+
+z.
+"Subscription Term" means the duration of time that a Subscription is active.
+
+aa.
+"Throughput" means the maximum possible bits of inbound data traffic capable of being processed per second by an Instance of Software. A Throughput license may not be split across multiple Instances. Throughput licenses will be identified in the SKU Description and License Entitlement in units of megabits per second (Mbps or M), gigabits per second (Gbps or G), or terabits per second (Tbps or T). In the event Juniper Software supports bursts, the actual Throughput must not exceed the licensed Throughput more than 5% of the time across any arbitrary set of five (5) minute sample intervals during the License Term.
+
+ab.
+"Update" is defined in the Service Description Document that pertains to the Maintenance Services purchased or included with the Software, as applicable.
+
+ac.
+"Use" means to install, utilize, access, activate, or view the Software in executable form.
+
+2.
+License Grant.
+
+a.
+Subject to the terms and conditions of this Agreement, including, without limitation, this EULA, Juniper grants You a non-exclusive and non-transferable license, with no right to grant any sublicense, to Use, solely during the License Term, (i) the Software, and (ii) each Update made available as part of Maintenance Services contracted for such Software license or Juniper Platform (for Embedded Software Licenses and its associated Feature Set Licenses), for up to the Licensed Units. Each Update, if any, shall be subject to the same terms and conditions as the Software to which such Update pertains.
+
+b.
+As long as Your Use of the Software does not exceed the Licensed Units that You have purchased, You may Use the Software on any device that supports it, EXCEPT (i) Software under an Embedded Software License; (ii) for operating system Software that is licensed and purchased separately from the Juniper Platform, which, assuming such operating system Software is under an effective warranty or Maintenance Services agreement, may only be installed and Used on a replacement Juniper Platform (obtained from Juniper or an Approved Source) in the event of a hardware failure (with prompt written notice to Juniper); (iii) for Software and its Updates accessed by You through a Commercial Cloud Service provider acting as an Authorized Reseller or other Juniper-authorized Commercial Cloud Service provider in which case You shall be entitled to access and Use only such Software Instance(s) as may be provisioned for You in the Commercial Cloud Service environment and Your right to access and Use shall be solely through the Commercial Cloud Service; or (iv) as otherwise agreed to in a written amendment to this Agreement or as set forth in a SSLA (if any).
+
+c.
+You may not make any copies of the licensed Software except as reasonably necessary for archival and "cold" back-up purposes, but not for failover or "warm" back-up purposes.
+
+d.
+If the Software and the license management technology allows it, You may combine licenses on a single Instance of the Software so that the maximum number of Licensed Units equals the aggregate of all Software licenses assigned to that Instance.
+
+e.
+Software that is licensed for "lab", "classroom", "rial", "demo", redundant, failover, or other non-commercial Uses may not be Used in a production environment and may only be Used for the purposes described in either the SKU or associated SSLA (if any).
+
+f.
+In the event that the Juniper Platform does not include a Software license, a separate Software license must be acquired in order to Use the operating system Software.
+
+3.
+License Entitlement and Activation.
+
+a.
+To download purchased Software, You must register by name as the end user of the Software with Juniper. Juniper will email the License Entitlement to You at the time of purchase. You must provide a designated email address for receipt of any License Entitlement on the purchase order to Juniper. Juniper shall not be liable for acts and omissions of the Authorized Reseller, including but not limited to, the Authorized Reseller?s failure to include Your proper email address on the purchase order to Juniper. The License Entitlement will provide You or the Authorized Reseller, if applicable, the instructions for retrieving the license keys for activations.
+
+b.
+Except for Embedded Software Licenses, when Software is lawfully received from Juniper or from an Approved Source and You do not receive the License Entitlement, then You may request in writing such License Entitlement from the Approved Source or Juniper. If Juniper has not generated a License Entitlement for the Software (other than for Embedded Software Licenses), You may only Use the Software for non-commercial purposes and as further described in Section 5.d. below.
+
+c.
+For non-Juniper branded products and/or services delivered in connection with this Agreement, such third party products and/or services shall be separately governed and licensed by the applicable third party product and/or services terms and conditions. Such third party terms and conditions shall supersede this Agreement. For the avoidance of doubt, the third party supplier of non-Juniper branded products and services shall be solely responsible for support, warranties, indemnities and other terms and conditions applicable to third party products and services.
+
+4.
+License Restrictions.
+
+a.
+A license for more than one Licensed Metric (i.e. 10M, 50 Nodes, 1000 Sessions, etc.) may not be split across multiple Instances or copies of the Software.
+
+b.
+Licenses or rights to and in the Software that are not expressly granted in this Agreement shall not arise by implication or otherwise and are hereby expressly reserved.
+
+c.
+You shall have no right or license in the Software unless You rightfully acquired the Software license from an Approved Source or from Juniper directly. Use of the Software may not exceed the Licensed Units for such Software.
+
+d.
+You may not sublicense, transfer, or assign, whether voluntarily or by operation of law, any right or license in or to the Software to any other person or legal entity, including an Affiliate, even if You transfer title to the Juniper Platform or when a lease to any Juniper Platform ceases. Any such attempted sublicense, transfer, or assignment shall be void. Title to Juniper Platforms may only be transferred after the deletion of the Software from such Juniper Platform. Transferred Juniper Platforms and subsequent software licensing are subject to the Service and Support Inspection and Reinstatement Policy that can be accessed at https://support.juniper.net/support/pdf/guidelines/990222.pdf.
+
+e.
+You may provide access to the Software to Your contractor(s), solely for Your benefit, and only if each such contractor has agreed in writing to adhere to the terms and conditions of this Agreement. You shall remain fully and primarily responsible to Juniper and its licensors, if any, for compliance with each and every provision of this Agreement. Except as provided in this section, You may not allow any other third party to Use the Software. In no event shall You allow any third party to have any right to grant any fourth party Use of the Software.
+
+f.
+Notwithstanding the foregoing, other than as specifically set forth in Section 20, this Agreement does not constitute a third party beneficiary contract and, unless expressly and specifically stated in this Agreement, shall not be construed to be for the benefit of any person or entity not a party hereto, and no such person or entity shall have any license, right, or claim in connection with this Agreement.
+
+g.
+You shall not, directly or indirectly, decompile, disassemble, reverse engineer, modify, unbundle, detach or separate any part of or embedded within, or create derivative works based on, the Software, except solely to the most minimal extent required to be permitted by applicable law, provided that any such limited legal exception, if any, shall not in any event be deemed to be construed to be any contractual waiver by Juniper. If the law requires Juniper to provide interface information to You to adapt the Software, Juniper, at its option, may either (1) provide the information to You subject to Your acceptance of non-disclosure or use limitation terms as Juniper may reasonably require, or (2) perform that adaptation itself at a reasonable charge for services. If multiple Software products are licensed together as a single license, such Software is licensed to be Used as a bundle and no component of the bundle may be Used on a standalone basis or in combination with another standalone product.
+
+h.
+You shall not remove (or, if the license includes the right to make copies of the Software, fail to include in those copies) any readme files, notices, disclaimers, marks, or labels included in or on the Software and/or any Juniper Platform as delivered by Juniper or any Approved Source.
+
+i.
+You may not Use or allow Use of the Software in violation of any applicable law or regulation or to support or facilitate any illegal activity.
+
+j.
+In the limited event that licensed Software includes source code, such source code is provided for reference purposes only unless expressly licensed otherwise by Juniper or its licensors.
+
+5.
+Subscription and License Term.
+
+a.
+Subscription Use. If Software is licensed on a Subscription basis, the fixed Subscription Term will be listed in the SKU or associated SSLA (if any). The Subscription start date will commence on the date that Juniper sends the License Entitlement to You or Your agent (including an Approved Source), if any. The Subscription will end at the expiration of the Subscription Term. The Subscription will not automatically renew. For any Subscription, (i) new Subscriptions can be purchased at any time, provided that such purchases are not for retroactive coverage; and (ii) upon Your timely renewal of a Subscription, the start date of Your renewed Subscription Term will be the day following the expiration of Your current Subscription Term.
+
+b.
+Perpetual Use. Licensed Software that is lawfully purchased from an Approved Source and is not (i) a Subscription license, (ii) provided for Non-commercial Purposes (defined below), or (iii) otherwise limited to a finite term as indicated in an SSLA, if any, shall be deemed to have a Perpetual License Term. The Perpetual License Term will commence on the date that Juniper sends the associated License Entitlement to You or Your agent (including an Approved Source), if any.
+
+c.
+No Renewal Obligation. For the avoidance of doubt, unless otherwise agreed to in writing by Juniper, Juniper shall not be obligated to renew or extend any License Term or Subscription Term.
+
+d.
+Non-Commercial Purposes. Software that is licensed for non-commercial purposes including but not limited to trial, demonstration, education, or Your internal testing and lab purposes ("Non-commercial Purposes"), shall have a limited one-time License Term of thirty (30) calendar days, unless otherwise expressly permitted by Juniper in writing or as configured in the activation key generation process by Juniper. In no event shall Juniper have any obligation to continue or to renew any Software license (including, without limitation, the generation of any license key) for Software licensed for Non-commercial Purposes.
+
+e.
+Payment Terms. If You are buying Our pass-through products from an Authorized Reseller, You will pay all fees based on Authorized Reseller?s invoice. In the event that You are purchasing Juniper products directly from Juniper, You will pay Juniper the License Fee or Subscription Fee based on the invoice within thirty (30) days of the invoice date.
+
+f.
+Post-Pay License Model. For certain products, the Post-Pay License model may be available. In the Post-Pay License Model, You can execute an agreement for the licensing of Software now and pay for the usage of that Software from the date of activation of that instance of the Software. All Software delivered under the Post Pay Licensing Model shall be based on Your monthly activation level as reported by you to Juniper in arrears in an activation report (each, a "Post Pay Activation Report"). You agree to submit Post Pay Activation Reports to Juniper on a monthly basis. Each Post Pay Activation Report shall be due by the 15th day of each month following the reporting month. Your Post Pay Activation Report must include the following information: (a) name of Software deployed, (b) number of Software licenses, (c) number of nodes, servers, mailboxes or other applicable metrics licensed, (d) type, length of license sold (e.g., -month subscription, or perpetual) (e) applicable License fees, Subscription fees and/or any applicable fees for Maintenance Services, and (f) calculation of fees due Juniper. The corresponding Post Pay Activation Report shall be e-mailed to the individual account manager named in the Juniper quote associated with the Software. Juniper shall invoice You for the amounts due as established in the quote.
+
+i.
+Post Pay Licensing Model Fees. The Software license start date should be the first date of each month on all instances activated during that month and the end date is the last date of each month thereafter. The Software license fees shall be charged based on the start and end date of each license activation as defined above. You shall be charged for the entire month, with no proration for activations after the first day of the month.
+
+ii.
+Post Pay License Grant. Software licenses purchased by You under the Post Pay Model, as outlined in corresponding quote and purchase order, shall be made available by Juniper via electronic download.
+
+6.
+Maintenance Services; Updates.
+
+a.
+Subject to the End of Life Policy located at https://support.juniper.net/support/pdf/eol/990833.pdf, Maintenance Services for Software provided directly by Juniper are subject to the terms and conditions of this Agreement, including, without limitation, the End User Support Agreement and the applicable Service Description Document found at https://support.juniper.net/support/guidelines/:
+
+i.
+Maintenance Services for Embedded Software (and its related Separately Licensable Features) are described in the Juniper Care Service Description Document.
+
+ii.
+Maintenance Services for all other Software are described in the Juniper Care Software Advantage Service Description Document.
+
+b.
+If the Software is a Subscription, then during the Subscription License Term, Juniper shall provide Maintenance Services for that Software at no additional charge.
+
+c.
+If the Software is licensed under a Perpetual License Term, Maintenance Services are available for purchase separately and, if purchased, must be purchased for all licensed Software and at the same level of service. You must have an active Maintenance Services contract to receive Updates.
+
+d.
+If Updates are made available as part of the Maintenance Services, the right to Use the Software (or portion of the Software) that the Update replaces shall immediately cease if You are using the updated version.
+
+e.
+If maintenance and support services are purchased from and performed by any third party services provider ("TPSP"), including a Juniper-authorized third party service provider, You acknowledge and expressly agree that:
+
+i.
+such TPSP shall not be providing such services as a partner, joint venture, employee, contractor, subcontractor, agent, or Affiliate of Juniper and in no event shall any such TPSP have any right to bind Juniper contractually or to enter into, modify, terminate, extend, or renew any agreement on Juniper?s behalf;
+
+ii.
+Your sole recourse, including, without limitation, for any breach of contract, damage, or loss, in connection with such TPSP services shall be solely against such TPSP and in no event shall Juniper have any liability therefore; and, Solely to the limited extent, if any, that such TPSP has specifically been granted such rights in writing from Juniper, such TPSP may distribute Updates to Your and any such Updates shall be subject to the terms and conditions of this Agreement, including, without limitation, this EULA.
+
+7.
+Taxes. All prices and fees payable in respect of any license to Software (including any Subscription) or any Maintenance Services contract entered into with Juniper are exclusive of tax. You shall be responsible for paying taxes arising from the licensing or delivery of Software (including any Subscription) or purchase of Maintenance Services. If applicable, valid exemption documentation for each taxing jurisdiction shall be provided to Juniper prior to invoicing, and You shall promptly notify Juniper if Your exemption is revoked or modified. All payments that You make shall be net of any applicable withholding tax. You will provide reasonable assistance to Juniper in connection with such withholding taxes by promptly providing Juniper with valid tax receipts and other required documentation showing Your payment of any withholding taxes; completing appropriate applications that could reduce the amount of withholding tax to be paid; applying for reduced tax rates; and notifying and assisting Juniper in any audit or tax proceeding related to transactions hereunder. You shall comply with all applicable tax laws and regulations, and You will promptly pay or reimburse Juniper for all costs and damages related to any liability incurred by Juniper Networks as a result of Your non-compliance or delay with its responsibilities herein. Neither party shall be liable for taxes or assessments on the other party?s net income, gross income, capital, net worth, franchise, privilege, property, or any similar taxes or assessments. Your obligations under this Section 7 shall survive termination or expiration of this Agreement.
+
+8.
+Your Data. Unless Juniper otherwise agrees in writing, You shall not disclose or provide Juniper access to any personally-identifiable information, whether in data or any other form. You shall be solely responsible for all consequences of any such disclosure or grant of access.
+
+9.
+Ownership. Juniper and Juniper?s licensors, respectively, retain exclusive ownership of all right, title, and interest of all intellectual property and any and all other legal rights in and to the Software. Nothing in this Agreement constitutes a sale or other transfer or conveyance of any right, title, or interest in the Software. For the sake of clarity, the Software is licensed pursuant to the terms and conditions of this Agreement, including, without limitation, this EULA, and not sold.
+
+10.
+Java Related Trademark Guidelines. To the extent the licensed Software includes Java, You acknowledge that Oracle America, Inc. owns the Java trademark and all Java-related trademarks, logos and icons including the Coffee Cup and Duke ("Java Marks") and agrees to: (a) comply with the Java Trademark Guidelines at http://www.oracle.com/us/technologies/java/java-licensing-logo-guidelines-1908204.pdf; (b) not do anything harmful to or inconsistent with Oracle's rights in the Java Marks; and (c) assist Oracle in protecting those rights, including assigning to Oracle any rights acquired by You in any Java Mark.
+
+11.
+Commercial Cloud Services. In the event that You license Software on a standalone basis (i.e., separate and apart from and not associated with a Juniper Platform), Your right of access and Use of the Software as part of Commercial Cloud Services is subject to the ongoing validity and compliance with the applicable Commercial Cloud Service terms of use imposed by the Commercial Cloud Service provider. To the extent that the Software acts as a client to separately purchasable Commercial Cloud Services, only the Software client component shall be subject to this Agreement. Termination, suspension or unavailability of the Commercial Cloud Service is at Your own risk and You acknowledge that Juniper shall have no liability or duty arising out of any such termination, suspension or unavailability. You further understand that in order to Use the Software, You may have to purchase license rights to and install third party software that is compatible with the Software operating in the Commercial Cloud Services environment, and Juniper disclaims all warranties, representations or assurances regarding the suitability or any other aspect of such third party software.
+
+12.
+Confidentiality.
+
+a.
+"Confidential Information" includes the Software, any information disclosed by Juniper to You relating to the Software or any other information that a reasonable person would deem to be of a confidential nature given the nature of such information and/or the circumstances under which such information is disclosed. Confidential Information does not include information that: (a) is or becomes generally known through no fault of Yours, (b) is known to You at the time of disclosure, as evidenced by its records, (c) is hereafter furnished to You by a third party as a matter of right and without restriction on disclosure; (d) is independently developed by You without any breach of this Agreement; or (e) is disclosed in response to a valid order of a court or other governmental body or is otherwise required by law to be disclosed, provided You give prompt and sufficient notice to Juniper to enable it to take protective measures.
+
+b.
+You shall use a reasonable degree of care to maintain all Confidential Information in confidence and shall not disclose to any third party nor use Confidential Information of Juniper for any unauthorized purpose. You may only disclose Confidential Information to those of its employees and representatives that both (i) have a need to know for Your internal purposes in configuring, installing, Using or supporting the Software and (ii) are legally bound by confidentiality obligations no less stringent than those of this Agreement.
+
+13.
+Termination.
+
+a.
+Termination for Breach. Juniper may terminate Your license to the Software and any Updates immediately upon written notice to You if You have Used the Software in excess of its license rights (including, but not limited to, Use in excess of the Licensed Units or Use of unlicensed Separately Licensable Features) or otherwise breaches this Agreement, including the EULA. This right to terminate for breach is in addition to any other remedy to which Juniper may be entitled to pursue.
+
+b.
+Termination for Insolvency. Either Party may terminate this Agreement, including the EULA, or any license hereunder, effective immediately upon written notice, if the other Party becomes the subject of a voluntary or involuntary petition in bankruptcy or any proceeding relating to insolvency, receivership, liquidation or composition for the benefit of creditors, if, in the case of involuntary petitions or proceedings, that petition or proceeding is not dismissed with prejudice within sixty (60) calendar days after filing.
+
+c.
+Effect of Termination or Expiration. Upon termination of this Agreement, including the EULA or expiration of a Subscription License Term (without renewal or reinstatement), You shall promptly permanently delete, destroy, or return to Juniper all copies of the Software and any Confidential Information in its possession or control. Juniper may, at its option, require an authorized representative of Yours to certify that such Software and documentation was deleted and/or destroyed and You shall promptly comply with such requirement. The following sections of this EULA shall survive termination of this Agreement or any licenses granted hereunder: : 4, 8, 9, 10, 12, 13, 14, 16, 17, 18, 19, 21, 23 and 24.
+
+14.
+Recordkeeping and Audit. You shall keep Software license compliance logs and monitor the Use of all Software and promptly purchase Software license rights (including Maintenance Services for rights to Updates, if applicable) for any Use that exceeds Your Software license rights. No more than once per year, Juniper may request, and You shall promptly provide, Software license compliance log reports to the extent the Software is capable of generating such logs. You shall allow Juniper or its independent third party auditors, at Juniper?s discretion, access to Your facilities, personnel, records, reports, and networks and permit the auditing Party to make copies as reasonably necessary to validate compliance with this Agreement. If an audit is performed and You are found to be out of compliance with this Agreement, including the EULA, You shall pay all reasonable costs incurred by Juniper and, to the extent applicable, its independent third party auditors, in conducting the audit, in addition to any Software license and/or Maintenance Service fees necessary for You to become compliant herewith. The remedies set forth in this Section are in addition to any other remedy to which Juniper may be entitled to pursue. Failure to remediate excess Use shall be a material breach of this Agreement, including the EULA.
+
+15.
+Limited Warranty. To the fullest extent not prohibited by law, Software licensed for any non-commercial purpose including but not limited to demonstration, trial, lab, testing, or educational uses are furnished "AS IS" WITH ALL FAULTS AND WITHOUT EXPRESS OR IMPLIED WARRANTIES, CONDITIONS, OR REMEDIES. For any other Software licensed under this Agreement, including the EULA, the Software warranty, including warranty restrictions and disclaimers, is set forth in the Product Warranty Policy located at https://support.juniper.net/support/warranty/ and is hereby incorporated by reference into this EULA.
+
+16.
+Warranty Restrictions. No warranty shall apply if the Software or the Juniper Platform (or other hardware on which the Software operates) (a) has been altered, except by Juniper; (b) has not been installed, operated, repaired, or maintained in accordance with documentation and instructions made available by Juniper; (c) has been subjected to unreasonable physical, thermal or electrical stress, misuse, negligence, or accident; or (d) has been licensed solely for the non-commercial purposes set forth in Section 5c of this EULA or if the Software is beta software or otherwise has not been commercially released. In addition, neither the Software nor any Juniper hardware system on which it may be installed is designed or intended for (i) use in the design, construction, operation or maintenance of any nuclear facility, (ii) navigating or operating aircraft; (iii) operating life-support or life-critical medical equipment or (iv) incorporation in a dwelling or for personal, family, or household purposes or otherwise for use as a consumer product, and Juniper disclaims any express or implied warranty of fitness for such uses. You are solely responsible for backing up programs and data to protect against loss or corruption. JUNIPER WARRANTY OBLIGATIONS DO NOT INCLUDE INSTALLATION, REINSTALLATION, CONFIGURATION, OR MAINTENANCE SERVICES OF ANY KIND.
+
+17.
+DISCLAIMER OF WARRANTIES. JUNIPER, ITS DIRECTORS, OFFICERS, EMPLOYEES, AFFILIATES, APPROVED SOURCES, RESELLERS, DISTRIBUTORS, SUPPLIERS, SUBLICENSEES, AND AGENTS ("DISCLAIMING PARTIES") HEREBY DISCLAIM ANY WARRANTY, REPRESENTATION OR ASSURANCE THAT THE SOFTWARE, THE JUNIPER PLATFORM, OR ANY OTHER EQUIPMENT OR NETWORK RUNNING THE SOFTWARE, WILL OPERATE WITHOUT ERROR OR INTERRUPTION, OR WILL BE FREE OF VULNERABILITY TO INTRUSION OR ATTACK. EXCEPT FOR THE EXPRESS WARRANTIES AND REMEDIES SET FORTH IN THE PRODUCT WARRANTY POLICY, TO THE EXTENT PERMITTED BY LAW, THE SOFTWARE AND THE JUNIPER PLATFORM EACH ARE FURNISHED, AND ANY SERVICES PROVIDED BY JUNIPER IN CONNECTION THEREWITH ARE PERFORMED, "AS IS" AND WITH ALL FAULTS. JUNIPER SHALL NOT BE RESPONSIBLE FOR ANY THIRD PARTY?S UNAUTHORIZED ACCESS TO OR ALTERATION OF ANY OF YOUR TRANSMISSION(S) OR DATA, ANY MATERIAL OR DATA SENT OR RECEIVED USING THE SOFTWARE OR ANY JUNIPER PLATFORM, ANY INTERRUPTION, DEFECT, DELAY IN OPERATION OR TRANSMISSION, COMPUTER VIRUS, COMMUNICATION LINE FAILURE, DESTRUCTION, OR USE OF RECORD. JUNIPER DOES NOT WARRANT THAT THE SOFTWARE OR JUNIPER PLATFORM IS FREE OF INACCURACIES, ERRORS, BUGS, VIRUSES, HACKERS, INTERRUPTIONS, OR OTHER HARMFUL COMPONENTS OR PROGRAM LIMITATIONS. AS BETWEEN YOU AND JUNIPER, THE ENTIRE RISK ARISING OUT OF THE USE OR PERFORMANCE OF THE SOFTWARE, THE JUNIPER PLATFORM, OR ANY RELATED SERVICES, REMAINS WITH YOU, WHO ASSUMES THE ENTIRE COST OF ALL NECESSARY SERVICING, REPAIR, OR CORRECTION OF PROBLEMS CAUSED BY ANY OF THE FOREGOING, FOR ANY ACT OF GOD, INTERNET BLACKOUT (OR BROWNOUT), YOUR IMPROPER APPLICATION ARCHITECTURE OR IMPLEMENTATION, ALTERATION OF ANY TRANSMISSION OR DATA, ANY MATERIAL OR DATA SENT OR RECEIVED OR NOT SENT OR RECEIVED, OR ANY TRANSMISSION(S) ENTERED THROUGH THE SOFTWARE. EXCEPT FOR THE EXPRESS WARRANTIES AND REMEDIES SET FORTH IN THE PRODUCT WARRANTY POLICY, JUNIPER DISCLAIMS ALL CONDITIONS, REMEDIES AND WARRANTIES IN AND TO THE SOFTWARE AND THE JUNIPER PLATFORM (WHETHER EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE), INCLUDING, WITHOUT LIMITATION, ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NONINFRINGEMENT, SATISFACTORY QUALITY, NON-INTERFERENCE, ACCURACY OF INFORMATIONAL CONTENT, OR ARISING FROM A COURSE OF DEALING, LAW, USAGE, OR TRADE PRACTICE. TO THE EXTENT AN IMPLIED WARRANTY CANNOT BE EXCLUDED, THAT WARRANTY IS LIMITED IN DURATION TO THE EXPRESS WARRANTY PERIOD. BECAUSE SOME STATES OR JURISDICTIONS DO NOT ALLOW LIMITATIONS ON HOW LONG AN IMPLIED WARRANTY LASTS, THE ABOVE LIMITATION MAY NOT APPLY. THIS WARRANTY GIVES YOU SPECIFIC LEGAL RIGHTS, AND YOU MAY ALSO HAVE OTHER RIGHTS WHICH VARY FROM JURISDICTION TO JURISDICTION. THIS DISCLAIMER AND EXCLUSION SHALL APPLY EVEN IF THE EXPRESS WARRANTY FAILS OF ITS ESSENTIAL PURPOSE.
+
+18.
+LIMITATION OF LIABILITY. TO THE FULLEST EXTENT NOT PROHIBITED BY LAW, IN NO EVENT SHALL ANY OF THE DISCLAIMING PARTIES BE LIABLE FOR ANY CAUSE OR ACTION OR CLAIM, HOWSOEVER ARISING, INCLUDING, WITHOUT LIMITATION, WHETHER IN CONTRACT, TORT, WARRANTY, OR OTHERWISE FOR DAMAGES FOR LOSS OF BUSINESS PROFITS, BUSINESS INTERRUPTION, LOSS OR CORRUPTION OF BUSINESS INFORMATION OR OTHER DATA, COST OF COVER OR OTHER PROCUREMENT OF SUBSTITUTE GOODS, ANY OTHER PECUNIARY LOSS, OR ANY SPECIAL, INCIDENTAL, INDIRECT, PUNITIVE, HYBRID, OR CONSEQUENTIAL DAMAGES INCURRED IN CONNECTION WITH, ARISING OUT OF, OR RELATED TO THIS AGREEMENT, INCLUDING, WITHOUT LIMITATION, THE SOFTWARE, ANY UPDATE THERETO,THE JUNIPER PLATFORM, OR ANY RELATED SERVICES, OR THE FAILURE TO PROVIDE FULL OR ADEQUATE SOFTWARE SUPPORT OR MAINTENANCE SERVICES, EVEN IF ANY OF THE DISCLAIMING PARTIES HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. YOU EXPRESSLY ACKNOWLEDGE THAT THE CUMULATIVE LIABILITY OF THE DISCLAIMING PARTIES IN CONNECTION WITH ANY AND ALL CAUSES OF ACTION AND ALL THEORIES OF LIABILITY WHETHER UNDER CONTRACT OR STATUTE, IN TORT (INCLUDING, WITHOUT LIMITATION, PRODUCT LIABILITY) OR OTHERWISE, SHALL NOT EXCEED THE GREATER OF (I) ONE HUNDRED US DOLLARS ($100) FOR ALL JUNIPER SOFTWARE LICENSED TO YOU OR JUNIPER PLATFORMS SOLD TO YOU; OR (II) THE PRICE PAID TO JUNIPER FOR LICENSE RIGHTS TO THE SOFTWARE WHICH GAVE RISE TO THE CLAIM. YOU SHALL DEFEND, INDEMNIFY AND HOLD JUNIPER HARMLESS FROM AND AGAINST ANY LIABILITY, DAMAGES, LOSS OR COST (INCLUDING ATTORNEYS' FEES) ARISING OUT OF OR RELATING TO ANY DISPUTE, LAWSUIT, ADMINISTRATIVE HEARING, ARBITRATION OR SETTLEMENT BASED ON ANY CLAIM BY ANY PARTY OTHER THAN YOU RELATING TO YOUR VIOLATION OF THIS AGREEMENT OR USE OF THE SOFTWARE (INCLUDING ANY UPDATE THERETO) OR THE JUNIPER PLATFORM. JUNIPER HAS SET ITS PRICES AND ENTERED INTO THIS AGREEMENT IN RELIANCE UPON THE DISCLAIMERS OF WARRANTY AND THE LIMITATIONS OF LIABILITY STATED ABOVE. THOSE DISCLAIMERS AND LIMITATIONS REFLECT AN ALLOCATION OF RISK BETWEEN THE PARTIES, AND THEY FORM AN ESSENTIAL BASIS OF THE BARGAIN BETWEEN THE PARTIES.
+
+19.
+Compliance with Laws; Export Requirements.
+
+a.
+You shall comply with all applicable laws and regulations in connection with Your movement and Use of the Software.
+
+b.
+You shall not re-export or transfer in country the Software or any portion of it, or any non-published materials or information furnished in connection with the Software or with Maintenance Services without first obtaining all licenses, permits and authorizations under US and any other applicable laws and regulations that export, re-export, transfer in country, use or importation of the Software. Without limiting the foregoing, You warrant, represent and agree that You do not intend and You will not (i) use or permit anyone else to use the Software for or in connection with any Prohibited Activity; (ii) transport, deliver or transmit the Software to, or Use the software in Cuba, Iran, North Korea, Sudan, Syria or the Crimean region; (iii) grant access to any Software to another person, entity or organization located in Cuba, Iran, North Korea, Sudan, Syria or the Crimean region; or (iv) transport, deliver or transmit the Software to a Sanctioned Party, as defined below (or grant any such Sanctioned Party access to the Software).
+
+c.
+Juniper may without liability or breach suspend warranty support and/or Maintenance Services if and so long as Juniper has reason to believe that such suspension is necessary to avoid violation of any applicable law or regulation.
+
+d.
+As used herein, "Prohibited Activity" means any of the following: (i) any activity in violation of applicable law, (ii) (A) the design, development, fabrication or testing of nuclear weapons or nuclear explosives; (B) the design, construction, fabrication, or operation of facilities for the chemical processing of irradiated special nuclear or source material, for the production of heavy water, for the separation of isotopes of special nuclear material or for the fabrication of nuclear reactor fuel containing plutonium; (C) the design, development, production of or use of rocket or missile systems, space launch vehicles, sounding rockets, or unmanned air vehicle systems (including cruise missile systems, target drones and reconnaissance drones); or (D) the design, development, production, stockpiling, or use of chemical or biological weapons, or precursors, or (iii) engage in any activity in violation of human rights, of democratic principles or of the freedom of speech as defined in the Charter of Fundamental Rights of the EU where use is made of interception techniques and digital data transfer equipment for monitoring mobile phones or for reading text messages or where use is made of targeted surveillance of internet use (e.g., by means of monitoring centers and lawful interception gateways.
+
+e.
+As used herein, "Sanctioned Party" means a party identified on the US Bureau of Industry and Security (BIS) Entity List, Denied Persons List, Unverified List or the US Office of Foreign Asset Control (OFAC) Specially Designated Nationals list ("SDN List") (or a party 50% or more controlled by anyone such SDN List), or any other party on any component list of the Comprehensive Screening List (https://www.export.gov/article?id=Consolidated-Screening-List ).
+
+20.
+Commercial Computer Software. The Software is a "commercial item" as defined at Federal Acquisition Regulation (48 C.F.R.) ("FAR") section 2.101 comprised of "commercial computer software" and "commercial computer software documentation" as those terms are used in FAR 12.212. Consequently, regardless of whether You are the US Government or a department or agency thereof, You shall acquire only those rights with respect to the Software that are set forth in this Agreement and the License Entitlement.
+
+21.
+Embedded Third Party Software. Any licensor of Juniper whose software is embedded in the Software shall be a third party beneficiary with respect to this Agreement, and that licensor shall have the right to enforce this Agreement in its own name as if it were Juniper. In addition, certain third party software may be provided with the Software and is subject to the accompanying license(s), if any, of its respective owner(s). To the extent portions of the Software are distributed under and subject to open source licenses obligating Juniper to make the source code for those portions publicly available (such as the GNU General Public License ["GPL"] or the GNU Lesser General Public License ["LGPL"]), Juniper will make those source code portions (including Juniper modifications, as appropriate) available upon request for a period of up to three years from the date of distribution. You may obtain a copy of the GPL at http://www.gnu.org/licenses/gpl.html, and a copy of the LGPL at http://www.gnu.org/licenses/lgpl.html. Open source information and information on contacting Juniper can be found at http://support.juniper.net/support/.
+
+22.
+Standalone Third Party Software. If Juniper makes third party software available for its end users without being embedded in Juniper proprietary Software, such third party software shall be subject to this Agreement (including the Software Specific License Addendum, if any).
+
+23.
+Governing Law. This Agreement shall be exclusively interpreted and governed by the laws of the State of California without reference to conflict of law principles. The Parties specifically agree that the United Nations Convention on Contracts for the International Sale of Goods and the Uniform Computer Information Transactions Act shall not apply to this Agreement.
+
+24.
+Venue. For any disputes arising out of or in connection with this Agreement, the Parties consent to the personal and exclusive jurisdiction of, and venue in, the state and federal courts within Santa Clara County, California, except that Juniper may seek equitable relief in any court of competent jurisdiction to protect its Confidential Information from misappropriation or disclosure by Your. If the jurisdiction that You are incorporated in will not recognize and enforce the judgment of a California court, You agree that any controversy or claim arising out of or relating to this Agreement, or a breach thereof, shall be determined by arbitration administered by the International Centre for Dispute Resolution in accordance with its International Arbitration Rules. The number of arbitrators shall be three, the place of arbitration shall be Santa Clara County, California, U.S.A., and the language of the arbitration shall be English. Any award of the arbitral tribunal shall be final and binding on the Parties. The arbitral award may be enforced in any court of competent jurisdiction. Nothing in this clause shall preclude a Party from seeking interim equitable relief or orders for interim evidence preservation in any court of competent jurisdiction to prevent irreparable injury to a Party?s claim, or to Juniper in the event of an actual or possible breach of confidentiality, intellectual property, or proprietary rights provisions in this Agreement. Any such application to a court shall not be considered demonstrating an intention to act inconsistently in any way with the agreement to settle disputes by arbitration in accordance with the preceding clause.
+
+25.
+Force Majeure. Except for Your unauthorized Use of Software and payment of any outstanding license fees, neither Party shall be responsible for any failure or delay for only so long as its failure to or delay in performance is due to causes beyond its reasonable control, including, but not limited to, acts of God, war, riot, embargoes, acts of civil or military authorities, fire, floods, earthquakes, accidents, strikes, or fuel crises ("Force Majeure"), provided that such Party gives prompt written notice thereof to the other Party and uses its diligent efforts to resume performance. Either Party shall be entitled to terminate this Agreement if the Force Majeure event continues for a period of one month.
+
+26.
+Separate Signed Agreements. If You and an authorized representative of Juniper have signed a valid separate written agreement governing Your Use of any or all Software licensed from Juniper, then with respect to that Software that signed agreement shall take precedence solely to the limited extent it is inconsistent with the applicable provision(s) of this Agreement.
+
+27.
+Complete Agreement; Modifications. This Agreement constitutes the entire agreement between the Parties regarding its subject matter and supersedes all prior agreements, commitments or representations, oral or written related to the Software, including any Update thereto, the Juniper Platform, and any related services. This Agreement shall supersede all pre-printed terms and conditions contained on any purchase order, task order or other business form submitted by either Party to the other. Except as otherwise provided in this section, this Agreement may not be amended or modified except by a writing executed by the duly authorized representatives of each Party. If the Parties have signed a separate agreement pertaining to Your rights and duties regarding the Software, the Juniper Platform, or any services, then that written agreement shall control if there is any conflict between it and this Agreement.
+
+28.
+Severability. If any provision of this Agreement is determined by an arbitrator or court of competent jurisdiction to be prohibited or unenforceable, the Parties shall have ten (10) business days to renegotiate each such provision in good faith. If the Parties are unable to do so, then such provision shall be deemed narrowed to the broadest term permitted and shall be enforced as so narrowed. If any such provision is nevertheless deemed by such arbitrator or court to be unlawful, void, or unenforceable, it shall be deemed severable from, and shall in no way affect the validity or enforceability of any remaining provision of, this Agreement.
+
+29.
+Notification. Except as otherwise provided elsewhere in this Agreement, any report or notice under this Agreement shall be given in a writing. Notices to Juniper Networks (US), Inc. shall be mailed to 1133 Innovation Way, Sunnyvale, CA 94089 USA attn.: EULA Notices. Notices to Juniper Networks International B.V. shall be mailed to Juniper Networks International B.V., Boeing Avenue 240, 1119 PZ Schiphol-Rijk, Amsterdam, The Netherlands, attn.: Legal Department. Notices to Juniper Networks (U.K.) Limited shall be mailed to Building 1 Aviator Park, Station Road, Addlestone, Surrey, K15 2PG, United Kingdom, attn.: Legal. Notices to Juniper Networks Australia Pty Ltd shall be mailed to Level 6, 60 Miller Street, North Sydney NSW 2060, Australia Notices to Juniper Networks Solution India Private Limited shall be mailed to 503, 504, 5th Floor Copia Corporate Suites, Plot No. 9, Non Hierarchical Commercial Centre, Jasola Vihar, New Delhi-110 044, India, attn.: Legal. All notices to Juniper shall include Your name, contact name, address and email address. Notices to You will be sent by email to the contact email address associated with Your account for access to Juniper?s Customer Support Center at https://support.juniper.net/support/. If You have no such account, then notification shall be deemed given to You by emailing or mailing notice to any office or contact email address for the Approved Source from which You acquired the Software license.
+
+30.
+Waiver. No waiver of satisfaction of a condition or nonperformance of an obligation under this Agreement shall be effective unless it is in writing and signed by the Party granting the waiver.
+
+31.
+Order of precedence. In the case of a conflict between any documents referenced in this Agreement that is not expressly resolved in the documents, the terms will control in the following order: (1) the License Entitlement, including the terms and conditions of the SSLA (if any); (2) this EULA; (3) the Product Warranty Policy; (4) the Juniper quote, and (6) any other documents, policies or website content linked in this EULA and hereby incorporated by reference.
+
+32.
+Translations. This EULA and the Software have been written in the English language, and the Parties agree that the English version shall govern and prevail over any other translated version of the EULA. The translations of the EULA have been provided for Your convenience at https://support.juniper.net/support/eula/.

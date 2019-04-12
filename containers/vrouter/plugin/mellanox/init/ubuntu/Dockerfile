@@ -1,6 +1,17 @@
 FROM ubuntu:16.04
 
 ARG CONTAINER_NAME
+ARG CONTRAIL_CONTAINER_TAG
+LABEL vendor="Juniper" \
+      version=$CONTRAIL_CONTAINER_TAG \
+      release="5.1.0" \
+      name=$CONTAINER_NAME \
+      summary="mellanox vrouter kernel module for ubuntu" \
+      description="This image is used to build vrouter.ko for current ubuntu OS that it's running on."
+
+# Add required license as text file in Liceses directory
+RUN mkdir /licenses
+COPY __licensing.txt /licenses/licensing.txt
 
 # This image is used to build vrouter.ko for current ubuntu OS that it's running on.
 # This container uses rpm packages to obtain source of vrouter kernel driver.

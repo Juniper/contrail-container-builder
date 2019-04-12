@@ -4,6 +4,15 @@ ARG LINUX_DISTR=centos
 ARG LINUX_DISTR_VER=7.4.1708
 FROM $LINUX_DISTR:$LINUX_DISTR_VER
 
+ARG CONTRAIL_CONTAINER_TAG
+LABEL vendor="Juniper" \
+      version=$CONTRAIL_CONTAINER_TAG \
+      release="5.1.0"
+
+# Add required license as text file in Liceses directory
+RUN mkdir /licenses
+COPY licensing.txt /licenses
+
 ARG GENERAL_EXTRA_RPMS=""
 ARG YUM_ENABLE_REPOS=""
 
