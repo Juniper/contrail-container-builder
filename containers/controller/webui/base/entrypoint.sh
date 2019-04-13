@@ -133,7 +133,7 @@ config.storageManager.strictSSL = ${storageManager_strictSSL};
 config.storageManager.ca = "$storageManager_ca";
 
 config.cnfg = {};
-config.cnfg.server_ip = ${CONFIG_API_VIP:-`get_server_json_list CONFIG`};
+config.cnfg.server_ip = ${CONFIG_API_VIP:-`get_server_json_list CONTROL`};
 config.cnfg.server_port = "$CONFIG_API_PORT";
 config.cnfg.authProtocol = "${cnfg_authProtocol:-http}";
 config.cnfg.strictSSL = ${cnfg_strictSSL};
