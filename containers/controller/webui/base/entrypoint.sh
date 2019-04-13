@@ -149,7 +149,7 @@ config.analytics.ca = ${analytics_ca:-''};
 config.analytics.statusURL = ${analytics_statusURL:-'"/analytics/uves/bgp-peers"'};
 
 config.dns = {};
-config.dns.server_ip = ${dns_server_ip:-`get_server_json_list CONFIG`};
+config.dns.server_ip = ${dns_server_ip:-`get_server_json_list CONTROL`};
 config.dns.server_port = ${dns_server_port:-"'"$DNS_INTROSPECT_PORT"'"};
 config.dns.statusURL = ${dns_statusURL:-'"/Snh_PageReq?x=AllEntries%20VdnsServersReq"'};
 
