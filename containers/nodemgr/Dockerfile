@@ -3,6 +3,9 @@ ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
+LABEL name=$CONTAINER_NAME \
+      summary="Contrail Node Manager" \
+      description="Contrail Node Manager is a monitor process per contrail virtual node that tracks the running state of the processes."
 
 # install chrony, ntp and iputils-clockdiff to enable checking time sync by nodemgr
 RUN yum install -y --setopt=obsoletes=0 contrail-nodemgr python-docker-py chrony ntp && \

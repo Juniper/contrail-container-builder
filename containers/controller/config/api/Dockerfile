@@ -5,6 +5,9 @@ FROM ${CONTRAIL_REGISTRY}/contrail-controller-config-base:${CONTRAIL_CONTAINER_T
 ARG CONTAINER_NAME
 ARG PYTHON_PIP_RPM=python-pip
 ARG PYTHON_PIP_VENV=""
+LABEL name=$CONTAINER_NAME \
+      summary="Contrail Controller Configuration API" \
+      description="Controller Configuration API provides a REST API to an orchestration system."
 
 RUN yum install -y python-neutron-lib $PYTHON_PIP_RPM && \
     if [[ -n "$PYTHON_PIP_VENV" ]] ; then \

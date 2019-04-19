@@ -3,6 +3,9 @@ ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
+LABEL name=$CONTAINER_NAME \
+      summary="Contrail TFTP" \
+      description="Image with TFTP implementation for Contrail Controller Device Manager."
 
 RUN yum install -y tftp-server && \
     yum clean all -y && \

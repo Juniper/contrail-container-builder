@@ -5,6 +5,9 @@ FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
 ARG CONTAINER_NAME
 ARG KAFKA_DISTRO_NAME=kafka_2.11-1.1.1-1
 ARG KAFKA_CACHE=https://github.com/Juniper/contrail-third-party-cache/blob/master/kafka
+LABEL name=$CONTAINER_NAME \
+      summary="Contrail Kafka" \
+      description="Contrail Kafka is used for streaming data in Analytics DB."
 
 ENV KAFKA_DIR=/opt/$KAFKA_DISTRO_NAME \
     KAFKA_CONF_DIR=/opt/$KAFKA_DISTRO_NAME/etc/kafka \
