@@ -3,6 +3,9 @@ ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 ARG CONTAINER_NAME
+LABEL name=$CONTAINER_NAME \
+      summary="Mesosphere Manager" \
+      description="Contrail Mesosphere Manager."
 
 RUN yum install -y python-eventlet python-setuptools python-kazoo \
                    python-bitarray python-pycassa python-bitstring \
