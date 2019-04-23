@@ -23,7 +23,9 @@ function pkt_setup () {
 
 function load_vrouter() {
     lsmod | grep -q vrouter && return 0
-    free -h && sync && echo 2 >/proc/sys/vm/drop_caches && free -h
+    dmesg
+    free -h && echo 2 >/proc/sys/vm/drop_caches && free -h
+    dmesg
     local vrouter_opts=${VROUTER_MODULE_OPTIONS##[\"\']}
     vrouter_opts=${vrouter_opts%%[\"\']}
     load_kernel_module vrouter $vrouter_opts
