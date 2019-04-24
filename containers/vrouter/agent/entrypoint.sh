@@ -105,7 +105,7 @@ if [ "$CLOUD_ORCHESTRATOR" == "kubernetes" ] && [ ! -z $VROUTER_GATEWAY ]; then
     add_k8s_pod_cidr_route
 fi
 
-VROUTER_GATEWAY=${VROUTER_GATEWAY:-`get_default_gateway_for_nic 'vhost0'`}
+VROUTER_GATEWAY=${VROUTER_GATEWAY:-`get_default_vrouter_gateway`}
 vrouter_cidr=$(get_cidr_for_nic 'vhost0')
 echo "INFO: Physical interface: $phys_int, mac=$phys_int_mac, pci=$pci_address"
 echo "INFO: vhost0 cidr $vrouter_cidr, gateway $VROUTER_GATEWAY"
