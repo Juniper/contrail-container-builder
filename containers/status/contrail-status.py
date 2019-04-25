@@ -452,7 +452,11 @@ def get_containers():
 
         # service is not empty at this point
         key = '{}.{}'.format(pod, service) if pod else name
-        key += '.{}'.format(env_hash)
+        if service in INDEXED_SERVICES:
+            # TODO: rework the code to support issue CEM-5176 for indexed services
+            # right now indexed service is implemented only in ansible-deployer and
+            # exited services are not possible there.
+            key += '.{}'.format(env_hash)
         item = {
             'Pod': pod if pod else '',
             'Service': service,
