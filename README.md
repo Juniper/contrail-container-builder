@@ -60,6 +60,17 @@ This deployment will work with noauth authentication.
 
 You can use ```apply.sh``` and ```delete.sh``` helper scripts from ```kubernetes/manifests``` to apply and delete kubernetes deployments without manually using ```resolve-manifest.sh``` and ```kubectl apply```.
 
+There is another option to generate deployment yaml:
+* Download contrail image "Contrail-k8s-manifests" from a registry of your choice (TF, Juniper, DockerHub, etc).
+* It is mandatory to pass variable KUBE_MANIFEST to "docker run" command to get a deployment yaml.
+* To generate a deployment yaml and outputs it in contrail.yaml:<br/>
+``` docker run --rm --network host -it -e KUBE_MANIFEST=contrail-standalone-kubernetes.yaml --env-file common.env $CONTRAIL_REPO_IMAGE > contrail.yaml```<br/>
+* In order to obtain all acceptable KUBE_MANIFEST values - run the command without parameters and a list of values will be generated to output:<br/>
+``` docker run --rm $CONTRAIL_REPO_IMAGE```
+* Additionally the image contains contrail-container-builder repository.
+* To run the container and connect to its shell:<br/>
+``` docker run --rm --network host -it --entrypoint "/bin/bash" $CONTRAIL_REPO_IMAGE ```
+
 ## Multi-node deployment
 
 * Configure ```common.env``` to contain lists of nodes for your deployment for CONTROLLER_NODES, AGENT_NODES, etc before Contrail deployment
