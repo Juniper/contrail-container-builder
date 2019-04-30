@@ -72,54 +72,52 @@ function install_for_centos() {
   iptables -P INPUT ACCEPT
   iptables -P FORWARD ACCEPT
 
-  cat > /etc/yum.repos.d/kubernetes.repo << EOF
+  cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
 baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
 enabled=1
 gpgcheck=1
 repo_gpgcheck=1
-gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg
-     https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+exclude=kube*
 EOF
 
-  setenforce 0 || true
-
-  if [ -f /etc/selinux/config ] && grep "^[ ]*SELINUX[ ]*=" /etc/selinux/config ; then
-    sed -i 's/^[ ]*SELINUX[ ]*=.*/SELINUX=permissive/g' /etc/selinux/config
-  else
-    echo "SELINUX=permissive" >> /etc/selinux/config
-  fi
-
+  setenforce 0
+  sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
   k8s_version="${K8S_VERSION}-0"
   pkgs_to_install="kubelet-\$k8s_version kubeadm-\$k8s_version kubectl-\$k8s_version ntp"
   if ! docker --version 2>&1 ; then
     pkgs_to_install+=' docker'
   fi
-  yum install -y \$pkgs_to_install
-  systemctl enable docker && systemctl start docker
-  systemctl enable kubelet && systemctl start kubelet
-  systemctl enable ntpd.service && systemctl start ntpd.service
+  yum install -y \$pkgs_to_install --disableexcludes=kubernetes
+  systemctl enable --now docker
+  systemctl enable --now kubelet
+  systemctl enable --now ntpd
 
-  sysctl -w net.bridge.bridge-nf-call-iptables=1
-  sysctl -w net.bridge.bridge-nf-call-ip6tables=1
-  echo "net.bridge.bridge-nf-call-iptables=1" >> /etc/sysctl.conf
-  echo "net.bridge.bridge-nf-call-ip6tables=1" >> /etc/sysctl.conf
+  cat <<EOF >  /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+  sysctl --system
 }
 
 disable_swap
 
+
 case "${LINUX_ID}" in
   "ubuntu" )
     install_for_ubuntu
+    kubelet_cfg_file='/etc/systemd/system/kubelet.service.d/10-kubeadm.conf'
     ;;
   "centos" | "rhel" )
     install_for_centos
+    kubelet_cfg_file=\$(rpm -qc kubelet)
     ;;
 esac
 
 need_kubelet_restart='false'
-kubelet_cfg_file='/etc/systemd/system/kubelet.service.d/10-kubeadm.conf'
+echo "INFO: kubelet config file \$kubelet_cfg_file"
 
 # Contrail, at this point in time, does not install CNI/vrouter-agent on nodes marked as control.
 # In a typcical Kubernetes install, kubelets expects to find CNI plugin in nodes they are running.
@@ -131,7 +129,7 @@ if [[ ! ,$AGENT_NODES, == *,$HOST_IP,* ]]; then
   need_kubelet_restart='true'
 fi
 
-docker_cgroup=\$(docker info | awk '/Cgroup Driver:/ {print(\$3)}')
+docker_cgroup=\$(docker system info --format '{{.CgroupDriver}}')
 if [[ -n "\$docker_cgroup" ]] ; then
   echo "INFO: Change kubelet cgroups to \$docker_cgroup"
   sed -i "s/--cgroup-driver=[[:alnum:]]*/--cgroup-driver=\$docker_cgroup/g" "\$kubelet_cfg_file"
