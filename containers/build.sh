@@ -74,7 +74,8 @@ function process_container() {
     for item in `cat ./$dir/.externals` ; do
       local src=`echo $item | cut -d ':' -f 1`
       local dst=`echo $item | cut -d ':' -f 2`
-      cp ./$dir/$src ./$dir/$dst
+#       rsync -r --exclude $dst --exclude '__*' ./$dir/$src ./$dir/$dst
+      rsync -rv --exclude $dst --exclude-from='../.gitignore' ./$dir/$src ./$dir/$dst
     done
   fi
 
