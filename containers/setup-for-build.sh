@@ -47,6 +47,7 @@ if [[ "$LINUX_ID" == 'ubuntu' ]] ; then
   echo 'INFO: disable firewall'
   service ufw stop || echo 'WARNING: failed to stop firewall service'
   systemctl disable ufw || echo 'WARNING: failed to disable firewall'
+  apt-get -y install rsync
 else
   # Disable selinux
   echo 'INFO: disable selinux'
@@ -60,6 +61,7 @@ else
   echo 'INFO: disable firewall'
   service firewalld stop || echo 'WARNING: failed to stop firewall service'
   chkconfig firewalld off || echo 'WARNING: failed to disable firewall'
+  yum install -y rsync
 fi
 iptables -F || echo 'WARNING: failed to flush iptables rules'
 iptables -P INPUT ACCEPT

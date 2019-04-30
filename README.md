@@ -123,6 +123,16 @@ Manifests are designed in a way prescribing kubernetes to lay out Contrail roles
 
 Examples of deployment are described in sections in the beginning.
 
+These manifests are also stored and published in a container "contrail-k8s-manifests". You can generate deployment yamls using this container:
+* Download contrail image "contrail-k8s-manifests" container from a registry of your choice (TF, Juniper, DockerHub, etc).
+* Run docker, specifying KUBE_MANIFEST you want to generate and common.env file with parameters, and store its output in contrail.yaml:
+``` docker run --rm --network host -it -e KUBE_MANIFEST=contrail-standalone-kubernetes.yaml --env-file common.env $CONTRAIL_K8S_MANIFESTS > contrail.yaml```
+* In order to obtain all available KUBE_MANIFEST values - run the command without parameters and a list of values will be generated to output:
+``` docker run --rm $CONTRAIL_K8S_MANIFESTS```
+* Additionally the image contains contrail-container-builder repository, which you can use for any development or viewing purposes.
+* To run the container and connect to its shell:
+``` docker run --rm --network host -it --entrypoint "/bin/bash" $CONTRAIL_K8S_MANIFESTS ```
+
 ### Adding new container
 
 Before adding new container, please fill in a blueprint (https://blueprints.launchpad.net/opencontrail/+specs?show=all) and spec (https://github.com/Juniper/contrail-specs) stating why and how you're planning to do this.
