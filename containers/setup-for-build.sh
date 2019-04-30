@@ -18,6 +18,14 @@ if [[ "$LINUX_ID" == 'rhel' ]] ; then
   sudo -E $DIR/rhel-prepare-system.sh
 fi
 
+sudo -u root /bin/bash << EOS
+if [[ "$LINUX_ID" == 'ubuntu' ]] ; then
+  apt-get -y install rsync
+else
+  yum install -y rsync
+fi
+EOS
+
 # Define global variables
 export package_root_dir="/var/www"
 
