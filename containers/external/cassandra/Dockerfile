@@ -9,6 +9,10 @@ LABEL vendor="Juniper" \
       summary="Contrail Cassandra DB" \
       description="Configuration database for Contrail Controller."
 
+# Add required license as text file in Liceses directory
+RUN mkdir /licenses
+COPY __licensing.txt /licenses/licensing.txt
+
 COPY *.sh /
 RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done'
 

@@ -9,6 +9,10 @@ LABEL vendor="Juniper" \
       summary="Contrail Redis" \
       description="Contrail Redis server supports query engine."
 
+# Add required license as text file in Liceses directory
+RUN mkdir /licenses
+COPY __licensing.txt /licenses/licensing.txt
+
 COPY *.sh hostname_to_ip /
 RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done'
 
