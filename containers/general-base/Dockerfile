@@ -9,6 +9,10 @@ LABEL vendor="Juniper" \
       version=$CONTRAIL_CONTAINER_TAG \
       release="5.1.0"
 
+# Add required license as text file in Liceses directory
+RUN mkdir /licenses
+COPY licensing.txt /licenses
+
 ARG GENERAL_EXTRA_RPMS=""
 ARG YUM_ENABLE_REPOS=""
 

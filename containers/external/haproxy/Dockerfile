@@ -9,6 +9,10 @@ LABEL vendor="Juniper" \
       summary="Contrail HAProxy" \
       description="Contrail HAProxy supports high availability for Contrail container subsystems."
 
+# Add required license as text file in Liceses directory
+RUN mkdir /licenses
+COPY __licensing.txt /licenses/licensing.txt
+
 COPY *.sh /
 
 RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done'
