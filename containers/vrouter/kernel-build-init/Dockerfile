@@ -9,6 +9,10 @@ LABEL vendor="Juniper" \
       summary="Contrail vrouter kernel module for ubuntu" \
       description="This image is used to build vrouter.ko for current ubuntu operating system that it's running on."
 
+# Add required license as text file in Liceses directory
+RUN mkdir /licenses
+COPY licensing.txt /licenses
+
 # This image is used to build vrouter.ko for current ubuntu OS that it's running on.
 # This container uses rpm packages to obtain source of vrouter kernel driver.
 # The container needs /usr/src and /lib/modules mounted from the host to build driver.

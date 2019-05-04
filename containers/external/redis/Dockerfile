@@ -9,6 +9,10 @@ LABEL vendor="Juniper" \
       summary="Contrail Redis" \
       description="Contrail Redis server supports query engine."
 
+# Add required license as text file in Liceses directory
+RUN mkdir /licenses
+COPY licensing.txt /licenses
+
 COPY *.sh /
 
 ENTRYPOINT ["/contrail-entrypoint.sh"]

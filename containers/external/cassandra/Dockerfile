@@ -9,6 +9,10 @@ LABEL vendor="Juniper" \
       summary="Contrail Cassandra DB" \
       description="Configuration database for Contrail Controller."
 
+# Add required license as text file in Liceses directory
+RUN mkdir /licenses
+COPY licensing.txt /licenses
+
 COPY *.sh /
 
 ENTRYPOINT ["/contrail-entrypoint.sh"]
