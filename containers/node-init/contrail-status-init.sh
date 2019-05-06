@@ -12,10 +12,6 @@ if [[ -z "$CONTRAIL_STATUS_IMAGE" ]]; then
   exit 1
 fi
 
-if [ -f /host/usr/bin/contrail-status ]; then
-   exit
-fi
-
 vol_opts='-v /var/run/docker.sock:/var/run/docker.sock'
 if is_ssl_enabled ; then
   vol_opts+=" -v /etc/contrail/ssl:/etc/contrail/ssl"
