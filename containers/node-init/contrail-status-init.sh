@@ -12,10 +12,6 @@ if [[ -z "$CONTRAIL_STATUS_IMAGE" ]]; then
   exit 1
 fi
 
-if [ -f /host/usr/bin/contrail-status ]; then
-   exit
-fi
-
 env_opts=''
 vol_opts='-v /var/run/docker.sock:/var/run/docker.sock'
 # ssl folder is always to mounted: in case of IPA init container
