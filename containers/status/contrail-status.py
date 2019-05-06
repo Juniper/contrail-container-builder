@@ -79,6 +79,9 @@ CONTRAIL_SERVICES_TO_SANDESH_SVC = {
         'web': None,
         'job': None,
     },
+    'vcenter-fabric-manager': {
+        'fabric-manager': None,
+    },
     'vcenter-manager': {
         'manager': None,
     },
