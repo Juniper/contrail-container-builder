@@ -9,6 +9,10 @@ LABEL vendor="Juniper" \
       summary="Contrail RabbitMQ" \
       description="Contrail Rabbitmq is the message bus that different Contrail processes subscribe to."
 
+# Add required license as text file in Liceses directory
+RUN mkdir /licenses
+COPY __licensing.txt /licenses/licensing.txt
+
 # due to changes in debian repos apt-transport-https is needed for
 # update but it can't be installed without update. thus error in
 # first update should be ignored.
