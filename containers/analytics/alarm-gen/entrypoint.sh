@@ -4,9 +4,17 @@ source /common.sh
 export ALARMGEN_REDIS_AGGREGATE_DB_OFFSET=${ALARMGEN_REDIS_AGGREGATE_DB_OFFSET:-1}
 
 pre_start_init
+wait_redis_certs_if_ssl_enabled
 
 host_ip=$(get_listen_ip_for_node ANALYTICS_ALARM)
 config_db_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
+
+# This will be removed when all redis clients support SSL
+if is_enabled ${REDIS_SSL_ENABLE}; then
+  REDIS_PORT=$REDIS_STUNNEL_PORT
+else
+  REDIS_PORT=$REDIS_SERVER_PORT
+fi
 
 cat > /etc/contrail/contrail-alarm-gen.conf << EOM
 [DEFAULTS]
@@ -26,9 +34,11 @@ api_server_list=$CONFIG_SERVERS
 api_server_use_ssl=${CONFIG_API_SSL_ENABLE}
 
 [REDIS]
-redis_server_port=$REDIS_SERVER_PORT
+redis_server_port=$REDIS_PORT
 redis_uve_list=$REDIS_SERVERS
 redis_password=$REDIS_SERVER_PASSWORD
+redis_use_ssl=$REDIS_SSL_ENABLE
+${redis_ssl_config}
 
 [KAFKA]
 kafka_broker_list=$KAFKA_SERVERS
