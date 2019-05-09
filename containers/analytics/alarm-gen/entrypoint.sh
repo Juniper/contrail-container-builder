@@ -29,6 +29,8 @@ api_server_use_ssl=${CONFIG_API_SSL_ENABLE}
 redis_server_port=$REDIS_SERVER_PORT
 redis_uve_list=$REDIS_SERVERS
 redis_password=$REDIS_SERVER_PASSWORD
+redis_use_ssl=$REDIS_SSL_ENABLE
+${redis_ssl_config}
 
 [KAFKA]
 kafka_broker_list=$KAFKA_SERVERS
