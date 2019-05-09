@@ -52,6 +52,16 @@ function wait_certs_if_ssl_enabled() {
   fi
 }
 
+function wait_redis_certs_if_ssl_enabled() {
+  if ! is_enabled ${REDIS_SSL_ENABLE} ; then
+    return
+  fi
+
+  if [[ "$SERVER_KEYFILE" != "$REDIS_SSL_CERTFILE" ]]; then
+    wait_files "$REDIS_SSL_CERTFILE" "$REDIS_SSL_KEYFILE"
+  fi
+}
+
 function wait_config_api_certs_if_ssl_enabled() {
   if ! is_enabled ${CONFIG_API_SSL_ENABLE} ; then
     return
