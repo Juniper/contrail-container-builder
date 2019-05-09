@@ -1,0 +1,40 @@
+#!/bin/bash -e
+
+source /common.sh
+
+STUNNEL_CONF_FILE=/etc/stunnel/stunnel.conf
+STUNNEL_CERT_FILE=/etc/stunnel/private.pem
+
+# We need to combine key and certificate into a single file for stunnel to use and change file permission
+cat $SERVER_CA_KEYFILE $SERVER_CA_CERTFILE > $STUNNEL_CERT_FILE
+chmod 644 $STUNNEL_CERT_FILE
+
+# Stunnel should listen on 2 ip address - my_ip and localhost
+if [[ -z "$REDIS_LISTEN_ADDRESS" && -n "$REDIS_NODES" ]]; then
+  for i in {1..10} ; do
+    my_ip_and_order=$(find_my_ip_and_order_for_node REDIS)
+    if [ -n "$my_ip_and_order" ]; then
+      break
+    fi
+    sleep 1
+  done
+  redis_node_ip=$(echo $my_ip_and_order | cut -d ' ' -f 1)
+  [ -n "$redis_node_ip" ] && REDIS_LISTEN_ADDRESS=${redis_node_ip}
+fi
+
+# Populating stunnel.conf file
+cat > $STUNNEL_CONF_FILE << EOM
+cert = $STUNNEL_CERT_FILE
+pid = /var/run/stunnel.pid
+foreground = yes
+[redis]
+accept = $REDIS_LISTEN_ADDRESS:$REDIS_STUNNEL_PORT
+connect = 127.0.0.1:$REDIS_SERVER_PORT
+
+[redis]
+accept = 127.0.0.1:$REDIS_STUNNEL_PORT
+connect = 127.0.0.1:$REDIS_SERVER_PORT
+
+EOM
+
+exec "$@"
