@@ -107,6 +107,8 @@ cat >> /etc/contrail/contrail-collector.conf << EOM
 port=$REDIS_SERVER_PORT
 server=127.0.0.1
 password=$REDIS_SERVER_PASSWORD
+redis_ssl_enable=$REDIS_SSL_ENABLE
+${redis_ssl_config}
 EOM
 
 if is_enabled ${ANALYTICS_ALARM_ENABLE} ; then

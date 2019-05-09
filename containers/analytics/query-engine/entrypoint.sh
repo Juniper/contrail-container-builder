@@ -35,6 +35,8 @@ port=$REDIS_SERVER_PORT
 server=127.0.0.1
 server_list=$REDIS_SERVERS
 password=$REDIS_SERVER_PASSWORD
+redis_ssl_enable=$REDIS_SSL_ENABLE
+${redis_ssl_config}
 
 $sandesh_client_config
 
