@@ -99,4 +99,7 @@ sed -i "s/^default.replication.factor=.*/default.replication.factor=$replication
 echo "offsets.topic.replication.factor=$replication_factor" >> ${CONFIG}
 echo "reserved.broker.max.id=100001" >> ${CONFIG}
 
+START_FILE="$KAFKA_DIR/bin/kafka-run-class.sh"
+sed -i "s/+UseG1GC/+UseG1GC -XX:NumberOfGCLogFiles=10  -XX:GCLogFileSize=100M/g" ${START_FILE}
+
 exec "$@"
