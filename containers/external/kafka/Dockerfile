@@ -11,7 +11,8 @@ ARG KAFKA_DISTRO_NAME=kafka_2.11-0.9.0.1
 
 ENV KAFKA_DIR=/opt/$KAFKA_DISTRO_NAME \
     KAFKA_CONF_DIR=/opt/$KAFKA_DISTRO_NAME/config \
-    LOG_DIR=/var/log/kafka
+    LOG_DIR=/var/log/kafka \
+    KAFKA_OPTS="-XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=100M"
 
 
 RUN yum install -y java java-1.8.0-openjdk-devel iproute openssl && \
