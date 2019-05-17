@@ -45,4 +45,4 @@ add_ini_params_from_env SNMP_COLLECTOR /etc/contrail/contrail-snmp-collector.con
 set_third_party_auth_config
 set_vnc_api_lib_ini
 
-exec "$@"
+run_service "$@"

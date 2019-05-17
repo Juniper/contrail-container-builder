@@ -53,4 +53,4 @@ tor_keepalive_interval=${TOR_AGENT_OVS_KA}
 ${toragent_ssl_config}
 EOM
 
-exec "$@"
+run_service "$@"
