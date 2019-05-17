@@ -46,4 +46,4 @@ add_ini_params_from_env QUERY_ENGINE /etc/contrail/contrail-query-engine.conf
 set_third_party_auth_config
 set_vnc_api_lib_ini
 
-exec "$@"
+run_service "$@"

@@ -1,3 +1,3 @@
 #!/bin/bash -e
 
-exec "$@"
+run_service "$@"
