@@ -128,3 +128,19 @@ function resolve_hostname_by_ip() {
     echo $name
   fi
 }
+
+function run_service() {
+  if [[ -n "$CONTRAIL_USER" &&  "$(id -u)" = '0' ]] ; then
+    mkdir -p /var/log/contrail
+    chown $CONTRAIL_USER /var/log/contrail
+    chmod 755 /var/log/contrail
+    
+    mkdir -p /etc/contrail
+    chown $CONTRAIL_USER /etc/contrail
+    chmod 755 /etc/contrail
+
+    exec gosu $CONTRAIL_USER "$BASH_SOURCE" "$@"
+  else
+    exec "$@"
+  fi
+}
