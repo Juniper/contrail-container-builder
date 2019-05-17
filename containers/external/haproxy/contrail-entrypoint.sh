@@ -11,6 +11,8 @@ global
         log /dev/log    local1 notice
         stats timeout 30s
         daemon
+        user $HAPROXY_USER
+        group $HAPROXY_USER
 
         # Default SSL material locations
         ca-base /etc/contrail/ssl/certs
