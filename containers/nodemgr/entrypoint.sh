@@ -71,4 +71,4 @@ add_ini_params_from_env ${ntype}_NODEMGR /etc/contrail/$NODEMGR_NAME.conf
 
 cat /etc/contrail/$NODEMGR_NAME.conf
 
-exec "$@"
+run_service "$@"

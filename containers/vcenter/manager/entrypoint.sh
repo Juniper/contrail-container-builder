@@ -44,4 +44,4 @@ sandesh:
 
 EOM
 
-exec "$@"
+run_service "$@"

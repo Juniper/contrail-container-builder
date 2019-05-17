@@ -48,9 +48,6 @@ logging {
 };
 EOM
 
-chown -R contrail:contrail ${DNS_NAMED_CONFIG_DIRECTORY}
 touch /var/log/contrail/contrail-named.log
-chown contrail:contrail /var/log/contrail/contrail-named.log
-chown contrail:contrail /var/log/contrail
 
-exec "$@"
+run_service "$@"
