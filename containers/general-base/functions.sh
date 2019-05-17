@@ -133,3 +133,20 @@ function resolve_hostname_by_ip() {
     echo $name
   fi
 }
+
+function run_service() {
+  if [[ -n "$CONTRAIL_UID" &&  "$(id -u)" = '0' ]] ; then
+    mkdir -p /var/log/contrail
+    chown $CONTRAIL_UID /var/log/contrail
+    chmod 755 /var/log/contrail
+
+    mkdir -p /etc/contrail
+    chown $CONTRAIL_UID /etc/contrail
+    chmod 755 -R /etc/contrail
+
+    export HOME=/home/contrail
+    exec setpriv --reuid $CONTRAIL_UID --regid $CONTRAIL_GID --clear-groups --no-new-privs "$@"
+  else
+    exec "$@"
+  fi
+}
