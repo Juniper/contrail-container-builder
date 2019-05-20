@@ -156,14 +156,14 @@ function restore_phys_int() {
     if [ -d "$netscript_dir" ] ; then
         pushd "$netscript_dir"
         declare i
-        for i in $(ls | grep 'contrail\.org\.' | sed 's/contrail\.org\.//g') ; do
-            echo "INFO: restore $i from contrail.org.$i"
-            mv contrail.org.$i $i
+        for i in $(ls | grep 'contrail\.org\.ifcfg\-' | sed 's/contrail\.org\.ifcfg\-//g') ; do
+            echo "INFO: restore ifcfg-$i from contrail.org.ifcfg-$i"
+            mv contrail.org.ifcfg-$i ifcfg-$i
+            echo "INFO: reinit $i"
+            ifdown $i >/dev/null 2>&1
+            ifup $i
         done
         popd
-        echo "INFO: reinit $phys_int"
-        ifdown $phys_int >/dev/null 2>&1
-        ifup $phys_int
     else
         set_dev_routes $phys_int "$routes"
         if [ -n "$add_ipaddr_cmd" ] ; then
@@ -236,7 +236,6 @@ function prepare_ifcfg() {
     if [[ ! -e "${netscript_dir}/ifcfg-${phys_int}" && ! -e "${netscript_dir}/ifcfg-vhost0" ]] ; then
         return 0
     fi
-
     local ret=0
     echo "INFO: create ifcfg-vhost0 and patch ifcfg-${phys_int}"
     pushd "$netscript_dir"

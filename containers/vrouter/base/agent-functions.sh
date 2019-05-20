@@ -511,7 +511,12 @@ function init_vhost0() {
             ifdown ${phys_int}
             kill_dhcp_clients ${phys_int}
         fi
-        prepare_ifcfg $phys_int $bind_type $bind_int || true
+        if [ -z "$BIND_INT" ] ; then
+            # Patch if it is not the case of OSP+DPDK
+            # (in OSP wiht DPDK vhost0 is initialized here and ifcfg files are already prepared correctly
+            # by os-net-collect)
+            prepare_ifcfg $phys_int $bind_type $bind_int || true
+        fi
         if ! is_dpdk ; then
             ifup ${phys_int} || { echo "ERROR: failed to ifup $phys_int." && ret=1; }
         fi
