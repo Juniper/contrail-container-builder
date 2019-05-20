@@ -145,9 +145,9 @@ if [ "$gcp" == "Google" ]; then
     done
 fi
 
-if [[ -z "$VROUTER_GATEWAY" ]] ; then
-    echo "ERROR: VROUTER_GATEWAY is empty or there is no default route for vhost0"
-    exit 1
+vrouter_gateway_opts=''
+if [[ -n "$VROUTER_GATEWAY" ]] ; then
+    vrouter_gateway_opts="gateway=$VROUTER_GATEWAY"
 fi
 
 agent_mode_options="physical_interface_mac = $phys_int_mac"
@@ -299,8 +299,8 @@ $metadata_ssl_conf
 name=vhost0
 ip=$vrouter_cidr
 physical_interface=$phys_int
-gateway=$VROUTER_GATEWAY
 compute_node_address=$vrouter_ip
+$vrouter_gateway_opts
 
 [SERVICE-INSTANCE]
 netns_command=/usr/bin/opencontrail-vrouter-netns
