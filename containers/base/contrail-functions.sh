@@ -206,3 +206,18 @@ function get_vrouter_physical_iface() {
   fi
   echo $iface
 }
+
+
+function rbac_rule_provision() {
+  local pause=${PROVISION_DELAY:-3}
+  local servers=`echo ${CONFIG_NODES} | tr ',' ' '`
+  echo "INFO: Provisioning cmdline: python /opt/contrail/utils/rbac_rule_config.py $rest_params --api_server_ip {for each node from the list: $CONFIG_NODES} --api_server_port $CONFIG_API_PORT $AUTH_PARAMS"
+    for server in $servers ; do
+      if python /opt/contrail/utils/rbac_rule_config.py --api_server_ip $server --api_server_port $CONFIG_API_PORT $AUTH_PARAMS ; then
+        echo "INFO: Rbac rule provisioning succeeded"
+        return
+      fi
+    done
+
+  echo "INFO: RBAC Provisioning completed"
+}
