@@ -3,8 +3,20 @@
 source /common.sh
 
 pre_start_init
+wait_analytics_api_certs_if_ssl_enabled
 
 host_ip=$(get_listen_ip_for_node ANALYTICS)
+
+if is_enabled ${ANALYTICS_API_SSL_ENABLE} ; then
+  read -r -d '' analytics_api_certs_config << EOM || true
+analytics_api_ssl_enable=${ANALYTICS_API_SSL_ENABLE}
+analytics_api_ssl_certfile=${ANALYTICS_API_SERVER_CERTFILE}
+analytics_api_ssl_keyfile=${ANALYTICS_API_SERVER_KEYFILE}
+analytics_api_ssl_ca_cert=${ANALYTICS_API_SERVER_CA_CERTFILE}
+EOM
+else
+  analytics_api_certs_config=''
+fi
 
 cat > /etc/contrail/contrail-analytics-api.conf << EOM
 [DEFAULTS]
@@ -32,6 +44,8 @@ collectors=$COLLECTOR_SERVERS
 api_server=$CONFIG_SERVERS
 api_server_use_ssl=${CONFIG_API_SSL_ENABLE}
 zk_list=$ZOOKEEPER_SERVERS_SPACE_DELIM
+
+$analytics_api_certs_config
 
 [REDIS]
 EOM
