@@ -14,6 +14,10 @@
 | ANALYTICS_NODES                      | $CONTROLLER_NODES                                                                       |
 | ANALYTICS_UVE_PARTITIONS             | 30                                                                                      |
 | *ANALYTICS_API_INTROSPECT_PORT*      | 8090                                                                                    |
+| ANALYTICS_API_SSL_ENABLE             | $SSL_ENABLE                                                                             |
+| ANALYTICS_API_SERVER_CA_CERTFILE     | $SERVER_CA_CERTFILE                                                                     |
+| ANALYTICS_API_SERVER_CERTFILE        | $SERVER_CERTFILE                                                                        |
+| ANALYTICS_API_SERVER_KEYFILE         | $SERVER_KEYFILE                                                                         |
 | **Collector**                        |                                                                                         |
 | COLLECTOR_SERVERS                    | $ANALYTICS_NODES with $COLLECTOR_PORT                                                   |
 | STATS_COLLECTOR_DESTINATION_PATH     |                                                                                         |
