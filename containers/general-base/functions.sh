@@ -23,7 +23,12 @@ function get_gateway_nic_for_ip() {
     local iface=$(ip route get $ip | grep -o "dev.*" | awk '{print $2}')
     if [[ "$iface" == 'lo' ]] ; then
       # ip is belong to this machine
-      iface=$(ip address show | grep -m 1 -F "inet ${ip}/" | awk '{print($NF)}')
+      # Workaround for the case of Openshift with single NIC
+      # on compute node (that is used for vhost0 in kernel mode):
+      # dhclient may be still running and get an IP for the initial NIC
+      # https://contrail-jws.atlassian.net/browse/JCB-219329
+      iface=$(ip address show | grep -F "inet ${ip}/" | awk '{print($NF)}' | grep -m 1 vhost0)
+      [ -z "$iface" ] && iface=$(ip address show | grep -m 1 -F "inet ${ip}/" | awk '{print($NF)}')
     fi
     echo $iface
 }
