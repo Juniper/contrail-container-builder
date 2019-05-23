@@ -15,5 +15,8 @@ for k_dir in `ls -d /lib/modules/*` ; do
   cp -f ${modfile} ${k_dir}/kernel/net/vrouter
 done
 depmod -a
+echo "INFO: copy source for kernel module to host"
+mkdir -p /usr/src/contrail
+cp -r /opt/contrail/src/* /usr/src/contrail
 
 exec $@
