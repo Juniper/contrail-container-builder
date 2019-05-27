@@ -13,8 +13,8 @@ ENV KAFKA_DIR=/opt/$KAFKA_DISTRO_NAME \
     KAFKA_CONF_DIR=/opt/$KAFKA_DISTRO_NAME/etc/kafka \
     KAFKA_BIN_DIR=/opt/$KAFKA_DISTRO_NAME/usr/bin \
     LOG_DIR=/var/log/kafka \
-    LIB_DIR=/var/lib/kafka
-
+    LIB_DIR=/var/lib/kafka \
+    KAFKA_OPTS="-XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=100M"
 
 RUN yum install -y java java-1.8.0-openjdk-devel iproute && \
     curl -L -o $KAFKA_DISTRO_NAME.tgz $KAFKA_CACHE/$KAFKA_DISTRO_NAME.tar.gz?raw=true && \
