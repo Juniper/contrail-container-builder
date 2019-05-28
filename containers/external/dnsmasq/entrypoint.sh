@@ -14,6 +14,4 @@ tftp-root=/etc/tftp
 EOM
 fi
 
-cat /dev/null > /var/lib/dnsmasq/dnsmasq.leases
-
 exec "$@"
