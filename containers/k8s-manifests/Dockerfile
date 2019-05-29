@@ -14,7 +14,19 @@ LABEL vendor="Juniper" \
 COPY __licensing.txt /licenses/licensing.txt
 COPY __contrail-container-builder /contrail-container-builder
 
-RUN yum install -y iproute && \
+ARG GENERAL_EXTRA_RPMS=""
+ARG YUM_ENABLE_REPOS=""
+
+# this copy should be before yum install
+COPY *.repo /etc/yum.repos.d/
+
+RUN YUM_ENABLE_REPOS=$(echo $YUM_ENABLE_REPOS | tr -d '"') && \
+    if [[ -n "$YUM_ENABLE_REPOS" ]] ; then \
+        echo "INFO: contrail-general-base: enable repos $YUM_ENABLE_REPOS" && \
+        yum-config-manager --enable $YUM_ENABLE_REPOS ; \
+        yum clean metadata ; \
+    fi && \
+    yum install -y iproute && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 
