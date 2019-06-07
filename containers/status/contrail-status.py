@@ -95,6 +95,7 @@ CONTRAIL_SERVICES_TO_SANDESH_SVC = {
 
 SHARED_SERVICES = [
     'contrail-external-redis',
+    'contrail-external-stunnel',
 ]
 
 INDEXED_SERVICES = [

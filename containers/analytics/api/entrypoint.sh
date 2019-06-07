@@ -3,6 +3,7 @@
 source /common.sh
 
 pre_start_init
+wait_redis_certs_if_ssl_enabled
 
 host_ip=$(get_listen_ip_for_node ANALYTICS)
 
@@ -44,6 +45,8 @@ fi
 cat >> /etc/contrail/contrail-analytics-api.conf << EOM
 redis_uve_list=$REDIS_SERVERS
 redis_password=$REDIS_SERVER_PASSWORD
+redis_use_ssl=$REDIS_SSL_ENABLE
+${redis_ssl_config}
 
 $sandesh_client_config
 
