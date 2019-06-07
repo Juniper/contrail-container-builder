@@ -18,8 +18,6 @@ opts="$@"
 
 echo "INFO: Target platform: $LINUX_DISTR:$LINUX_DISTR_VER"
 echo "INFO: Contrail version: $CONTRAIL_VERSION"
-echo "INFO: OpenStack version: $OPENSTACK_VERSION"
-echo "INFO: OpenStack subversion (minor package version): $OPENSTACK_SUBVERSION"
 echo "INFO: Contrail registry: $CONTRAIL_REGISTRY"
 echo "INFO: Contrail repository: $CONTRAIL_REPOSITORY"
 echo "INFO: Contrail container tag: $CONTRAIL_CONTAINER_TAG"
@@ -80,6 +78,9 @@ function process_container() {
   if [ ${PIPESTATUS[0]} -eq 0 -a ${CONTRAIL_REGISTRY_PUSH} -eq 1 ]; then
     docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} |& tee -a $logfile
     exit_code=${PIPESTATUS[0]}
+    # temporary solution for current code-base. it will be removed when all other components will be switched to new tags
+    docker tag ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag}
+    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag}
   fi
   if [ ${exit_code} -eq 0 ]; then
     rm $logfile
