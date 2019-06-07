@@ -138,7 +138,7 @@ function run_service() {
   if [[ -n "$CONTRAIL_UID" &&  "$(id -u)" = '0' ]] ; then
     mkdir -p /var/log/contrail
     chown $CONTRAIL_UID /var/log/contrail
-    chmod 755 /var/log/contrail
+    chmod 777 /var/log/contrail
 
     mkdir -p /etc/contrail
     chown $CONTRAIL_UID /etc/contrail
