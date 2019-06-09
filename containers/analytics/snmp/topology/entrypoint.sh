@@ -44,4 +44,4 @@ add_ini_params_from_env TOPOLOGY /etc/contrail/contrail-topology.conf
 set_third_party_auth_config
 set_vnc_api_lib_ini
 
-run_service "$@"
+exec "$@"

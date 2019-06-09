@@ -57,4 +57,4 @@ EOM
 set_third_party_auth_config
 set_vnc_api_lib_ini
 
-run_service "$@"
+exec "$@"
