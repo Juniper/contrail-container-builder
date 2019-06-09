@@ -16,11 +16,6 @@ COPY licensing.txt /licenses
 ARG GENERAL_EXTRA_RPMS=""
 ARG YUM_ENABLE_REPOS=""
 
-# These definitions are just for build purposes and must not be changed at runtime
-ENV CONTRAIL_GID=1999
-ENV CONTRAIL_UID=1999
-ENV CONTRAIL_USER=contrail
-
 # this copy should be before yum install
 COPY *.repo /etc/yum.repos.d/
 
@@ -36,9 +31,7 @@ RUN YUM_ENABLE_REPOS=$(echo $YUM_ENABLE_REPOS | tr -d '"') && \
     if [[ -n "$GENERAL_EXTRA_RPMS" ]] ; then \
         echo "INFO: contrail-general-base: install $GENERAL_EXTRA_RPMS" && \
         yum install -y $GENERAL_EXTRA_RPMS ; \
-    fi && \
-    groupadd --gid $CONTRAIL_GID --system $CONTRAIL_USER && \
-    useradd -md /home/contrail --uid $CONTRAIL_UID --shell /sbin/nologin --system --gid $CONTRAIL_GID $CONTRAIL_USER
+    fi
 
 COPY *.sh /
 

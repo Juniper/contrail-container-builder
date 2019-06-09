@@ -273,4 +273,4 @@ cat /etc/contrail/contrail-webui-userauth.js
 
 set_vnc_api_lib_ini
 
-run_service "$@"
+exec "$@"

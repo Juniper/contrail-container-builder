@@ -15,13 +15,7 @@ COPY __licensing.txt /licenses/licensing.txt
 
 COPY *.sh /
 
-ENV HAPROXY_GID=1999
-ENV HAPROXY_UID=1999
-ENV HAPROXY_USER=haproxy
-
-RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done' && \
-    groupadd --gid $HAPROXY_GID --system $HAPROXY_USER && \
-    useradd --uid $HAPROXY_UID --no-create-home --shell /sbin/nologin --system --gid $HAPROXY_GID $HAPROXY_USER
+RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done'
 
 ENTRYPOINT ["/contrail-entrypoint.sh"]
 CMD ["haproxy", "-f", "/usr/local/etc/haproxy/haproxy.cfg"]
