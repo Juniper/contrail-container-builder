@@ -135,21 +135,14 @@ function resolve_hostname_by_ip() {
 }
 
 function run_service() {
-  if [[ -n "$CONTRAIL_UID" && -n "$CONTRAIL_GID" &&  "$(id -u)" = '0' ]] ; then
-    local owner_opts="$CONTRAIL_UID:$CONTRAIL_GID"
-    
+  if [[ -n "$CONTRAIL_UID" &&  "$(id -u)" = '0' ]] ; then
     mkdir -p /var/log/contrail
-    # change files only with root
-    #   in some cases rabbit, redis and other services
-    #   may keep logs there under their users
-    chown $owner_opts /var/log/contrail
-    find /var/log/contrail -uid 0 -exec chown $owner_opts {} + ;
-    chmod 777 /var/log/contrail
+    chown $CONTRAIL_UID /var/log/contrail
+    chmod 755 /var/log/contrail
 
     mkdir -p /etc/contrail
-    chown $owner_opts /etc/contrail
-    find /etc/contrail -uid 0 -exec chown $owner_opts {} + ;
-    chmod 755 /etc/contrail
+    chown $CONTRAIL_UID /etc/contrail
+    chmod 755 -R /etc/contrail
 
     export HOME=/home/contrail
     exec setpriv --reuid $CONTRAIL_UID --regid $CONTRAIL_GID --clear-groups --no-new-privs "$@"

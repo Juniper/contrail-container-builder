@@ -58,5 +58,4 @@ add_ini_params_from_env CONTROL /etc/contrail/contrail-control.conf
 set_third_party_auth_config
 set_vnc_api_lib_ini
 
-# dont use run_service and start as root because it opens bgp port
-exec "$@"
+run_service "$@"
