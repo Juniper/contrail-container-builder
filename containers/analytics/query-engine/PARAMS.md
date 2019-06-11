@@ -60,6 +60,10 @@
 | REDIS_SERVER_PASSWORD              | ""                                                                      |
 | REDIS_SERVER_PORT                  | 6379                                                                    |
 | *REDIS_NODES*                      | $ANALYTICS_NODES                                                        |
+| REDIS_SSL_CACERTFILE               | $SERVER_CA_CERTFILE                                                     |
+| REDIS_SSL_CERTFILE                 | $SERVER_CERTFILE                                                        |
+| REDIS_SSL_ENABLE                   | $SSL_ENABLE                                                             |
+| REDIS_SSL_KEYFILE                  | $SERVER_KEYFILE                                                         |
 | **Sandesh**                        |                                                                         |
 | SANDESH_CA_CERTFILE                | $SERVER_CA_CERTFILE                                                     |
 | SANDESH_CERTFILE                   | $SERVER_CERTFILE                                                        |
