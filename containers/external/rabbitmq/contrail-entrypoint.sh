@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 
 source /common.sh
 
@@ -120,6 +120,7 @@ else
               {ssl_listeners, [ ]},
 EOF
 fi
+
 cat << EOF >> /etc/rabbitmq/rabbitmq.config
               {cluster_partition_handling, autoheal},
               {loopback_users, []},
@@ -141,11 +142,58 @@ cat << EOF >> /etc/rabbitmq/rabbitmq.config
               {default_pass, <<"${RABBITMQ_PASSWORD}">>}
             ]
    },
-   {rabbitmq_management, [{listener, [{port, ${RABBITMQ_MGMT_PORT}}]}]},
+   {rabbitmq_management, [
+        {listener, [{port, ${RABBITMQ_MGMT_PORT}}]},
+        {load_definitions, "/etc/rabbitmq/definitions.json"}
+      ]
+    },
    {rabbitmq_management_agent, [ {force_fine_statistics, true} ] },
    {kernel, [{net_ticktime,  60}, {inet_dist_use_interface, {${dist_ip}}}, {inet_dist_listen_min, ${RABBITMQ_DIST_PORT}}, {inet_dist_listen_max, ${RABBITMQ_DIST_PORT}}]}
 ].
 EOF
+
+if [[ -n "$RABBITMQ_MIRRORED_QUEUE_MODE" ]] ; then
+  salt=$(cat /dev/urandom | tr -d '\0' | head --bytes=4 | xxd -ps -c 256)
+  pwd=$(echo -n "${RABBITMQ_PASSWORD}" | xxd -ps -c 256)
+  sha256=$(echo -n "$salt$pwd" | xxd -r -p | sha256sum --binary | head -c 64)
+  b64=$(echo -n "${salt}${sha256}" | xxd -r -p | base64 -w 0)
+  cat << EOF > /etc/rabbitmq/definitions.json
+{
+  "users": [{
+    "name": "$RABBITMQ_USER",
+    "password_hash": "$b64",
+    "hashing_algorithm": "rabbit_password_hashing_sha256",
+    "tags": "administrator"
+  }],
+  "vhosts": [{
+    "name": "/"
+  }],
+  "permissions": [{
+    "user": "$RABBITMQ_USER",
+    "vhost": "/",
+    "configure": ".*",
+    "write": ".*",
+    "read": ".*"
+  }],
+"policies": [
+    {
+      "vhost": "/",
+      "name": "ha",
+      "pattern": "^(?!amq\.).*",
+      "definition": {
+          "ha-mode": "$RABBITMQ_MIRRORED_QUEUE_MODE",
+          "ha-sync-mode": "automatic",
+          "ha-sync-batch-size": 5
+        }
+    }
+  ]
+}
+EOF
+else
+  cat << EOF > /etc/rabbitmq/definitions.json
+{}
+EOF
+fi
 
 # copy-paste from base container because there is no way to reach this blocks of code there
 if is_enabled $RABBITMQ_USE_SSL && [[ "$1" == rabbitmq* ]]; then
