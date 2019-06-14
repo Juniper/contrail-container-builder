@@ -21,6 +21,7 @@
 | RABBITMQ_SSL_KEYFILE              | $SERVER_KEYFILE                                |
 | RABBITMQ_USER                     | guest                                          |
 | RABBITMQ_USE_SSL                  | False                                          |
+| RABBITMQ_MIRRORED_QUEUE_MODE      | all                                            |
 | **Server SSL**                    |                                                |
 | *SERVER_CA_CERTFILE*              | /etc/contrail/ssl/certs/ca-cert.pem            |
 | *SERVER_CERTFILE*                 | /etc/contrail/ssl/certs/server.pem             |
