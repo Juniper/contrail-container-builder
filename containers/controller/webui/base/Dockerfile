@@ -4,7 +4,8 @@ FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 
 RUN yum install -y nodejs-0.10.35-1contrail.el7 contrail-web-controller contrail-web-core && \
     yum clean all -y && \
-    rm -rf /var/cache/yum
+    rm -rf /var/cache/yum && \
+    chown -R $CONTRAIL_USER:$CONTRAIL_USER /usr/src/contrail/contrail-web-core/webroot
 
 COPY custom-images/logo.png /opt/contrail/images/logo.png
 COPY custom-images/favicon.ico /opt/contrail/images/favicon.ico
