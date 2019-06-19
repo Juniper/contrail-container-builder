@@ -8,7 +8,7 @@ RUN yum install -y initscripts ethtool pciutils sudo contrail-vrouter-utils && \
     ldconfig && \
     rm -rf /etc/sysconfig/network-scripts
 
-COPY *.sh ifup-* ifdown-* network-functions-vrouter* /
+COPY *.sh ifup-* ifdown-* network-functions-vrouter* dhclient-vhost0.conf /
 
 ENV NODE_TYPE=vrouter
 LABEL net.juniper.contrail.pod=$NODE_TYPE
