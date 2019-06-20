@@ -43,6 +43,9 @@ function copy_agent_tools_to_host() {
         chmod 644 /host/bin/vif
         chmod +x /host/bin/vif
     fi
+    if [[ ! -f /host/bin/vrouter_agent_debug_info.py ]]; then
+        /bin/cp -f /bin/vrouter_agent_debug_info.py /host/bin/vrouter_agent_debug_info.py
+    fi
 }
 
 function is_vlan() {
