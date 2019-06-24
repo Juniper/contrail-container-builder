@@ -31,10 +31,10 @@ cassandra_use_ssl=${CASSANDRA_SSL_ENABLE,,}
 cassandra_ca_certs=$CASSANDRA_SSL_CA_CERTFILE
 
 [REDIS]
-port=$REDIS_SERVER_PORT
-server=127.0.0.1
 server_list=$REDIS_SERVERS
 password=$REDIS_SERVER_PASSWORD
+redis_ssl_enable=$REDIS_SSL_ENABLE
+${redis_ssl_config}
 
 $sandesh_client_config
 
