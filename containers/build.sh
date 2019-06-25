@@ -12,6 +12,8 @@ my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 source "$my_dir/../parse-env.sh"
 
+CCB_PARALLEL_BUILD="${CCB_PARALLEL_BUILD:-1}"
+
 path="$1"
 shift
 opts="$@"
@@ -24,6 +26,7 @@ echo "INFO: Contrail container tag: $CONTRAIL_CONTAINER_TAG"
 echo "INFO: Contrail generic base extra rpms: $GENERAL_EXTRA_RPMS"
 echo "INFO: Contrail base extra rpms: $BASE_EXTRA_RPMS"
 echo "INFO: yum additional repos to enable: $YUM_ENABLE_REPOS"
+echo "INFO: parallel build setting: $CCB_PARALLEL_BUILD"
 
 if [ -n "$opts" ]; then
   echo "INFO: Options: $opts"
@@ -179,7 +182,20 @@ if [[ "$op" == 'build' ]]; then
   update_repos "repo"
 fi
 
-process_dir $path
+if [[ "$op" == 'build' && $path == '.' && "$CCB_PARALLEL_BUILD" == "1" ]]; then
+  echo "INFO: Build all would be processed in parallel mode"
+  $my_dir/create-map.sh
+  for level in $(seq 1 $(ls ./container_map_tmp* | grep level | wc -l)) ; do
+    echo "INFO: BUILDING level $level"
+    for i in $(cat $my_dir/container_map_tmp*/level.$level | cut -f 1 -d ' ') ; do
+      dir=$(echo $i | rev | cut -f2- -d/ | rev )
+      process_container $dir $i &
+    done
+    wait
+  done
+else
+  process_dir $path
+fi
 
 popd &>/dev/null
 
