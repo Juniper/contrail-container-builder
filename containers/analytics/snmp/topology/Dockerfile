@@ -1,6 +1,11 @@
 ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
-FROM ${CONTRAIL_REGISTRY}/contrail-analytics-snmp-base:${CONTRAIL_CONTAINER_TAG}
+FROM ${CONTRAIL_REGISTRY}/contrail-analytics-base:${CONTRAIL_CONTAINER_TAG}
+
+# TODO: split analytics package into several small packages
+
+ENV NODE_TYPE=analytics-snmp
+LABEL net.juniper.contrail.pod=$NODE_TYPE
 
 ARG CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
