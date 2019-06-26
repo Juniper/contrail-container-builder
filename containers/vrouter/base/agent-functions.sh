@@ -512,9 +512,9 @@ function init_vhost0() {
             kill_dhcp_clients ${phys_int}
         fi
         if [ -z "$BIND_INT" ] ; then
-            # Patch if it is not the case of OSP+DPDK
-            # (in OSP wiht DPDK vhost0 is initialized here and ifcfg files are already prepared correctly
-            # by os-net-collect)
+            # Patch if it is not the case of OSP+DPDK (BIND_INT is set if 
+            # dpdk container is started by ifup script, vhost0 is initialized here 
+            # and ifcfg files are already prepared correctly by os-net-collect)
             prepare_ifcfg $phys_int $bind_type $bind_int || true
         fi
         if ! is_dpdk ; then
