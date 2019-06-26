@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9f5c4f37_2fbee4d4",
+        "filename": "containers/controller/config/stats-client/setup/contrail_stats_client/main.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-06-26T09:16:18Z",
+      "side": 1,
+      "message": "not clear: in the __init__ funtion there is name \u0027self._send_freq\u0027  but here it is without prefix \u0027_\u0027 .. Is it a misprint here or there?\nThe same question for _sched_job_ts vs. sched_job_ts",
+      "range": {
+        "startLine": 76,
+        "startChar": 12,
+        "endLine": 76,
+        "endChar": 26
+      },
+      "revId": "56b2f723aa313dd15857fc7f414cf08cd56869b3",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9f5c4f37_af23f455",
+        "filename": "containers/controller/config/stats-client/setup/contrail_stats_client/main.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-06-26T09:16:18Z",
+      "side": 1,
+      "message": "should it be a function call here like: ...close()  ?",
+      "revId": "56b2f723aa313dd15857fc7f414cf08cd56869b3",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9f5c4f37_0fc3205f",
+        "filename": "containers/controller/config/stats-client/setup/contrail_stats_client/main.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-06-26T09:16:18Z",
+      "side": 1,
+      "message": "why unknwon error here?",
+      "range": {
+        "startLine": 176,
+        "startChar": 53,
+        "endLine": 176,
+        "endChar": 67
+      },
+      "revId": "56b2f723aa313dd15857fc7f414cf08cd56869b3",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    }
+  ]
+}
