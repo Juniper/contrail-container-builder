@@ -259,14 +259,14 @@ function prepare_ifcfg() {
             ret=1
         fi
         # always recreate ifcfg-${phys_int} becuase cloud-init script restores it on reboot 
-        sed -r "/(DEVICE|TYPE|ONBOOT|MACADDR|HWADDR|BONDING|SLAVE|VLAN|MTU)/! s/^[^#].*/#commented_by_contrail& /" contrail.org.ifcfg-${phys_int} > ifcfg-${phys_int}.tmp
+        sed -r "/(DEVICE|TYPE|ONBOOT|MACADDR|HWADDR|BONDING|SLAVE|VLAN|MTU|PHYSDEV)/! s/^[^#].*/#commented_by_contrail& /" contrail.org.ifcfg-${phys_int} > ifcfg-${phys_int}.tmp
         echo 'NM_CONTROLLED=no' >> ifcfg-${phys_int}.tmp
         echo 'BOOTPROTO=none' >> ifcfg-${phys_int}.tmp
         mv ifcfg-${phys_int}.tmp ifcfg-${phys_int}
     fi
     if [[ ! -f ifcfg-vhost0 ]] ; then
         sed "s/${phys_int}/vhost0/g" contrail.org.ifcfg-${phys_int} > ifcfg-vhost0.tmp
-        sed -ri '/(TYPE|NM_CONTROLLED|MACADDR|HWADDR|BONDING|SLAVE|VLAN|UUID)/d' ifcfg-vhost0.tmp
+        sed -ri '/(TYPE|NM_CONTROLLED|MACADDR|HWADDR|BONDING|SLAVE|VLAN|UUID|PHYSDEV)/d' ifcfg-vhost0.tmp
         echo "TYPE=${bind_type}" >> ifcfg-vhost0.tmp
         echo 'NM_CONTROLLED=no' >> ifcfg-vhost0.tmp
         echo "BIND_INT=${bind_int}" >> ifcfg-vhost0.tmp
