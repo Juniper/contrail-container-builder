@@ -259,6 +259,8 @@ if ! is_enabled ${INTROSPECT_LISTEN_ALL} ; then
   introspect_ip=$vrouter_ip
 fi
 
+compute_node_address=${VROUTER_COMPUTE_NODE_ADDRESS:-$vrouter_ip}
+
 echo "INFO: Preparing /etc/contrail/contrail-vrouter-agent.conf"
 cat << EOM > /etc/contrail/contrail-vrouter-agent.conf
 [CONTROL-NODE]
@@ -299,7 +301,7 @@ $metadata_ssl_conf
 name=vhost0
 ip=$vrouter_cidr
 physical_interface=$phys_int
-compute_node_address=$vrouter_ip
+compute_node_address=$compute_node_address
 $vrouter_gateway_opts
 
 [SERVICE-INSTANCE]
