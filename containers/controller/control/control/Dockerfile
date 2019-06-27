@@ -9,6 +9,9 @@ LABEL name=$CONTAINER_NAME \
 
 COPY entrypoint.sh /
 
+# cap_net_bind_service for bgp port 179
+RUN setcap cap_net_bind_service+ep /usr/bin/contrail-control
+
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/contrail-control"]
 
