@@ -105,12 +105,12 @@ function start_dpdk_container() {
         echo "INFO: container contrail-vrouter-agent-dpdk is already up"
         return 0
     fi
-
+    local container_name=${CONTRAIL_VROUTER_AGENT_DPDK_CONTAINER_NAME:-'contrail-vrouter-agent-dpdk'}
     mkdir -p /var/lib/contrail
     mkdir -p /var/log/containers/contrail
     eval "docker run \
         --detach \
-        --name contrail-vrouter-agent-dpdk \
+        --name ${container_name} \
         --net host --privileged \
         --restart always \
         -v /etc/hosts:/etc/hosts:ro \
@@ -208,8 +208,9 @@ function ifup_init_vhost() {
 function ifdown_vhost() {
     [ -n "$CONTRAIL_DPDK_CONTAINER_CONTEXT" ] && {
         echo "ERROR: container context... should not be called from container" && return 1 ; }
-    stop_docker_container $CONTRAIL_VROUTER_AGENT_CONTAINER_NAME SIGTERM
-    remove_docker_container $CONTRAIL_VROUTER_AGENT_DPDK_CONTAINER_NAME SIGTERM
+    local container_name=${CONTRAIL_VROUTER_AGENT_DPDK_CONTAINER_NAME:-'contrail-vrouter-agent-dpdk'}
+    stop_docker_container $container_name SIGTERM
+    remove_docker_container $container_name SIGTERM
 }
 
 function ifdown_vhost_post() {
