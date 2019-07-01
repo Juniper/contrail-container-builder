@@ -9,7 +9,7 @@ STUNNEL_CONF_FILE=/etc/stunnel/stunnel.conf
 STUNNEL_CERT_FILE=/etc/stunnel/private.pem
 
 # We need to combine key and certificate into a single file for stunnel to use and change file permission
-cat $SERVER_CA_KEYFILE $SERVER_CA_CERTFILE > $STUNNEL_CERT_FILE
+cat $REDIS_SSL_KEYFILE $REDIS_SSL_CERTFILE > $STUNNEL_CERT_FILE
 chmod 644 $STUNNEL_CERT_FILE
 
 # Stunnel should listen on 2 ip address - my_ip and localhost
