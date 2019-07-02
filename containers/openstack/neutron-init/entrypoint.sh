@@ -24,7 +24,7 @@ function copy_sources() {
 }
 
 mkdir -p /opt/plugin/site-packages
-for module in neutron_plugin_contrail vnc_api cfgm_common ; do
+for module in networking_contrail vnc_api cfgm_common ; do
   copy_sources $lib_path $module
 done
 
