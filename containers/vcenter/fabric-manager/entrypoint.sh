@@ -3,6 +3,7 @@
 source /common.sh
 
 cat > /etc/contrail/contrail-vcenter-fabric-manager/config.yaml << EOM
+host_ip: $(get_listen_ip_for_node VCENTER_FABRIC_MANAGER)
 vcenter:
   host: $VCENTER_SERVER
   port: ${VCENTER_PORT:-443}
@@ -39,6 +40,8 @@ sandesh:
   keyfile: $SANDESH_KEYFILE
   certfile: $SANDESH_CERTFILE
   cafile: $SANDESH_CA_CERTFILE
+zookeeper:
+  servers: $ZOOKEEPER_SERVERS
 
 EOM
 
