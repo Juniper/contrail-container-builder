@@ -178,12 +178,15 @@ function add_ini_params_from_env() {
   for var in $vars ; do
     local var_name="${service_name}${delim}${var}"
     local val="${!var_name}"
-    local var_section=`echo $var | sed "s/^\(.*\)$delim.*$/\1/"`
+    # variables in shell doesn't allow to use dashes in names but some sections/keys have them
+    # substitute word 'DASH' to real dash here
+    local var_unsubst=`echo $var | sed "s/DASH/-/g"`
+    local var_section=`echo $var_unsubst | sed "s/^\(.*\)$delim.*$/\1/"`
     if [[ "$section" != "$var_section" ]]; then
       echo "[$var_section]" >> $cfg_path
       section="$var_section"
     fi
-    local var_param=`echo $var | sed "s/.*$delim\(.*\)$/\1/"`
+    local var_param=`echo $var_unsubst | sed "s/.*$delim\(.*\)$/\1/"`
     echo "$var_param = $val" >> $cfg_path
   done
 }
