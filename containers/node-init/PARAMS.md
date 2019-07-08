@@ -50,6 +50,9 @@
 | CONFIGURE_IPTABLES                        | false                                                |
 | IPTABLES_CHAIN                            | INPUT                                                |
 | IPTABLES_TABLE                            | filter                                               |
+| **Firewalld**                             |                                                      | 
+| FIREWALL_ZONE                             | public                                               |
+| CONFIGURE_FIREWALLD                       | false                                                |
 | **Kafka**                                 |                                                      |
 | KAFKA_PORT                                | 9092                                                 |
 | **Kubernetes**                            |                                                      |
