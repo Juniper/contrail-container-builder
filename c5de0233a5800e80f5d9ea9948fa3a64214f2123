@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ef8f4264_1836a0d0",
+        "filename": "containers/node-init/entrypoint.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-07-08T21:52:55Z",
+      "side": 1,
+      "message": "i suggest to run both scripts here. check for enable-ness is already inside these scripts",
+      "revId": "c5de0233a5800e80f5d9ea9948fa3a64214f2123",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0afc078a_1f1dddb3",
+        "filename": "containers/node-init/firewalld-init.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-07-08T21:52:55Z",
+      "side": 1,
+      "message": "please add all new params to PARAMS.MD",
+      "revId": "c5de0233a5800e80f5d9ea9948fa3a64214f2123",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
