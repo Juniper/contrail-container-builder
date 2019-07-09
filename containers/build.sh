@@ -162,6 +162,114 @@ function update_repos() {
   done
 }
 
+BUILD_LEVEL_MAX=5
+BUILD_LEVEL_1="general-base
+k8s-manifests
+vrouter/plugin/mellanox/init/ubuntu
+vrouter/kernel-build-init
+external/redis
+external/rabbitmq
+external/zookeeper
+external/cassandra
+external/haproxy
+"
+
+BUILD_LEVEL_2="vrouter/plugin/mellanox/init/redhat
+external/kafka
+external/stunnel
+external/dnsmasq
+base
+debug
+"
+
+BUILD_LEVEL_3="openstack/neutron-init
+openstack/ironic-notification-manager
+openstack/compute-init
+openstack/heat-init
+vcenter/fabric-manager
+vcenter/plugin
+vcenter/manager
+nodemgr
+node-init
+status
+mesosphere/mesos-manager
+mesosphere/cni-init
+analytics/base
+controller/config/base
+controller/webui/base
+controller/control/base
+tor/agent
+vrouter/base
+kubernetes/kube-manager
+kubernetes/cni-init
+"
+
+BUILD_LEVEL_4="analytics/snmp/base
+analytics/alarm-gen
+analytics/collector
+analytics/query-engine
+analytics/api
+controller/control/named
+controller/control/dns
+controller/control/control
+controller/config/schema
+controller/config/svcmonitor
+controller/config/devicemgr
+controller/config/api
+controller/webui/web
+controller/webui/job
+vrouter/agent-dpdk
+vrouter/agent
+vrouter/kernel-init-dpdk
+vrouter/kernel-init
+"
+
+BUILD_LEVEL_5="analytics/snmp/topology
+analytics/snmp/collector
+"
+
+function process_level() {
+  local list_name="BUILD_LEVEL_$1"
+  local list=${!list_name}
+  local i=''
+  local jobs=''
+  echo -e "INFO: process level $list_name:\n$list"
+  for i in $(echo $list | sed '/^$/d') ; do
+    process_dir $i &
+    jobs+=" $!"
+  done
+  local res=0
+  for i in $jobs ; do
+    wait $i || res=1
+  done
+  return $res
+}
+
+function validate_levels_list() {
+  local level=1
+  local build_list_file1=$(mktemp)
+  local build_list_file2=$(mktemp)
+  local list_file=$(mktemp)
+  $my_dir/build.sh list | grep -v 'INFO:' | sort | uniq > $list_file
+  while (( level <= BUILD_LEVEL_MAX )) ; do
+    local list_name="BUILD_LEVEL_$level"
+    echo "${!list_name}" >> $build_list_file1
+    (( level+=1 ))
+  done
+  cat $build_list_file1 | sed '/^$/d' | sort | uniq > $build_list_file2
+  diff $list_file $build_list_file2
+}
+
+function process_all_parallel() {
+  local level=1
+  while (( level <= BUILD_LEVEL_MAX )) ; do
+    if ! process_level $level ; then
+      echo "ERROR: failed build containers at level $level"
+    fi
+    (( level +=1 ))
+  done
+}
+
 if [[ $path == 'list' ]] ; then
   op='list'
   path="."
@@ -177,9 +285,23 @@ pushd $my_dir &>/dev/null
 if [[ "$op" == 'build' ]]; then
   echo "INFO: prepare Contrail repo file in base image"
   update_repos "repo"
+  case "$path" in
+    "." | "all")
+      if ! validate_levels_list ; then
+        echo "ERROR: list if containers is outdated."
+        echo "       Update appropriate BUILD_LEVEL_x variable and re-run build"
+        exit 1
+      fi
+      process_all_parallel
+      ;;
+    *)
+      process_dir $path
+      ;;  
+  esac
+else
+  process_dir $path
 fi
 
-process_dir $path
 
 popd &>/dev/null
 
