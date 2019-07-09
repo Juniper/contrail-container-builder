@@ -24,6 +24,7 @@ echo "INFO: Contrail container tag: $CONTRAIL_CONTAINER_TAG"
 echo "INFO: Contrail generic base extra rpms: $GENERAL_EXTRA_RPMS"
 echo "INFO: Contrail base extra rpms: $BASE_EXTRA_RPMS"
 echo "INFO: yum additional repos to enable: $YUM_ENABLE_REPOS"
+echo "INFO: Parallel build: $CONTRAIL_PARALLEL_BUILD"
 
 if [ -n "$opts" ]; then
   echo "INFO: Options: $opts"
@@ -33,8 +34,11 @@ docker_ver=$(docker -v | awk -F' ' '{print $3}' | sed 's/,//g')
 echo "INFO: Docker version: $docker_ver"
 
 was_errors=0
-op='build'
-
+if [[ "${CONTRAIL_PARALLEL_BUILD,,}" == 'true' ]] ; then
+  op='build_parallel'
+else
+  op='build'
+fi
 function process_container() {
   local dir=${1%/}
   local docker_file=$2
@@ -162,6 +166,34 @@ function update_repos() {
   done
 }
 
+function process_list() {
+  local list="$@"
+  echo "$list" | tr ' ' '\n'
+  return 0
+  local i=''
+  local jobs=''
+  echo -e "INFO: process list: $list"
+  for i in $list ; do
+    process_dir $i &
+    jobs+=" $!"
+  done
+  local res=0
+  for i in $jobs ; do
+    wait $i || res=1
+  done
+  return $res
+}
+
+function process_all_parallel() {
+  local full_list=$($my_dir/build.sh list | grep -v INFO)
+  process_list general-base
+  process_list base
+  local list=$(echo "$full_list" | grep 'external\|\/base')
+  process_list  $list
+  local list=$(echo "$full_list" | grep -v 'external\|base')
+  process_list  $list
+}
+
 if [[ $path == 'list' ]] ; then
   op='list'
   path="."
@@ -174,12 +206,27 @@ fi
 echo "INFO: starting build from $my_dir with relative path $path"
 pushd $my_dir &>/dev/null
 
-if [[ "$op" == 'build' ]]; then
-  echo "INFO: prepare Contrail repo file in base image"
-  update_repos "repo"
-fi
+case $op in
+  'build_parallel')
+    echo "INFO: prepare Contrail repo file in base image"
+    update_repos "repo"
+    if [[ "$path" == "." || "$path" == "all" ]] ; then
+      process_all_parallel
+    else
+      process_dir $path
+    fi
+    ;;
 
-process_dir $path
+  'build')
+    echo "INFO: prepare Contrail repo file in base image"
+    update_repos "repo"
+    process_dir $path
+    ;;
+
+  *)
+    process_dir $path
+    ;;
+esac
 
 popd &>/dev/null
 
