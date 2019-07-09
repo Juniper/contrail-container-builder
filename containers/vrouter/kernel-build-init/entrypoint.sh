@@ -37,7 +37,7 @@ dkms --verbose install -m vrouter -v "${contrail_version}"
 depmod -a
 
 # check vrouter.ko was built
-ls -l /lib/modules/$kver/updates/dkms/vrouter.ko
+ls -l /lib/modules/$kver/updates/dkms/vrouter.ko || exit 1
 
 touch $vrouter_dir/module_compiled
 
