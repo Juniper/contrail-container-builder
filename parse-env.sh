@@ -54,6 +54,7 @@ fi
 if [[ $CONTRAIL_REPOSITORY == 'auto' ]] ; then
   export CONTRAIL_REPOSITORY="http://${default_registry_ip}/${CONTRAIL_VERSION}"
 fi
+export CONTRAIL_PARALLEL_BUILD=${CONTRAIL_PARALLEL_BUILD:-'false'}
 
 export GENERAL_EXTRA_RPMS=${GENERAL_EXTRA_RPMS:-""}
 # use some stable OpenStack repo for Contrail's dependencies
