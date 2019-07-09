@@ -16,6 +16,23 @@
       "revId": "f01357e10eee546dfa9e33c0efd1b7cf0b3d68f4",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7f8b4b3b_cfcb00f7",
+        "filename": "containers/node-init/firewalld-init.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-07-09T07:28:59Z",
+      "side": 1,
+      "message": "is commented line is needed here?",
+      "revId": "f01357e10eee546dfa9e33c0efd1b7cf0b3d68f4",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
