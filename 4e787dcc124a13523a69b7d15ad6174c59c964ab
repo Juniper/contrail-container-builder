@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "ec460b40_530dcd2a",
+        "filename": "containers/node-init/entrypoint.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-07-10T20:12:31Z",
+      "side": 1,
+      "message": "I still prefer to see two calls here.",
+      "revId": "4e787dcc124a13523a69b7d15ad6174c59c964ab",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e2ee87e2_1eac0d09",
         "filename": "containers/node-init/firewall.sh",
         "patchSetId": 3
