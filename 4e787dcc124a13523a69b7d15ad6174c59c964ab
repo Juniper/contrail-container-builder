@@ -80,6 +80,24 @@
       "revId": "4e787dcc124a13523a69b7d15ad6174c59c964ab",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "68ab5022_3667bb57",
+        "filename": "containers/node-init/firewalld-init.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 809
+      },
+      "writtenOn": "2019-07-10T20:45:16Z",
+      "side": 1,
+      "message": "It was a mistake sorry.I have deleted the firewalld-init.sh and iptables-init.sh in the latest patch.",
+      "parentUuid": "1b06d3fa_38e9b925",
+      "revId": "4e787dcc124a13523a69b7d15ad6174c59c964ab",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
