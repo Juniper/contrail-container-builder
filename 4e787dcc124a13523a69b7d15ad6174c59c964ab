@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e2ee87e2_1eac0d09",
+        "filename": "containers/node-init/firewall.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-07-10T20:05:18Z",
+      "side": 1,
+      "message": "it cannot work in all cases except one \u0027each pod is deployed on different node\u0027.\ne.g. all-in-one will not work\nNode init by its nature dont know which pod will be run on the node. Its task is generic node configuration. And node-init has no this variable set.",
+      "range": {
+        "startLine": 65,
+        "startChar": 0,
+        "endLine": 65,
+        "endChar": 20
+      },
+      "revId": "4e787dcc124a13523a69b7d15ad6174c59c964ab",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1b06d3fa_38e9b925",
+        "filename": "containers/node-init/firewalld-init.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-07-10T20:05:18Z",
+      "side": 1,
+      "message": "It looks like a copy of logic from firewall.sh ?",
+      "revId": "4e787dcc124a13523a69b7d15ad6174c59c964ab",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
