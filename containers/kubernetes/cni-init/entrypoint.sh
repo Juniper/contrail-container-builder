@@ -40,7 +40,7 @@ cat << EOM > /host/etc_cni/net.d/10-contrail.conf
         "config-dir"    : "/var/lib/contrail/ports/vm",
         "poll-timeout"  : 5,
         "poll-retries"  : 15,
-        "log-file"      : "/var/log/contrail/cni/opencontrail.log",
+        "log-file"      : "$LOG_DIR/cni/opencontrail.log",
         "log-level"     : "4"
     },
 
@@ -66,8 +66,8 @@ cat << EOM > /host/etc_cni/net.d/10-contrail.conf
        "config-dir"        : "/var/lib/contrail/ports/vm",
        "poll-timeout"      : 5,
        "poll-retries"      : 15,
-       "log-dir"          : "/var/log/contrail/cni",
-       "log-file"          : "/var/log/contrail/cni/opencontrail.log",
+       "log-dir"          : "$LOG_DIR/cni",
+       "log-file"          : "$LOG_DIR/cni/opencontrail.log",
        "log-level"         : "4"
    },
    "name": "contrail-k8s-cni",

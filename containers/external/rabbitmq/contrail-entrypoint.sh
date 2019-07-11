@@ -211,5 +211,16 @@ if is_enabled $RABBITMQ_USE_SSL && [[ "$1" == rabbitmq* ]]; then
   export RABBITMQ_CTL_ERL_ARGS="${RABBITMQ_CTL_ERL_ARGS:-} $sslErlArgs"
 fi
 
+if [[ -n "$RABBITMQ_LOGS" ]] ; then
+  mkdir -p $(dirname "$RABBITMQ_LOGS")
+  touch "$RABBITMQ_LOGS"
+  chown rabbitmq:rabbitmq "$RABBITMQ_LOGS"
+fi
+if [[ -n "$RABBITMQ_SASL_LOGS" ]] ; then
+  mkdir -p $(dirname "$RABBITMQ_SASL_LOGS")
+  touch "$RABBITMQ_SASL_LOGS"
+  chown rabbitmq:rabbitmq "$RABBITMQ_SASL_LOGS"
+fi
+
 echo "INFO: $(date): /docker-entrypoint.sh $@"
 exec /docker-entrypoint.sh "$@"

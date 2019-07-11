@@ -3,7 +3,7 @@
 source /common.sh
 
 cat > /etc/dnsmasq/base.conf << EOM
-log-facility=/var/log/contrail/dnsmasq.log
+log-facility=${LOG_DIR}/dnsmasq.log
 bogus-priv
 log-dhcp
 EOM
