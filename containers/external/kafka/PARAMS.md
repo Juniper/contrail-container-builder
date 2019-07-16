@@ -4,7 +4,7 @@
 | ------------------------------------ | ---------------------------------------------- |
 | **Analytics**                        |                                                |
 | *ANALYTICSDB_NODES*                  | $ANALYTICS_NODES                               |
-| *ANALYTICS_ALARM_NODES*              | $ANALYTICSDB_NODES                             |
+| *ANALYTICS_ALARM_NODES*              | $ANALYTICS_NODES                               |
 | *ANALYTICS_NODES*                    | $CONTROLLER_NODES                              |
 | **Controller**                       |                                                |
 | *CONTROLLER_NODES*                   | $DEFAULT_LOCAL_IP                              |
