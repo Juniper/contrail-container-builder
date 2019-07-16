@@ -6,7 +6,7 @@
 | ALARMGEN_INTROSPECT_LISTEN_PORT    | $ALARMGEN_INTROSPECT_PORT                                               |
 | ALARMGEN_REDIS_AGGREGATE_DB_OFFSET | -1                                                                      |
 | ALARMGEN_partitions                | 30                                                                      |
-| ANALYTICS_ALARM_NODES              | $ANALYTICSDB_NODES                                                      |
+| ANALYTICS_ALARM_NODES              | $ANALYTICS_NODES                                                        |
 | *ALARMGEN_INTROSPECT_PORT*         | 5995                                                                    |
 | **Analytics**                      |                                                                         |
 | *ANALYTICSDB_NODES*                | $ANALYTICS_NODES                                                        |
