@@ -25,6 +25,7 @@ echo "INFO: Contrail generic base extra rpms: $GENERAL_EXTRA_RPMS"
 echo "INFO: Contrail base extra rpms: $BASE_EXTRA_RPMS"
 echo "INFO: yum additional repos to enable: $YUM_ENABLE_REPOS"
 echo "INFO: Parallel build: $CONTRAIL_PARALLEL_BUILD"
+echo "INFO: Keep log files: $CONTRAIL_KEEP_LOG_FILES"
 
 if [ -n "$opts" ]; then
   echo "INFO: Options: $opts"
@@ -94,9 +95,10 @@ function process_container() {
     docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag} |& tee -a $logfile
   fi
   if [ ${exit_code} -eq 0 ]; then
-    rm $logfile
-  fi
-  if [ -f $logfile ]; then
+    if [[ "${CONTRAIL_KEEP_LOG_FILES,,}" == 'true' ]] ; then
+      rm -f $logfile
+    fi
+  else
     was_errors=1
   fi
 }
