@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "326a6a1e_edc29483",
+        "filename": "containers/tools/vrouter_agent_debug_info.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 254
+      },
+      "writtenOn": "2019-07-17T18:47:18Z",
+      "side": 1,
+      "message": "there must not be a difference between rhosp and openstack. Difference should be based on deployment methods:\n1. RHOSP Director\n2. Ansible Deployer (openstack, kubernetes)\n3. Kubernetes\n\nbased on that the right calls can be made",
+      "revId": "84fc6877f3252dd5f4a3ea8d6534d61d18a7d241",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8f6c4c24_0b17d610",
+        "filename": "containers/tools/vrouter_agent_debug_info.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 254
+      },
+      "writtenOn": "2019-07-17T18:47:18Z",
+      "side": 1,
+      "message": "That is not true. You don\u0027t know if ssh keys are required on none rhosp envs",
+      "revId": "84fc6877f3252dd5f4a3ea8d6534d61d18a7d241",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7b4f1677_d599f40f",
+        "filename": "containers/tools/vrouter_agent_debug_info.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 254
+      },
+      "writtenOn": "2019-07-17T18:47:18Z",
+      "side": 1,
+      "message": "again, this is not openstack specific but ansible-deployer specific",
+      "revId": "84fc6877f3252dd5f4a3ea8d6534d61d18a7d241",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b3255733_91b52855",
+        "filename": "containers/tools/vrouter_agent_debug_info.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 254
+      },
+      "writtenOn": "2019-07-17T18:47:18Z",
+      "side": 1,
+      "message": "this is also ansible-deployer with kubernetes orchestrator specific",
+      "revId": "84fc6877f3252dd5f4a3ea8d6534d61d18a7d241",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "97916187_78821879",
+        "filename": "containers/tools/vrouter_agent_debug_info.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 254
+      },
+      "writtenOn": "2019-07-17T18:47:18Z",
+      "side": 1,
+      "message": "the option for a pure kubernetes deployment is missing",
+      "revId": "84fc6877f3252dd5f4a3ea8d6534d61d18a7d241",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
