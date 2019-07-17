@@ -12,4 +12,6 @@ ret=0
 
 /iptables-init.sh || ret=1
 
+/contrail-tools-init.sh || ret=1
+
 exit $ret

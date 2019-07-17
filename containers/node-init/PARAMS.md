@@ -63,6 +63,8 @@
 | **Node initialization**                   |                                                      |
 | CONTRAIL_STATUS_IMAGE                     |                                                      |
 | CONTRAIL_STATUS_CONTAINER_NAME            | contrail-status                                      |
+| CONTRAIL_TOOLS_IMAGE                      |                                                      |
+| CONTRAIL_TOOLS_CONTAINER_NAME             | contrail-tools                                       |
 | INSTALL_PUPPET                            | false                                                |
 | INSTALL_PUPPET_DIR                        | /tmp                                                 |
 | **Redis**                                 |                                                      |
