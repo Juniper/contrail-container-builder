@@ -1,0 +1,18 @@
+# Please edit this file as per the requirement
+provider_config:
+  #deployment_type: 'rhosp'/'openstack'/'kubernetes'
+  vrouter:
+    node1:
+      #ip: <ip-address>
+      #ssh_user: <username>
+      #ssh_pwd: <password mandatory for openstack/kubernetes, not needed for rhosp>
+      #ssh_key_file: <ssh key file path is mandatory for rhosp, not needed for openstack/kubernetes>
+    #you can add more vrouter node details below
+  control:
+    node1:
+      #ip: <ip-address>
+      #ssh_user: <username>
+      #ssh_pwd: <password mandatory for openstack/kubernetes, not needed for rhosp>
+      #ssh_key_file: <ssh key file path is mandatory for rhosp, not needed for openstack/kubernetes>
+    #you can add more control-node details below
+  #gcore_needed: <true/false>
