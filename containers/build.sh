@@ -86,13 +86,13 @@ function process_container() {
   local logfile='build-'$container_name'.log'
   docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} \
                -t ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag} \
-    ${build_arg_opts} -f $docker_file ${opts} $dir |& tee $logfile
+    ${build_arg_opts} -f $docker_file ${opts} $dir 2>&1 | tee $logfile
   exit_code=${PIPESTATUS[0]}
-  if [ ${PIPESTATUS[0]} -eq 0 -a ${CONTRAIL_REGISTRY_PUSH} -eq 1 ]; then
-    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} |& tee -a $logfile
+  if [ exit_code -eq 0 -a ${CONTRAIL_REGISTRY_PUSH} -eq 1 ]; then
+    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} 2>&1 | tee -a $logfile
     exit_code=${PIPESTATUS[0]}
     # temporary workaround; to be removed when all other components switch to new tags
-    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag} |& tee -a $logfile
+    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag} 2>&1 | tee -a $logfile
   fi
   if [ ${exit_code} -eq 0 ]; then
     if [[ "${CONTRAIL_KEEP_LOG_FILES,,}" != 'true' ]] ; then
@@ -101,30 +101,33 @@ function process_container() {
   else
     was_errors=1
   fi
+  return $exit_code
 }
 
 function process_dir() {
   local dir=${1%/}
   local docker_file="$dir/Dockerfile"
+  local res=0
   if [[ -f "$docker_file" ]] ; then
-    process_container "$dir" "$docker_file"
-    return
+    process_container "$dir" "$docker_file" || res=1
+    return $res
   fi
   for d in $(ls -d $dir/*/ 2>/dev/null); do
     if [[ $d != "./" && $d == */general-base* ]]; then
-      process_dir $d
+      process_dir $d || res=1
     fi
   done
   for d in $(ls -d $dir/*/ 2>/dev/null); do
     if [[ $d != "./" && $d == */base* ]]; then
-      process_dir $d
+      process_dir $d || res=1
     fi
   done
   for d in $(ls -d $dir/*/ 2>/dev/null); do
     if [[ $d != "./" && $d != *base* ]]; then
-      process_dir $d
+      process_dir $d || res=1
     fi
   done
+  return $res
 }
 
 function update_file() {
@@ -179,19 +182,22 @@ function process_list() {
   done
   local res=0
   for i in $jobs ; do
-    wait $i || res=1
+    wait $i || {
+      res=1
+      was_errors=1
+    }
   done
   return $res
 }
 
 function process_all_parallel() {
   local full_list=$($my_dir/build.sh list | grep -v INFO)
-  process_list general-base
-  process_list base
+  process_list general-base || return 1
+  process_list base || return 1
   local list=$(echo "$full_list" | grep 'external\|\/base')
-  process_list  $list
+  process_list $list || return 1
   local list=$(echo "$full_list" | grep -v 'external\|base')
-  process_list  $list
+  process_list $list || return 1
 }
 
 if [[ $path == 'list' ]] ; then
