@@ -12,6 +12,14 @@ STUNNEL_CERT_FILE=/etc/stunnel/private.pem
 cat $REDIS_SSL_KEYFILE $REDIS_SSL_CERTFILE > $STUNNEL_CERT_FILE
 chmod 644 $STUNNEL_CERT_FILE
 
+user_opts=''
+if [[ -n "$CONTRAIL_UID" && -n "$CONTRAIL_GID" ]] ; then
+  chown $CONTRAIL_UID:$CONTRAIL_GID $STUNNEL_CERT_FILE
+  read -r -d '' user_opts << EOM || true
+setuid = $CONTRAIL_UID
+setgid = $CONTRAIL_GID
+EOM
+
 # Stunnel should listen on 2 ip address - my_ip and localhost
 if [[ -z "$REDIS_LISTEN_ADDRESS" && -n "$REDIS_NODES" ]]; then
   for i in {1..10} ; do
@@ -27,6 +35,7 @@ fi
 
 # Populating stunnel.conf file
 cat > $STUNNEL_CONF_FILE << EOM
+$user_opts
 cert = $STUNNEL_CERT_FILE
 pid = /var/run/stunnel.pid
 sslVersion = TLSv1.2
