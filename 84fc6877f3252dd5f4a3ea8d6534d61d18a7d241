@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "28d6513a_8ef1d85a",
+        "filename": "containers/tools/vrouter_agent_debug_info.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 705
+      },
+      "writtenOn": "2019-07-19T06:08:00Z",
+      "side": 1,
+      "message": "To address this, we will take both VIM and deployment methods as inputs in input file to decide on container name and log path.",
+      "parentUuid": "326a6a1e_edc29483",
+      "revId": "84fc6877f3252dd5f4a3ea8d6534d61d18a7d241",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8f6c4c24_0b17d610",
         "filename": "containers/tools/vrouter_agent_debug_info.py",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2019-07-17T18:47:18Z",
       "side": 1,
       "message": "That is not true. You don\u0027t know if ssh keys are required on none rhosp envs",
+      "revId": "84fc6877f3252dd5f4a3ea8d6534d61d18a7d241",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4e157c06_49e37244",
+        "filename": "containers/tools/vrouter_agent_debug_info.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 705
+      },
+      "writtenOn": "2019-07-19T06:08:00Z",
+      "side": 1,
+      "message": "This we will leave it to the user as he will be aware of how to reach the remote host. If he provides keys then we will use keys, else ssh password. I will remove the mandatory checks",
+      "parentUuid": "8f6c4c24_0b17d610",
       "revId": "84fc6877f3252dd5f4a3ea8d6534d61d18a7d241",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "831f174c_c422385b",
+        "filename": "containers/tools/vrouter_agent_debug_info.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 705
+      },
+      "writtenOn": "2019-07-19T06:08:00Z",
+      "side": 1,
+      "message": "reply to comment#1 should address this too.",
+      "parentUuid": "7b4f1677_d599f40f",
+      "revId": "84fc6877f3252dd5f4a3ea8d6534d61d18a7d241",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b3255733_91b52855",
         "filename": "containers/tools/vrouter_agent_debug_info.py",
         "patchSetId": 2
@@ -70,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "fdef5088_6dfd9829",
+        "filename": "containers/tools/vrouter_agent_debug_info.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 705
+      },
+      "writtenOn": "2019-07-19T06:08:00Z",
+      "side": 1,
+      "message": "reply to comment#1 should address this too.",
+      "parentUuid": "b3255733_91b52855",
+      "revId": "84fc6877f3252dd5f4a3ea8d6534d61d18a7d241",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "97916187_78821879",
         "filename": "containers/tools/vrouter_agent_debug_info.py",
         "patchSetId": 2
@@ -81,6 +153,24 @@
       "writtenOn": "2019-07-17T18:47:18Z",
       "side": 1,
       "message": "the option for a pure kubernetes deployment is missing",
+      "revId": "84fc6877f3252dd5f4a3ea8d6534d61d18a7d241",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "135c6e30_78b779de",
+        "filename": "containers/tools/vrouter_agent_debug_info.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 705
+      },
+      "writtenOn": "2019-07-19T06:08:00Z",
+      "side": 1,
+      "message": "reply to comment#1 should address this too.",
+      "parentUuid": "97916187_78821879",
       "revId": "84fc6877f3252dd5f4a3ea8d6534d61d18a7d241",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
