@@ -99,4 +99,9 @@ sed -i "s/^default.replication.factor=.*/default.replication.factor=$replication
 echo "offsets.topic.replication.factor=$replication_factor" >> ${CONFIG}
 echo "reserved.broker.max.id=100001" >> ${CONFIG}
 
-exec "$@"
+if [[ -n "$CONTRAIL_UID" && -n "$CONTRAIL_GID" ]] ; then
+  chown -R $CONTRAIL_UID:$CONTRAIL_GID \
+    "$KAFKA_DIR" "$KAFKA_CONF_DIR" "$LOG_DIR"
+fi
+
+run_service "$@"
