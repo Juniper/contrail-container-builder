@@ -99,4 +99,21 @@ sed -i "s/^default.replication.factor=.*/default.replication.factor=$replication
 echo "offsets.topic.replication.factor=$replication_factor" >> ${CONFIG}
 echo "reserved.broker.max.id=100001" >> ${CONFIG}
 
-exec "$@"
+if [[ -n "$KAFKA_USER" && -n "$KAFKA_GROUP" &&  "$(id -u)" = '0' ]] ; then
+  # Upgrade case for tripleo
+  # Container is run under root, so
+  # here it is needed to upgrade owner for kafka files
+  chown -R $KAFKA_USER:$KAFKA_GROUP \
+    "$KAFKA_DIR" "$KAFKA_CONF_DIR" "$LOG_DIR"
+
+  # replace CONTRAIL_UID and CONTRAIL_GID with kafka values, as they are
+  # to be used in run_serices
+  CONTRAIL_UID=$(id -u $KAFKA_USER)
+  CONTRAIL_GID=$(id -g $KAFKA_GROUP)
+else
+  # already run as non-root (kafka user)
+  CONTRAIL_UID=""
+  CONTRAIL_GID=""
+fi
+
+run_service "$@"

@@ -152,8 +152,10 @@ function run_service() {
     chown $owner_opts /etc/contrail
     find /etc/contrail -uid 0 -exec chown $owner_opts {} + ;
     chmod 755 /etc/contrail
-
-    export HOME=/home/contrail
+    local user_name=$(id -un $CONTRAIL_UID)
+    export HOME=/home/$user_name
+    mkdir -p $HOME
+    chown -R $owner_opts $HOME
     exec setpriv --reuid $CONTRAIL_UID --regid $CONTRAIL_GID --clear-groups --no-new-privs "$@"
   else
     exec "$@"
