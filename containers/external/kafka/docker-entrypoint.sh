@@ -116,4 +116,4 @@ else
   CONTRAIL_GID=""
 fi
 
-run_service "$@"
+do_run_service "$@"
