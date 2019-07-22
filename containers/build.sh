@@ -16,23 +16,44 @@ path="$1"
 shift
 opts="$@"
 
-echo "INFO: Target platform: $LINUX_DISTR:$LINUX_DISTR_VER"
-echo "INFO: Contrail version: $CONTRAIL_VERSION"
-echo "INFO: Contrail registry: $CONTRAIL_REGISTRY"
-echo "INFO: Contrail repository: $CONTRAIL_REPOSITORY"
-echo "INFO: Contrail container tag: $CONTRAIL_CONTAINER_TAG"
-echo "INFO: Contrail generic base extra rpms: $GENERAL_EXTRA_RPMS"
-echo "INFO: Contrail base extra rpms: $BASE_EXTRA_RPMS"
-echo "INFO: yum additional repos to enable: $YUM_ENABLE_REPOS"
-echo "INFO: Parallel build: $CONTRAIL_PARALLEL_BUILD"
-echo "INFO: Keep log files: $CONTRAIL_KEEP_LOG_FILES"
+function log() {
+  echo -e "INFO: $@"
+}
+
+function err() {
+  echo -e "ERROR: $@" >&2
+}
+
+function append_log_file() {
+  local logfile=$1
+  local always_echo=${2:-'false'}
+  local line=''
+  while read line ; do
+    if [[ "${CONTRAIL_KEEP_LOG_FILES,,}" != 'true' || "$always_echo" != 'false' ]] ; then
+      echo "$line" | tee -a $logfile
+    else
+      echo "$line" >> $logfile
+    fi
+  done
+}
+
+log "Target platform: $LINUX_DISTR:$LINUX_DISTR_VER"
+log "Contrail version: $CONTRAIL_VERSION"
+log "Contrail registry: $CONTRAIL_REGISTRY"
+log "Contrail repository: $CONTRAIL_REPOSITORY"
+log "Contrail container tag: $CONTRAIL_CONTAINER_TAG"
+log "Contrail generic base extra rpms: $GENERAL_EXTRA_RPMS"
+log "Contrail base extra rpms: $BASE_EXTRA_RPMS"
+log "yum additional repos to enable: $YUM_ENABLE_REPOS"
+log "Parallel build: $CONTRAIL_PARALLEL_BUILD"
+log "Keep log files: $CONTRAIL_KEEP_LOG_FILES"
 
 if [ -n "$opts" ]; then
-  echo "INFO: Options: $opts"
+  log "Options: $opts"
 fi
 
 docker_ver=$(docker -v | awk -F' ' '{print $3}' | sed 's/,//g')
-echo "INFO: Docker version: $docker_ver"
+log "Docker version: $docker_ver"
 
 was_errors=0
 if [[ "${CONTRAIL_PARALLEL_BUILD,,}" == 'true' ]] ; then
@@ -40,6 +61,7 @@ if [[ "${CONTRAIL_PARALLEL_BUILD,,}" == 'true' ]] ; then
 else
   op='build'
 fi
+
 function process_container() {
   local dir=${1%/}
   local docker_file=$2
@@ -50,9 +72,11 @@ function process_container() {
   fi
   local container_name=`echo ${dir#"./"} | tr "/" "-"`
   local container_name="contrail-${container_name}"
-  echo "INFO: Building $container_name"
+  local tag="${CONTRAIL_CONTAINER_TAG}"
 
-  tag="${CONTRAIL_CONTAINER_TAG}"
+  local logfile='build-'$container_name'.log'
+  log "Building $container_name" | append_log_file $logfile true
+  
   local build_arg_opts=''
   if [[ "$docker_ver" < '17.06' ]] ; then
     # old docker can't use ARG-s before FROM:
@@ -79,26 +103,27 @@ function process_container() {
     for item in `cat ./$dir/.externals` ; do
       local src=`echo $item | cut -d ':' -f 1`
       local dst=`echo $item | cut -d ':' -f 2`
-      rsync -r --exclude $dst --exclude-from='../.gitignore' ./$dir/$src ./$dir/$dst
+      rsync -r --exclude $dst --exclude-from='../.gitignore' ./$dir/$src ./$dir/$dst 2>&1 | append_log_file $logfile
     done
   fi
 
-  local logfile='build-'$container_name'.log'
   docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} \
                -t ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag} \
-    ${build_arg_opts} -f $docker_file ${opts} $dir 2>&1 | tee $logfile
+    ${build_arg_opts} -f $docker_file ${opts} $dir 2>&1 | append_log_file $logfile
   exit_code=${PIPESTATUS[0]}
   if [ $exit_code -eq 0 -a ${CONTRAIL_REGISTRY_PUSH} -eq 1 ]; then
-    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} 2>&1 | tee -a $logfile
+    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} 2>&1 | append_log_file $logfile
     exit_code=${PIPESTATUS[0]}
     # temporary workaround; to be removed when all other components switch to new tags
-    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag} 2>&1 | tee -a $logfile
+    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag} 2>&1 | append_log_file $logfile
   fi
   if [ ${exit_code} -eq 0 ]; then
     if [[ "${CONTRAIL_KEEP_LOG_FILES,,}" != 'true' ]] ; then
       rm -f $logfile
     fi
+    log "Building $container_name finished successfully" | append_log_file $logfile true
   else
+    log "Building $container_name failed" | append_log_file $logfile true
     was_errors=1
   fi
   return $exit_code
@@ -136,7 +161,7 @@ function update_file() {
   local content_encoded=${3:-'false'}
   local file_md5=${file}.md5
   if [[ -f "$file" && -f "$file_md5" ]] ; then
-    echo "INFO: $file and it's checksum "$file_md5" are exist, check them"
+    log "$file and it's checksum "$file_md5" are exist, check them"
     local new_md5
     if [[ "$content_encoded" == 'true' ]] ; then
       new_md5=`echo "$new_content" | base64 --decode | md5sum | awk '{print($1)}'`
@@ -145,11 +170,11 @@ function update_file() {
     fi
     local old_md5=`cat "$file_md5" | awk '{print($1)}'`
     if [[ "$old_md5" == "$new_md5" ]] ; then
-      echo "INFO: content of $file is not changed"
+      log "content of $file is not changed"
       return
     fi
   fi
-  echo "INFO: update $file and it's checksum $file_md5"
+  log "update $file and it's checksum $file_md5"
   if [[ "$content_encoded" == 'true' ]] ; then
     echo "$new_content" | base64 --decode > "$file"
   else
@@ -175,7 +200,7 @@ function process_list() {
   local list="$@"
   local i=''
   local jobs=''
-  echo -e "INFO: process list: $list"
+  log "process list: $list"
   for i in $list ; do
     process_dir $i &
     jobs+=" $!"
@@ -209,12 +234,12 @@ if [ -z $path ] || [ $path = 'all' ]; then
   path="."
 fi
 
-echo "INFO: starting build from $my_dir with relative path $path"
+log "starting build from $my_dir with relative path $path"
 pushd $my_dir &>/dev/null
 
 case $op in
   'build_parallel')
-    echo "INFO: prepare Contrail repo file in base image"
+    log "prepare Contrail repo file in base image"
     update_repos "repo"
     if [[ "$path" == "." || "$path" == "all" ]] ; then
       process_all_parallel
@@ -224,7 +249,7 @@ case $op in
     ;;
 
   'build')
-    echo "INFO: prepare Contrail repo file in base image"
+    log "prepare Contrail repo file in base image"
     update_repos "repo"
     process_dir $path
     ;;
@@ -237,7 +262,7 @@ esac
 popd &>/dev/null
 
 if [ $was_errors -ne 0 ]; then
-  echo "ERROR: Failed to build some containers, see log files:"
-  ls -l $my_dir/*.log
+  log_files=$(ls -l $my_dir/*.log)
+  err "Failed to build some containers, see log files:\n$log_files"
   exit 1
 fi
