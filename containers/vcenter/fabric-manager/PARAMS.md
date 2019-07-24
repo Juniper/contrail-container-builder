@@ -10,7 +10,6 @@
 | **Config**                   |                                                |
 | CONFIG_API_PORT              | 8082                                           |
 | CONFIG_NODES                 | $CONTROLLER_NODES                              |
-| FABRIC_NAME                  | vCenter-fabric                                 |
 | **Control**                  |                                                |
 | CONTROL_NODES                | $CONFIG_NODES                                  |
 | **Controller**               |                                                |
@@ -51,3 +50,5 @@
 | SERVER_CERTFILE              | /etc/contrail/ssl/certs/server.pem             |
 | SERVER_KEYFILE               | /etc/contrail/ssl/private/server-privkey.pem   |
 | SSL_INSECURE                 | True                                           |
+| **Zookeeper**                |                                                |
+| ZOOKEEPER_SERVERS            | $ZOOKEEPER_NODES with $ZOOKEEPER_PORT          |
