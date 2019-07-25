@@ -134,6 +134,19 @@ function resolve_hostname_by_ip() {
   fi
 }
 
+
+function do_run_service() {
+  if [[ -n "$CONTRAIL_UID" && -n "$CONTRAIL_GID" &&  "$(id -u)" = '0' ]] ; then
+    local user_name=$(id -un $CONTRAIL_UID)
+    export HOME=/home/$user_name
+    mkdir -p $HOME
+    chown -R $CONTRAIL_UID:$CONTRAIL_GID $HOME
+    exec setpriv --reuid $CONTRAIL_UID --regid $CONTRAIL_GID --clear-groups --no-new-privs "$@"
+  else
+    exec "$@"
+  fi
+}
+
 function run_service() {
   if [[ -n "$CONTRAIL_UID" && -n "$CONTRAIL_GID" &&  "$(id -u)" = '0' ]] ; then
     local owner_opts="$CONTRAIL_UID:$CONTRAIL_GID"
@@ -152,12 +165,6 @@ function run_service() {
     chown $owner_opts /etc/contrail
     find /etc/contrail -uid 0 -exec chown $owner_opts {} + ;
     chmod 755 /etc/contrail
-    local user_name=$(id -un $CONTRAIL_UID)
-    export HOME=/home/$user_name
-    mkdir -p $HOME
-    chown -R $owner_opts $HOME
-    exec setpriv --reuid $CONTRAIL_UID --regid $CONTRAIL_GID --clear-groups --no-new-privs "$@"
-  else
-    exec "$@"
   fi
+  do_run_service "$@"
 }

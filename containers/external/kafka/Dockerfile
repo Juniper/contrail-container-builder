@@ -34,7 +34,6 @@ RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done'
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 WORKDIR $KAFKA_DIR
-USER $KAFKA_USER:$KAFKA_GROUP
 CMD ["bin/kafka-server-start.sh", "config/server.properties"]
 
 ENV SERVICE_NAME=kafka
