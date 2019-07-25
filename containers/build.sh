@@ -123,7 +123,7 @@ function process_container() {
     fi
     log "Building $container_name finished successfully" | append_log_file $logfile true
   else
-    log "Building $container_name failed" | append_log_file $logfile true
+    err "Building $container_name failed" 2>&1 | append_log_file $logfile true
     was_errors=1
   fi
   return $exit_code
