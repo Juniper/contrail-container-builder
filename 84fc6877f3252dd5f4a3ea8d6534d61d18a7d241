@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "51bcf65a_e5e80d11",
+        "filename": "containers/tools/vrouter_agent_debug_info.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 705
+      },
+      "writtenOn": "2019-07-30T21:34:57Z",
+      "side": 1,
+      "message": "For now I have handled 1 and 2. Pure kubernetes will be taken up later.",
+      "parentUuid": "28d6513a_8ef1d85a",
+      "revId": "84fc6877f3252dd5f4a3ea8d6534d61d18a7d241",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8f6c4c24_0b17d610",
         "filename": "containers/tools/vrouter_agent_debug_info.py",
         "patchSetId": 2
@@ -69,6 +87,24 @@
       "revId": "84fc6877f3252dd5f4a3ea8d6534d61d18a7d241",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5e77cbc8_5b9091a3",
+        "filename": "containers/tools/vrouter_agent_debug_info.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 705
+      },
+      "writtenOn": "2019-07-30T21:34:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4e157c06_49e37244",
+      "revId": "84fc6877f3252dd5f4a3ea8d6534d61d18a7d241",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
     },
     {
       "key": {
@@ -107,6 +143,24 @@
     },
     {
       "key": {
+        "uuid": "6a77e2ba_9eee5b8a",
+        "filename": "containers/tools/vrouter_agent_debug_info.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 705
+      },
+      "writtenOn": "2019-07-30T21:34:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "831f174c_c422385b",
+      "revId": "84fc6877f3252dd5f4a3ea8d6534d61d18a7d241",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b3255733_91b52855",
         "filename": "containers/tools/vrouter_agent_debug_info.py",
         "patchSetId": 2
@@ -142,6 +196,24 @@
     },
     {
       "key": {
+        "uuid": "78dff23d_423e428a",
+        "filename": "containers/tools/vrouter_agent_debug_info.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 705
+      },
+      "writtenOn": "2019-07-30T21:34:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fdef5088_6dfd9829",
+      "revId": "84fc6877f3252dd5f4a3ea8d6534d61d18a7d241",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "97916187_78821879",
         "filename": "containers/tools/vrouter_agent_debug_info.py",
         "patchSetId": 2
@@ -171,6 +243,24 @@
       "side": 1,
       "message": "reply to comment#1 should address this too.",
       "parentUuid": "97916187_78821879",
+      "revId": "84fc6877f3252dd5f4a3ea8d6534d61d18a7d241",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b49b419b_24686356",
+        "filename": "containers/tools/vrouter_agent_debug_info.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 705
+      },
+      "writtenOn": "2019-07-30T21:34:57Z",
+      "side": 1,
+      "message": "Support for pure kubernetes will be taken up later",
+      "parentUuid": "135c6e30_78b779de",
       "revId": "84fc6877f3252dd5f4a3ea8d6534d61d18a7d241",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
