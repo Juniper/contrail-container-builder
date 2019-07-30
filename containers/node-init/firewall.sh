@@ -1,12 +1,20 @@
 #!/bin/bash
 
 source /common.sh
-
 #
-# Script to configure iptables rules on a node.
+# Script to configure firewalld or IPTables on a node.
 #
 # This script works off the following environment variables:
 #
+# FIREWALL_ZONE        -> Name of the zone in firewalld.
+#                         This zone, if specified, MUST exist.
+#                         Default value is "public"
+# CONFIGURE_FIREWALLD  -> Set to true/yes/enabled if firewalld configuration is
+#                         being required.
+# NODE_TYPE            -> Name of the contrail node type, can be analytics,
+#                         vrouter, database, config-database, config, control,
+#                         analytics-snmp, analytics-alarm, webui, kubernetes.
+#                         Any other value will result in failure.
 # IPTABLES_CHAIN      -> Name of the chain in iptables.
 #                        This chain, if specified, MUST exist.
 #                        Default value is "INPUT"
@@ -16,10 +24,6 @@ source /common.sh
 # CONFIGURE_IPTABLES  -> Set to true/yes/enabled if iptable configuration is
 #                        being required.
 #                        Default value is 'false'
-# NODE_TYPE           -> Name of the contrail node type, can be analytics,
-#                        vrouter, database, config-database, config, control,
-#                        analytics-snmp, analytics-alarm, webui, kubernetes.
-#                        Any other value will result in failure.
 
 # Script returns the following return value:
 #
@@ -27,11 +31,12 @@ source /common.sh
 # 1 - All failures.
 #
 
-# Configure iptable rules if requested.
-if ! is_enabled $CONFIGURE_IPTABLES; then
+
+
+#Exit if neither are requested.
+if !( is_enabled $CONFIGURE_IPTABLES || is_enabled $CONFIGURE_FIREWALLD ); then
   exit
 fi
-
 script_name=`basename "$0"`
 
 KUBEMANAGER_INTROSPECT_PORT=${KUBEMANAGER_INTROSPECT_PORT:-8108}
@@ -112,37 +117,83 @@ case "$NODE_TYPE" in
 esac
 echo "Opening ports $ports"
 
-IPTABLES_TABLE=${IPTABLES_TABLE:-'filter'}
-IPTABLES_CHAIN=${IPTABLES_CHAIN:-'INPUT'}
+if  is_enabled $CONFIGURE_FIREWALLD; then
+  # Configure firewalld rules.
+  
+  FIREWALL_ZONE=${FIREWALL_ZONE:-'public'}
 
-echo "$script_name: Configuring iptable rules to open port/s: [$ports] in chain: [$IPTABLES_CHAIN] in Table: [$IPTABLES_TABLE]"
+  echo "$script_name: Configuring firewalld rules to open port/s: [$ports] in zone: [$FIREWALL_ZONE]"
 
-# Check if the requested chain exists.
+  # Check if the requested zone exists.
 
-echo "$script_name: Validate that chain [$IPTABLES_CHAIN] / table [$IPTABLES_TABLE] exists."
+  echo "$script_name: Validate that zone [$FIREWALL_ZONE] exists."
 
-if ! iptables --list $IPTABLES_CHAIN -t $IPTABLES_TABLE -n ; then
-  echo "$script_name: Chain [$IPTABLES_CHAIN] does not exist in table [$IPTABLES_TABLE]"
-  echo "$script_name: Exiting with failure."
-  exit 1
+  #firewall-cmd --list-all-zones |grep -q $FIREWALL_ZONE
+
+  if ! firewall-cmd --list-all-zones |grep -q $FIREWALL_ZONE; then
+    echo "$script_name: Zone [$FIREWALL_ZONE] does not exist."
+    echo "$script_name: Exiting with failure."
+    exit 1
+  fi
+
+  # Deduce the list of ports to be opened/allowed.
+
+  for port in $ports; do
+    if grep -q ":" <<< $port ;then  port=${port//:/-};fi
+    # Deduce if any rule for this port already exists in the requested zone..
+    #firewall-cmd --list-all --zone=$FIREWALL_ZONE | grep -wq $port
+    if ! firewall-cmd --list-all --zone=$FIREWALL_ZONE | grep -wq $port; then  
+      # No rule targeting this port exists in the requested zone.
+      echo "$script_name: Adding rule: firewall-cmd --permanent --zone=$FIREWALL_ZONE --add-port=$port/tcp"
+
+      if ! firewall-cmd --permanent --zone=public --add-port=$port/tcp ; then
+        echo "$script_name: ERROR Adding rule: if ! firewall-cmd --permanent --zone=$FIREWALL_ZONE --add-port=$port/tcp ; then"
+        echo "$script_name: Exiting with failure."
+        exit 1
+      fi
+    else
+      echo "$script_name: A rule for port [$port] exists in the [$FIREWALL_ZONE] zone . Skipping config for this port."
+    fi
+  done
+  firewall-cmd --reload
+
+else
+  
+  # Configure iptable rules.
+
+  IPTABLES_TABLE=${IPTABLES_TABLE:-'filter'}
+  IPTABLES_CHAIN=${IPTABLES_CHAIN:-'INPUT'}
+
+  echo "$script_name: Configuring iptable rules to open port/s: [$ports] in chain: [$IPTABLES_CHAIN] in Table: [$IPTABLES_TABLE]"
+
+  # Check if the requested chain exists.
+
+  echo "$script_name: Validate that chain [$IPTABLES_CHAIN] / table [$IPTABLES_TABLE] exists."
+
+  if ! iptables --list $IPTABLES_CHAIN -t $IPTABLES_TABLE -n ; then
+    echo "$script_name: Chain [$IPTABLES_CHAIN] does not exist in table [$IPTABLES_TABLE]"
+    echo "$script_name: Exiting with failure."
+    exit 1
+  fi
+
+  # Deduce the list of ports to be opened/allowed.
+
+  for port in $ports; do
+
+    # Deduce if any rule for this port already exists in the requested chain..
+
+    if ! iptables --list $IPTABLES_CHAIN -t $IPTABLES_TABLE -n | grep -o -E 'dpt:[0-9]+' | cut -f 2 -d ':' | grep -qw $port ; then
+      # No rule targeting this port exists in the requested chain.
+      echo "$script_name: Adding rule: iptables -t $IPTABLES_TABLE -I $IPTABLES_CHAIN 1 -w 5 -W 100000 -p tcp --dport $port -j ACCEPT"
+
+      if ! iptables -t $IPTABLES_TABLE -I $IPTABLES_CHAIN 1 -w 5 -W 100000 -p tcp --dport $port -j ACCEPT ; then
+        echo "$script_name: ERROR Adding rule: iptables -t $IPTABLES_TABLE -I $IPTABLES_CHAIN 1 -w 5 -W 100000 -p tcp --dport $port -j ACCEPT"
+        echo "$script_name: Exiting with failure."
+        exit 1
+      fi
+    else
+      echo "$script_name: A rule for port [$port] exists in chain [$IPTABLES_CHAIN] table [$IPTABLES_TABLE]. Skipping config for this port."
+    fi
+  done
 fi
 
-# Deduce the list of ports to be opened/allowed.
-
-for port in $ports; do
-
-  # Deduce if any rule for this port already exists in the requested chain..
-
-  if ! iptables --list $IPTABLES_CHAIN -t $IPTABLES_TABLE -n | grep -o -E 'dpt:[0-9]+' | cut -f 2 -d ':' | grep -qw $port ; then
-    # No rule targeting this port exists in the requested chain.
-    echo "$script_name: Adding rule: iptables -t $IPTABLES_TABLE -I $IPTABLES_CHAIN 1 -w 5 -W 100000 -p tcp --dport $port -j ACCEPT"
-
-    if ! iptables -t $IPTABLES_TABLE -I $IPTABLES_CHAIN 1 -w 5 -W 100000 -p tcp --dport $port -j ACCEPT ; then
-      echo "$script_name: ERROR Adding rule: iptables -t $IPTABLES_TABLE -I $IPTABLES_CHAIN 1 -w 5 -W 100000 -p tcp --dport $port -j ACCEPT"
-      echo "$script_name: Exiting with failure."
-      exit 1
-    fi
-  else
-    echo "$script_name: A rule for port [$port] exists in chain [$IPTABLES_CHAIN] table [$IPTABLES_TABLE]. Skipping config for this port."
-  fi
-done
