@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9fc881df_88e9ff0e",
+        "filename": "containers/node-init/contrail-tools-init.sh",
+        "patchSetId": 6
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-07-31T09:19:42Z",
+      "side": 1,
+      "message": "I disagree to write something on host. And I disagree to change ALL orchestrators to pass one more image name to node-init.",
+      "revId": "048d75f0aa380b769ebe112475a22a528928b67f",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
