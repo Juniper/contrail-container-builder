@@ -105,12 +105,12 @@ auth_port = $KEYSTONE_AUTH_ADMIN_PORT
 auth_protocol = $KEYSTONE_AUTH_PROTO
 auth_url = $KEYSTONE_AUTH_PROTO://${KEYSTONE_AUTH_HOST}:${KEYSTONE_AUTH_ADMIN_PORT}${KEYSTONE_AUTH_URL_VERSION}
 auth_type = password
+region_name = $KEYSTONE_AUTH_REGION_NAME
 EOM
   if [[ "$KEYSTONE_AUTH_URL_VERSION" == '/v3' ]] ; then
     cat >> $tmp_file << EOM
 user_domain_name = $KEYSTONE_AUTH_USER_DOMAIN_NAME
 project_domain_name = $KEYSTONE_AUTH_PROJECT_DOMAIN_NAME
-region_name = $KEYSTONE_AUTH_REGION_NAME
 EOM
   fi
   if [[ "$KEYSTONE_AUTH_PROTO" == 'https' ]] ; then
