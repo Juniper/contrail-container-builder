@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6af02ce2_f41bda8d",
+        "filename": "containers/nodemgr/provision.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-08-05T10:17:29Z",
+      "side": 1,
+      "message": "is it correct that enable check should be here and then flag can be passed (only positive value)?\n\nand please write in common syntax:\n\nbgp_opt\u003d\"${bgp_opt} --enable_4byte_as ${ENABLE_4BYTE_AS}\"\n\nand add \u0027fi\u0027",
+      "range": {
+        "startLine": 125,
+        "startChar": 4,
+        "endLine": 125,
+        "endChar": 61
+      },
+      "revId": "d1e9314a73b4a75ad5a8141e3524b15077ef7aa4",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
