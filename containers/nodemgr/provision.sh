@@ -115,14 +115,18 @@ analytics-alarm)
 
 control)
   if is_enabled $BGP_AUTO_MESH ; then
-    ibgp_auto_mesh_opt='--ibgp_auto_mesh'
+    bgp_opt='--ibgp_auto_mesh'
   else
-    ibgp_auto_mesh_opt='--no_ibgp_auto_mesh'
+    bgp_opt='--no_ibgp_auto_mesh'
   fi
 
+# Enable 4 byte asn if configured
+bgp_opt="${bgp_opt} --enable_4byte_as ${ENABLE_4BYTE_AS}"
+
   # This is done so in order to _set_ the global asn number to BGP_ASN.
+  # It also passes enable_4byte_as flag so that 4 byte asn can be set
   # This call must be separate due to provision_control.py implementation
-  provision provision_control.py --router_asn ${BGP_ASN} $ibgp_auto_mesh_opt
+  provision provision_control.py --router_asn ${BGP_ASN} $bgp_opt
 
   subcluster_name=''
   if [[ -n ${SUBCLUSTER} ]]; then
