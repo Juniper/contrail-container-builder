@@ -14,6 +14,7 @@
 | BGP_ASN                           | 64512                                          |
 | BGP_AUTO_MESH                     | true                                           |
 | BGP_PORT                          | 179                                            |
+| ENABLE_4BYTE_AS                   | false                                          |
 | **Cloud orchestration**           |                                                |
 | CLOUD_ORCHESTRATOR                | none                                           |
 | **Collector**                     |                                                |
