@@ -11,7 +11,9 @@ LABEL name=$CONTAINER_NAME \
 COPY *.repo /etc/yum.repos.d/
 
 RUN yum update -y && \
-    yum install --downloadonly -y mlnx-ofed-dpdk-upstream-libs
+    yum install --downloadonly -y mlnx-ofed-dpdk-upstream-libs && \
+    yum clean all -y && \
+    rm -rf /var/cache/yum
 
 COPY entrypoint.sh /
 

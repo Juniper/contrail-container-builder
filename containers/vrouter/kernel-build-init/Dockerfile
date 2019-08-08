@@ -33,7 +33,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     rpm2cpio $(ls contrail-vrouter-utils*.rpm) | cpio -iuvd && \
     rm -f $(ls contrail-vrouter-utils*.rpm) && \
     cd .. && \
-    yum clean all && \
+    yum clean all -y && \
     rm -rf /var/cache/yum && \
     apt-get purge -y yum yum-utils rpm2cpio cpio && \
     apt-get autoremove -y
