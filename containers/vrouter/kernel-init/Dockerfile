@@ -8,7 +8,7 @@ LABEL name=$CONTAINER_NAME \
       description="Prepares the host operating system for the contrail vrouter kernel interface."
 
 RUN rpm -Uvh --nodeps $(repoquery --location contrail-vrouter) && \
-    yum clean all && \
+    yum clean all -y && \
     rm -rf /var/cache/yum
 
 COPY entrypoint.sh /
