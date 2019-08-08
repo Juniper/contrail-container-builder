@@ -9,7 +9,7 @@ LABEL name=$CONTAINER_NAME \
 
 RUN yum install -y openssl && \
     yum install -y --downloadonly --downloaddir=/ contrail-tripleo-puppet && \
-    yum clean all && \
+    yum clean all -y && \
     rm -rf /var/cache/yum
 
 COPY *.sh /

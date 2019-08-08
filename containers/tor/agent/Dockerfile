@@ -8,7 +8,7 @@ LABEL name=$CONTAINER_NAME \
       description="A ToR agent provisioned in the Contrail cluster acts as the OVSDB client for the ToR switch, and all of the OVSDB interactions with the ToR switch are performed by using the ToR agent."
 
 RUN yum install -y contrail-vrouter-agent python-contrail-vrouter-api openssl && \
-    yum clean all && \
+    yum clean all -y && \
     rm -rf /var/cache/yum
 
 COPY *.sh /

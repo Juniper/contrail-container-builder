@@ -10,7 +10,7 @@ LABEL name=$CONTAINER_NAME \
 RUN yum install -y java-1.7.0-openjdk \
     libcontrail-java-api libcontrail-vijava \
     libcontrail-vrouter-java-api contrail-vcenter-plugin \
-    yum clean all && \
+    yum clean all -y && \
     rm -rf /var/cache/yum && \
     ldconfig
 

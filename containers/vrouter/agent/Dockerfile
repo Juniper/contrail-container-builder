@@ -9,7 +9,7 @@ LABEL name=$CONTAINER_NAME \
 
 RUN yum install -y dhclient NetworkManager contrail-vrouter-agent haproxy libvirt-client \
       python-opencontrail-vrouter-netns python-contrail-vrouter-api && \
-    yum clean all && \
+    yum clean all -y && \
     rm -rf /var/cache/yum && \
     ldconfig
 
