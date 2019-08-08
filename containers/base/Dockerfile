@@ -14,6 +14,8 @@ RUN mkdir -p -m 777 /var/crashes && \
         yum install -y $BASE_EXTRA_RPMS ; \
     fi && \
     yum install -y contrail-lib contrail-setup contrail-utils python-contrail && \
+    yum clean all -y && \
+    rm -rf /var/cache/yum && \
     ldconfig
 
 COPY *.sh /
