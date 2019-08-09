@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "96904d0f_b2656964",
+        "filename": "containers/vrouter/plugin/mellanox/init/redhat/Dockerfile",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-08-09T05:52:03Z",
+      "side": 1,
+      "message": "add rm -rf /var/cache/yum after that",
+      "revId": "90a70f023ab6e2dabde03fba62500a4219bf7aa3",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
