@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "af730288_8821324c",
+        "filename": "containers/external/rsyslogd/Dockerfile",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-08-11T08:12:43Z",
+      "side": 1,
+      "message": "Why not to use general base as it is for other externals like dnsmask, stunnel?",
+      "range": {
+        "startLine": 1,
+        "startChar": 5,
+        "endLine": 1,
+        "endChar": 13
+      },
+      "revId": "93eb484c82f2fabc8545cef4fb9df0150d231b1b",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c8d8df07_36e329a1",
+        "filename": "containers/external/rsyslogd/Dockerfile",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-08-11T08:12:43Z",
+      "side": 1,
+      "message": "Why using a custom repo? afaik, rsyslog is available in standard repos.",
+      "range": {
+        "startLine": 16,
+        "startChar": 7,
+        "endLine": 16,
+        "endChar": 58
+      },
+      "revId": "93eb484c82f2fabc8545cef4fb9df0150d231b1b",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3e6fe701_db8853fd",
+        "filename": "containers/external/rsyslogd/Dockerfile",
+        "patchSetId": 2
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-08-11T08:12:43Z",
+      "side": 1,
+      "message": "Try keep minimum layers by joning this run with the run above.\n\nI would do like this:\n\nCOPY src1 dst1 \\\n     src2 dst2 \\\n     ...\n\nRUN  cmd1 \u0026\u0026 \\\n     cmd2 \u0026\u0026 \\\n     ...\n\nthe latest in RUN be command cleaning up yum cache (see in other leaf containers)",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 3
+      },
+      "revId": "93eb484c82f2fabc8545cef4fb9df0150d231b1b",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
