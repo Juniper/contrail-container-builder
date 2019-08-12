@@ -16,6 +16,24 @@
       "revId": "90a70f023ab6e2dabde03fba62500a4219bf7aa3",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ce5909f9_a5097e96",
+        "filename": "containers/vrouter/plugin/mellanox/init/redhat/Dockerfile",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 822
+      },
+      "writtenOn": "2019-08-12T13:51:13Z",
+      "side": 1,
+      "message": "That is only required if we remove a package repo before the yum clean all, which I don\u0027t think is the case here.  I try to avoid doing \u0027rm -rf\u0027 unless as a last resort... I did not touch the places where I saw it was there.  If it\u0027s insisted, I can add it though under a small degree of protest.  It\u0027s not a huge deal.",
+      "parentUuid": "96904d0f_b2656964",
+      "revId": "90a70f023ab6e2dabde03fba62500a4219bf7aa3",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
