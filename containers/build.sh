@@ -38,6 +38,7 @@ function append_log_file() {
 }
 
 log "Target platform: $LINUX_DISTR:$LINUX_DISTR_VER"
+log "Contrail source root: $CONTRAIL_SOURCE_ROOT"
 log "Contrail version: $CONTRAIL_VERSION"
 log "Contrail registry: $CONTRAIL_REGISTRY"
 log "Contrail repository: $CONTRAIL_REPOSITORY"
@@ -76,8 +77,23 @@ function process_container() {
 
   local logfile='build-'$container_name'.log'
   log "Building $container_name" | append_log_file $logfile true
+
+  local name_upper_case="$(echo ${container_name^^} | tr '-' '_')_BASE"
+  local custom_base_name=${!name_upper_case}
+  if [ -n "$custom_base_name" ] ; then
+    # add tag if missed in custom base
+    if ! echo "$custom_base_name" | grep -q ':' ; then
+      custom_base_name="${custom_base_name}:${tag}"
+    fi
+    # add registry if missed in custom base
+    if ! echo "$custom_base_name" | grep -q '/' ; then
+      custom_base_name="${CONTRAIL_REGISTRY}/${custom_base_name}"
+    fi
+    log "Use custom base image $custom_base_name" | append_log_file $logfile true
+    cat ${docker_file} | sed -e "s|^FROM.*|FROM $custom_base_name|" > ${docker_file}.custom
+    docker_file="${docker_file}.custom"
+  fi
   
-  local build_arg_opts=''
   if [[ "$docker_ver" < '17.06' ]] ; then
     # old docker can't use ARG-s before FROM:
     # comment all ARG-s before FROM
@@ -89,6 +105,7 @@ function process_container() {
       ${docker_file}.nofromargs
     docker_file="${docker_file}.nofromargs"
   fi
+  local build_arg_opts=''
   build_arg_opts+=" --build-arg CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY}"
   build_arg_opts+=" --build-arg CONTRAIL_CONTAINER_TAG=${tag}"
   build_arg_opts+=" --build-arg LINUX_DISTR_VER=${LINUX_DISTR_VER}"
@@ -98,17 +115,45 @@ function process_container() {
   build_arg_opts+=" --build-arg YUM_ENABLE_REPOS=\"$YUM_ENABLE_REPOS\""
   build_arg_opts+=" --build-arg CONTAINER_NAME=${container_name}"
 
+  if [[ -n "$CONTRAIL_SOURCE_ROOT_HOST" && -e ./$dir/setup.sh ]] ; then
+    local src_items=''
+    if [[ -e ./$dir/.src ]]; then
+      src_items=$(cat ./$dir/.src | sed '/^$/d' | tr '\n' ',')
+      build_arg_opts+=" --build-arg CONTRAIL_SOURCE=\"${src_items}\""
+    fi
+    if [[ -e ./$dir/.deps || -e ./$dir/.deps.$LINUX_DISTR ]]; then
+      local deps_items=''
+      [ -e ./$dir/.deps ] && deps_items+=$(cat ./$dir/.deps)
+      [ -e ./$dir/.deps.$LINUX_DISTR ] && deps_items+="\n$(cat ./$dir/.deps.$LINUX_DISTR)"
+      deps_items=$(echo -e "$deps_items" | sed '/^$/d' | sort | uniq | tr '\n' ',')
+      deps_items=${deps_items%%//,}
+      deps_items=${deps_items##//,}
+      [ -n "$deps_items" ] && build_arg_opts+=" --build-arg CONTRAIL_DEPS=\"${deps_items}\""
+    fi
+    log "Setup Contrail from sources root $CONTRAIL_SOURCE_ROOT_HOST" | append_log_file $logfile true
+    log "Contrail deps: $CONTRAIL_DEPS" | append_log_file $logfile true
+    log "Contrail sources: $CONTRAIL_SOURCE" | append_log_file $logfile true
+    log "Pack Contrail source $CONTRAIL_SOURCE_ROOT_HOST to ./$dir/$CONTRAIL_SOURCE_COPY" | append_log_file $logfile true
+    local items='.'
+    [ -n "$src_items" ] && items="${src_items//,/ }"
+    tar -chzf ./$dir/$CONTRAIL_SOURCE_COPY -C $CONTRAIL_SOURCE_ROOT_HOST $items 2>&1 | append_log_file $logfile
+    build_arg_opts+=" --build-arg CONTRAIL_SOURCE_COPY=${CONTRAIL_SOURCE_COPY}"
+  fi
+
+
   if [[ -f ./$dir/.externals ]]; then
     local item=''
     for item in `cat ./$dir/.externals` ; do
       local src=`echo $item | cut -d ':' -f 1`
       local dst=`echo $item | cut -d ':' -f 2`
+      [[ -z "$src" || -z "$dst" ]] && continue
       rsync -r --exclude $dst --exclude-from='../.gitignore' ./$dir/$src ./$dir/$dst 2>&1 | append_log_file $logfile
     done
   fi
 
-  docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} \
-               -t ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag} \
+  log "Building args: $build_arg_opts" | append_log_file $logfile true
+  docker build --network host -t ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} \
+    -t ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag} \
     ${build_arg_opts} -f $docker_file ${opts} $dir 2>&1 | append_log_file $logfile
   exit_code=${PIPESTATUS[0]}
   if [ $exit_code -eq 0 -a ${CONTRAIL_REGISTRY_PUSH} -eq 1 ]; then

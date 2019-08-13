@@ -2,6 +2,8 @@
 .vscode
 Dockerfile.nofromargs
 Dockerfile.*.nofromargs
+Dockerfile.custom
+Dockerfile.*.custom
 common.env
 my-contrail.yaml
 contrail.repo

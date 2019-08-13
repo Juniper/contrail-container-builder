@@ -36,6 +36,21 @@ if [[ $HOST_IP == 'auto' ]] ; then
   export HOST_IP=`ip address show dev $default_interface | head -3 | tail -1 | tr "/" " " | awk '{print $2}'`
 fi
 
+# absolute path to source code in contrail-build layout on build host
+# e.g. /root/contrail
+export CONTRAIL_SOURCE_ROOT_HOST=${CONTRAIL_SOURCE_ROOT_HOST:-'/root/contrail'}
+# Relative path for docker to copy source into docker workspace during build.
+# There is need to make copies of source code because:
+#  - docker support RUN --mount starting in experimental mode starting from 18.09 
+# (needs export DOCKER_BUILDKIT=1), but RHEL still has 13.04
+#  - mounting volume in a base container is not an option as well as rhel with 13.04  
+# doesnt support staged build
+export CONTRAIL_SOURCE=${CONTRAIL_SOURCE:-'/root/contrail'}
+export CONTRAIL_SOURCE_COPY=${CONTRAIL_SOURCE_COPY:-'__src.tgz'}
+
+# TO.DELETE
+#export CONTRAIL_SOURCE_HOST="${CONTRAIL_SOURCE}"
+
 export CONTRAIL_VERSION=${CONTRAIL_VERSION:-'4.1.0.0-8'}
 export K8S_VERSION=${K8S_VERSION:-'1.11.2'}
 export OPENSTACK_VERSION=${OPENSTACK_VERSION:-'queens'}
