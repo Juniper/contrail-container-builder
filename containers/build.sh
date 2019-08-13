@@ -38,6 +38,7 @@ function append_log_file() {
 }
 
 log "Target platform: $LINUX_DISTR:$LINUX_DISTR_VER"
+[ -n "$SRC_MOUNTED" ] && log "Contrail source root: $CONTRAIL_SOURCE"
 log "Contrail version: $CONTRAIL_VERSION"
 log "Contrail registry: $CONTRAIL_REGISTRY"
 log "Contrail repository: $CONTRAIL_REPOSITORY"
@@ -79,8 +80,17 @@ function process_container() {
 
   local logfile='build-'$container_name'.log'
   log "Building $container_name" | append_log_file $logfile true
+
+  if [[ -f ./$dir/.externals ]]; then
+    local item=''
+    for item in `cat ./$dir/.externals` ; do
+      local src=`echo $item | cut -d ':' -f 1`
+      local dst=`echo $item | cut -d ':' -f 2`
+      [[ -z "$src" || -z "$dst" ]] && continue
+      rsync -r --exclude $dst --exclude-from='../.gitignore' ./$dir/$src ./$dir/$dst 2>&1 | append_log_file $logfile
+    done
+  fi
   
-  local build_arg_opts=''
   if [[ "$docker_ver" < '17.06' ]] ; then
     # old docker can't use ARG-s before FROM:
     # comment all ARG-s before FROM
@@ -93,6 +103,8 @@ function process_container() {
       ${docker_file}.nofromargs
     docker_file="${docker_file}.nofromargs"
   fi
+
+  local build_arg_opts=''
   build_arg_opts+=" --build-arg CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY}"
   build_arg_opts+=" --build-arg CONTRAIL_CONTAINER_TAG=${tag}"
   build_arg_opts+=" --build-arg LINUX_DISTR_VER=${LINUX_DISTR_VER}"
@@ -106,27 +118,75 @@ function process_container() {
   build_arg_opts+=" --build-arg VENDOR_NAME=${VENDOR_NAME}"
   build_arg_opts+=" --build-arg VENDOR_DOMAIN=${VENDOR_DOMAIN}"
 
-  if [[ -f ./$dir/.externals ]]; then
-    local item=''
-    for item in `cat ./$dir/.externals` ; do
-      local src=`echo $item | cut -d ':' -f 1`
-      local dst=`echo $item | cut -d ':' -f 2`
-      rsync -r --exclude $dst --exclude-from='../.gitignore' ./$dir/$src ./$dir/$dst 2>&1 | append_log_file $logfile
-    done
+  # For setup from sources: base dependencies (rpms) to avoid 
+  # installing them from pip during python setup.py
+  if [[ -e ./$dir/.deps || -e ./$dir/.deps.$LINUX_DISTR ]]; then
+    local deps_items=''
+    [ -e ./$dir/.deps ] && deps_items+=$(cat ./$dir/.deps)
+    [ -e ./$dir/.deps.$LINUX_DISTR ] && deps_items+="\n$(cat ./$dir/.deps.$LINUX_DISTR)"
+    deps_items=$(echo -e "$deps_items" | sed '/^$/d' | sort | uniq | tr '\n' ',')
+    deps_items=${deps_items%%//,}
+    deps_items=${deps_items##//,}
+    [ -n "$deps_items" ] && build_arg_opts+=" --build-arg CONTRAIL_DEPS=\"${deps_items}\""
   fi
 
-  docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} \
-               -t ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag} \
+  local target_name="${CONTRAIL_REGISTRY}/${container_name}:${tag}"
+  local target_name_os="${CONTRAIL_REGISTRY}/${container_name}:${OPENSTACK_VERSION}-${tag}"
+
+  log "Building args: $build_arg_opts" | append_log_file $logfile true
+  docker build --network host -t $target_name -t $target_name_os \
     ${build_arg_opts} -f $docker_file ${opts} $dir 2>&1 | append_log_file $logfile
+  exit_code=${PIPESTATUS[0]}
   local duration=$(date +"%s")
   (( duration -= start_time ))
   log "Docker build duration: $duration seconds" | append_log_file $logfile
-  exit_code=${PIPESTATUS[0]}
+
+  if [ ${exit_code} -eq 0 ]; then
+    if [[ -n "$SRC_MOUNTED" && -e ./$dir/setup.sh ]] ; then
+      # Setup from source
+      # RHEL has old docker that doesnt support neither staged build nor mount option
+      # 'RUN --mount' (still experimental at the moment of writting this comment).
+      # So, ther is WA: previously build image is empty w/o RPMs but with all 
+      # other stuff required, so, now the final step to run a intermediate container,
+      # install components inside and commit is as the final image.
+      local cmd=$(docker inspect -f "{{json .Config.Cmd }}" $target_name)
+      local entrypoint=$(docker inspect -f "{{json .Config.Entrypoint }}" $target_name)
+      local intermediate_base="${container_name}-src"
+      local src_items=''
+      if [[ -e ./$dir/.src ]]; then
+        src_items=$(cat ./$dir/.src | sed '/^$/d' | tr '\n' ',')
+      fi
+      docker run --name $intermediate_base --network host \
+        -e "CONTRAIL_SOURCE=${CONTRAIL_SOURCE}" \
+        -e "CONTRAIL_COMPONENTS=${src_items}" \
+        -v ${CONTRAIL_SOURCE}:${CONTRAIL_SOURCE} \
+        --entrypoint /setup.sh \
+        $target_name 2>&1 | append_log_file $logfile
+      exit_code=${PIPESTATUS[0]}
+      if [ ${exit_code} -eq 0 ]; then
+        docker commit \
+          --change "CMD $cmd" \
+          --change "ENTRYPOINT $entrypoint" \
+          $intermediate_base $intermediate_base 2>&1 | append_log_file $logfile
+        exit_code=${PIPESTATUS[0]}
+        # retag containers
+        [ ${exit_code} -eq 0 ] && docker tag $intermediate_base $target_name || exit_code=1
+        [ ${exit_code} -eq 0 ] && docker tag $intermediate_base $target_name_os || exit_code=1
+      fi
+      local duration_src=$(date +"%s")
+      (( duration_src -= duration ))
+      log "Docker build from source duration: $duration_src seconds" | append_log_file $logfile
+    fi
+  fi
+
   if [ $exit_code -eq 0 -a ${CONTRAIL_REGISTRY_PUSH} -eq 1 ]; then
-    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} 2>&1 | append_log_file $logfile
+    docker push $target_name 2>&1 | append_log_file $logfile
     exit_code=${PIPESTATUS[0]}
     # temporary workaround; to be removed when all other components switch to new tags
-    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag} 2>&1 | append_log_file $logfile
+    if [ ${exit_code} -eq 0 ] ; then 
+      docker push $target_name_os 2>&1 | append_log_file $logfile
+      exit_code=${PIPESTATUS[0]}
+    fi
   fi
   duration=$(date +"%s")
   (( duration -= start_time ))
