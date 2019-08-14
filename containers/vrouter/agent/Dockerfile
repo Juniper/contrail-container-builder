@@ -1,6 +1,7 @@
 ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-vrouter-base:${CONTRAIL_CONTAINER_TAG}
+ARG PROJECT_DOMAIN
 
 ARG CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
@@ -19,5 +20,5 @@ ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/contrail-vrouter-agent"]
 
 ENV SERVICE_NAME=agent
-LABEL net.juniper.contrail.service=$SERVICE_NAME
-LABEL net.juniper.contrail.container.name=$CONTAINER_NAME
+LABEL $PROJECT_DOMAIN".service"=$SERVICE_NAME
+LABEL $PROJECT_DOMAIN".container.name"=$CONTAINER_NAME
