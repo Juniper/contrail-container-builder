@@ -1,6 +1,7 @@
 ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
+ARG VENDOR_DOMAIN
 
 ARG CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
@@ -20,6 +21,6 @@ CMD ["/usr/bin/python", "/usr/bin/contrail-kube-manager", "-c", "/etc/contrail/c
 
 ENV NODE_TYPE=kubernetes
 ENV SERVICE_NAME=kube-manager
-LABEL net.juniper.contrail.pod=$NODE_TYPE
-LABEL net.juniper.contrail.service=$SERVICE_NAME
-LABEL net.juniper.contrail.container.name=$CONTAINER_NAME
+LABEL $VENDOR_DOMAIN".pod"=$NODE_TYPE
+LABEL $VENDOR_DOMAIN".service"=$SERVICE_NAME
+LABEL $VENDOR_DOMAIN".container.name"=$CONTAINER_NAME

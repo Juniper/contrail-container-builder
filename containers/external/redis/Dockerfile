@@ -1,8 +1,10 @@
 FROM redis:4.0.2 
+ARG VENDOR_NAME
+ARG VENDOR_DOMAIN
 
 ARG CONTAINER_NAME
 ARG CONTRAIL_CONTAINER_TAG
-LABEL vendor="Juniper" \
+LABEL vendor=$VENDOR_NAME \
       version=$CONTRAIL_CONTAINER_TAG \
       release="5.1.0" \
       name=$CONTAINER_NAME \
@@ -20,5 +22,5 @@ ENTRYPOINT ["/contrail-entrypoint.sh"]
 
 ENV CONTRAIL_VERSION=$CONTRAIL_CONTAINER_TAG
 ENV SERVICE_NAME=redis
-LABEL net.juniper.contrail.service=$SERVICE_NAME
-LABEL net.juniper.contrail.container.name=$CONTAINER_NAME
+LABEL $VENDOR_DOMAIN".service"=$SERVICE_NAME
+LABEL $VENDOR_DOMAIN".container.name"=$CONTAINER_NAME

@@ -47,6 +47,8 @@ log "Contrail base extra rpms: $BASE_EXTRA_RPMS"
 log "yum additional repos to enable: $YUM_ENABLE_REPOS"
 log "Parallel build: $CONTRAIL_PARALLEL_BUILD"
 log "Keep log files: $CONTRAIL_KEEP_LOG_FILES"
+log "Vendor: $VENDOR_NAME"
+log "Vendor Domain: $VENDOR_DOMAIN"
 
 if [ -n "$opts" ]; then
   log "Options: $opts"
@@ -101,6 +103,8 @@ function process_container() {
   build_arg_opts+=" --build-arg CONTAINER_NAME=${container_name}"
   build_arg_opts+=" --build-arg UBUNTU_DISTR_VERSION=${UBUNTU_DISTR_VERSION}"
   build_arg_opts+=" --build-arg UBUNTU_DISTR=${UBUNTU_DISTR}"
+  build_arg_opts+=" --build-arg VENDOR_NAME=${VENDOR_NAME}"
+  build_arg_opts+=" --build-arg VENDOR_DOMAIN=${VENDOR_DOMAIN}"
 
   if [[ -f ./$dir/.externals ]]; then
     local item=''
