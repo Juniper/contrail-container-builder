@@ -1,8 +1,10 @@
 FROM haproxy:1.7
+ARG VENDOR_NAME
+ARG VENDOR_DOMAIN
 
 ARG CONTAINER_NAME
 ARG CONTRAIL_CONTAINER_TAG
-LABEL vendor="Juniper" \
+LABEL vendor=$VENDOR_NAME \
       version=$CONTRAIL_CONTAINER_TAG \
       release="5.1.0" \
       name=$CONTAINER_NAME \
@@ -27,5 +29,5 @@ ENTRYPOINT ["/contrail-entrypoint.sh"]
 CMD ["haproxy", "-f", "/usr/local/etc/haproxy/haproxy.cfg"]
 
 ENV SERVICE_NAME=haproxy
-LABEL net.juniper.contrail.service=$SERVICE_NAME
-LABEL net.juniper.contrail.container.name=$CONTAINER_NAME
+LABEL $VENDOR_DOMAIN".service"=$SERVICE_NAME
+LABEL $VENDOR_DOMAIN".container.name"=$CONTAINER_NAME

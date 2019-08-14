@@ -214,3 +214,7 @@ elif [[ "$LINUX_DISTR" == 'ubuntu' ]] ; then
 else
     export VROUTER_KERNEL_INIT_IMAGE='contrail-vrouter-kernel-init'
 fi
+
+# export vendor label info for containers
+export VENDOR_NAME=${VENDOR_NAME:-'Juniper'}
+export VENDOR_DOMAIN=${VENDOR_DOMAIN:-'net.juniper.contrail'}

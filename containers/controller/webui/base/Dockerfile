@@ -1,6 +1,7 @@
 ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
+ARG VENDOR_DOMAIN
 
 ARG BASE_EXTRA_RPMS=""
 
@@ -20,5 +21,5 @@ COPY *.sh /
 RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done'
 
 ENV NODE_TYPE=webui
-LABEL net.juniper.contrail.pod=$NODE_TYPE
+LABEL $VENDOR_DOMAIN".pod"=$NODE_TYPE
 CMD ["/usr/bin/tail","-f","/dev/null"]
