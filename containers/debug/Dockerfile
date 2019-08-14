@@ -1,6 +1,7 @@
 ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
+ARG PROJECT_DOMAIN
 
 ARG CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
@@ -13,4 +14,4 @@ RUN yum install -y contrail-debuginfo contrail-vrouter-dpdk-debuginfo contrail-m
 RUN ln -s /opt/contrail/manifest.xml /manifest.xml
 
 ENV PS1="\033[1m($CONTAINER_NAME)\033[m\017[$(id -un)@$(hostname -s) $(pwd)]$ "
-LABEL net.juniper.contrail.container.name=$CONTAINER_NAME
+LABEL $PROJECT_DOMAIN".container.name"=$CONTAINER_NAME

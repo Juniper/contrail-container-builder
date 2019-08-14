@@ -1,6 +1,7 @@
 ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
+ARG PROJECT_DOMAIN
 
 ARG CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
@@ -16,4 +17,4 @@ COPY entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/python","/usr/bin/ironic-notification-manager","--conf_file","/etc/contrail/ironic-notification-manager.conf","--conf_file","/etc/contrail/contrail-keystone-auth.conf"]
 
-LABEL net.juniper.contrail.container.name=$CONTAINER_NAME
+LABEL $PROJECT_DOMAIN".container.name"=$CONTAINER_NAME

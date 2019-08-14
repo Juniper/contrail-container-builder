@@ -438,20 +438,20 @@ def get_containers():
     # TODO: try to reuse this logic with nodemgr
 
     items = dict()
-    flt = {'label': ['net.juniper.contrail.container.name']}
+    flt = {'label': ['$PROJECT_DOMAIN.container.name']}
     for cnt in client.containers(all=True, filters=flt):
         labels = cnt.get('Labels', dict())
         if not labels:
             continue
-        service = labels.get('net.juniper.contrail.service')
+        service = labels.get('$PROJECT_DOMAIN.service')
         if not service:
             # filter only service containers (skip *-init, contrail-status)
             continue
         full_env = get_full_env_of_container(cnt['Id'])
-        pod = labels.get('net.juniper.contrail.pod')
+        pod = labels.get('$PROJECT_DOMAIN.pod')
         if not pod:
             pod = get_value_from_env(full_env, 'NODE_TYPE')
-        name = labels.get('net.juniper.contrail.container.name')
+        name = labels.get('$PROJECT_DOMAIN.container.name')
         env_hash = hash(frozenset(full_env))
 
         # service is not empty at this point
