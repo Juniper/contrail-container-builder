@@ -1,6 +1,7 @@
 ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-analytics-base:${CONTRAIL_CONTAINER_TAG}
+ARG VENDOR_DOMAIN
 
 ARG CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
@@ -13,5 +14,5 @@ ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/contrail-collector"]
 
 ENV SERVICE_NAME=collector
-LABEL net.juniper.contrail.service=$SERVICE_NAME
-LABEL net.juniper.contrail.container.name=$CONTAINER_NAME
+LABEL $VENDOR_DOMAIN".service"=$SERVICE_NAME
+LABEL $VENDOR_DOMAIN".container.name"=$CONTAINER_NAME

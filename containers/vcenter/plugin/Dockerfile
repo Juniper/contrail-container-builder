@@ -1,6 +1,7 @@
 ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
+ARG VENDOR_DOMAIN
 
 ARG CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
@@ -22,5 +23,5 @@ CMD ["/usr/bin/contrail-vcenter-plugin"]
 
 ENV NODE_TYPE=vcenter
 ENV SERVICE_NAME=plugin
-LABEL net.juniper.contrail.service=$SERVICE_NAME
-LABEL net.juniper.contrail.container.name=$CONTAINER_NAME
+LABEL $VENDOR_DOMAIN".service"=$SERVICE_NAME
+LABEL $VENDOR_DOMAIN".container.name"=$CONTAINER_NAME

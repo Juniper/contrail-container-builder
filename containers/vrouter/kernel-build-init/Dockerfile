@@ -1,10 +1,12 @@
 ARG UBUNTU_DISTR=ubuntu
 ARG UBUNTU_DISTR_VERSION=16.04
 FROM $UBUNTU_DISTR:$UBUNTU_DISTR_VERSION
+ARG VENDOR_NAME
+ARG VENDOR_DOMAIN
 
 ARG CONTRAIL_CONTAINER_TAG
 ARG CONTAINER_NAME
-LABEL vendor="Juniper" \
+LABEL vendor=$VENDOR_NAME \
       version=$CONTRAIL_CONTAINER_TAG \
       release="5.1.0" \
       name=$CONTAINER_NAME \
@@ -45,4 +47,4 @@ COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-LABEL net.juniper.contrail.container.name=$CONTAINER_NAME
+LABEL $VENDOR_DOMAIN".container.name"=$CONTAINER_NAME
