@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cf496634_06802510",
+        "filename": "common.env.sample",
+        "patchSetId": 2
+      },
+      "lineNbr": 287,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-08-15T16:15:41Z",
+      "side": 1,
+      "message": "I would suggest to rename it to VENDOR_DOMAIN.\nPROJECT_DOMAIN is too close to OpenStack\u0027s term.",
+      "range": {
+        "startLine": 287,
+        "startChar": 0,
+        "endLine": 287,
+        "endChar": 14
+      },
+      "revId": "ded4fd6cf8c103ae7828ac488b41bab75ba48eb2",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
