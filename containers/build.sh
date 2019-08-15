@@ -17,11 +17,11 @@ shift
 opts="$@"
 
 function log() {
-  echo -e "INFO: $@"
+  echo -e "$(date -u +"%Y-%m-%d %H:%M:%S,%3N"): INFO: $@"
 }
 
 function err() {
-  echo -e "ERROR: $@" >&2
+  echo -e "$(date -u +"%Y-%m-%d %H:%M:%S,%3N"): ERROR: $@" >&2
 }
 
 function append_log_file() {
@@ -70,6 +70,7 @@ function process_container() {
     echo "${dir#"./"}"
     return
   fi
+  local start_time=$(date +"%s")
   local container_name=`echo ${dir#"./"} | tr "/" "-"`
   local container_name="contrail-${container_name}"
   local tag="${CONTRAIL_CONTAINER_TAG}"
@@ -113,6 +114,9 @@ function process_container() {
   docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} \
                -t ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag} \
     ${build_arg_opts} -f $docker_file ${opts} $dir 2>&1 | append_log_file $logfile
+  local duration=$(date +"%s")
+  (( duration -= start_time ))
+  log "Docker build duration: $duration seconds" | append_log_file $logfile
   exit_code=${PIPESTATUS[0]}
   if [ $exit_code -eq 0 -a ${CONTRAIL_REGISTRY_PUSH} -eq 1 ]; then
     docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} 2>&1 | append_log_file $logfile
@@ -120,13 +124,15 @@ function process_container() {
     # temporary workaround; to be removed when all other components switch to new tags
     docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag} 2>&1 | append_log_file $logfile
   fi
+  duration=$(date +"%s")
+  (( duration -= start_time ))
   if [ ${exit_code} -eq 0 ]; then
     if [[ "${CONTRAIL_KEEP_LOG_FILES,,}" != 'true' ]] ; then
       rm -f $logfile
     fi
-    log "Building $container_name finished successfully" | append_log_file $logfile true
+    log "Building $container_name finished successfully, duration: $duration seconds" | append_log_file $logfile true
   else
-    err "Building $container_name failed" 2>&1 | append_log_file $logfile true
+    err "Building $container_name failed, duration: $duration seconds" 2>&1 | append_log_file $logfile true
     was_errors=1
   fi
   return $exit_code
