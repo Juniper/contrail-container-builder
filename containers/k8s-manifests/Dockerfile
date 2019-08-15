@@ -30,5 +30,6 @@ RUN YUM_ENABLE_REPOS=$(echo $YUM_ENABLE_REPOS | tr -d '"') && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 
+ENV CONTRAIL_VERSION=$CONTRAIL_CONTAINER_TAG
 COPY entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]

@@ -45,4 +45,5 @@ COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
 
+ENV CONTRAIL_VERSION=$CONTRAIL_CONTAINER_TAG
 LABEL net.juniper.contrail.container.name=$CONTAINER_NAME
