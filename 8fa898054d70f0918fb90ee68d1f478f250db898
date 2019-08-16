@@ -16,6 +16,23 @@
       "revId": "8fa898054d70f0918fb90ee68d1f478f250db898",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2971cdf1_49888c87",
+        "filename": "containers/status/contrail-status.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-08-16T11:52:08Z",
+      "side": 1,
+      "message": "it\u0027s cleaner way to import module and then use it. like:\n\nimport os\nos.getenv(...)\n\nsimilar rule present in OpenStack as mandatory.\nwe don\u0027t have pep8 check and have to check it just in review...",
+      "revId": "8fa898054d70f0918fb90ee68d1f478f250db898",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
