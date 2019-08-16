@@ -16,6 +16,24 @@
       "revId": "b3cee74f5f21d201118fa446e2f17fc906d1e3eb",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7be70a7b_5edea8c1",
+        "filename": "containers/status/contrail-status.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 441,
+      "author": {
+        "id": 688
+      },
+      "writtenOn": "2019-08-16T07:53:29Z",
+      "side": 1,
+      "message": "Thanks for pointing out, missed looking at this between other Dockerfiles",
+      "parentUuid": "e6d37429_46eb893a",
+      "revId": "b3cee74f5f21d201118fa446e2f17fc906d1e3eb",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
     }
   ]
 }
