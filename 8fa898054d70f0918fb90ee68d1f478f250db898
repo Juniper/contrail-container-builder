@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "34070a63_bef6856f",
+        "filename": "containers/status/Dockerfile",
+        "patchSetId": 4
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 688
+      },
+      "writtenOn": "2019-08-16T13:39:47Z",
+      "side": 1,
+      "message": "change for controller is address as part of https://review.opencontrail.org/c/Juniper/contrail-controller/+/53199\nand will add new patch set to define env variable",
+      "parentUuid": "164c8789_40492d92",
+      "revId": "8fa898054d70f0918fb90ee68d1f478f250db898",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2971cdf1_49888c87",
         "filename": "containers/status/contrail-status.py",
         "patchSetId": 4
@@ -33,6 +51,24 @@
       "revId": "8fa898054d70f0918fb90ee68d1f478f250db898",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5bbb3359_a94ac6ac",
+        "filename": "containers/status/contrail-status.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 688
+      },
+      "writtenOn": "2019-08-16T13:39:47Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "2971cdf1_49888c87",
+      "revId": "8fa898054d70f0918fb90ee68d1f478f250db898",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
     }
   ]
 }
