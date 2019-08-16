@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e6d37429_46eb893a",
+        "filename": "containers/status/contrail-status.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 441,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-08-16T06:20:05Z",
+      "side": 1,
+      "message": "PROJECTS_NAME -\u003e VENDOR_NAME\n\nand this file is in python - variables from env should be read from env and then is used in code.",
+      "revId": "b3cee74f5f21d201118fa446e2f17fc906d1e3eb",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
