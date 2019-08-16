@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "164c8789_40492d92",
+        "filename": "containers/status/Dockerfile",
+        "patchSetId": 4
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-08-16T08:48:31Z",
+      "side": 1,
+      "message": "please apply same change ARG and ENV for nodemgr. it also reads labels -\nhttps://github.com/Juniper/contrail-controller/blob/master/src/nodemgr/common/docker_process_manager.py#L91-L92\nhttps://github.com/Juniper/contrail-controller/blob/master/src/nodemgr/common/docker_process_manager.py#L112",
+      "revId": "8fa898054d70f0918fb90ee68d1f478f250db898",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
