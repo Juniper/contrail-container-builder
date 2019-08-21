@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a92cee60_e08e6deb",
+        "filename": "containers/external/rsyslogd/Dockerfile",
+        "patchSetId": 3
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-08-21T17:58:23Z",
+      "side": 1,
+      "message": "please rebased review, and apply the change https://review.opencontrail.org/c/Juniper/contrail-container-builder/+/53176",
+      "range": {
+        "startLine": 32,
+        "startChar": 5,
+        "endLine": 32,
+        "endChar": 26
+      },
+      "revId": "6274c6fda86fb8117d98d368740ba82077856f71",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
