@@ -140,6 +140,30 @@
       "revId": "93eb484c82f2fabc8545cef4fb9df0150d231b1b",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d62472bc_ac48d344",
+        "filename": "containers/external/rsyslogd/Dockerfile",
+        "patchSetId": 2
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 49
+      },
+      "writtenOn": "2019-08-21T05:34:05Z",
+      "side": 1,
+      "message": "Looks like COPY src1 dest1 src2 dest2 does not work, from https://docs.docker.com/engine/reference/builder/, I see it works if all files dest is same. So I had to use multiple COPY instructions.",
+      "parentUuid": "d0713efd_8131bd18",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 3
+      },
+      "revId": "93eb484c82f2fabc8545cef4fb9df0150d231b1b",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
