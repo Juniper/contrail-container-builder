@@ -47,6 +47,14 @@ KAFKA_KEY_PASSWORD=${KAFKA_KEY_PASSWORD:-c0ntrail123}
 KAFKA_STORE_PASSWORD=${KAFKA_STORE_PASSWORD:-c0ntrail123}
 
 CONFIG="$KAFKA_CONF_DIR/server.properties"
+ZOO_START_BIN="$KAFKA_BIN_DIR/zookeeper-server-start"
+CONN_STAND_ALONE_BIN="$KAFKA_BIN_DIR/connect-standalone"
+CONN_DISTRI_BIN="$KAFKA_BIN_DIR/connect-distributed"
+KAFKA_START_BIN="$KAFKA_BIN_DIR/kafka-server-start"
+sed -i "s/=\"\$base_dir\/..\/etc/=\"\$base_dir\/..\/..\/etc/g" ${ZOO_START_BIN}
+sed -i "s/=\"\$base_dir\/..\/etc/=\"\$base_dir\/..\/..\/etc/g" ${CONN_STAND_ALONE_BIN}
+sed -i "s/=\"\$base_dir\/..\/etc/=\"\$base_dir\/..\/..\/etc/g" ${CONN_DISTRI_BIN}
+sed -i "s/=\"\$base_dir\/..\/etc/=\"\$base_dir\/..\/..\/etc/g" ${KAFKA_START_BIN}
 sed -i "s/^broker.id=.*$/broker.id=$KAFKA_BROKER_ID/g" ${CONFIG}
 sed -i "s/#port=.*$/port=$KAFKA_LISTEN_PORT/g" ${CONFIG}
 if ! is_enabled ${KAFKA_SSL_ENABLE} ; then
@@ -91,11 +99,12 @@ sed -i "s/#advertised.host.name=.*$/advertised.host.name=$my_ip/g" ${CONFIG}
 sed -i "s/^#log.retention.bytes=.*$/log.retention.bytes=$KAFKA_log_retention_bytes/g" ${CONFIG}
 sed -i "s/^log.retention.hours=.*$/log.retention.hours=$KAFKA_log_retention_hours/g" ${CONFIG}
 sed -i "s/^log.segment.bytes=.*$/log.segment.bytes=$KAFKA_log_segment_bytes/g" ${CONFIG}
+sed -i "s/^num.partitions=.*$/num.partitions=30/g" ${CONFIG}
+sed -i "s/^default.replication.factor=.*/default.replication.factor=$replication_factor/g" ${CONFIG}
+echo " " >> ${CONFIG}
 echo "log.cleanup.policy=${KAFKA_log_cleanup_policy}" >> ${CONFIG}
 echo "log.cleaner.threads=${KAFKA_log_cleaner_threads}" >> ${CONFIG}
 echo "log.cleaner.dedupe.buffer.size=${KAFKA_log_cleaner_dedupe_buffer_size}" >> ${CONFIG}
-sed -i "s/^num.partitions=.*$/num.partitions=30/g" ${CONFIG}
-sed -i "s/^default.replication.factor=.*/default.replication.factor=$replication_factor/g" ${CONFIG}
 echo "offsets.topic.replication.factor=$replication_factor" >> ${CONFIG}
 echo "reserved.broker.max.id=100001" >> ${CONFIG}
 
