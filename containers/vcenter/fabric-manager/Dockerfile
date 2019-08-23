@@ -8,7 +8,7 @@ LABEL name=$CONTAINER_NAME \
       summary="Contrail vCenter Fabric Manager" \
       description="CVFM manages VMware datacenter underlay network configuration based on vCenter events"
 
-RUN yum install -y contrail-vcenter-fabric-manager && \
+RUN yum install epel-release && yum install -y contrail-vcenter-fabric-manager && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 
