@@ -1,6 +1,6 @@
-ARG CONTRAIL_REGISTRY
-ARG CONTRAIL_CONTAINER_TAG
-FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
+ARG CONTRAIL_BASE_REGISTRY
+ARG CONTRAIL_BASE_CONTAINER_TAG
+FROM ${CONTRAIL_BASE_REGISTRY}/contrail-base:${CONTRAIL_BASE_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
 
 # removing network-scripts: this folder will mounted from the host (or not used in Ubuntu) so the one installed by initscripts package in container is removed.
