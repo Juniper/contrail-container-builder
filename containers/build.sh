@@ -7,6 +7,7 @@
 #   "all" as argument means build all. It's needed if you want to build all and pass some docker opts (see below).
 #   "list" will list all relative paths for build in right order. It's needed for automation. Example: ./build.sh list | grep -v "^INFO:"
 # opts: extra parameters to pass to docker. If you want to pass docker opts you have to specify 'all' as first param (see 'path' argument above)
+set -x
 
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
@@ -28,6 +29,7 @@ function append_log_file() {
   local logfile=$1
   local always_echo=${2:-'false'}
   local line=''
+  set +x
   while read line ; do
     if [[ "${CONTRAIL_KEEP_LOG_FILES,,}" != 'true' || "$always_echo" != 'false' ]] ; then
       echo "$line" | tee -a $logfile
@@ -35,9 +37,12 @@ function append_log_file() {
       echo "$line" >> $logfile
     fi
   done
+  set -x
 }
 
 log "Target platform: $LINUX_DISTR:$LINUX_DISTR_VER"
+log "Contrail Base repository: $CONTRAIL_BASE_REGISTRY"
+log "Contrail Base tag: $CONTRAIL_BASE_CONTAINER_TAG"
 log "Contrail version: $CONTRAIL_VERSION"
 log "Contrail registry: $CONTRAIL_REGISTRY"
 log "Contrail repository: $CONTRAIL_REPOSITORY"
@@ -76,6 +81,13 @@ function process_container() {
   local container_name=`echo ${dir#"./"} | tr "/" "-"`
   local container_name="contrail-${container_name}"
   local tag="${CONTRAIL_CONTAINER_TAG}"
+  if [[ -z ${CONTRAIL_BASE_REGISTRY} ]]; then
+    CONTRAIL_BASE_REGISTRY=${CONTRAIL_REGISTRY}
+  fi
+
+  if [[ -z ${CONTRAIL_BASE_CONTAINER_TAG} ]]; then
+    CONTRAIL_BASE_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG}
+  fi
 
   local logfile='build-'$container_name'.log'
   log "Building $container_name" | append_log_file $logfile true
@@ -88,13 +100,16 @@ function process_container() {
     # and then change FROM-s that uses ARG-s
     sed -i \
       -e "s|^FROM \${CONTRAIL_REGISTRY}/\([^:]*\):\${CONTRAIL_CONTAINER_TAG}|FROM ${CONTRAIL_REGISTRY}/\1:${tag}|" \
+      -e "s|^FROM \${CONTRAIL_BASE_REGISTRY}/\([^:]*\):\${CONTRAIL_BASE_CONTAINER_TAG}|FROM ${CONTRAIL_BASE_REGISTRY}/\1:${CONTRAIL_BASE_CONTAINER_TAG}|" \
       -e "s|^FROM \$LINUX_DISTR:\$LINUX_DISTR_VER|FROM $LINUX_DISTR:$LINUX_DISTR_VER|" \
       -e "s|^FROM \$UBUNTU_DISTR:\$UBUNTU_DISTR_VERSION|FROM $UBUNTU_DISTR:$UBUNTU_DISTR_VERSION|" \
       ${docker_file}.nofromargs
     docker_file="${docker_file}.nofromargs"
   fi
   build_arg_opts+=" --build-arg CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY}"
+  build_arg_opts+=" --build-arg CONTRAIL_BASE_REGISTRY=${CONTRAIL_BASE_REGISTRY}"
   build_arg_opts+=" --build-arg CONTRAIL_CONTAINER_TAG=${tag}"
+  build_arg_opts+=" --build-arg CONTRAIL_BASE_CONTAINER_TAG=${CONTRAIL_BASE_CONTAINER_TAG}"
   build_arg_opts+=" --build-arg LINUX_DISTR_VER=${LINUX_DISTR_VER}"
   build_arg_opts+=" --build-arg LINUX_DISTR=${LINUX_DISTR}"
   build_arg_opts+=" --build-arg GENERAL_EXTRA_RPMS=\"${GENERAL_EXTRA_RPMS}\""
