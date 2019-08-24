@@ -1,6 +1,6 @@
-ARG CONTRAIL_REGISTRY
-ARG CONTRAIL_CONTAINER_TAG
-FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
+ARG CONTRAIL_BASE_REGISTRY
+ARG CONTRAIL_BASE_CONTAINER_TAG
+FROM ${CONTRAIL_BASE_REGISTRY}/contrail-base:${CONTRAIL_BASE_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
 
 ARG CONTAINER_NAME
@@ -8,7 +8,11 @@ LABEL name=$CONTAINER_NAME \
       summary="vSphereESX Agent Manager" \
       description="VMware provides a standard vCenter solution called vSphereESX Agent Manager (EAM), that allows you to deploy, monitor, and manage ContrailVMs on ESXi hosts."
 
-RUN yum install -y contrail-vcenter-manager && \
+RUN yum install -y contrail-vcenter-manager \
+                   contrail-lib \
+                   contrail-setup \
+                   contrail-utils \
+                   python-contrail && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 

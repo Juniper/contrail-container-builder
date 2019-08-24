@@ -1,6 +1,6 @@
-ARG CONTRAIL_REGISTRY
-ARG CONTRAIL_CONTAINER_TAG
-FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
+ARG CONTRAIL_BASE_REGISTRY
+ARG CONTRAIL_BASE_CONTAINER_TAG
+FROM ${CONTRAIL_BASE_REGISTRY}/contrail-general-base:${CONTRAIL_BASE_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
 
 ARG BASE_EXTRA_RPMS=""
@@ -10,7 +10,11 @@ RUN BASE_EXTRA_RPMS=$(echo $BASE_EXTRA_RPMS | tr -d '"' | tr ',' ' ') && \
         echo "INFO: contrail-base: install $BASE_EXTRA_RPMS" ; \
         yum install -y $BASE_EXTRA_RPMS ; \
     fi && \
-    yum install -y nodejs-0.10.35-1contrail.el7 contrail-web-controller contrail-web-core && \
+    yum install -y nodejs-0.10.35-1contrail.el7 contrail-web-controller contrail-web-core \
+                   contrail-lib \
+                   contrail-setup \
+                   contrail-utils \
+                   python-contrail && \
     yum clean all -y && \
     rm -rf /var/cache/yum && \
     chown -R $CONTRAIL_USER:$CONTRAIL_USER /usr/src/contrail

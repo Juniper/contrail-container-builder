@@ -1,12 +1,16 @@
-ARG CONTRAIL_REGISTRY
-ARG CONTRAIL_CONTAINER_TAG
-FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
+ARG CONTRAIL_BASE_REGISTRY
+ARG CONTRAIL_BASE_CONTAINER_TAG
+FROM ${CONTRAIL_BASE_REGISTRY}/contrail-base:${CONTRAIL_BASE_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
 ENV VENDOR_DOMAIN=$VENDOR_DOMAIN
 
 # contrail-config-openstack contains svc_monitor and vnc_openstack modules
 RUN sed -e '/^tsflags=nodocs/d' -i /etc/yum.conf && \
-    yum install -y contrail-config contrail-config-openstack && \
+    yum install -y contrail-config contrail-config-openstack \
+                   contrail-lib \
+                   contrail-setup \
+                   contrail-utils \
+                   python-contrail && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 
