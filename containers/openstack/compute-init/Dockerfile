@@ -1,6 +1,6 @@
-ARG CONTRAIL_REGISTRY
-ARG CONTRAIL_CONTAINER_TAG
-FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
+ARG CONTRAIL_BASE_REGISTRY
+ARG CONTRAIL_BASE_CONTAINER_TAG
+FROM ${CONTRAIL_BASE_REGISTRY}/contrail-base:${CONTRAIL_BASE_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
 
 ARG CONTAINER_NAME
@@ -8,7 +8,11 @@ LABEL name=$CONTAINER_NAME \
       summary="Init container for OpenStack Compute" \
       description="Sidecar container with libraries for nova-compute."
 
-RUN yum install -y contrail-vrouter-agent contrail-nova-vif && \
+RUN yum install -y contrail-vrouter-agent contrail-nova-vif \
+                   contrail-lib \
+                   contrail-setup \
+                   contrail-utils \
+                   python-contrail && \
     mkdir -p /opt/contrail/bin && \
     cp /usr/bin/vrouter-port-control /opt/contrail/bin && \
     yum remove -y contrail-vrouter-agent && \

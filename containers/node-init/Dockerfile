@@ -1,6 +1,6 @@
-ARG CONTRAIL_REGISTRY
-ARG CONTRAIL_CONTAINER_TAG
-FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
+ARG CONTRAIL_BASE_REGISTRY
+ARG CONTRAIL_BASE_CONTAINER_TAG
+FROM ${CONTRAIL_BASE_REGISTRY}/contrail-base:${CONTRAIL_BASE_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
 
 ARG CONTAINER_NAME
@@ -8,7 +8,11 @@ LABEL name=$CONTAINER_NAME \
       summary="Contrail Init container" \
       description="Container is used to configure operating system for Contrail services."
 
-RUN yum install -y openssl && \
+RUN yum install -y openssl \
+                   contrail-lib \
+                   contrail-setup \
+                   contrail-utils \
+                   python-contrail && \
     yum install -y --downloadonly --downloaddir=/ contrail-tripleo-puppet && \
     yum clean all -y && \
     rm -rf /var/cache/yum

@@ -1,8 +1,8 @@
 # This is the base for contrail specific children
 
-ARG CONTRAIL_REGISTRY
-ARG CONTRAIL_CONTAINER_TAG
-FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
+ARG CONTRAIL_BASE_REGISTRY
+ARG CONTRAIL_BASE_CONTAINER_TAG
+FROM ${CONTRAIL_BASE_REGISTRY}/contrail-general-base:${CONTRAIL_BASE_CONTAINER_TAG}
 
 ARG BASE_EXTRA_RPMS=""
 
@@ -13,7 +13,6 @@ RUN mkdir -p -m 777 /var/crashes && \
         echo "INFO: contrail-base: install $BASE_EXTRA_RPMS" ; \
         yum install -y $BASE_EXTRA_RPMS ; \
     fi && \
-    yum install -y contrail-lib contrail-setup contrail-utils python-contrail && \
     yum clean all -y && \
     rm -rf /var/cache/yum && \
     ldconfig
