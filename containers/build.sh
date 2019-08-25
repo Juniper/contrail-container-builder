@@ -81,20 +81,34 @@ function process_container() {
   log "Building $container_name" | append_log_file $logfile true
   
   local build_arg_opts=''
+
+  # if the FROM is contrail-general-base or contrail-base $tag need to be adjusted
+  # need to make this grep solid
+  fromname=`cat ${docker_file} | grep "contrail.*-base"`
+  if [[ ! -z "$fromname" ]]; then
+      tag="${BASE_IMAGE_TAG}"
+      CONTRAIL_REGISTRY_NEW="${BASE_CONTAINER_REGISTRY}"
+      #build_arg_opts+=" --build-arg CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY_NEW}"
+  else
+      tag="${CONTRAIL_CONTAINER_TAG}"
+      CONTRAIL_REGISTRY_NEW="${CONTRAIL_REGISTRY}"
+      #build_arg_opts+=" --build-arg CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY_NEW}"
+  fi
+
   if [[ "$docker_ver" < '17.06' ]] ; then
     # old docker can't use ARG-s before FROM:
     # comment all ARG-s before FROM
     cat ${docker_file} | awk '{if(ncmt!=1 && $1=="ARG"){print("#"$0)}else{print($0)}; if($1=="FROM"){ncmt=1}}' > ${docker_file}.nofromargs
     # and then change FROM-s that uses ARG-s
     sed -i \
-      -e "s|^FROM \${CONTRAIL_REGISTRY}/\([^:]*\):\${CONTRAIL_CONTAINER_TAG}|FROM ${CONTRAIL_REGISTRY}/\1:${tag}|" \
+      -e "s|^FROM \${CONTRAIL_REGISTRY}/\([^:]*\):\${CONTRAIL_CONTAINER_TAG}|FROM ${CONTRAIL_REGISTRY_NEW}/\1:${tag}|" \
       -e "s|^FROM \$LINUX_DISTR:\$LINUX_DISTR_VER|FROM $LINUX_DISTR:$LINUX_DISTR_VER|" \
       -e "s|^FROM \$UBUNTU_DISTR:\$UBUNTU_DISTR_VERSION|FROM $UBUNTU_DISTR:$UBUNTU_DISTR_VERSION|" \
       ${docker_file}.nofromargs
     docker_file="${docker_file}.nofromargs"
   fi
   build_arg_opts+=" --build-arg CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY}"
-  build_arg_opts+=" --build-arg CONTRAIL_CONTAINER_TAG=${tag}"
+  build_arg_opts+=" --build-arg CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG}"
   build_arg_opts+=" --build-arg LINUX_DISTR_VER=${LINUX_DISTR_VER}"
   build_arg_opts+=" --build-arg LINUX_DISTR=${LINUX_DISTR}"
   build_arg_opts+=" --build-arg GENERAL_EXTRA_RPMS=\"${GENERAL_EXTRA_RPMS}\""
@@ -115,18 +129,18 @@ function process_container() {
     done
   fi
 
-  docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} \
-               -t ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag} \
+  docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${CONTRAIL_CONTAINER_TAG} \
+               -t ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${CONTRAIL_CONTAINER_TAG} \
     ${build_arg_opts} -f $docker_file ${opts} $dir 2>&1 | append_log_file $logfile
   local duration=$(date +"%s")
   (( duration -= start_time ))
   log "Docker build duration: $duration seconds" | append_log_file $logfile
   exit_code=${PIPESTATUS[0]}
   if [ $exit_code -eq 0 -a ${CONTRAIL_REGISTRY_PUSH} -eq 1 ]; then
-    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} 2>&1 | append_log_file $logfile
+    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${CONTRAIL_CONTAINER_TAG} 2>&1 | append_log_file $logfile
     exit_code=${PIPESTATUS[0]}
     # temporary workaround; to be removed when all other components switch to new tags
-    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag} 2>&1 | append_log_file $logfile
+    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${CONTRAIL_CONTAINER_TAG} 2>&1 | append_log_file $logfile
   fi
   duration=$(date +"%s")
   (( duration -= start_time ))
