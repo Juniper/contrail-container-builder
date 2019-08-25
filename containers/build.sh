@@ -81,19 +81,34 @@ function process_container() {
   log "Building $container_name" | append_log_file $logfile true
   
   local build_arg_opts=''
+
+  # if the FROM is contrail-general-base or contrail-base $tag need to be adjusted
+  # need to make this grep solid
+  fromname=`cat ${docker_file} | grep "contrail.*-base"`
+  if [[ ! -z "$fromname" ]]; then
+      tag="${BASE_IMAGE_TAG}"
+      CONTRAIL_REGISTRY_NEW="${BASE_CONTAINER_REGISTRY}"
+      build_arg_opts+=" --build-arg BASE_IMAGE_TAG=${tag}"
+      build_arg_opts+=" --build-arg CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY_NEW}"
+  else
+      tag="${CONTRAIL_CONTAINER_TAG}"
+      CONTRAIL_REGISTRY_NEW="${CONTRAIL_REGISTRY}"
+      build_arg_opts+=" --build-arg BASE_IMAGE_TAG=${tag}"
+      build_arg_opts+=" --build-arg CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY_NEW}"
+  fi
+
   if [[ "$docker_ver" < '17.06' ]] ; then
     # old docker can't use ARG-s before FROM:
     # comment all ARG-s before FROM
     cat ${docker_file} | awk '{if(ncmt!=1 && $1=="ARG"){print("#"$0)}else{print($0)}; if($1=="FROM"){ncmt=1}}' > ${docker_file}.nofromargs
     # and then change FROM-s that uses ARG-s
     sed -i \
-      -e "s|^FROM \${CONTRAIL_REGISTRY}/\([^:]*\):\${CONTRAIL_CONTAINER_TAG}|FROM ${CONTRAIL_REGISTRY}/\1:${tag}|" \
+      -e "s|^FROM \${CONTRAIL_REGISTRY}/\([^:]*\):\${CONTRAIL_CONTAINER_TAG}|FROM ${CONTRAIL_REGISTRY_NEW}/\1:${tag}|" \
       -e "s|^FROM \$LINUX_DISTR:\$LINUX_DISTR_VER|FROM $LINUX_DISTR:$LINUX_DISTR_VER|" \
       -e "s|^FROM \$UBUNTU_DISTR:\$UBUNTU_DISTR_VERSION|FROM $UBUNTU_DISTR:$UBUNTU_DISTR_VERSION|" \
       ${docker_file}.nofromargs
     docker_file="${docker_file}.nofromargs"
   fi
-  build_arg_opts+=" --build-arg CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY}"
   build_arg_opts+=" --build-arg CONTRAIL_CONTAINER_TAG=${tag}"
   build_arg_opts+=" --build-arg LINUX_DISTR_VER=${LINUX_DISTR_VER}"
   build_arg_opts+=" --build-arg LINUX_DISTR=${LINUX_DISTR}"
