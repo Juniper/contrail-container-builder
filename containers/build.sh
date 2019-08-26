@@ -42,6 +42,8 @@ log "Contrail version: $CONTRAIL_VERSION"
 log "Contrail registry: $CONTRAIL_REGISTRY"
 log "Contrail repository: $CONTRAIL_REPOSITORY"
 log "Contrail container tag: $CONTRAIL_CONTAINER_TAG"
+log "Contrail Base repository: $CONTRAIL_REGISTRY_BASE"
+log "Contrail Base tag: $CONTRAIL_CONTAINER_TAG_BASE"
 log "Contrail generic base extra rpms: $GENERAL_EXTRA_RPMS"
 log "Contrail base extra rpms: $BASE_EXTRA_RPMS"
 log "yum additional repos to enable: $YUM_ENABLE_REPOS"
@@ -77,9 +79,23 @@ function process_container() {
   local container_name="contrail-${container_name}"
   local tag="${CONTRAIL_CONTAINER_TAG}"
 
+  # if the FROM is contrail-general-base or contrail-base $tag need to be adjusted
+  # need to make this grep solid
+  local registry_base="${CONTRAIL_REGISTRY}"
+  local tag_base="${tag}"
+  local fromname=`cat ${docker_file} | grep "^FROM .*contrail-general-base"`
+  if [[ -n "$fromname" ]]; then
+      if [[ -n ${CONTRAIL_REGISTRY_BASE} ]]; then
+        registry_base="${CONTRAIL_REGISTRY_BASE}"
+      fi
+      if [[ -n "${CONTRAIL_CONTAINER_TAG_BASE}" ]]; then
+        tag_base="${CONTRAIL_CONTAINER_TAG_BASE}"
+      fi
+  fi
+
   local logfile='build-'$container_name'.log'
   log "Building $container_name" | append_log_file $logfile true
-  
+
   local build_arg_opts=''
   if [[ "$docker_ver" < '17.06' ]] ; then
     # old docker can't use ARG-s before FROM:
@@ -87,14 +103,14 @@ function process_container() {
     cat ${docker_file} | awk '{if(ncmt!=1 && $1=="ARG"){print("#"$0)}else{print($0)}; if($1=="FROM"){ncmt=1}}' > ${docker_file}.nofromargs
     # and then change FROM-s that uses ARG-s
     sed -i \
-      -e "s|^FROM \${CONTRAIL_REGISTRY}/\([^:]*\):\${CONTRAIL_CONTAINER_TAG}|FROM ${CONTRAIL_REGISTRY}/\1:${tag}|" \
+      -e "s|^FROM \${CONTRAIL_REGISTRY}/\([^:]*\):\${CONTRAIL_CONTAINER_TAG}|FROM ${registry_base}/\1:${tag_base}|" \
       -e "s|^FROM \$LINUX_DISTR:\$LINUX_DISTR_VER|FROM $LINUX_DISTR:$LINUX_DISTR_VER|" \
       -e "s|^FROM \$UBUNTU_DISTR:\$UBUNTU_DISTR_VERSION|FROM $UBUNTU_DISTR:$UBUNTU_DISTR_VERSION|" \
       ${docker_file}.nofromargs
     docker_file="${docker_file}.nofromargs"
   fi
-  build_arg_opts+=" --build-arg CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY}"
-  build_arg_opts+=" --build-arg CONTRAIL_CONTAINER_TAG=${tag}"
+  build_arg_opts+=" --build-arg CONTRAIL_REGISTRY=${registry_base}"
+  build_arg_opts+=" --build-arg CONTRAIL_CONTAINER_TAG=${tag_base}"
   build_arg_opts+=" --build-arg LINUX_DISTR_VER=${LINUX_DISTR_VER}"
   build_arg_opts+=" --build-arg LINUX_DISTR=${LINUX_DISTR}"
   build_arg_opts+=" --build-arg GENERAL_EXTRA_RPMS=\"${GENERAL_EXTRA_RPMS}\""
