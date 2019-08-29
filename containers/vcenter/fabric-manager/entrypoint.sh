@@ -34,6 +34,12 @@ log_file=$LOG_DIR/contrail-vcenter-fabric-manager.log
 [ZOOKEEPER]
 zookeeper_servers=$ZOOKEEPER_SERVERS
 
+[RABBIT]
+rabbit_hosts=$RABBITMQ_NODES
+rabbit_port=$RABBITMQ_NODE_PORT
+$rabbit_config
+$kombu_ssl_config
+
 EOM
 
 if [[ $AUTH_MODE == "keystone" ]]; then
