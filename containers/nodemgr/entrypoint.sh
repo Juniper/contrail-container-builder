@@ -30,6 +30,7 @@ ntype=`echo ${NODE_TYPE^^} | tr '-' '_'`
 if [[ $ntype == 'VROUTER' ]]; then
   htype='VROUTER'
   hostip=$(get_ip_for_vrouter_from_control)
+  host_name=${VROUTER_HOSTNAME:-}
 else
   # nodes list var name is a ANALYTICSDB_NODES (not DATABASE_NODES)
   if [[ $ntype == 'DATABASE' ]] ; then
@@ -58,6 +59,15 @@ hostip=${hostip}
 db_port=${CASSANDRA_CQL_PORT}
 db_jmx_port=${CASSANDRA_JMX_LOCAL_PORT}
 db_use_ssl=$(format_boolean $CASSANDRA_SSL_ENABLE)
+EOM
+
+if [ -n "${host_name}" ]; then
+cat >> /etc/contrail/$NODEMGR_NAME.conf << EOM
+hostname=${host_name}
+EOM
+fi
+
+cat >> /etc/contrail/$NODEMGR_NAME.conf << EOM
 
 [COLLECTOR]
 server_list=${COLLECTOR_SERVERS}
