@@ -27,7 +27,12 @@ RUN /./mlnx_prepare.sh
 
 COPY local_store.list /etc/apt/sources.list.d/
 
-RUN apt-get clean
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
+    apt-get upgrade -y && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY entrypoint.sh /
 
