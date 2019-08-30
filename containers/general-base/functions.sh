@@ -24,7 +24,9 @@ function get_server_list() {
     local server_address=`echo ${server}`
     extended_server_list+=${server_address}${port_with_delim}
   done
-  [ -n "$extended_server_list" ] && echo "${extended_server_list::-1}"
+  if [ -n "$extended_server_list" ] ; then
+    echo "${extended_server_list::-1}"
+  fi
 }
 
 function get_gateway_nic_for_ip() {
