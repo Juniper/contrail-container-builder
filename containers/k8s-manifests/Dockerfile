@@ -27,6 +27,7 @@ RUN YUM_ENABLE_REPOS=$(echo $YUM_ENABLE_REPOS | tr -d '"') && \
         yum-config-manager --enable $YUM_ENABLE_REPOS ; \
         yum clean metadata ; \
     fi && \
+    yum update -y && \
     yum install -y iproute && \
     yum clean all -y && \
     rm -rf /var/cache/yum
