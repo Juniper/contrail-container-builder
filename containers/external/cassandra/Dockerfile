@@ -1,4 +1,4 @@
-FROM cassandra:3.11.3
+FROM cassandra:3.11.4
 ARG VENDOR_NAME
 ARG VENDOR_DOMAIN
 
