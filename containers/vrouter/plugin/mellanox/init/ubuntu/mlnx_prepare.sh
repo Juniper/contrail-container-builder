@@ -5,7 +5,7 @@ apt-get -y install lsb-release apt-utils dpkg-dev
 
 export DEBIAN_FRONTEND=noninteractive
 
-for UBUNTU_RELEASE in 16.04
+for UBUNTU_RELEASE in 18.04
 do
 cat << EOF > /etc/apt/sources.list.d/mellanox_mlnx_ofed.list
 #
@@ -35,4 +35,4 @@ apt-get -y install libpython-stdlib libpython2.7 libpython2.7-minimal
 apt-get -y install lsof mime-support pciutils python
 apt-get -y install python-libxml2 python-minimal python2.7 python2.7-minimal
 apt-get -y install sgml-base xml-core
-apt-get -y install libicu55
+apt-get -y install libicu60
