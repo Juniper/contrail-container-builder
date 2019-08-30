@@ -1,4 +1,4 @@
-FROM zookeeper:3.4.10
+FROM zookeeper:3.4.14
 ARG VENDOR_NAME
 ARG VENDOR_DOMAIN
 
@@ -16,7 +16,8 @@ RUN mkdir /licenses
 COPY __licensing.txt /licenses/licensing.txt
 
 COPY *.sh hostname_to_ip /
-RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done'
+RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done' && \
+    /upgrade_pkgs.sh
 
 ENTRYPOINT ["/contrail-entrypoint.sh"]
 CMD ["zkServer.sh", "start-foreground"]
