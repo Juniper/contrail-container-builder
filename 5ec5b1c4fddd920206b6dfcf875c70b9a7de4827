@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ac343991_976cfce2",
+        "filename": "containers/controller/config/svcmonitor/entrypoint.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-09-02T15:45:41Z",
+      "side": 1,
+      "message": "Could you please check how it is done for CONFIG_API (CONFIG_API_SERVER_CERTFILE ...):\n\n- add definitions in parse-env.sh and common.sh\n- add function like wait_config_api_certs_if_ssl_enabled for analytics (contrail-functions.sh) and add its call into containers/analytics/api/entrypoint.sh (after redis wait) and in this file (svcmonitor/entrypoint.sh: after pre_start_init)\n- in common.sh introduce a variable like analytics_api_ssl_opts (like it is for xmpp_certs_config ) that is empty if ssl is not enabled and has all these options if enabled.  And just use this variable here like $analytics_api_ssl_opts and add containers/analytics/api/entrypoint.sh (in section DEFAULTS contrail-analytics-api.conf)",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 63
+      },
+      "revId": "5ec5b1c4fddd920206b6dfcf875c70b9a7de4827",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
