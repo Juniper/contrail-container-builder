@@ -72,6 +72,16 @@ function wait_config_api_certs_if_ssl_enabled() {
   fi
 }
 
+function wait_analytics_api_certs_if_ssl_enabled() {
+  if ! is_enabled ${ANALYTICS_API_SSL_ENABLE} ; then
+    return
+  fi
+
+  if [[ "$SERVER_KEYFILE" != "$ANALYTICS_API_SERVER_CERTFILE" ]] ; then
+    wait_files "$ANALYTICS_API_SERVER_CERTFILE" "$ANALYTICS_API_SERVER_KEYFILE"
+  fi
+}
+
 function pre_start_init() {
   wait_certs_if_ssl_enabled
 }
