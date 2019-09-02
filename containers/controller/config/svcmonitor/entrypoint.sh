@@ -28,6 +28,8 @@ $kombu_ssl_config
 
 collectors=$COLLECTOR_SERVERS
 
+${analytics_api_ssl_opts}
+
 [SECURITY]
 use_certs=${SSL_ENABLE}
 keyfile=${SERVER_KEYFILE}
