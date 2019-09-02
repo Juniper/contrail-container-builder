@@ -4,6 +4,7 @@ source /common.sh
 
 pre_start_init
 wait_redis_certs_if_ssl_enabled
+wait_analytics_api_certs_if_ssl_enabled
 
 host_ip=$(get_listen_ip_for_node ANALYTICS)
 
@@ -33,6 +34,7 @@ collectors=$COLLECTOR_SERVERS
 api_server=$CONFIG_SERVERS
 api_server_use_ssl=${CONFIG_API_SSL_ENABLE}
 zk_list=$ZOOKEEPER_SERVERS_SPACE_DELIM
+${analytics_api_ssl_opts}
 
 [REDIS]
 EOM
