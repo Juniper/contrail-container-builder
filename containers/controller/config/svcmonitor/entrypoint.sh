@@ -38,6 +38,11 @@ ca_certs=${SERVER_CA_CERTFILE}
 # Analytics server list used to get vrouter status and schedule service instance
 analytics_server_list=$ANALYTICS_SERVERS
 aaa_mode = $AAA_MODE
+analytics_api_ssl_enable = ${ANALYTICS_API_SSL_ENABLE}
+analytics_api_insecure_enable = ${SSL_INSECURE}
+analytics_api_ssl_certfile = ${ANALYTICS_API_SERVER_CERTFILE}
+analytics_api_ssl_keyfile = ${ANALYTICS_API_SERVER_KEYFILE}
+analytics_api_ssl_ca_cert = ${ANALYTICS_API_SERVER_CA_CERTFILE}
 
 $sandesh_client_config
 
