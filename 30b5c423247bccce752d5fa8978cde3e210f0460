@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "907405ed_5c75dcc1",
+        "filename": "containers/base/common.sh",
+        "patchSetId": 4
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-09-03T09:41:11Z",
+      "side": 0,
+      "message": "wrong change, it looks you wrongly merge repo.",
+      "range": {
+        "startLine": 76,
+        "startChar": 0,
+        "endLine": 76,
+        "endChar": 43
+      },
+      "revId": "30b5c423247bccce752d5fa8978cde3e210f0460",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
