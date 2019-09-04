@@ -47,18 +47,10 @@ KAFKA_KEY_PASSWORD=${KAFKA_KEY_PASSWORD:-c0ntrail123}
 KAFKA_STORE_PASSWORD=${KAFKA_STORE_PASSWORD:-c0ntrail123}
 
 CONFIG="$KAFKA_CONF_DIR/server.properties"
-ZOO_START_BIN="$KAFKA_BIN_DIR/zookeeper-server-start"
-CONN_STAND_ALONE_BIN="$KAFKA_BIN_DIR/connect-standalone"
-CONN_DISTRI_BIN="$KAFKA_BIN_DIR/connect-distributed"
-KAFKA_START_BIN="$KAFKA_BIN_DIR/kafka-server-start"
-sed -i "s/=\"\$base_dir\/..\/etc/=\"\$base_dir\/..\/..\/etc/g" ${ZOO_START_BIN}
-sed -i "s/=\"\$base_dir\/..\/etc/=\"\$base_dir\/..\/..\/etc/g" ${CONN_STAND_ALONE_BIN}
-sed -i "s/=\"\$base_dir\/..\/etc/=\"\$base_dir\/..\/..\/etc/g" ${CONN_DISTRI_BIN}
-sed -i "s/=\"\$base_dir\/..\/etc/=\"\$base_dir\/..\/..\/etc/g" ${KAFKA_START_BIN}
 sed -i "s/^broker.id=.*$/broker.id=$KAFKA_BROKER_ID/g" ${CONFIG}
 sed -i "s/#port=.*$/port=$KAFKA_LISTEN_PORT/g" ${CONFIG}
 if ! is_enabled ${KAFKA_SSL_ENABLE} ; then
-    sed -i "s/^listeners=.*$/listeners=PLAINTEXT:\/\/$KAFKA_LISTEN_ADDRESS:$KAFKA_LISTEN_PORT/g" ${CONFIG}
+    sed -i "s/^#listeners=.*$/listeners=PLAINTEXT:\/\/$KAFKA_LISTEN_ADDRESS:$KAFKA_LISTEN_PORT/g" ${CONFIG}
 else
     export RANDFILE=${KAFKA_DIR}/.rnd
     if [ -e ${KAFKA_DIR}/kafka.server.keystore.jks ] ; then
@@ -84,7 +76,7 @@ else
             -noprompt \
             -alias CARoot -import -file ${KAFKA_SSL_CACERTFILE}
     echo "Created keystore"
-    sed -i "s/^listeners=.*$/listeners=SSL:\/\/$KAFKA_LISTEN_ADDRESS:$KAFKA_LISTEN_PORT/g" ${CONFIG}
+    sed -i "s/^#listeners=.*$/listeners=SSL:\/\/$KAFKA_LISTEN_ADDRESS:$KAFKA_LISTEN_PORT/g" ${CONFIG}
     (grep -q '^advertised.listeners' ${CONFIG} && sed -i "s|^advertised.listeners.*$|advertised.listeners=SSL://$KAFKA_LISTEN_ADDRESS:$KAFKA_LISTEN_PORT|" ${CONFIG}) || echo "advertised.listeners=SSL://$KAFKA_LISTEN_ADDRESS:$KAFKA_LISTEN_PORT" >> ${CONFIG}
     (grep -q '^ssl.keystore.location' ${CONFIG} && sed -i "s|^ssl.keystore.location.*$|ssl.keystore.location=${KAFKA_DIR}/kafka.server.keystore.jks|" ${CONFIG}) || echo "ssl.keystore.location=${KAFKA_DIR}/kafka.server.keystore.jks" >> ${CONFIG}
     (grep -q '^ssl.truststore.location' ${CONFIG} && sed -i "s|^ssl.truststore.location.*$|ssl.truststore.location=${KAFKA_DIR}/kafka.server.truststore.jks|" ${CONFIG})  || echo "ssl.truststore.location=${KAFKA_DIR}/kafka.server.truststore.jks" >> ${CONFIG}
