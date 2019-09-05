@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "320ad710_ca3f04cc",
+        "filename": "containers/base/contrail-functions.sh",
+        "patchSetId": 6
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-09-05T15:49:16Z",
+      "side": 1,
+      "message": "KEYFILE",
+      "range": {
+        "startLine": 44,
+        "startChar": 43,
+        "endLine": 44,
+        "endChar": 51
+      },
+      "revId": "555ab7de39d3fe925a2e9d5b2979a742f39299b6",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8704f3ea_326e97bf",
+        "filename": "containers/base/contrail-functions.sh",
+        "patchSetId": 6
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-09-05T15:49:16Z",
+      "side": 1,
+      "message": "KEYFILE",
+      "range": {
+        "startLine": 47,
+        "startChar": 42,
+        "endLine": 47,
+        "endChar": 50
+      },
+      "revId": "555ab7de39d3fe925a2e9d5b2979a742f39299b6",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "235d8ee1_c794d06a",
+        "filename": "containers/base/contrail-functions.sh",
+        "patchSetId": 6
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-09-05T15:49:16Z",
+      "side": 1,
+      "message": "KEYFILE",
+      "range": {
+        "startLine": 50,
+        "startChar": 39,
+        "endLine": 50,
+        "endChar": 47
+      },
+      "revId": "555ab7de39d3fe925a2e9d5b2979a742f39299b6",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a4c9df50_8023b8e5",
+        "filename": "containers/base/contrail-functions.sh",
+        "patchSetId": 6
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-09-05T15:49:16Z",
+      "side": 1,
+      "message": "KEYFILE",
+      "range": {
+        "startLine": 60,
+        "startChar": 41,
+        "endLine": 60,
+        "endChar": 49
+      },
+      "revId": "555ab7de39d3fe925a2e9d5b2979a742f39299b6",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "95cf7f50_a759db5c",
+        "filename": "containers/base/contrail-functions.sh",
+        "patchSetId": 6
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-09-05T15:49:16Z",
+      "side": 1,
+      "message": "KEYFILE . ?\n\nAnd it looks in the function above there are bugs... \nCould you please fix them as well?",
+      "range": {
+        "startLine": 80,
+        "startChar": 52,
+        "endLine": 80,
+        "endChar": 60
+      },
+      "revId": "555ab7de39d3fe925a2e9d5b2979a742f39299b6",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
