@@ -119,9 +119,13 @@ function gen_ip_addr_add_cmd() {
 function get_dev_routes() {
     local dev=$1
     local routes_list=$(ip route list dev ${dev} | grep -v default)
-    [ -n "$routes_list" ] && echo "$routes_list"
+    if [ -n "$routes_list" ] ; then
+        echo "$routes_list"
+    fi
     routes_list=$(ip route list dev ${dev} | grep default)
-    [ -n "$routes_list" ] && echo "$routes_list"
+    if [ -n "$routes_list" ] ; then
+        echo "$routes_list"
+    fi
 }
 
 function del_dev_routes() {
