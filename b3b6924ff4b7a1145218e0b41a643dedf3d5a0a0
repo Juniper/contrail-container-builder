@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7d0aa91b_c63c38f7",
+        "filename": "containers/analytics/api/entrypoint.sh",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-09-05T12:38:19Z",
+      "side": 1,
+      "message": "It looks the implementation of this func is missing,\ncould you add it like it is for wait_redis_certs_if_ssl_enabled.",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 39
+      },
+      "revId": "b3b6924ff4b7a1145218e0b41a643dedf3d5a0a0",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
