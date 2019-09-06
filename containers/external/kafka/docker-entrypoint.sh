@@ -58,7 +58,7 @@ sed -i "s/=\"\$base_dir\/..\/etc/=\"\$base_dir\/..\/..\/etc/g" ${KAFKA_START_BIN
 sed -i "s/^broker.id=.*$/broker.id=$KAFKA_BROKER_ID/g" ${CONFIG}
 sed -i "s/#port=.*$/port=$KAFKA_LISTEN_PORT/g" ${CONFIG}
 if ! is_enabled ${KAFKA_SSL_ENABLE} ; then
-    sed -i "s/^listeners=.*$/listeners=PLAINTEXT:\/\/$KAFKA_LISTEN_ADDRESS:$KAFKA_LISTEN_PORT/g" ${CONFIG}
+    sed -i "s/^#listeners=.*$/listeners=PLAINTEXT:\/\/$KAFKA_LISTEN_ADDRESS:$KAFKA_LISTEN_PORT/g" ${CONFIG}
 else
     export RANDFILE=${KAFKA_DIR}/.rnd
     if [ -e ${KAFKA_DIR}/kafka.server.keystore.jks ] ; then
@@ -84,7 +84,7 @@ else
             -noprompt \
             -alias CARoot -import -file ${KAFKA_SSL_CACERTFILE}
     echo "Created keystore"
-    sed -i "s/^listeners=.*$/listeners=SSL:\/\/$KAFKA_LISTEN_ADDRESS:$KAFKA_LISTEN_PORT/g" ${CONFIG}
+    sed -i "s/^#listeners=.*$/listeners=SSL:\/\/$KAFKA_LISTEN_ADDRESS:$KAFKA_LISTEN_PORT/g" ${CONFIG}
     (grep -q '^advertised.listeners' ${CONFIG} && sed -i "s|^advertised.listeners.*$|advertised.listeners=SSL://$KAFKA_LISTEN_ADDRESS:$KAFKA_LISTEN_PORT|" ${CONFIG}) || echo "advertised.listeners=SSL://$KAFKA_LISTEN_ADDRESS:$KAFKA_LISTEN_PORT" >> ${CONFIG}
     (grep -q '^ssl.keystore.location' ${CONFIG} && sed -i "s|^ssl.keystore.location.*$|ssl.keystore.location=${KAFKA_DIR}/kafka.server.keystore.jks|" ${CONFIG}) || echo "ssl.keystore.location=${KAFKA_DIR}/kafka.server.keystore.jks" >> ${CONFIG}
     (grep -q '^ssl.truststore.location' ${CONFIG} && sed -i "s|^ssl.truststore.location.*$|ssl.truststore.location=${KAFKA_DIR}/kafka.server.truststore.jks|" ${CONFIG})  || echo "ssl.truststore.location=${KAFKA_DIR}/kafka.server.truststore.jks" >> ${CONFIG}
