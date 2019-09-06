@@ -41,13 +41,13 @@ function wait_certs_if_ssl_enabled() {
   fi
 
   is_enabled $SSL_ENABLE && wait_files "$SERVER_KEYFILE" "$SERVER_CERTFILE"
-  if [[ "$SERVER_KEYFILE" != "$XMPP_SERVER_CERTFILE" ]] ; then
+  if [[ "$SERVER_KEYFILE" != "$XMPP_SERVER_KEYFILE" ]] ; then
     is_enabled $XMPP_SSL_ENABLE && wait_files "$XMPP_SERVER_CERTFILE" "$XMPP_SERVER_KEYFILE"
   fi
-  if [[ "$SERVER_KEYFILE" != "$INTROSPECT_CERTFILE" ]] ; then
+  if [[ "$SERVER_KEYFILE" != "$INTROSPECT_KEYFILE" ]] ; then
     is_enabled $INTROSPECT_SSL_ENABLE && wait_files "$INTROSPECT_CERTFILE" "$INTROSPECT_KEYFILE"
   fi
-  if [[ "$SERVER_KEYFILE" != "$SANDESH_CERTFILE" ]] ; then
+  if [[ "$SERVER_KEYFILE" != "$SANDESH_KEYFILE" ]] ; then
     is_enabled $SANDESH_SSL_ENABLE && wait_files "$SANDESH_CERTFILE" "$SANDESH_KEYFILE"
   fi
 }
@@ -57,7 +57,7 @@ function wait_redis_certs_if_ssl_enabled() {
     return
   fi
 
-  if [[ "$SERVER_KEYFILE" != "$REDIS_SSL_CERTFILE" ]]; then
+  if [[ "$SERVER_KEYFILE" != "$REDIS_SSL_KEYFILE" ]]; then
     wait_files "$REDIS_SSL_CERTFILE" "$REDIS_SSL_KEYFILE"
   fi
 }
@@ -67,8 +67,18 @@ function wait_config_api_certs_if_ssl_enabled() {
     return
   fi
 
-  if [[ "$SERVER_KEYFILE" != "$CONFIG_API_SERVER_CERTFILE" ]] ; then
+  if [[ "$SERVER_KEYFILE" != "$CONFIG_API_SERVER_KEYFILE" ]] ; then
     wait_files "$CONFIG_API_SERVER_CERTFILE" "$CONFIG_API_SERVER_KEYFILE"
+  fi
+}
+
+function wait_analytics_api_certs_if_ssl_enabled() {
+  if ! is_enabled ${ANALYTICS_API_SSL_ENABLE} ; then
+    return
+  fi
+
+  if [[ "$SERVER_KEYFILE" != "$ANALYTICS_API_SERVER_KEYFILE" ]] ; then
+    wait_files "$ANALYTICS_API_SERVER_CERTFILE" "$ANALYTICS_API_SERVER_KEYFILE"
   fi
 }
 
