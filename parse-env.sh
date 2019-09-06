@@ -40,6 +40,14 @@ if [[ $HOST_IP == 'auto' ]] ; then
   export HOST_IP=`ip address show dev $default_interface | head -3 | tail -1 | tr "/" " " | awk '{print $2}'`
 fi
 
+# To enable installation Contrail from sources set this variable to
+# the root of build dir on host, e.g. /root/contrail
+# It should be root created by scons.
+# (SRC_ROOT - is used as default to inherit value from TF CI)
+export CONTRAIL_SOURCE=${CONTRAIL_SOURCE:-'/root/contrail'}
+# Flag to switch to build from sources
+export CONTRAIL_BUILD_FROM_SOURCE=${CONTRAIL_BUILD_FROM_SOURCE:-}
+
 export CONTRAIL_VERSION=${CONTRAIL_VERSION:-'4.1.0.0-8'}
 export K8S_VERSION=${K8S_VERSION:-'1.11.2'}
 export OPENSTACK_VERSION=${OPENSTACK_VERSION:-'queens'}
