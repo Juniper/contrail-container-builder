@@ -1,0 +1,5 @@
+/build/production/analytics/database/setup.py
+/build/production/control-node/setup.py
+/build/production/opserver/node_mgr/setup.py
+/build/production/nodemgr/setup.py
+/build/production/vnsw/agent/uve/setup.py
