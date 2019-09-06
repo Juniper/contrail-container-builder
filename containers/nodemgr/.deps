@@ -1,0 +1,10 @@
+chrony
+contrail-lib
+ntp
+python2-docker
+python-bottle 
+python-contrail
+python-psutil
+python-setuptools
+PyYAML
+xmltodict 
