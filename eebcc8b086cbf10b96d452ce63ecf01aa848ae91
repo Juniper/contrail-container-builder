@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "771a4b9f_a287df0a",
+        "filename": "containers/nodemgr/.deps",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-09-06T12:51:11Z",
+      "side": 1,
+      "message": "not needed as it for rhel\u003c\u003d6, min supported version is 7 now.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 16
+      },
+      "revId": "eebcc8b086cbf10b96d452ce63ecf01aa848ae91",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6a037835_4df9aacf",
+        "filename": "containers/nodemgr/.deps",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-09-06T12:51:11Z",
+      "side": 1,
+      "message": "they are not needed for now, because they are from BuildRequires list (it is needed to run scons that is run outside for now)",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 11
+      },
+      "revId": "eebcc8b086cbf10b96d452ce63ecf01aa848ae91",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ffdd2415_265a1a7b",
+        "filename": "containers/nodemgr/.deps",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-09-06T12:51:11Z",
+      "side": 1,
+      "message": "python2-docker",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 6
+      },
+      "revId": "eebcc8b086cbf10b96d452ce63ecf01aa848ae91",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8e8290d4_9f2da390",
+        "filename": "containers/nodemgr/.deps",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-09-06T12:51:11Z",
+      "side": 1,
+      "message": "already in the list above\n\nps: please sort the whole list",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 3
+      },
+      "revId": "eebcc8b086cbf10b96d452ce63ecf01aa848ae91",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bc589552_de62bd3e",
+        "filename": "containers/nodemgr/.src",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-09-06T12:51:11Z",
+      "side": 1,
+      "message": "1. use relative paths\n2. there are paths to dirs (not to files)\n\ne.g.\nbuild/production/analytics/database",
+      "revId": "eebcc8b086cbf10b96d452ce63ecf01aa848ae91",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
