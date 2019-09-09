@@ -1,12 +1,16 @@
 #!/bin/bash
 
-source /functions.sh
-source /contrail-functions.sh
-
 # Logging
 LOG_LEVEL=${LOG_LEVEL:-SYS_NOTICE}
 LOG_DIR=${LOG_DIR:-"/var/log/contrail"}
 LOG_LOCAL=${LOG_LOCAL:-1}
+
+if [[ "${LOG_LEVEL}" == "SYS_DEBUG" ]] ; then
+  set -x
+fi
+
+source /functions.sh
+source /contrail-functions.sh
 
 # Host
 DEFAULT_IFACE=$(get_default_nic)
@@ -317,10 +321,6 @@ TOR_OVS_PROTOCOL=${TOR_OVS_PROTOCOL:-'tcp'}
 TORAGENT_SSL_CERTFILE=${TORAGENT_SSL_CERTFILE:-${SERVER_CERTFILE}}
 TORAGENT_SSL_KEYFILE=${TORAGENT_SSL_KEYFILE:-${SERVER_KEYFILE}}
 TORAGENT_SSL_CACERTFILE=${TORAGENT_SSL_CACERTFILE:-${SERVER_CA_CERTFILE}}
-
-if [[ "${LOG_LEVEL}" == "SYS_DEBUG" ]] ; then
-  set -x
-fi
 
 if [[ "$KEYSTONE_AUTH_URL_VERSION" == '/v2.0' ]] ; then
   KEYSTONE_AUTH_URL_TOKENS='/v2.0/tokens'
