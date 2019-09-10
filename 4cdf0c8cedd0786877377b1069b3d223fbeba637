@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6b0a940e_b394fb74",
+        "filename": "containers/build.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-09-10T17:53:59Z",
+      "side": 1,
+      "message": "remove redundant spaces",
+      "range": {
+        "startLine": 118,
+        "startChar": 0,
+        "endLine": 118,
+        "endChar": 2
+      },
+      "revId": "4cdf0c8cedd0786877377b1069b3d223fbeba637",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c6d56010_90566f1b",
+        "filename": "containers/build.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-09-10T17:53:59Z",
+      "side": 1,
+      "message": "remove redundant spaces",
+      "range": {
+        "startLine": 129,
+        "startChar": 0,
+        "endLine": 129,
+        "endChar": 2
+      },
+      "revId": "4cdf0c8cedd0786877377b1069b3d223fbeba637",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8722fe3b_79c15b61",
+        "filename": "containers/build.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-09-10T17:53:59Z",
+      "side": 1,
+      "message": "It is not pat of refactoring.. it looks this change is not based on just latest github state.",
+      "range": {
+        "startLine": 130,
+        "startChar": 2,
+        "endLine": 176,
+        "endChar": 3
+      },
+      "revId": "4cdf0c8cedd0786877377b1069b3d223fbeba637",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
