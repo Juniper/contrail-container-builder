@@ -1,0 +1,3 @@
+This is PoC of how container building can be changed so that it doesn't require intermediate step
+of building rpm packages.
+
