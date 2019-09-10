@@ -116,14 +116,16 @@ function process_container() {
   fi
 
   
-  docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} \
-               -t ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag} \
+  local target_name="${CONTRAIL_REGISTRY}/${container_name}:${tag}"
+  local target_name_os="${CONTRAIL_REGISTRY}/${container_name}:${OPENSTACK_VERSION}-${tag}"
+
+  log "Building args: $build_arg_opts" | append_log_file $logfile true
+  docker build --network host -t $target_name -t $target_name_os \
     ${build_arg_opts} -f $docker_file ${opts} $dir 2>&1 | append_log_file $logfile
+  exit_code=${PIPESTATUS[0]}
   local duration=$(date +"%s")
   (( duration -= start_time ))
   log "Docker build duration: $duration seconds" | append_log_file $logfile
-  exit_code=${PIPESTATUS[0]}
-
   
   if [[ ${exit_code} -eq 0 && ! -z "$CONTRAIL_BUILD_FROM_SOURCE" ]]; then   
       # Setup from source
@@ -132,8 +134,8 @@ function process_container() {
       # So, ther is WA: previously build image is empty w/o RPMs but with all 
       # other stuff required, so, now the final step to run a intermediate container,
       # install components inside and commit is as the final image.
-      local cmd=$(docker inspect -f "{{json .Config.Cmd }}" ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} )
-      local entrypoint=$(docker inspect -f "{{json .Config.Entrypoint }}" ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} )
+      local cmd=$(docker inspect -f "{{json .Config.Cmd }}" $target_name )
+      local entrypoint=$(docker inspect -f "{{json .Config.Entrypoint }}" $target_name )
       local intermediate_base="${container_name}-src"
       local src_items=''      
       src_items=$(cat ./$dir/.src | sed '/^$/d' | tr '\n' ',')
@@ -155,7 +157,7 @@ function process_container() {
         -e "CONTRAIL_DEPS=${deps_items}" \
         -v ${CONTRAIL_SOURCE}:${CONTRAIL_SOURCE} \
         --entrypoint /setup.sh \
-       ${CONTRAIL_REGISTRY}'/'${container_name}:${tag}  2>&1 | append_log_file $logfile
+       $target_name 2>&1 | append_log_file $logfile
       exit_code=${PIPESTATUS[0]}
       if [ ${exit_code} -eq 0 ]; then
         docker commit \
@@ -164,8 +166,8 @@ function process_container() {
           $intermediate_base $intermediate_base 2>&1 | append_log_file $logfile
         exit_code=${PIPESTATUS[0]}
         # retag containers
-        [ ${exit_code} -eq 0 ] && docker tag $intermediate_base ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} || exit_code=1
-        [ ${exit_code} -eq 0 ] && docker tag $intermediate_base ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} || exit_code=1
+        [ ${exit_code} -eq 0 ] && docker tag $intermediate_base $target_name || exit_code=1
+        [ ${exit_code} -eq 0 ] && docker tag $intermediate_base $target_name_os || exit_code=1
       fi
       local duration_src=$(date +"%s")
       (( duration_src -= duration ))
@@ -174,11 +176,14 @@ function process_container() {
    
 
   if [ $exit_code -eq 0 -a ${CONTRAIL_REGISTRY_PUSH} -eq 1 ]; then
-    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} 2>&1 | append_log_file $logfile
+    docker push $target_name 2>&1 | append_log_file $logfile
     exit_code=${PIPESTATUS[0]}
     # temporary workaround; to be removed when all other components switch to new tags
-    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag} 2>&1 | append_log_file $logfile
-  fi  
+    if [ ${exit_code} -eq 0 ] ; then 
+      docker push $target_name_os 2>&1 | append_log_file $logfile
+      exit_code=${PIPESTATUS[0]}
+    fi
+  fi
 
   duration=$(date +"%s")
   (( duration -= start_time ))
