@@ -35,6 +35,10 @@ if is_enabled ${CONFIG_API_SSL_ENABLE} ; then
   cnfg_authProtocol='https'
 fi
 
+if is_enabled ${ANALYTICS_API_SSL_ENABLE} ; then
+    analytics_authProtocol='https'
+fi
+
 introspect_strict_ssl=false
 if [[ "${INTROSPECT_SSL_INSECURE,,}" == 'false' ]]; then
   introspect_strict_ssl=true
@@ -63,7 +67,10 @@ set_to_lower imageManager_strictSSL false
 set_to_lower computeManager_strictSSL false
 set_to_lower storageManager_strictSSL false
 set_to_lower cnfg_strictSSL ${CONFIG_API_SSL_ENABLE}
-set_to_lower analytics_strictSSL false
+set_to_lower analytics_strictSSL ${ANALYTICS_API_SSL_ENABLE}
+if is_enabled ${ANALYTICS_API_SSL_INSECURE} ; then
+    set_to_lower analytics_strictSSL false
+fi
 set_to_lower cassandra_enable_edit false
 set_to_lower WEBUI_INSECURE_ACCESS false
 set_to_lower serviceEndPointTakePublicURL true
@@ -145,7 +152,7 @@ config.analytics.server_ip = ${ANALYTICS_API_VIP:-`get_server_json_list ANALYTIC
 config.analytics.server_port = "$ANALYTICS_API_PORT";
 config.analytics.authProtocol = "${analytics_authProtocol:-http}";
 config.analytics.strictSSL = ${analytics_strictSSL};
-config.analytics.ca = ${analytics_ca:-''};
+config.analytics.ca = "${analytics_ca:-$ANALYTICS_API_SERVER_CA_CERTFILE}";
 config.analytics.statusURL = ${analytics_statusURL:-'"/analytics/uves/bgp-peers"'};
 
 config.dns = {};
