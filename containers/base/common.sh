@@ -372,6 +372,7 @@ fi
 
 if is_enabled ${ANALYTICS_API_SSL_ENABLE} ; then
   read -r -d '' analytics_api_ssl_opts << EOM || true
+analytics_api_ssl_enable = ${ANALYTICS_API_SSL_ENABLE}
 analytics_api_insecure_enable = ${ANALYTICS_API_SSL_INSECURE}
 analytics_api_ssl_certfile = ${ANALYTICS_API_SERVER_CERTFILE}
 analytics_api_ssl_keyfile = ${ANALYTICS_API_SERVER_KEYFILE}
