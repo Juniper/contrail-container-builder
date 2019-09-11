@@ -79,7 +79,7 @@ function process_container() {
 
   local logfile='build-'$container_name'.log'
   log "Building $container_name" | append_log_file $logfile true
-  
+
   local build_arg_opts=''
   if [[ "$docker_ver" < '17.06' ]] ; then
     # old docker can't use ARG-s before FROM:
@@ -111,22 +111,28 @@ function process_container() {
     for item in `cat ./$dir/.externals` ; do
       local src=`echo $item | cut -d ':' -f 1`
       local dst=`echo $item | cut -d ':' -f 2`
+      [[ -z "$src" || -z "$dst" ]] && continue
       rsync -r --exclude $dst --exclude-from='../.gitignore' ./$dir/$src ./$dir/$dst 2>&1 | append_log_file $logfile
     done
   fi
 
-  docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} \
-               -t ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag} \
+  log "Building args: $build_arg_opts" | append_log_file $logfile true
+  local target_name="${CONTRAIL_REGISTRY}/${container_name}:${tag}"
+  local target_name_os="${CONTRAIL_REGISTRY}/${container_name}:${OPENSTACK_VERSION}-${tag}"
+  docker build -t $target_name -t $target_name_os \
     ${build_arg_opts} -f $docker_file ${opts} $dir 2>&1 | append_log_file $logfile
+  exit_code=${PIPESTATUS[0]}
   local duration=$(date +"%s")
   (( duration -= start_time ))
   log "Docker build duration: $duration seconds" | append_log_file $logfile
-  exit_code=${PIPESTATUS[0]}
   if [ $exit_code -eq 0 -a ${CONTRAIL_REGISTRY_PUSH} -eq 1 ]; then
-    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} 2>&1 | append_log_file $logfile
+    docker push $target_name 2>&1 | append_log_file $logfile
     exit_code=${PIPESTATUS[0]}
     # temporary workaround; to be removed when all other components switch to new tags
-    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag} 2>&1 | append_log_file $logfile
+    if [ ${exit_code} -eq 0 ] ; then
+      docker push $target_name_os 2>&1 | append_log_file $logfile
+      exit_code=${PIPESTATUS[0]}
+    fi
   fi
   duration=$(date +"%s")
   (( duration -= start_time ))
