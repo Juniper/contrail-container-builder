@@ -1,0 +1,5 @@
+build/production/control-node
+build/production/vnsw/agent/uve
+build/production/opserver/node_mgr
+build/production/nodemgr
+build/production/analytics/database
