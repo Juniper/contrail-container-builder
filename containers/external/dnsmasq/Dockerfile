@@ -11,7 +11,14 @@ LABEL name=$CONTAINER_NAME \
 COPY *.sh /
 
 RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done' && \
-    yum install -y dnsmasq && \
+    yum install -y git gcc make && \
+    git clone --branch v2.80 git://thekelleys.org.uk/dnsmasq.git && \
+    pushd dnsmasq && \
+    make && \
+    make install && \
+    popd && \
+    rm -rf dnsmasq && \
+    yum autoremove -y git gcc make && \
     echo "conf-dir=/etc/dnsmasq,*.conf" > /etc/dnsmasq.conf && \
     yum clean all -y && \
     rm -rf /var/cache/yum
