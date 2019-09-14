@@ -1,0 +1,203 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4eed1fe8_55beac87",
+        "filename": "containers/controller/config/stats/Dockerfile",
+        "patchSetId": 16
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-14T11:49:40Z",
+      "side": 1,
+      "message": "please add VENDOR_DOMAIN (see https://github.com/Juniper/contrail-container-builder/blob/master/containers/analytics/alarm-gen/Dockerfile)",
+      "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dd319b28_d12be785",
+        "filename": "containers/controller/config/stats/Dockerfile",
+        "patchSetId": 16
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-14T11:49:40Z",
+      "side": 1,
+      "message": "why we suggested not to add LABEL name, summary, description? Cause now I think that they should be here...",
+      "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2039108b_4a1c1a46",
+        "filename": "containers/controller/config/stats/Dockerfile",
+        "patchSetId": 16
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-14T11:49:40Z",
+      "side": 1,
+      "message": "what is install_lib?",
+      "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0758774f_3df6f4d8",
+        "filename": "containers/controller/config/stats/Dockerfile",
+        "patchSetId": 16
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-14T11:49:40Z",
+      "side": 1,
+      "message": "please add \u0027yum autoremove -y git\u0027 before \u0027yum clean ...\u0027",
+      "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "86ab37f7_334f273d",
+        "filename": "containers/controller/config/stats/Dockerfile",
+        "patchSetId": 16
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-14T11:49:40Z",
+      "side": 1,
+      "message": "please define SERVICE_NAME\n(see https://github.com/Juniper/contrail-container-builder/blob/master/containers/analytics/collector/Dockerfile)",
+      "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6c1e01a7_4176d5a7",
+        "filename": "containers/controller/config/stats/Dockerfile",
+        "patchSetId": 16
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-14T11:49:40Z",
+      "side": 1,
+      "message": "please remove one empty line",
+      "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "594acebc_22ea4dcb",
+        "filename": "containers/controller/config/stats/PARAMS.md",
+        "patchSetId": 16
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-14T11:49:40Z",
+      "side": 1,
+      "message": "please add all params for vnc ini file",
+      "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9153c2f8_43d8a298",
+        "filename": "containers/controller/config/stats/PARAMS.md",
+        "patchSetId": 16
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-14T11:49:40Z",
+      "side": 1,
+      "message": "please remove one empty line",
+      "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5e915151_4acbea25",
+        "filename": "containers/controller/config/stats/entrypoint.sh",
+        "patchSetId": 16
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-14T11:49:40Z",
+      "side": 1,
+      "message": "just STATS\nit\u0027s not a server. it\u0027s a client.",
+      "range": {
+        "startLine": 16,
+        "startChar": 24,
+        "endLine": 16,
+        "endChar": 36
+      },
+      "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "87b63232_8c026718",
+        "filename": "containers/controller/config/stats/entrypoint.sh",
+        "patchSetId": 16
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-14T11:49:40Z",
+      "side": 1,
+      "message": "please change to run_service (see https://github.com/Juniper/contrail-container-builder/blob/master/containers/analytics/collector/entrypoint.sh)",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 9
+      },
+      "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4399a06c_08524390",
+        "filename": "containers/controller/config/stats/entrypoint.sh",
+        "patchSetId": 16
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-14T11:49:40Z",
+      "side": 1,
+      "message": "please remove one empty line",
+      "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
