@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "d2566dbc_de71c106",
+        "filename": "containers/controller/config/stats/Dockerfile",
+        "patchSetId": 16
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-14T14:36:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f51c8763_eb1928eb",
+      "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "dd319b28_d12be785",
         "filename": "containers/controller/config/stats/Dockerfile",
         "patchSetId": 16
@@ -66,6 +84,24 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "dd319b28_d12be785",
+      "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ed16c89e_4789469f",
+        "filename": "containers/controller/config/stats/Dockerfile",
+        "patchSetId": 16
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-14T14:36:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "99c4e5a7_f1a99fee",
       "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": false
@@ -142,6 +178,24 @@
     },
     {
       "key": {
+        "uuid": "ebf73f62_00518056",
+        "filename": "containers/controller/config/stats/Dockerfile",
+        "patchSetId": 16
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-14T14:36:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "36d289fc_76933f81",
+      "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "86ab37f7_334f273d",
         "filename": "containers/controller/config/stats/Dockerfile",
         "patchSetId": 16
@@ -171,6 +225,24 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "86ab37f7_334f273d",
+      "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3d77bb43_457e675e",
+        "filename": "containers/controller/config/stats/Dockerfile",
+        "patchSetId": 16
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-14T14:36:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f60d4c4f_890809ba",
       "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": false
@@ -212,6 +284,24 @@
     },
     {
       "key": {
+        "uuid": "9163c15b_cf0ffcc6",
+        "filename": "containers/controller/config/stats/Dockerfile",
+        "patchSetId": 16
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-14T14:36:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c0e0ddfe_fa722465",
+      "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "594acebc_22ea4dcb",
         "filename": "containers/controller/config/stats/PARAMS.md",
         "patchSetId": 16
@@ -241,6 +331,24 @@
       "side": 1,
       "message": "Sorry, what is vnc ini file ?",
       "parentUuid": "594acebc_22ea4dcb",
+      "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "da22d845_97189e33",
+        "filename": "containers/controller/config/stats/PARAMS.md",
+        "patchSetId": 16
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-14T14:36:14Z",
+      "side": 1,
+      "message": "you have call in entypoint.sh that create /etc/contrail/vnc_api_lib.ini file. all params that are used to creation have to be here.",
+      "parentUuid": "4b7f6b31_37b485f7",
       "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
@@ -282,6 +390,24 @@
     },
     {
       "key": {
+        "uuid": "3eedf21e_c0541f12",
+        "filename": "containers/controller/config/stats/PARAMS.md",
+        "patchSetId": 16
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-14T14:36:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "eede4bf3_bad562b8",
+      "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5e915151_4acbea25",
         "filename": "containers/controller/config/stats/entrypoint.sh",
         "patchSetId": 16
@@ -317,6 +443,30 @@
       "side": 1,
       "message": "It\u0027s server IP address. The server, which is already alive, listens and waits connections from stats clients (part of Contrail/TF instances). Statistics clients send statistics to this one server.",
       "parentUuid": "5e915151_4acbea25",
+      "range": {
+        "startLine": 16,
+        "startChar": 24,
+        "endLine": 16,
+        "endChar": 36
+      },
+      "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9afc8efb_a077e358",
+        "filename": "containers/controller/config/stats/entrypoint.sh",
+        "patchSetId": 16
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-14T14:36:14Z",
+      "side": 1,
+      "message": "no. this is part of environment\u0027s variable name. see function definition.",
+      "parentUuid": "eddddcdc_ad37e068",
       "range": {
         "startLine": 16,
         "startChar": 24,
@@ -381,6 +531,24 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "4399a06c_08524390",
+      "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "618177c9_a7c9dab6",
+        "filename": "containers/controller/config/stats/entrypoint.sh",
+        "patchSetId": 16
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-14T14:36:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c1d333aa_0549a484",
       "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": false

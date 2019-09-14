@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "46fb22d4_80400402",
+        "filename": "containers/controller/config/stats/Dockerfile",
+        "patchSetId": 18
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-14T14:36:14Z",
+      "side": 1,
+      "message": "please use VENDOR_NAME here and later (see neighbour files)",
+      "revId": "f537f248ce6be2f7247b70564fe82b4b42cf11d6",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
