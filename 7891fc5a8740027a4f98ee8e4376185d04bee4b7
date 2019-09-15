@@ -355,6 +355,24 @@
     },
     {
       "key": {
+        "uuid": "5e6a0466_7fc373ce",
+        "filename": "containers/controller/config/stats/PARAMS.md",
+        "patchSetId": 16
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 733
+      },
+      "writtenOn": "2019-09-15T09:10:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da22d845_97189e33",
+      "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9153c2f8_43d8a298",
         "filename": "containers/controller/config/stats/PARAMS.md",
         "patchSetId": 16
@@ -499,6 +517,30 @@
       "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1f10b56b_a2eeb419",
+        "filename": "containers/controller/config/stats/entrypoint.sh",
+        "patchSetId": 16
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 733
+      },
+      "writtenOn": "2019-09-15T09:10:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "87b63232_8c026718",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 9
+      },
+      "revId": "7891fc5a8740027a4f98ee8e4376185d04bee4b7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
     },
     {
       "key": {
