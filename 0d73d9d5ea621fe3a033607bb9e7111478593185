@@ -1,0 +1,180 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8c2134d2_edd5531c",
+        "filename": "containers/base/common.sh",
+        "patchSetId": 10
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-16T07:56:23Z",
+      "side": 1,
+      "message": "- where XFLOW_NODE_IP is defined? should it have default? should it be inherited from another nodes?\n- please do not use double negative checks. instead of \u0027! -z\u0027 is better to use \u0027-n\u0027.\n- please move this and next check for XFLOW_NODE_IP into one \u0027if\u0027. and please use one way to define (here you have way with temporary _default_ variable and below you have just two definitions(which is preferable))",
+      "range": {
+        "startLine": 26,
+        "startChar": 11,
+        "endLine": 26,
+        "endChar": 24
+      },
+      "revId": "0d73d9d5ea621fe3a033607bb9e7111478593185",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5c8c57a6_62e45691",
+        "filename": "containers/external/rsyslogd/.externals",
+        "patchSetId": 10
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-16T07:56:23Z",
+      "side": 1,
+      "message": "includes from general-base are not needed here",
+      "revId": "0d73d9d5ea621fe3a033607bb9e7111478593185",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "93eba329_d8155036",
+        "filename": "containers/external/rsyslogd/Dockerfile",
+        "patchSetId": 10
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-16T07:56:23Z",
+      "side": 1,
+      "message": "why it\u0027s called rsyslogd? char \u0027d\u0027 meant daemon but now it\u0027s a container.\nwhere I can a spec that clarifies new name?",
+      "revId": "0d73d9d5ea621fe3a033607bb9e7111478593185",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c895338f_9deffe8b",
+        "filename": "containers/external/rsyslogd/Dockerfile",
+        "patchSetId": 10
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-16T07:56:23Z",
+      "side": 1,
+      "message": "who will set RSYSLOG_VERSION from outside? should it be ARG?\nall other container with same functionality don\u0027t have such definition.",
+      "revId": "0d73d9d5ea621fe3a033607bb9e7111478593185",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fcf0ffab_10e794a1",
+        "filename": "containers/external/rsyslogd/Dockerfile",
+        "patchSetId": 10
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-16T07:56:23Z",
+      "side": 1,
+      "message": "i\u0027m not sure that definition for pidfile is needed. at least is should be moved close to using.",
+      "revId": "0d73d9d5ea621fe3a033607bb9e7111478593185",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d13c8177_03f16743",
+        "filename": "containers/external/rsyslogd/Dockerfile",
+        "patchSetId": 10
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-16T07:56:23Z",
+      "side": 1,
+      "message": "you have general-base as parent. so here should be only name, summary, description",
+      "revId": "0d73d9d5ea621fe3a033607bb9e7111478593185",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6e663c03_2ae685a5",
+        "filename": "containers/external/rsyslogd/Dockerfile",
+        "patchSetId": 10
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-16T07:56:23Z",
+      "side": 1,
+      "message": "licensing also present in general-base and is not needed here",
+      "revId": "0d73d9d5ea621fe3a033607bb9e7111478593185",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "02ffbb00_ce3c7cf5",
+        "filename": "containers/external/rsyslogd/Dockerfile",
+        "patchSetId": 10
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-16T07:56:23Z",
+      "side": 1,
+      "message": "why some logic is contrail-entrypoint.sh and some logic in CMD command?\nlet\u0027s move all logic into one place",
+      "revId": "0d73d9d5ea621fe3a033607bb9e7111478593185",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "24a01091_35e9e686",
+        "filename": "containers/external/rsyslogd/contrail-entrypoint.sh",
+        "patchSetId": 10
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-16T07:56:23Z",
+      "side": 1,
+      "message": "- \u0027! -z\u0027 -\u003e \u0027-n\u0027\n- $XFLOW_NODE_IP -\u003e \"$XFLOW_NODE_IP\"",
+      "revId": "0d73d9d5ea621fe3a033607bb9e7111478593185",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "adeef7a0_3d916202",
+        "filename": "containers/status/contrail-status.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-16T07:56:23Z",
+      "side": 1,
+      "message": "why it\u0027s shared???",
+      "revId": "0d73d9d5ea621fe3a033607bb9e7111478593185",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
