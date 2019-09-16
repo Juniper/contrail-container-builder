@@ -59,6 +59,23 @@
     },
     {
       "key": {
+        "uuid": "4f633470_1b88c210",
+        "filename": "containers/external/rsyslogd/Dockerfile",
+        "patchSetId": 10
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-16T07:59:45Z",
+      "side": 1,
+      "message": "and where is NODE_TYPE definition for this POD?",
+      "revId": "0d73d9d5ea621fe3a033607bb9e7111478593185",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "c895338f_9deffe8b",
         "filename": "containers/external/rsyslogd/Dockerfile",
         "patchSetId": 10
