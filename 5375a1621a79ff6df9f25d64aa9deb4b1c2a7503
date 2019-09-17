@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "eacd090d_280b62f7",
+        "filename": "containers/external/dnsmasq/conf/dnsmasq_lease_processing.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 254
+      },
+      "writtenOn": "2019-09-17T21:41:22Z",
+      "side": 1,
+      "message": "can you remove it",
+      "revId": "5375a1621a79ff6df9f25d64aa9deb4b1c2a7503",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
