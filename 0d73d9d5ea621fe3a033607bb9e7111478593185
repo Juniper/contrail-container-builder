@@ -450,6 +450,24 @@
       "revId": "0d73d9d5ea621fe3a033607bb9e7111478593185",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3a5bc981_5ec13c3f",
+        "filename": "containers/status/contrail-status.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 49
+      },
+      "writtenOn": "2019-09-17T11:01:12Z",
+      "side": 1,
+      "message": "No, it is used for appformix-flows, in terms of rsyslog configuration file changes for appformix flow module usage.\nSo basially in rsyslogd config file, we add destination as flow collector IP. and this container is used for vrouter agent. So, it needs to be part of vrouter and contrail flows is being sent to flow collector using rsyslogd.",
+      "parentUuid": "89757e6a_4c18e396",
+      "revId": "0d73d9d5ea621fe3a033607bb9e7111478593185",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
