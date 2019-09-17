@@ -432,6 +432,24 @@
       "revId": "0d73d9d5ea621fe3a033607bb9e7111478593185",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "89757e6a_4c18e396",
+        "filename": "containers/status/contrail-status.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-17T10:58:15Z",
+      "side": 1,
+      "message": "then why this container is here and appformix-flow in different repo? maybe this can be placed also into private repo?",
+      "parentUuid": "1a06b2e2_d3c99b45",
+      "revId": "0d73d9d5ea621fe3a033607bb9e7111478593185",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
