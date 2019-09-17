@@ -27,7 +27,6 @@ log-facility=${LOG_DIR}/dnsmasq.log
 bogus-priv
 log-dhcp
 dhcp-reply-delay=${my_ord}
-leasefile-ro
 EOM
 if ! is_enabled ${USE_EXTERNAL_TFTP} ; then
 cat >> /etc/dnsmasq/base.conf << EOM
