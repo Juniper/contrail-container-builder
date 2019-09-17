@@ -396,6 +396,24 @@
       "revId": "0d73d9d5ea621fe3a033607bb9e7111478593185",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ad498b77_61795bdb",
+        "filename": "containers/status/contrail-status.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-17T10:45:48Z",
+      "side": 1,
+      "message": "what is \u0027flow-module\u0027? is it separate POD? where is it defined?",
+      "parentUuid": "aea6f09e_81cc0397",
+      "revId": "0d73d9d5ea621fe3a033607bb9e7111478593185",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
