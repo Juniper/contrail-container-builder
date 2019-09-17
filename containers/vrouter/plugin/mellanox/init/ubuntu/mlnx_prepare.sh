@@ -1,9 +1,9 @@
 #!/bin/bash
 
-apt-get update
-apt-get -y install lsb-release apt-utils dpkg-dev
-
 export DEBIAN_FRONTEND=noninteractive
+apt-get update
+apt-get -y install --no-install-recommends apt-utils dpkg-dev
+
 
 for UBUNTU_RELEASE in 18.10
 do
@@ -29,10 +29,11 @@ dpkg-scanpackages . /dev/null |  gzip -9c > Packages.gz
 /bin/rm -f /etc/apt/sources.list.d/mellanox_mlnx_ofed.list
 done
 
-apt-get -y install dkms file libexpat1 libffi6 libmagic1 libpci3
-apt-get -y install libpython2.7-stdlib libsqlite3-0 libssl1.0.0 libxml2
-apt-get -y install libpython-stdlib libpython2.7 libpython2.7-minimal
-apt-get -y install lsof mime-support pciutils python
-apt-get -y install python-libxml2 python-minimal python2.7 python2.7-minimal
-apt-get -y install sgml-base xml-core
-apt-get -y install libicu60
+# to avoid dependency on python3.6 from dkms
+apt-get -y install --no-install-recommends dkms \
+    file libexpat1 libffi6 libmagic1 libpci3 \
+    libpython2.7-stdlib libsqlite3-0 libssl1.0.0 libxml2 \
+    libpython-stdlib libpython2.7 libpython2.7-minimal \
+    lsof mime-support pciutils python \
+    python-libxml2 python-minimal python2.7 python2.7-minimal \
+    sgml-base xml-core libicu60
