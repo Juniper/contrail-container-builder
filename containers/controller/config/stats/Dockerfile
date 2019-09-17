@@ -9,16 +9,16 @@ LABEL name=$CONTAINER_NAME \
       description="Contrail statistics client collects statistics about number of virtual networks, virtual routers , etc. No private information is collected."
 
 COPY entrypoint.sh /
+COPY / /src/
 
-RUN yum install -y python2-setuptools git && \
-    [[ -d 'stats' ]] || { git clone https://github.com/Juniper/contrail-controller.git; cd contrail-controller/src/; } && \
+RUN yum install -y python2-setuptools && \
+    cd src && \
+    [[ -d 'stats' ]] || { yum install -y git; git clone --single-branch https://github.com/Juniper/contrail-controller.git; cd contrail-controller/src/; yum autoremove -y git; } && \
     cd stats && \
     python setup.py install && \
-    python setup.py install_lib && \
-    yum autoremove -y git && \
     yum clean all -y && \
     rm -rf /var/cache/yum && \
-    rm -rf /contrail-controller
+    rm -rf /src
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/python", "/usr/bin/contrail-stats-client", "--config", "/etc/contrail/contrail-stats-client.conf"]
