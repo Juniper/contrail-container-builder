@@ -11,10 +11,9 @@ LABEL name=$CONTAINER_NAME \
 COPY entrypoint.sh /
 
 RUN yum install -y python2-setuptools git && \
-    [[ -d 'stats' ]] || { git clone https://github.com/Juniper/contrail-controller.git; cd contrail-controller/src/; } && \
-    cd stats && \
+    git clone --single-branch https://github.com/Juniper/contrail-controller.git && \
+    cd contrail-controller/src/stats && \
     python setup.py install && \
-    python setup.py install_lib && \
     yum autoremove -y git && \
     yum clean all -y && \
     rm -rf /var/cache/yum && \
