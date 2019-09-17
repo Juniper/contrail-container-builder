@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "8fcb555d_16613a1c",
+        "filename": "containers/nodemgr/.deps",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 846
+      },
+      "writtenOn": "2019-09-17T12:01:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "771a4b9f_a287df0a",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 16
+      },
+      "revId": "eebcc8b086cbf10b96d452ce63ecf01aa848ae91",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6a037835_4df9aacf",
         "filename": "containers/nodemgr/.deps",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "eebcc8b086cbf10b96d452ce63ecf01aa848ae91",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8ff51d7c_5268efce",
+        "filename": "containers/nodemgr/.deps",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 846
+      },
+      "writtenOn": "2019-09-17T12:01:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6a037835_4df9aacf",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 11
+      },
+      "revId": "eebcc8b086cbf10b96d452ce63ecf01aa848ae91",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "6589e4d7_a4b5336d",
+        "filename": "containers/nodemgr/.deps",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 846
+      },
+      "writtenOn": "2019-09-17T12:01:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ffdd2415_265a1a7b",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 6
+      },
+      "revId": "eebcc8b086cbf10b96d452ce63ecf01aa848ae91",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8e8290d4_9f2da390",
         "filename": "containers/nodemgr/.deps",
         "patchSetId": 1
@@ -91,6 +163,30 @@
       "revId": "eebcc8b086cbf10b96d452ce63ecf01aa848ae91",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "60aa30b4_44032a71",
+        "filename": "containers/nodemgr/.deps",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 846
+      },
+      "writtenOn": "2019-09-17T12:01:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8e8290d4_9f2da390",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 3
+      },
+      "revId": "eebcc8b086cbf10b96d452ce63ecf01aa848ae91",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
     },
     {
       "key": {
