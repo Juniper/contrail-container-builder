@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "32e6ca45_44ac0927",
+        "filename": "containers/external/dnsmasq/Dockerfile",
+        "patchSetId": 6
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-18T06:21:03Z",
+      "side": 1,
+      "message": "it\u0027s a violation of the application logic from my point of view.\n\nanyway logic for \u0027external\u0027 files has to be removed.",
+      "parentUuid": "a2083ad3_82eee4e7",
+      "revId": "aac04114c30edc4e35a1acea19abc32a6eed4bf7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2809c6a4_c0d4066b",
         "filename": "containers/external/dnsmasq/conf/dnsmasq_lease_processing.py",
         "patchSetId": 6
@@ -72,6 +90,30 @@
       "side": 1,
       "message": "we dont support python3 yet. when contrail changes completely , will make this compatible as well.",
       "parentUuid": "2809c6a4_c0d4066b",
+      "range": {
+        "startLine": 1,
+        "startChar": 11,
+        "endLine": 1,
+        "endChar": 17
+      },
+      "revId": "aac04114c30edc4e35a1acea19abc32a6eed4bf7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6afe6533_ade28674",
+        "filename": "containers/external/dnsmasq/conf/dnsmasq_lease_processing.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-18T06:21:03Z",
+      "side": 1,
+      "message": "the task for support python3 in containers is our task. so it can be good way to merge only python3 compatible code from now. at least this script can be checked for compatibility.",
+      "parentUuid": "07a365b2_1cd0b837",
       "range": {
         "startLine": 1,
         "startChar": 11,
