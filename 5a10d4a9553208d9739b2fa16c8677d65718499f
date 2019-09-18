@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1fb6ea6f_e4640a89",
+        "filename": "containers/controller/config/dnsmasq/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-18T21:00:16Z",
+      "side": 1,
+      "message": "and please remove externals management (this line)",
+      "revId": "5a10d4a9553208d9739b2fa16c8677d65718499f",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ba0aa69b_9cd46c87",
+        "filename": "containers/controller/config/dnsmasq/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-18T21:00:16Z",
+      "side": 1,
+      "message": "i think it should NODE_TYPE defined explicitly now\nlike in config-base:\nENV NODE_TYPE\u003dconfig\nLABEL $VENDOR_DOMAIN\".pod\"\u003d$NODE_TYPE",
+      "revId": "5a10d4a9553208d9739b2fa16c8677d65718499f",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "58be3ba3_7ef8bbe3",
+        "filename": "containers/controller/config/dnsmasq/PARAMS.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-18T21:00:16Z",
+      "side": 1,
+      "message": "should vnc options are added here?",
+      "revId": "5a10d4a9553208d9739b2fa16c8677d65718499f",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e6f58e9c_0de02229",
+        "filename": "containers/controller/config/dnsmasq/entrypoint.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-18T21:00:16Z",
+      "side": 1,
+      "message": "do you need creation of vnc_api_lib.ini here?",
+      "revId": "5a10d4a9553208d9739b2fa16c8677d65718499f",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
