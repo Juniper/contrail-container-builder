@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f52136ba_7b9519ad",
+        "filename": "containers/controller/config/stats/entrypoint.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-18T10:53:10Z",
+      "side": 1,
+      "message": "stats",
+      "range": {
+        "startLine": 9,
+        "startChar": 19,
+        "endLine": 9,
+        "endChar": 33
+      },
+      "revId": "94281e56af7404020575fbebb9a0ac53cfa8da8c",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a9ed0d19_86fae49f",
+        "filename": "containers/controller/config/stats/entrypoint.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-18T10:53:10Z",
+      "side": 1,
+      "message": "state",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 5
+      },
+      "revId": "94281e56af7404020575fbebb9a0ac53cfa8da8c",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
