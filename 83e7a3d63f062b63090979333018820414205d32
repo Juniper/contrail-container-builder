@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "99feb7f1_811d6323",
+        "filename": "containers/base/common.sh",
+        "patchSetId": 11
+      },
+      "lineNbr": 269,
+      "author": {
+        "id": 254
+      },
+      "writtenOn": "2019-09-18T21:53:51Z",
+      "side": 1,
+      "message": "temp vars are not required:\n\nif [ -n \"$XFLOW_NODE_IP\" ] ; then\n  SAMPLE_DESTINATION\u003d${SAMPLE_DESTINATION:-\"collector syslog\"}\n  FLOW_EXPORT_RATE\u003d${FLOW_EXPORT_RATE:-100}\nfi\nSAMPLE_DESTINATION\u003d${SAMPLE_DESTINATION:-\"collector\"}\nFLOW_EXPORT_RATE\u003d${FLOW_EXPORT_RATE:-0}",
+      "revId": "83e7a3d63f062b63090979333018820414205d32",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
