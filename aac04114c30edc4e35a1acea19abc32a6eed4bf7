@@ -16,6 +16,46 @@
       "revId": "aac04114c30edc4e35a1acea19abc32a6eed4bf7",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2809c6a4_c0d4066b",
+        "filename": "containers/external/dnsmasq/conf/dnsmasq_lease_processing.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-18T04:57:25Z",
+      "side": 1,
+      "message": "is script itself compatible with python3? (except imports)",
+      "range": {
+        "startLine": 1,
+        "startChar": 11,
+        "endLine": 1,
+        "endChar": 17
+      },
+      "revId": "aac04114c30edc4e35a1acea19abc32a6eed4bf7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "60ee41bd_d6b7b575",
+        "filename": "containers/external/dnsmasq/conf/dnsmasq_lease_processing.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-18T04:57:25Z",
+      "side": 1,
+      "message": "do you really need double log - print and logger?",
+      "revId": "aac04114c30edc4e35a1acea19abc32a6eed4bf7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
