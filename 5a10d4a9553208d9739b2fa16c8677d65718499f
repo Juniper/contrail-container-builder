@@ -67,6 +67,24 @@
       "revId": "5a10d4a9553208d9739b2fa16c8677d65718499f",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "231934e1_4eaece0b",
+        "filename": "containers/controller/config/dnsmasq/entrypoint.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 254
+      },
+      "writtenOn": "2019-09-18T23:39:07Z",
+      "side": 1,
+      "message": "that\u0027s actually a good point. Currently auth creds are read from env but must be read from file",
+      "parentUuid": "e6f58e9c_0de02229",
+      "revId": "5a10d4a9553208d9739b2fa16c8677d65718499f",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
