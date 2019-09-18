@@ -2,6 +2,8 @@
 
 source /common.sh
 
+pre_start_init
+
 # In all in one deployment there is the race between vhost0 initialization
 # and own IP detection, so there is 10 retries
 for i in {1..10} ; do
@@ -27,7 +29,6 @@ log-facility=${LOG_DIR}/dnsmasq.log
 bogus-priv
 log-dhcp
 dhcp-reply-delay=${my_ord}
-leasefile-ro
 EOM
 if ! is_enabled ${USE_EXTERNAL_TFTP} ; then
 cat >> /etc/dnsmasq/base.conf << EOM
@@ -35,5 +36,18 @@ enable-tftp
 tftp-root=/etc/tftp
 EOM
 fi
+
+cat > /etc/contrail/contrail-dnsmasq.conf << EOM
+[DEFAULTS]
+host_ip=${host_ip}
+api_server_ip=$CONFIG_NODES
+api_server_port=$CONFIG_API_PORT
+api_server_use_ssl=${CONFIG_API_SSL_ENABLE}
+log_file=${LOG_DIR}/dnsmasq.log
+log_level=INFO
+log_local=$LOG_LOCAL
+EOM
+
+set_vnc_api_lib_ini
 
 exec "$@"
