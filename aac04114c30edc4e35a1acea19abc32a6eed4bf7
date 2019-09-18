@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a3ef229_76641ab2",
+        "filename": "containers/external/dnsmasq/Dockerfile",
+        "patchSetId": 6
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-18T04:55:05Z",
+      "side": 1,
+      "message": "this looks strange. why external container started to inherit contrail specific?\nin this case you need to remove externals management from this container for example.",
+      "revId": "aac04114c30edc4e35a1acea19abc32a6eed4bf7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
