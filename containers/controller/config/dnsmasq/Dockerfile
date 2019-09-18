@@ -1,6 +1,6 @@
 ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
-FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
+FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
 
 ARG CONTAINER_NAME
@@ -8,10 +8,10 @@ LABEL name=$CONTAINER_NAME \
       summary="Contrail Dnsmasq" \
       description="Contrail Dnsmasq provides network infrastructure: DNS, DHCP, router advertisement and network boot."
 
-COPY *.sh /
+COPY entrypoint.sh /
+COPY conf/* /etc/dnsmasq/
 
-RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done' && \
-    yum install -y wget gcc make && \
+RUN yum install -y wget gcc make && \
     wget -nv --tries=3 -c http://www.thekelleys.org.uk/dnsmasq/dnsmasq-2.80.tar.xz && \
     tar -xvf dnsmasq-2.80.tar.xz && \
     pushd dnsmasq-2.80 && \
@@ -26,6 +26,9 @@ RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done' && \
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["dnsmasq", "-k", "-p0"]
+
+ENV NODE_TYPE=config
+LABEL $VENDOR_DOMAIN".pod"=$NODE_TYPE
 
 ENV SERVICE_NAME=dnsmasq
 LABEL $VENDOR_DOMAIN".service"=$SERVICE_NAME

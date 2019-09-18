@@ -2,6 +2,8 @@
 
 source /common.sh
 
+pre_start_init
+
 # In all in one deployment there is the race between vhost0 initialization
 # and own IP detection, so there is 10 retries
 for i in {1..10} ; do
@@ -27,7 +29,6 @@ log-facility=${LOG_DIR}/dnsmasq.log
 bogus-priv
 log-dhcp
 dhcp-reply-delay=${my_ord}
-leasefile-ro
 EOM
 if ! is_enabled ${USE_EXTERNAL_TFTP} ; then
 cat >> /etc/dnsmasq/base.conf << EOM
@@ -35,5 +36,7 @@ enable-tftp
 tftp-root=/etc/tftp
 EOM
 fi
+
+set_vnc_api_lib_ini
 
 exec "$@"
