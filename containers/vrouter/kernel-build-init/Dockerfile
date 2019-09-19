@@ -4,6 +4,7 @@ FROM $UBUNTU_DISTR:$UBUNTU_DISTR_VERSION
 ARG VENDOR_NAME
 ARG VENDOR_DOMAIN
 
+
 ARG CONTRAIL_CONTAINER_TAG
 ARG CONTAINER_NAME
 LABEL vendor=$VENDOR_NAME \
@@ -29,6 +30,12 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get install -y --no-install-recommends yum yum-utils rpm2cpio cpio dkms && \
     yum install -y contrail-vrouter-source && \
+    apt-get install -y --no-install-recommends gnupg && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8B48AD6246925553 && \
+    echo "deb [arch=amd64] http://snapshot.debian.org/archive/debian/20180625T120000Z/ sid main" >> /etc/apt/sources.list && \
+    cat /etc/apt/sources.list && \
+    apt-get -o Acquire::Check-Valid-Until=false update && \
+    apt-get install -y --allow-downgrades --no-install-recommends binutils:amd64=2.30-22 binutils-common:amd64=2.30-22 binutils-dev:amd64=2.30-22 binutils-x86-64-linux-gnu:amd64=2.30-22 libbinutils:amd64=2.30-22 && \
     mkdir -p /opt/contrail/src /contrail_tools && \
     mv /usr/src/* /opt/contrail/src/ && \
     rpm -q --qf "%{VERSION}" contrail-vrouter-source > /contrail_version && \
