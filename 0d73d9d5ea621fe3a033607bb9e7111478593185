@@ -196,6 +196,24 @@
     },
     {
       "key": {
+        "uuid": "87fbd725_b308da0d",
+        "filename": "containers/external/rsyslogd/Dockerfile",
+        "patchSetId": 10
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-19T21:04:37Z",
+      "side": 1,
+      "message": "i still don\u0027t understand why it\u0027s shared",
+      "parentUuid": "8d4805eb_ec1d177b",
+      "revId": "0d73d9d5ea621fe3a033607bb9e7111478593185",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "c895338f_9deffe8b",
         "filename": "containers/external/rsyslogd/Dockerfile",
         "patchSetId": 10
@@ -225,6 +243,24 @@
       "side": 1,
       "message": "RSYSLOG_VERSION is fixed, but can be changed at build time, passed as ARG for testing to pass with diff version.",
       "parentUuid": "c895338f_9deffe8b",
+      "revId": "0d73d9d5ea621fe3a033607bb9e7111478593185",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e6ed83c2_e6fd5dd9",
+        "filename": "containers/external/rsyslogd/Dockerfile",
+        "patchSetId": 10
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-19T21:04:37Z",
+      "side": 1,
+      "message": "who will do it? do you have infrastructure for this?",
+      "parentUuid": "0b80e22f_30b0d14c",
       "revId": "0d73d9d5ea621fe3a033607bb9e7111478593185",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true

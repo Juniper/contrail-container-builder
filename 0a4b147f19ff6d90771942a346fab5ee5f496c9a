@@ -1,0 +1,164 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1c6a107b_cf40d9ad",
+        "filename": "containers/base/common.sh",
+        "patchSetId": 13
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-19T21:04:37Z",
+      "side": 1,
+      "message": "please describe it somewhere",
+      "range": {
+        "startLine": 262,
+        "startChar": 9,
+        "endLine": 262,
+        "endChar": 23
+      },
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cfc51a60_b1115310",
+        "filename": "containers/base/common.sh",
+        "patchSetId": 13
+      },
+      "lineNbr": 465,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-19T21:04:37Z",
+      "side": 1,
+      "message": "please describe it",
+      "range": {
+        "startLine": 465,
+        "startChar": 29,
+        "endLine": 465,
+        "endChar": 55
+      },
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e1ce4cb2_39dd9227",
+        "filename": "containers/external/rsyslogd/Dockerfile",
+        "patchSetId": 13
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-19T21:04:37Z",
+      "side": 1,
+      "message": "i\u0027ve already asked to remove license\u0027s code.",
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d7b0c042_64ad6828",
+        "filename": "containers/external/rsyslogd/contrail-entrypoint.sh",
+        "patchSetId": 13
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-19T21:04:37Z",
+      "side": 1,
+      "message": "and why ENV definition is needed in Dockerfile? just to increase file size?",
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5aa1c3a6_b92e085d",
+        "filename": "containers/external/rsyslogd/contrail-entrypoint.sh",
+        "patchSetId": 13
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-19T21:04:37Z",
+      "side": 1,
+      "message": "why \u0027exec\u0027? does this service requires root privileges?",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 4
+      },
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "896dc66a_84cc516e",
+        "filename": "containers/external/rsyslogd/rsyslog.conf",
+        "patchSetId": 13
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-19T21:04:37Z",
+      "side": 1,
+      "message": "should all these folder be mounted into syslog container? or it will use something useless from container?",
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dc7f3f99_f360bef7",
+        "filename": "containers/external/rsyslogd/rsyslog.d/contrail-loadbalancer-haproxy.conf",
+        "patchSetId": 13
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-19T21:04:37Z",
+      "side": 1,
+      "message": "is it shared file? with what container? where second container is placed?",
+      "range": {
+        "startLine": 1,
+        "startChar": 22,
+        "endLine": 1,
+        "endChar": 25
+      },
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6301c7ba_e079dc89",
+        "filename": "containers/status/contrail-status.py",
+        "patchSetId": 13
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-19T21:04:37Z",
+      "side": 1,
+      "message": "i disagree that this is a shared service. I can\u0027t conclude this from ansible-deployer review. moreover - i can conclude that rsyslog container must be now a part of vrouter POD.",
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
