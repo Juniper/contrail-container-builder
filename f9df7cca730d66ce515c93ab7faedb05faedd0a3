@@ -22,6 +22,30 @@
       "revId": "f9df7cca730d66ce515c93ab7faedb05faedd0a3",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7df42046_8baf14f5",
+        "filename": "containers/controller/config/dnsmasq/entrypoint.sh",
+        "patchSetId": 5
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 512
+      },
+      "writtenOn": "2019-09-19T09:01:21Z",
+      "side": 1,
+      "message": "I right now read these values from environment variables eg below. Henkel suggested we rather popoulate the env values into a conf file and read from there, as done in other containers. \nI will change the script (dnsmasq_lease_processing.py), once this is merged. I am not sure how and where the keystone parameters would be populated. \n\nvnc_api \u003d VncApi(username\u003dos.environ[\u0027KEYSTONE_AUTH_ADMIN_USER\u0027],\n             password\u003dos.environ[\u0027KEYSTONE_AUTH_ADMIN_PASSWORD\u0027],\n             tenant_name\u003dos.environ[\u0027KEYSTONE_AUTH_ADMIN_TENANT\u0027],\n             api_server_host\u003ddefaults.get(\u0027api_server_ip\u0027).split(\u0027,\u0027)).",
+      "parentUuid": "dc381bc1_5d6f4de8",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 49,
+        "endChar": 3
+      },
+      "revId": "f9df7cca730d66ce515c93ab7faedb05faedd0a3",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
     }
   ]
 }
