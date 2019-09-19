@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dc381bc1_5d6f4de8",
+        "filename": "containers/controller/config/dnsmasq/entrypoint.sh",
+        "patchSetId": 5
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-19T08:30:22Z",
+      "side": 1,
+      "message": "what is it and who needs it?\nlooks like it\u0027s a dead code - dnsmasq doesn\u0027t use this conf and there is no other executables in this container.",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 49,
+        "endChar": 3
+      },
+      "revId": "f9df7cca730d66ce515c93ab7faedb05faedd0a3",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
