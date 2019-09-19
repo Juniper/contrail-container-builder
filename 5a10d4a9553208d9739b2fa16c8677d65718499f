@@ -103,6 +103,24 @@
       "revId": "5a10d4a9553208d9739b2fa16c8677d65718499f",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "748eb606_2e6e63d3",
+        "filename": "containers/controller/config/dnsmasq/entrypoint.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 512
+      },
+      "writtenOn": "2019-09-19T06:54:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6b47dfb3_062b75fa",
+      "revId": "5a10d4a9553208d9739b2fa16c8677d65718499f",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
     }
   ]
 }
