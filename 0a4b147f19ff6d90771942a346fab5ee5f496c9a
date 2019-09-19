@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7cef0fcf_adb81d89",
+        "filename": "containers/base/common.sh",
+        "patchSetId": 13
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 49
+      },
+      "writtenOn": "2019-09-19T22:33:45Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "1c6a107b_cf40d9ad",
+      "range": {
+        "startLine": 262,
+        "startChar": 9,
+        "endLine": 262,
+        "endChar": 23
+      },
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cfc51a60_b1115310",
         "filename": "containers/base/common.sh",
         "patchSetId": 13
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "a4ae4f45_6072dbbc",
+        "filename": "containers/base/common.sh",
+        "patchSetId": 13
+      },
+      "lineNbr": 465,
+      "author": {
+        "id": 49
+      },
+      "writtenOn": "2019-09-19T22:33:45Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "cfc51a60_b1115310",
+      "range": {
+        "startLine": 465,
+        "startChar": 29,
+        "endLine": 465,
+        "endChar": 55
+      },
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e1ce4cb2_39dd9227",
         "filename": "containers/external/rsyslogd/Dockerfile",
         "patchSetId": 13
@@ -65,6 +113,24 @@
     },
     {
       "key": {
+        "uuid": "4fccf48c_23a4ac7a",
+        "filename": "containers/external/rsyslogd/Dockerfile",
+        "patchSetId": 13
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 49
+      },
+      "writtenOn": "2019-09-19T22:33:45Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "e1ce4cb2_39dd9227",
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d7b0c042_64ad6828",
         "filename": "containers/external/rsyslogd/contrail-entrypoint.sh",
         "patchSetId": 13
@@ -76,6 +142,24 @@
       "writtenOn": "2019-09-19T21:04:37Z",
       "side": 1,
       "message": "and why ENV definition is needed in Dockerfile? just to increase file size?",
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b878aff9_b9e992a0",
+        "filename": "containers/external/rsyslogd/contrail-entrypoint.sh",
+        "patchSetId": 13
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 49
+      },
+      "writtenOn": "2019-09-19T22:33:45Z",
+      "side": 1,
+      "message": "Do you mean if I define here and I can access using this variable in Dockerfile so no need to define there? I tried that it does not work,",
+      "parentUuid": "d7b0c042_64ad6828",
       "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
@@ -105,6 +189,30 @@
     },
     {
       "key": {
+        "uuid": "1978dd14_0548551c",
+        "filename": "containers/external/rsyslogd/contrail-entrypoint.sh",
+        "patchSetId": 13
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 49
+      },
+      "writtenOn": "2019-09-19T22:33:45Z",
+      "side": 1,
+      "message": "Yes, it requires root privileges.",
+      "parentUuid": "5aa1c3a6_b92e085d",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 4
+      },
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "896dc66a_84cc516e",
         "filename": "containers/external/rsyslogd/rsyslog.conf",
         "patchSetId": 13
@@ -116,6 +224,24 @@
       "writtenOn": "2019-09-19T21:04:37Z",
       "side": 1,
       "message": "should all these folder be mounted into syslog container? or it will use something useless from container?",
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "972311cc_1b668fba",
+        "filename": "containers/external/rsyslogd/rsyslog.conf",
+        "patchSetId": 13
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 49
+      },
+      "writtenOn": "2019-09-19T22:33:45Z",
+      "side": 1,
+      "message": "This is the default configuration when rsyslogd gets installed, nothing has been changed from here.",
+      "parentUuid": "896dc66a_84cc516e",
       "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
@@ -145,6 +271,30 @@
     },
     {
       "key": {
+        "uuid": "a2e44911_6518d933",
+        "filename": "containers/external/rsyslogd/rsyslog.d/contrail-loadbalancer-haproxy.conf",
+        "patchSetId": 13
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 49
+      },
+      "writtenOn": "2019-09-19T22:33:45Z",
+      "side": 1,
+      "message": "This socket is being used here: https://github.com/Juniper/contrail-controller/blob/d26994f82810ce62716dec2477ba31c529b86945/src/config/svc-monitor/svc_monitor/services/loadbalancer/drivers/ha_proxy/haproxy_config.py#L114 now with path and socket name change,",
+      "parentUuid": "dc7f3f99_f360bef7",
+      "range": {
+        "startLine": 1,
+        "startChar": 22,
+        "endLine": 1,
+        "endChar": 25
+      },
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6301c7ba_e079dc89",
         "filename": "containers/status/contrail-status.py",
         "patchSetId": 13
@@ -156,6 +306,24 @@
       "writtenOn": "2019-09-19T21:04:37Z",
       "side": 1,
       "message": "i disagree that this is a shared service. I can\u0027t conclude this from ansible-deployer review. moreover - i can conclude that rsyslog container must be now a part of vrouter POD.",
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d43340d1_a905fdf1",
+        "filename": "containers/status/contrail-status.py",
+        "patchSetId": 13
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 49
+      },
+      "writtenOn": "2019-09-19T22:33:45Z",
+      "side": 1,
+      "message": "rsyslogd is a shared service, used both by contrail-vrouter and flow collector module.",
+      "parentUuid": "6301c7ba_e079dc89",
       "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
