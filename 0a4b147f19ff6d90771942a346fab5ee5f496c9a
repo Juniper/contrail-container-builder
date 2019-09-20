@@ -202,6 +202,24 @@
     },
     {
       "key": {
+        "uuid": "d6c1b682_6a045344",
+        "filename": "containers/external/rsyslogd/contrail-entrypoint.sh",
+        "patchSetId": 13
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 49
+      },
+      "writtenOn": "2019-09-20T20:05:18Z",
+      "side": 1,
+      "message": "And also please note that in Dockerfile CMD does not take if the variable is not defined using ENV, it does not work even if it is defined with ARG.",
+      "parentUuid": "ed35c936_8f3b5e3a",
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5aa1c3a6_b92e085d",
         "filename": "containers/external/rsyslogd/contrail-entrypoint.sh",
         "patchSetId": 13
