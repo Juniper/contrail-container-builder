@@ -1,0 +1,11 @@
+ansible
+python2-mock
+python-six
+python-coverage
+python2-flexmock
+python-webtest
+python3-timeout-decorator
+python2-crypto
+python2-vine
+sandesh
+sandesh-common
