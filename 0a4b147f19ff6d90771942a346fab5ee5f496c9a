@@ -184,6 +184,24 @@
     },
     {
       "key": {
+        "uuid": "ed35c936_8f3b5e3a",
+        "filename": "containers/external/rsyslogd/contrail-entrypoint.sh",
+        "patchSetId": 13
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 49
+      },
+      "writtenOn": "2019-09-20T19:44:31Z",
+      "side": 1,
+      "message": "How I can access the variable rsyslogd_pid_file inside Dockerfile, if I do not define there. I need this CMD rsyslogd -n -f /etc/rsyslog.conf -i $RSYSLOGD_PIDFILE in Dockerfile,\n\nDirectly accessing $rsyslogd_pid_file in Dockerfile does not work.",
+      "parentUuid": "9668c06f_0a1ebf54",
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5aa1c3a6_b92e085d",
         "filename": "containers/external/rsyslogd/contrail-entrypoint.sh",
         "patchSetId": 13
@@ -243,6 +261,30 @@
       "side": 1,
       "message": "did you try to run it with run_service? what exactly it is needed?",
       "parentUuid": "1978dd14_0548551c",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 4
+      },
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6f724f8b_af3d1b94",
+        "filename": "containers/external/rsyslogd/contrail-entrypoint.sh",
+        "patchSetId": 13
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 49
+      },
+      "writtenOn": "2019-09-20T19:44:31Z",
+      "side": 1,
+      "message": "Yeah, I tried, as it has to access /var/run and create socket file, it throws error with permission denied.",
+      "parentUuid": "24d05538_db45fc85",
       "range": {
         "startLine": 15,
         "startChar": 0,
@@ -361,6 +403,30 @@
     },
     {
       "key": {
+        "uuid": "b89d4cae_7d909970",
+        "filename": "containers/external/rsyslogd/rsyslog.d/contrail-loadbalancer-haproxy.conf",
+        "patchSetId": 13
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 49
+      },
+      "writtenOn": "2019-09-20T19:44:31Z",
+      "side": 1,
+      "message": "svcmon creates the haproxy config object (code path as sent in the last comment) and then passes to control node, vrouter agent reads that and creates haproxy instance. So, it does not matter where svcmon sits.",
+      "parentUuid": "3e30ff49_846f1769",
+      "range": {
+        "startLine": 1,
+        "startChar": 22,
+        "endLine": 1,
+        "endChar": 25
+      },
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6301c7ba_e079dc89",
         "filename": "containers/status/contrail-status.py",
         "patchSetId": 13
@@ -408,6 +474,24 @@
       "side": 1,
       "message": "where is flow collector is defined? is it in contrail-status? will syslog be deployed twice if vrouter and flow collector will be on different nodes?",
       "parentUuid": "d43340d1_a905fdf1",
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ecc86ebc_5b231baf",
+        "filename": "containers/status/contrail-status.py",
+        "patchSetId": 13
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 49
+      },
+      "writtenOn": "2019-09-20T19:44:31Z",
+      "side": 1,
+      "message": "syslog will not be deployed twice. flow collector is provisioned through UI. and defined in instances.yml using appformix_flows role. rsyslog will be deployed along with vrouter installation, but it is used by vrouter and flow-collector, same as redis, deployed once, but used by webui, analytics components.",
+      "parentUuid": "6421e357_4a95ce97",
       "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
