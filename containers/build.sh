@@ -174,6 +174,8 @@ function process_container() {
     docker push $target_name 2>&1 | append_log_file $logfile
     exit_code=${PIPESTATUS[0]}
   fi
+  log "Remove ${intermediate_base} temp build container" | append_log_file $logfile
+  docker rm -f ${intermediate_base} 2>&1 | append_log_file $logfile
   duration=$(date +"%s")
   (( duration -= start_time ))
   if [ ${exit_code} -eq 0 ]; then
