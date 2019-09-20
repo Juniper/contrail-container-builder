@@ -166,6 +166,24 @@
     },
     {
       "key": {
+        "uuid": "9668c06f_0a1ebf54",
+        "filename": "containers/external/rsyslogd/contrail-entrypoint.sh",
+        "patchSetId": 13
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-20T04:46:39Z",
+      "side": 1,
+      "message": "yes. i meant exactly this. if you can\u0027t manage this then please remove ENV from Dockerfile. it doesn\u0027t have sense in this case.",
+      "parentUuid": "b878aff9_b9e992a0",
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5aa1c3a6_b92e085d",
         "filename": "containers/external/rsyslogd/contrail-entrypoint.sh",
         "patchSetId": 13
@@ -201,6 +219,30 @@
       "side": 1,
       "message": "Yes, it requires root privileges.",
       "parentUuid": "5aa1c3a6_b92e085d",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 4
+      },
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "24d05538_db45fc85",
+        "filename": "containers/external/rsyslogd/contrail-entrypoint.sh",
+        "patchSetId": 13
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-20T04:46:39Z",
+      "side": 1,
+      "message": "did you try to run it with run_service? what exactly it is needed?",
+      "parentUuid": "1978dd14_0548551c",
       "range": {
         "startLine": 15,
         "startChar": 0,
@@ -295,6 +337,30 @@
     },
     {
       "key": {
+        "uuid": "3e30ff49_846f1769",
+        "filename": "containers/external/rsyslogd/rsyslog.d/contrail-loadbalancer-haproxy.conf",
+        "patchSetId": 13
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-20T04:46:39Z",
+      "side": 1,
+      "message": "how svcmon does access this file from different machine?",
+      "parentUuid": "a2e44911_6518d933",
+      "range": {
+        "startLine": 1,
+        "startChar": 22,
+        "endLine": 1,
+        "endChar": 25
+      },
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6301c7ba_e079dc89",
         "filename": "containers/status/contrail-status.py",
         "patchSetId": 13
@@ -324,6 +390,24 @@
       "side": 1,
       "message": "rsyslogd is a shared service, used both by contrail-vrouter and flow collector module.",
       "parentUuid": "6301c7ba_e079dc89",
+      "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6421e357_4a95ce97",
+        "filename": "containers/status/contrail-status.py",
+        "patchSetId": 13
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-09-20T04:46:39Z",
+      "side": 1,
+      "message": "where is flow collector is defined? is it in contrail-status? will syslog be deployed twice if vrouter and flow collector will be on different nodes?",
+      "parentUuid": "d43340d1_a905fdf1",
       "revId": "0a4b147f19ff6d90771942a346fab5ee5f496c9a",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
