@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "eb8c3b16_aec155c7",
+        "filename": "containers/external/rsyslogd/Dockerfile",
+        "patchSetId": 14
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 49
+      },
+      "writtenOn": "2019-09-20T19:21:30Z",
+      "side": 1,
+      "message": "This is to convert __\u003cfile_name\u003e.sh (as we get from .externals) to \u003cfile_name\u003e.sh",
+      "parentUuid": "32d9e244_07e564d4",
+      "revId": "3c34dfd4dbfe2a08859b6ad7bb48e0b7162a5722",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e0999e75_8ee306dc",
         "filename": "containers/external/rsyslogd/PARAMS.md",
         "patchSetId": 14
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "8d9c7b20_fcc79443",
+        "filename": "containers/external/rsyslogd/PARAMS.md",
+        "patchSetId": 14
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 49
+      },
+      "writtenOn": "2019-09-20T19:21:30Z",
+      "side": 1,
+      "message": "I see only 1 new line added in file, I will remove. In review always it adds one lne extra. So, you see 2 new lines.",
+      "parentUuid": "e0999e75_8ee306dc",
+      "revId": "3c34dfd4dbfe2a08859b6ad7bb48e0b7162a5722",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d9903355_7302f247",
         "filename": "containers/external/rsyslogd/PARAMS.md",
         "patchSetId": 14
@@ -47,6 +83,30 @@
       "writtenOn": "2019-09-20T04:46:39Z",
       "side": 1,
       "message": "the column is named \u0027default\u0027...",
+      "range": {
+        "startLine": 5,
+        "startChar": 31,
+        "endLine": 5,
+        "endChar": 77
+      },
+      "revId": "3c34dfd4dbfe2a08859b6ad7bb48e0b7162a5722",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "71480015_fa650abe",
+        "filename": "containers/external/rsyslogd/PARAMS.md",
+        "patchSetId": 14
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 49
+      },
+      "writtenOn": "2019-09-20T19:21:30Z",
+      "side": 1,
+      "message": "I see some other PARAMS file, it is being used some description, so I added, I will remove the description and put the default.",
+      "parentUuid": "d9903355_7302f247",
       "range": {
         "startLine": 5,
         "startChar": 31,
