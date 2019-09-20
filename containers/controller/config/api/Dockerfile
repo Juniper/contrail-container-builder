@@ -8,11 +8,18 @@ LABEL name=$CONTAINER_NAME \
       summary="Contrail Controller Configuration API" \
       description="Controller Configuration API provides a REST API to an orchestration system."
 
-RUN yum install -y python-neutron-lib && \
-    yum clean all -y && \
-    rm -rf /var/cache/yum
+ARG CONTRAIL_BUILD_FROM_SOURCE
+ENV CONTRAIL_BUILD_FROM_SOURCE=$CONTRAIL_BUILD_FROM_SOURCE
 
-COPY entrypoint.sh /
+# contrail-config-openstack contains svc_monitor and vnc_openstack modules
+RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]]; then \
+    sed -e '/^tsflags=nodocs/d' -i /etc/yum.conf && \
+    yum install -y python-neutron-lib && \
+    yum clean all -y && \
+    rm -rf /var/cache/yum; \
+    fi
+
+COPY *.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/contrail-api", "--conf_file", "/etc/contrail/contrail-api.conf", "--conf_file", "/etc/contrail/contrail-keystone-auth.conf", "--worker_id", "0"]
