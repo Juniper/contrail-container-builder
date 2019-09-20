@@ -2,17 +2,21 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-controller-config-base:${CONTRAIL_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
-
 ARG CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
       summary="Contrail Controller Configuration API" \
       description="Controller Configuration API provides a REST API to an orchestration system."
+ARG CONTRAIL_BUILD_FROM_SOURCE
 
-RUN yum install -y python-neutron-lib && \
+# contrail-config-openstack contains svc_monitor and vnc_openstack modules
+RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]]; then \
+    sed -e '/^tsflags=nodocs/d' -i /etc/yum.conf && \
+    yum install -y python-neutron-lib && \
     yum clean all -y && \
-    rm -rf /var/cache/yum
+    rm -rf /var/cache/yum; \
+    fi
 
-COPY entrypoint.sh /
+COPY *.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/contrail-api", "--conf_file", "/etc/contrail/contrail-api.conf", "--conf_file", "/etc/contrail/contrail-keystone-auth.conf", "--worker_id", "0"]
