@@ -24,6 +24,9 @@ python-configparser
 python-devel
 python-fysom
 python-geventhttpclient
+python-greenlet
 python-kazoo
 python-kombu
 python-pycassa
+python-simplejson
+python-stevedore
