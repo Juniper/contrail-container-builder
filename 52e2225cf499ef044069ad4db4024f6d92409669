@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "159a5de8_df6712e3",
+        "filename": "containers/nodemgr/Dockerfile",
+        "patchSetId": 13
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-09-24T14:08:09Z",
+      "side": 0,
+      "message": "return it back",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 11
+      },
+      "revId": "52e2225cf499ef044069ad4db4024f6d92409669",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}

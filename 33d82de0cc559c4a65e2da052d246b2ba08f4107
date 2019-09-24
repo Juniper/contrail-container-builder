@@ -68,6 +68,23 @@
       "revId": "33d82de0cc559c4a65e2da052d246b2ba08f4107",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "39966f85_f37bc6bb",
+        "filename": "containers/nodemgr/build_src/setup",
+        "patchSetId": 13
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-09-24T14:08:09Z",
+      "side": 1,
+      "message": "let\u0027s revert the name setup.sh",
+      "revId": "33d82de0cc559c4a65e2da052d246b2ba08f4107",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
