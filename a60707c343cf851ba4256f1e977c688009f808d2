@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "72f03da6_6c0e7302",
+        "filename": "containers/build.sh",
+        "patchSetId": 15
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-09-25T14:20:44Z",
+      "side": 1,
+      "message": "would it be more elegant way: $(readlink -e ${dir}/build_src)",
+      "range": {
+        "startLine": 136,
+        "startChar": 29,
+        "endLine": 136,
+        "endChar": 73
+      },
+      "revId": "a60707c343cf851ba4256f1e977c688009f808d2",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
