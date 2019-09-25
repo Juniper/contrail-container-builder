@@ -38,11 +38,9 @@ function copy_agent_tools_to_host() {
         create_vhost_network_functions "$netscript_dir"
     fi
     # copy vif util
-    if [[ ! -f /host/bin/vif ]]; then
-        /bin/cp -f /bin/vif /host/bin/vif
-        chmod 644 /host/bin/vif
-        chmod +x /host/bin/vif
-    fi
+    /bin/cp -f /bin/vif /host/bin/vif
+    chmod 644 /host/bin/vif
+    chmod +x /host/bin/vif
 }
 
 function is_vlan() {
