@@ -13,7 +13,7 @@ function provision() {
   for (( i=0 ; i < retries ; ++i )) ; do
     echo "INFO: Provisioning attempt $((i+1)) of $retries (pause $pause)"
     for server in $servers ; do
-      if python /opt/contrail/utils/$script $rest_params --api_server_ip $server --api_server_port $CONFIG_API_PORT $AUTH_PARAMS --api_server_use_ssl ${CONFIG_API_SSL_ENABLE} ; then
+      if python3 /opt/contrail/utils/$script $rest_params --api_server_ip $server --api_server_port $CONFIG_API_PORT $AUTH_PARAMS --api_server_use_ssl ${CONFIG_API_SSL_ENABLE} ; then
         echo "INFO: Provisioning was succeeded"
         return
       fi
