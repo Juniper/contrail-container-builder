@@ -14,7 +14,7 @@ RUN yum clean all -y && \
     rm -rf /var/cache/yum
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/usr/bin/python","/usr/bin/contrail-svc-monitor","--conf_file","/etc/contrail/contrail-svc-monitor.conf","--conf_file","/etc/contrail/contrail-keystone-auth.conf"]
+CMD /usr/bin/contrail-svc-monitor --conf_file /etc/contrail/contrail-svc-monitor.conf --conf_file /etc/contrail/contrail-keystone-auth.conf
 
 ENV SERVICE_NAME=svc-monitor
 LABEL $VENDOR_DOMAIN".service"=$SERVICE_NAME

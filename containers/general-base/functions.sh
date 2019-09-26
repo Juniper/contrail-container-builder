@@ -85,7 +85,7 @@ function find_my_ip_and_order_for_node_list() {
     if [ -f /hostname_to_ip ]; then
       server_ip=`/hostname_to_ip $server` || ret=$?
     else
-      server_ip=`python -c "import socket; print(socket.gethostbyname('$server'))"` || ret=$?
+      server_ip=`python3 -c "import socket; print(socket.gethostbyname('$server'))"` || ret=$?
     fi
     if [[ $ret == 0 && "$local_ips" =~ ",$server_ip," ]] ; then
       echo $server_ip $ord
