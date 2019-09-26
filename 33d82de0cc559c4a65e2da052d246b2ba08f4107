@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "41b17740_36f5417d",
+        "filename": "containers/build.sh",
+        "patchSetId": 13
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 846
+      },
+      "writtenOn": "2019-09-26T17:25:10Z",
+      "side": 1,
+      "message": "there could be no files within the folder.",
+      "parentUuid": "5c989dcc_e42bda1a",
+      "range": {
+        "startLine": 140,
+        "startChar": 67,
+        "endLine": 140,
+        "endChar": 95
+      },
+      "revId": "33d82de0cc559c4a65e2da052d246b2ba08f4107",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a4501e5d_42faca8b",
         "filename": "containers/build.sh",
         "patchSetId": 13
