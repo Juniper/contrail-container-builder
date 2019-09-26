@@ -33,7 +33,7 @@ RUN YUM_ENABLE_REPOS=$(echo $YUM_ENABLE_REPOS | tr -d '"') && \
         yum clean metadata ; \
     fi && \
     yum update -y && \
-    yum install -y yum-plugin-priorities iproute less hostname && \
+    yum install -y yum-plugin-priorities iproute less hostname python3 && \
     GENERAL_EXTRA_RPMS=$(echo $GENERAL_EXTRA_RPMS | tr -d '"' | tr ',' ' ') && \
     if [[ -n "$GENERAL_EXTRA_RPMS" ]] ; then \
         echo "INFO: contrail-general-base: install $GENERAL_EXTRA_RPMS" && \
