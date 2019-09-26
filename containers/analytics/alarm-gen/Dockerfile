@@ -14,7 +14,7 @@ LABEL name=$CONTAINER_NAME \
 COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/usr/bin/python","/usr/bin/contrail-alarm-gen","-c","/etc/contrail/contrail-alarm-gen.conf"]
+CMD /usr/bin/contrail-alarm-gen -c /etc/contrail/contrail-alarm-gen.conf
 
 ENV NODE_TYPE=analytics-alarm
 LABEL $VENDOR_DOMAIN".pod"=$NODE_TYPE

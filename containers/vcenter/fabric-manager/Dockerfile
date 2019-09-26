@@ -15,7 +15,7 @@ RUN yum install -y contrail-vcenter-fabric-manager && \
 COPY *.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD /usr/bin/python -m cvfm
+CMD /usr/bin/contrail-vcenter-fabric-manager
 
 ENV NODE_TYPE=vcenter-fabric-manager
 ENV SERVICE_NAME=fabric-manager

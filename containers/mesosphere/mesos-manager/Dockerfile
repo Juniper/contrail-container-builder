@@ -17,7 +17,7 @@ RUN yum install -y python-eventlet python-setuptools python-kazoo \
 COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/usr/bin/python", "/usr/bin/contrail-mesos-manager", "-c", "/etc/contrail/contrail-mesos.conf"]
+CMD /usr/bin/contrail-mesos-manager -c /etc/contrail/contrail-mesos.conf
 
 ENV NODE_TYPE=mesosphere
 ENV SERVICE_NAME=mesos-manager
