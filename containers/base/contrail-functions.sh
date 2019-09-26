@@ -203,7 +203,7 @@ function add_ini_params_from_env() {
 
 function resolve_host_ip() {
   local name_or_ip=$1
-  python -c "import socket; print(socket.gethostbyname('$name_or_ip'))"
+  python3 -c "import socket; print(socket.gethostbyname('$name_or_ip'))"
 }
 
 function resolve_1st_control_node_ip() {

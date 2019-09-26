@@ -15,6 +15,6 @@ RUN yum install -y ironic-notification-manager && \
 COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/usr/bin/python","/usr/bin/ironic-notification-manager","--conf_file","/etc/contrail/ironic-notification-manager.conf","--conf_file","/etc/contrail/contrail-keystone-auth.conf"]
+CMD /usr/bin/ironic-notification-manager --conf_file /etc/contrail/ironic-notification-manager.conf --conf_file /etc/contrail/contrail-keystone-auth.conf
 
 LABEL $VENDOR_DOMAIN".container.name"=$CONTAINER_NAME
