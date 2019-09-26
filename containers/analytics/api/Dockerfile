@@ -11,7 +11,7 @@ LABEL name=$CONTAINER_NAME \
 COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/usr/bin/python","/usr/bin/contrail-analytics-api","-c","/etc/contrail/contrail-analytics-api.conf","-c","/etc/contrail/contrail-keystone-auth.conf"]
+CMD /usr/bin/contrail-analytics-api -c /etc/contrail/contrail-analytics-api.conf -c /etc/contrail/contrail-keystone-auth.conf
 
 ENV SERVICE_NAME=api
 LABEL $VENDOR_DOMAIN".service"=$SERVICE_NAME
