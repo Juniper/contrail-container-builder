@@ -17,7 +17,8 @@ RUN yum install -y contrail-nodemgr python2-docker chrony ntp && \
 COPY *.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD /usr/bin/python /usr/bin/contrail-nodemgr --nodetype=${NODEMGR_TYPE}
+# use shell form for CMD as shell variables processing is required here
+CMD /usr/bin/contrail-nodemgr --nodetype=${NODEMGR_TYPE}
 
 ENV SERVICE_NAME=nodemgr
 LABEL $VENDOR_DOMAIN".service"=$SERVICE_NAME
