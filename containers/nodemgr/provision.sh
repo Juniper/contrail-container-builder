@@ -9,11 +9,11 @@ function provision() {
   local retries=${PROVISION_RETRIES:-10}
   local pause=${PROVISION_DELAY:-3}
   local servers=`echo ${CONFIG_NODES} | tr ',' ' '`
-  echo "INFO: Provisioning cmdline: python /opt/contrail/utils/$script $rest_params --api_server_ip {for each node from the list: $CONFIG_NODES} --api_server_port $CONFIG_API_PORT $AUTH_PARAMS"
+  echo "INFO: Provisioning cmdline: /opt/contrail/utils/$script $rest_params --api_server_ip {for each node from the list: $CONFIG_NODES} --api_server_port $CONFIG_API_PORT $AUTH_PARAMS"
   for (( i=0 ; i < retries ; ++i )) ; do
     echo "INFO: Provisioning attempt $((i+1)) of $retries (pause $pause)"
     for server in $servers ; do
-      if python /opt/contrail/utils/$script $rest_params --api_server_ip $server --api_server_port $CONFIG_API_PORT $AUTH_PARAMS --api_server_use_ssl ${CONFIG_API_SSL_ENABLE} ; then
+      if /opt/contrail/utils/$script $rest_params --api_server_ip $server --api_server_port $CONFIG_API_PORT $AUTH_PARAMS --api_server_use_ssl ${CONFIG_API_SSL_ENABLE} ; then
         echo "INFO: Provisioning was succeeded"
         return
       fi
@@ -168,7 +168,7 @@ vrouter)
   host_ip=$(get_ip_for_vrouter_from_control)
   vhost_if=$(get_iface_for_vrouter_from_control)
   if_cidr=$(get_cidr_for_nic $vhost_if)
-  ip_fabric_subnet=`python -c "import ipaddress; print str(ipaddress.ip_network(u'$if_cidr', strict=False))"`
+  ip_fabric_subnet=`python3 -c "import ipaddress; print(str(ipaddress.ip_network(u'$if_cidr', strict=False)))"`
   params=''
   if is_dpdk ; then
     params="$params --dpdk_enabled"

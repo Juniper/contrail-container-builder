@@ -1,0 +1,5 @@
+[contrail-tpc]
+name=Third parties for Contrail
+baseurl=http://148.251.5.90/tpc/
+enabled=1
+gpgcheck=0
