@@ -20,7 +20,7 @@ RUN yum install -y python2-setuptools git && \
     rm -rf /contrail-controller
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/usr/bin/python", "/usr/bin/contrail-stats-client", "--config-file", "/etc/contrail/contrail-stats-client.conf"]
+CMD ["/usr/bin/contrail-stats-client", "--config-file", "/etc/contrail/contrail-stats-client.conf"]
 
 ENV NODE_TYPE=config
 LABEL $VENDOR_DOMAIN".pod"=$NODE_TYPE

@@ -16,7 +16,8 @@ RUN mkdir /licenses
 COPY __licensing.txt /licenses/licensing.txt
 
 COPY *.sh /
-RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done'
+RUN bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done' && \
+    /upgrade_pkgs.sh
 
 ENTRYPOINT ["/contrail-entrypoint.sh"]
 CMD ["cassandra", "-f"]
