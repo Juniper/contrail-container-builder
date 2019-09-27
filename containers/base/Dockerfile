@@ -18,6 +18,8 @@ RUN mkdir -p -m 777 /var/crashes && \
     rm -rf /var/cache/yum && \
     ldconfig
 
+RUN yum install python3-setuptools -y
+
 COPY *.sh /
 
 ENV PS1="\033[1m($(printenv NODE_TYPE)-$(printenv SERVICE_NAME))\033[m\017[$(id -un)@$(hostname -s) $(pwd)]$ "
