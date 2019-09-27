@@ -22,6 +22,30 @@
       "revId": "22c2ede408f19a03831213a4c61f235fa3c1fb33",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "06c5a769_e53f0ee4",
+        "filename": "containers/general-base/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2019-09-27T09:10:42Z",
+      "side": 1,
+      "message": "Idea is to make contrail-general-base container equipped with python3.",
+      "parentUuid": "3fa340be_be29a3a3",
+      "range": {
+        "startLine": 47,
+        "startChar": 16,
+        "endLine": 47,
+        "endChar": 34
+      },
+      "revId": "22c2ede408f19a03831213a4c61f235fa3c1fb33",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
