@@ -44,6 +44,8 @@ RUN YUM_ENABLE_REPOS=$(echo $YUM_ENABLE_REPOS | tr -d '"') && \
     groupadd --gid $CONTRAIL_GID --system $CONTRAIL_USER && \
     useradd -md /home/contrail --uid $CONTRAIL_UID --shell /sbin/nologin --system --gid $CONTRAIL_GID $CONTRAIL_USER
 
+RUN yum install python3-setuptools -y
+
 COPY *.sh /
 
 CMD ["/usr/bin/tail","-f","/dev/null"]
