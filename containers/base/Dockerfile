@@ -13,7 +13,7 @@ RUN mkdir -p -m 777 /var/crashes && \
         echo "INFO: contrail-base: install $BASE_EXTRA_RPMS" ; \
         yum install -y $BASE_EXTRA_RPMS ; \
     fi && \
-    yum install -y contrail-lib contrail-setup contrail-utils python-contrail && \
+    yum install -y python3-setuptools contrail-lib contrail-setup contrail-utils python-contrail && \
     yum clean all -y && \
     rm -rf /var/cache/yum && \
     ldconfig
