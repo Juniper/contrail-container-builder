@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "343a3c3b_f5566917",
+        "filename": "kubernetes/setup-k8s.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-09-30T14:33:55Z",
+      "side": 1,
+      "message": "Do we know the version of kubelet here?\nI mean what if someone installs older version:  Is it worth to write here something like that:\nkubelet_ver\u003d$(kubelet --version ..... some greps?)\nif [[ \"$kubelet_ver\" \u003d~ 1.1[0-2].* || \"$kubelet_ver\" \u003d~ 1.13.[0-4]{1} ]] ; then\n    kubelet_cfg_file\u003d\u0027/etc/systemd/system/kubelet.service.d/10-kubeadm.conf\u0027\nelse\n    kubelet_cfg_file\u003d\u0027/usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf\u0027\nfi\n?",
+      "range": {
+        "startLine": 111,
+        "startChar": 2,
+        "endLine": 111,
+        "endChar": 18
+      },
+      "revId": "bcc25af41c900bcc22d5cd0ed47b07140753f756",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
