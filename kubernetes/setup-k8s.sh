@@ -63,6 +63,8 @@ function install_for_ubuntu() {
     apt-transport-https \
     ca-certificates \
     kubectl=\$k8s_version kubelet=\$k8s_version kubeadm=\$k8s_version &>>$HOME/apt.log
+
+  kubelet_cfg_file='/etc/systemd/system/kubelet.service.d/10-kubeadm.conf'
 }
 
 function install_for_centos() {
@@ -105,6 +107,8 @@ EOF
   sysctl -w net.bridge.bridge-nf-call-ip6tables=1
   echo "net.bridge.bridge-nf-call-iptables=1" >> /etc/sysctl.conf
   echo "net.bridge.bridge-nf-call-ip6tables=1" >> /etc/sysctl.conf
+
+  kubelet_cfg_file='/usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf'
 }
 
 disable_swap
@@ -119,7 +123,6 @@ case "${LINUX_ID}" in
 esac
 
 need_kubelet_restart='false'
-kubelet_cfg_file='/etc/systemd/system/kubelet.service.d/10-kubeadm.conf'
 
 # Contrail, at this point in time, does not install CNI/vrouter-agent on nodes marked as control.
 # In a typcical Kubernetes install, kubelets expects to find CNI plugin in nodes they are running.
