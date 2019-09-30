@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a6594a1f_09df7ee4",
+        "filename": "containers/build.sh",
+        "patchSetId": 18
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-09-30T10:58:53Z",
+      "side": 1,
+      "message": "please use log function here.",
+      "range": {
+        "startLine": 137,
+        "startChar": 2,
+        "endLine": 137,
+        "endChar": 6
+      },
+      "revId": "86b8887c7f75bd025486a67774dd62f14efdb398",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cf092766_2f39344f",
+        "filename": "containers/build.sh",
+        "patchSetId": 18
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-09-30T10:58:53Z",
+      "side": 1,
+      "message": "please use log function here",
+      "range": {
+        "startLine": 138,
+        "startChar": 2,
+        "endLine": 138,
+        "endChar": 6
+      },
+      "revId": "86b8887c7f75bd025486a67774dd62f14efdb398",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
