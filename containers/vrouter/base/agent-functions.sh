@@ -687,7 +687,6 @@ function init_decrypt0() {
         local l_ip=$(get_ip_for_nic vhost0)
         ip tunnel add $decrypt_intf local $l_ip mode vti key $key || { echo "ERROR: Failed to initialize tunnel interface $decrypt_intf" && return 1; }
         ip link set dev $decrypt_intf mtu $mtu up
-        ip link set dev ip_vti0 mtu $mtu up
         echo "Successfully added tunnel interface $decrypt_intf and the required iptables rules"
     fi
     create_iptables_vrouter_encryption $key
