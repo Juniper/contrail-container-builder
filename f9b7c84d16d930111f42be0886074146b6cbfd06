@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bdb6413f_bb49412a",
+        "filename": "containers/vrouter/base/agent-functions.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 690,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-10-01T09:23:41Z",
+      "side": 0,
+      "message": "it looks that only mtu change is removed.\nIf I understood correctly the whole \u0027if\u0027 branch should be skipped (and probably create_iptables_vrouter_encryption should not been called as well)?",
+      "range": {
+        "startLine": 690,
+        "startChar": 9,
+        "endLine": 690,
+        "endChar": 43
+      },
+      "revId": "f9b7c84d16d930111f42be0886074146b6cbfd06",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
