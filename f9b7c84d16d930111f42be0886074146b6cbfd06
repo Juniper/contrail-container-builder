@@ -22,6 +22,30 @@
       "revId": "f9b7c84d16d930111f42be0886074146b6cbfd06",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "72d53976_d6be824f",
+        "filename": "containers/vrouter/base/agent-functions.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 690,
+      "author": {
+        "id": 53
+      },
+      "writtenOn": "2019-10-01T18:32:16Z",
+      "side": 0,
+      "message": "The line that is removed sets MTU and the interface up. This is not required. \n\nIPtables is required in both the cases w/o Calico.",
+      "parentUuid": "bdb6413f_bb49412a",
+      "range": {
+        "startLine": 690,
+        "startChar": 9,
+        "endLine": 690,
+        "endChar": 43
+      },
+      "revId": "f9b7c84d16d930111f42be0886074146b6cbfd06",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
     }
   ]
 }
