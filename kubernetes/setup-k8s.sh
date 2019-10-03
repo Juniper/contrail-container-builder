@@ -35,6 +35,10 @@ fi
 
 hostname=`cat /etc/hostname`
 
+function ver() {
+  printf "%02d%02d%02d%02d" ${1//./ }
+}
+
 sudo -u root /bin/bash << EOS
 
 function disable_swap() {
@@ -63,6 +67,8 @@ function install_for_ubuntu() {
     apt-transport-https \
     ca-certificates \
     kubectl=\$k8s_version kubelet=\$k8s_version kubeadm=\$k8s_version &>>$HOME/apt.log
+
+  kubelet_cfg_file='/etc/systemd/system/kubelet.service.d/10-kubeadm.conf'
 }
 
 function install_for_centos() {
@@ -105,6 +111,14 @@ EOF
   sysctl -w net.bridge.bridge-nf-call-ip6tables=1
   echo "net.bridge.bridge-nf-call-iptables=1" >> /etc/sysctl.conf
   echo "net.bridge.bridge-nf-call-ip6tables=1" >> /etc/sysctl.conf
+
+  if [[ $(ver $K8S_VERSION) -ge $(ver 1.11.2) && $(ver $K8S_VERSION) -lt $(ver 1.12) ]] || \
+     [[ $(ver $K8S_VERSION) -ge $(ver 1.12.7) && $(ver $K8S_VERSION) -lt $(ver 1.13) ]] || \
+     [[ $(ver $K8S_VERSION) -ge $(ver 1.13.5) ]]; then
+    kubelet_cfg_file="/usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf"
+  else
+    kubelet_cfg_file="/etc/systemd/system/kubelet.service.d/10-kubeadm.conf"
+  fi
 }
 
 disable_swap
@@ -119,7 +133,6 @@ case "${LINUX_ID}" in
 esac
 
 need_kubelet_restart='false'
-kubelet_cfg_file='/etc/systemd/system/kubelet.service.d/10-kubeadm.conf'
 
 # Contrail, at this point in time, does not install CNI/vrouter-agent on nodes marked as control.
 # In a typcical Kubernetes install, kubelets expects to find CNI plugin in nodes they are running.

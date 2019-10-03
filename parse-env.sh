@@ -41,7 +41,7 @@ if [[ $HOST_IP == 'auto' ]] ; then
 fi
 
 export CONTRAIL_VERSION=${CONTRAIL_VERSION:-'4.1.0.0-8'}
-export K8S_VERSION=${K8S_VERSION:-'1.11.2'}
+export K8S_VERSION=${K8S_VERSION:-'1.15.4'}
 export OPENSTACK_VERSION=${OPENSTACK_VERSION:-'queens'}
 default_tag="${CONTRAIL_VERSION}"
 export CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG:-$default_tag}
