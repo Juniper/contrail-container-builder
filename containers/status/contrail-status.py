@@ -455,6 +455,7 @@ def get_containers():
         if not pod:
             pod = get_value_from_env(full_env, 'NODE_TYPE')
         name = labels.get(vendor_domain + '.container.name')
+        version = labels.get('version')
         env_hash = hash(frozenset(full_env))
 
         # service is not empty at this point
@@ -468,6 +469,7 @@ def get_containers():
             'Pod': pod if pod else '',
             'Service': service,
             'Original Name': name,
+            'Original Version': version,
             'State': cnt['State'],
             'Status': cnt['Status'],
             'Id': cnt['Id'][0:12],
@@ -491,9 +493,9 @@ def get_containers():
 
 def print_containers(containers):
     # containers is a dict of dicts
-    hdr = ['Pod', 'Service', 'Original Name', 'State', 'Id', 'Status']
+    hdr = ['Pod', 'Service', 'Original Name', 'Original Version', 'State', 'Id', 'Status']
     items = list()
-    items.extend([v[hdr[0]], v[hdr[1]], v[hdr[2]], v[hdr[3]], v[hdr[4]], v[hdr[5]]]
+    items.extend([v[hdr[0]], v[hdr[1]], v[hdr[2]], v[hdr[3]], v[hdr[4]], v[hdr[5]], v[hdr[6]]]
                  for k, v in six.iteritems(containers))
     items.sort(key=operator.itemgetter(0, 1))
     items.insert(0, hdr)
