@@ -24,7 +24,7 @@ fi
 # target platform info
 export LINUX_DISTR=${LINUX_DISTR:-centos}
 declare -A _target_linux_ver_ids
-_target_linux_ver_ids=([centos]='7.4.1708')
+_target_linux_ver_ids=([centos]='7')
 export LINUX_DISTR_VER=${LINUX_DISTR_VER:-${_target_linux_ver_ids[$LINUX_DISTR]}}
 
 # ubuntu version for vrouter kernel build init and mellanox ubuntu containers
