@@ -47,13 +47,17 @@ data:
   K8S_TOKEN_FILE: "/tmp/serviceaccount/token"
 # Containers section
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: contrail-kube-manager
   namespace: kube-system
   labels:
     app: contrail-kube-manager
+spec:
+  selector:
+    matchLabels:
+      app: contrail-kube-manager
 spec:
   template:
     metadata:
@@ -100,7 +104,7 @@ spec:
         secret:
           secretName: contrail-kube-manager-token
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: contrail-kubernetes-cni-agent
@@ -108,6 +112,9 @@ metadata:
   labels:
     app: contrail-kubernetes-cni-agent
 spec:
+  selector:
+    matchLabels:
+      app: config-zookeeper
   template:
     metadata:
       labels:
@@ -159,7 +166,7 @@ spec:
           path: /var/lib/contrail
 ---
 kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: contrail-kube-manager
   namespace: kube-system
@@ -174,7 +181,7 @@ metadata:
   name: contrail-kube-manager
   namespace: kube-system
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: contrail-kube-manager

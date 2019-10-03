@@ -61,7 +61,7 @@ data:
   K8S_TOKEN_FILE: "/tmp/serviceaccount/token"
 # Containers section
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: contrail-kube-manager
@@ -69,6 +69,9 @@ metadata:
   labels:
     app: contrail-kube-manager
 spec:
+  selector:
+    matchLabels:
+      app: contrail-kube-manager
   template:
     metadata:
       labels:
@@ -132,7 +135,7 @@ spec:
         hostPath:
           path: /usr/bin
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: contrail-agent
@@ -140,11 +143,13 @@ metadata:
   labels:
     app: contrail-agent
 spec:
+  selector:
+    matchLabels:
+      app: contrail-agent
   template:
     metadata:
       labels:
         app: contrail-agent
-    spec:
       #Disable affinity for single node setup
       affinity:
         nodeAffinity:
@@ -330,7 +335,7 @@ spec:
 # Meta information section
 ---
 kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: contrail-kube-manager
   namespace: kube-system
@@ -345,7 +350,7 @@ metadata:
   name: contrail-kube-manager
   namespace: kube-system
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: contrail-kube-manager

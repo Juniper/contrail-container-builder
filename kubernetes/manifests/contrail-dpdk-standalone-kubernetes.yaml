@@ -118,7 +118,7 @@ data:
 
 # Containers section
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: config-zookeeper
@@ -126,6 +126,9 @@ metadata:
   labels:
     app: config-zookeeper
 spec:
+  selector:
+    matchLabels:
+      app: config-zookeeper
   template:
     metadata:
       labels:
@@ -173,7 +176,7 @@ spec:
         hostPath:
           path: /var/log/contrail/config-zookeeper
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: contrail-analyticsdb
@@ -181,6 +184,9 @@ metadata:
   labels:
     app: contrail-analyticsdb
 spec:
+  selector:
+    matchLabels:
+      app: contrail-analyticsdb
   template:
     metadata:
       labels:
@@ -292,7 +298,7 @@ spec:
         hostPath:
           path: /var/lib
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: contrail-configdb
@@ -300,6 +306,9 @@ metadata:
   labels:
     app: contrail-configdb
 spec:
+  selector:
+    matchLabels:
+      app: contrail-configdb
   template:
     metadata:
       labels:
@@ -345,7 +354,7 @@ spec:
         hostPath:
           path: /var/log/contrail/configdb
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: contrail-config-database-nodemgr
@@ -353,6 +362,9 @@ metadata:
   labels:
     app: contrail-config-database-nodemgr
 spec:
+  selector:
+    matchLabels:
+      app: contrail-config-database-nodemgr
   template:
     metadata:
       labels:
@@ -427,7 +439,7 @@ spec:
         hostPath:
           path: /usr/bin
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: contrail-analytics
@@ -435,6 +447,9 @@ metadata:
   labels:
     app: contrail-analytics
 spec:
+  selector:
+    matchLabels:
+      app: contrail-analytics
   template:
     metadata:
       labels:
@@ -527,7 +542,7 @@ spec:
         hostPath:
           path: /usr/bin
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: contrail-analytics-snmp
@@ -535,6 +550,9 @@ metadata:
   labels:
     app: contrail-analytics-snmp
 spec:
+  selector:
+    matchLabels:
+      app: contrail-analytics-snmp
   template:
     metadata:
       labels:
@@ -641,7 +659,7 @@ spec:
         hostPath:
           path: /usr/bin
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: contrail-analytics-alarm
@@ -649,6 +667,9 @@ metadata:
   labels:
     app: contrail-analytics-alarm
 spec:
+  selector:
+    matchLabels:
+      app: contrail-analytics-alarm
   template:
     metadata:
       labels:
@@ -758,7 +779,7 @@ spec:
         hostPath:
           path: /usr/bin
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: contrail-controller-control
@@ -766,6 +787,9 @@ metadata:
   labels:
     app: contrail-controller-control
 spec:
+  selector:
+    matchLabels:
+      app: contrail-controller-control
   template:
     metadata:
       labels:
@@ -873,7 +897,7 @@ spec:
         hostPath:
           path: /usr/bin
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: contrail-controller-config
@@ -881,6 +905,9 @@ metadata:
   labels:
     app: contrail-controller-config
 spec:
+  selector:
+    matchLabels:
+      app: contrail-controller-config
   template:
     metadata:
       labels:
@@ -1003,7 +1030,7 @@ spec:
         hostPath:
           path: /usr/bin
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: contrail-controller-webui
@@ -1011,6 +1038,9 @@ metadata:
   labels:
     app: contrail-controller-webui
 spec:
+  selector:
+    matchLabels:
+      app: contrail-controller-webui
   template:
     metadata:
       labels:
@@ -1075,7 +1105,7 @@ spec:
         hostPath:
           path: /usr/bin
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: redis
@@ -1083,6 +1113,9 @@ metadata:
   labels:
     app: redis
 spec:
+  selector:
+    matchLabels:
+      app: redis
   template:
     metadata:
       labels:
@@ -1126,7 +1159,7 @@ spec:
         hostPath:
           path: /var/log/contrail/redis
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: rabbitmq
@@ -1134,6 +1167,9 @@ metadata:
   labels:
     app: rabbitmq
 spec:
+  selector:
+    matchLabels:
+      app: rabbitmq
   template:
     metadata:
       labels:
@@ -1181,7 +1217,7 @@ spec:
         hostPath:
           path: /var/log/contrail/rabbitmq
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: contrail-kube-manager
@@ -1189,6 +1225,9 @@ metadata:
   labels:
     app: contrail-kube-manager
 spec:
+  selector:
+    matchLabels:
+      app: contrail-kube-manager
   template:
     metadata:
       labels:
@@ -1252,7 +1291,7 @@ spec:
         hostPath:
           path: /usr/bin
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: contrail-agent
@@ -1260,6 +1299,9 @@ metadata:
   labels:
     app: contrail-agent
 spec:
+  selector:
+    matchLabels:
+      app: contrail-agent
   template:
     metadata:
       labels:
@@ -1472,7 +1514,7 @@ spec:
 # Meta information section
 ---
 kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: contrail-kube-manager
   namespace: kube-system
@@ -1487,7 +1529,7 @@ metadata:
   name: contrail-kube-manager
   namespace: kube-system
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: contrail-kube-manager
