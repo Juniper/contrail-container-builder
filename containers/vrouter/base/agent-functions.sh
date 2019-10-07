@@ -164,6 +164,10 @@ function get_physical_nic_and_mac()
     # so try to find physical nic by MAC (which should be
     # the same as in vhost0)
     nic=`vif --list | grep "Type:Physical HWaddr:${mac}" -B1 | head -1 | awk '{print($3)}'`
+    # WA: CEM-9368: there case when vif doesnt return phys device => try to read from ip link
+    if [[ -z "$nic" ]] ; then
+        nic=$(find /sys/class/net -mindepth 1 -maxdepth 1 ! -name vhost0 ! -name lo -printf "%P " -execdir cat {}/address \; | grep "$mac" | cut -s -d ' ' -f 1 | head -n 1)
+    fi
     if [[ -n "$nic" && ! "$nic" =~ ^[0-9] ]] ; then
         # NIC case, for DPDK case nic is number, so use mac from vhost0 there
         local _mac=$(get_iface_mac $nic)
@@ -187,6 +191,12 @@ function get_physical_nic_and_mac()
       echo "ERROR: either phys nic or mac is empty: phys_int='$nic' phys_int_mac='$mac'" >&2
       return 1
   fi
+  # Ensure nic is not wrongly detected as vhost0
+  if [[ "$nic" == 'vhost0' ]] ; then
+      echo "ERROR: Failed to lookup for phys_int for already running vhost0 with mac='$mac'" >&2
+      return 1
+  fi
+
   echo $nic $mac
 }
 
