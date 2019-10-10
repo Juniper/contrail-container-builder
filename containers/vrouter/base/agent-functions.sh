@@ -530,6 +530,7 @@ function init_vhost0() {
         fi
         ip link set dev vhost0 down
         ifup vhost0 || { echo "ERROR: failed to ifup vhost0." && ret=1; }
+        check_physical_mtu ${mtu} ${phys_int}
     else
         echo "INFO: there is no ifcfg-$phys_int and ifcfg-vhost0, so initialize vhost0 manually"
         if ! is_dpdk ; then
@@ -549,6 +550,7 @@ function init_vhost0() {
             echo "INFO: set mtu"
             ip link set dev vhost0 mtu $mtu
         fi
+        check_physical_mtu ${mtu} ${phys_int}
         set_dev_routes vhost0 "$routes"
     fi
     # Remove all routes from phys iface if any.
@@ -776,4 +778,19 @@ function mask2cidr() {
         esac
   done
   echo "$nbits"
+}
+
+function check_physical_mtu() {
+    # In case of DHCP, vhost0 takes over the DHCP and gets set with the
+    # MTU as provided by the DHCP interface MTU option. However the physical
+    # goes to the default MTU as it is not running DHCP anymore
+    # to avoid descrepancies that leads to a lot of issues, it is best to
+    # ensure the physical interface is also set to the same MTU as it was.
+    local mtu=$1
+    local phys_int=$2
+    local mtu_after_vhost=$(cat "/sys/class/net/${phys_int}/mtu")
+    if [ "$mtu_after_vhost" -ne "$mtu" ] ; then
+       echo "INFO: reset MTU of $phys_int"
+       ip link set dev $phys_int mtu $mtu
+    fi
 }
