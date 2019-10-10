@@ -155,6 +155,37 @@ function get_pci_address_for_nic() {
     fi
 }
 
+function find_phys_nic_by_mac() {
+    local mac=$1
+    local nics=$(find /sys/class/net -mindepth 1 -maxdepth 1 ! -name vhost0 ! -name lo -printf "%P " -execdir cat {}/address \; | grep "$mac" | cut -s -d ' ' -f 1)
+    [ -z "$nics" ] && return
+    # nics may consists of several nics in case of bond/vlans
+    # 1 - check vlans
+    local n=''
+    for n in $nics ; do
+        if is_vlan $n ; then
+            echo $n
+            return
+        fi
+    done
+    #2 - check bonds
+    local n=''
+    for n in $nics ; do
+        if is_bonding $n ; then
+            echo $n
+            return
+        fi
+    done
+    # check if only one nic is found
+    # > 1 means that nic cannot be identified automatically
+    local count=$(echo "$nics" | wc -l)
+    if [[ $count != 1 ]] ; then
+        return 1
+    fi
+    # just
+    echo $nics
+}
+
 function get_physical_nic_and_mac()
 {
   local nic='vhost0'
@@ -166,7 +197,7 @@ function get_physical_nic_and_mac()
     nic=`vif --list | grep "Type:Physical HWaddr:${mac}" -B1 | head -1 | awk '{print($3)}'`
     # WA: CEM-9368: there case when vif doesnt return phys device => try to read from ip link
     if [[ -z "$nic" ]] ; then
-        nic=$(find /sys/class/net -mindepth 1 -maxdepth 1 ! -name vhost0 ! -name lo -printf "%P " -execdir cat {}/address \; | grep "$mac" | cut -s -d ' ' -f 1 | head -n 1)
+        nic=$(find_phys_nic_by_mac $mac)
     fi
     if [[ -n "$nic" && ! "$nic" =~ ^[0-9] ]] ; then
         # NIC case, for DPDK case nic is number, so use mac from vhost0 there
