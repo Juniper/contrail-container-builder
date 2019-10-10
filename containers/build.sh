@@ -123,8 +123,7 @@ function process_container() {
 
   log "Building args: $build_arg_opts" | append_log_file $logfile true
   local target_name="${CONTRAIL_REGISTRY}/${container_name}:${tag}"
-  local target_name_os="${CONTRAIL_REGISTRY}/${container_name}:${OPENSTACK_VERSION}-${tag}"
-  docker build -t $target_name -t $target_name_os \
+  docker build -t $target_name \
     ${build_arg_opts} -f $docker_file ${opts} $dir 2>&1 | append_log_file $logfile
   exit_code=${PIPESTATUS[0]}
   local duration=$(date +"%s")
@@ -133,11 +132,6 @@ function process_container() {
   if [ $exit_code -eq 0 -a ${CONTRAIL_REGISTRY_PUSH} -eq 1 ]; then
     docker push $target_name 2>&1 | append_log_file $logfile
     exit_code=${PIPESTATUS[0]}
-    # temporary workaround; to be removed when all other components switch to new tags
-    if [ ${exit_code} -eq 0 ] ; then
-      docker push $target_name_os 2>&1 | append_log_file $logfile
-      exit_code=${PIPESTATUS[0]}
-    fi
   fi
   duration=$(date +"%s")
   (( duration -= start_time ))
