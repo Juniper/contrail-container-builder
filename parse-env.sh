@@ -148,6 +148,8 @@ export CPU_CORE_MASK=${CPU_CORE_MASK:-'0x01'}
 export HUGE_PAGES=${HUGE_PAGES:-""}
 export NIC_OFFLOAD_ENABLE=${NIC_OFFLOAD_ENABLE:-False}
 
+export JVM_EXTRA_OPTS=${JVM_EXTRA_OPTS:-'-Xms1g -Xmx2g'}
+
 #TLS options
 export SSL_ENABLE=${SSL_ENABLE:-False}
 export SSL_INSECURE=${SSL_INSECURE:-True}
