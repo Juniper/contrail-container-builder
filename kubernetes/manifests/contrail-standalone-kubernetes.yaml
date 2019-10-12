@@ -59,6 +59,7 @@ metadata:
   name: contrail-analyticsdb-config
   namespace: kube-system
 data:
+  JVM_EXTRA_OPTS: {{ JVM_EXTRA_OPTS }}
   CASSANDRA_SEEDS: {{ ANALYTICSDB_NODES }}
   CASSANDRA_CLUSTER_NAME: Contrail
   CASSANDRA_START_RPC: "true"
@@ -75,6 +76,7 @@ metadata:
   name: contrail-configdb-config
   namespace: kube-system
 data:
+  JVM_EXTRA_OPTS: {{ JVM_EXTRA_OPTS }}
   CASSANDRA_SEEDS: {{ CONFIGDB_NODES }}
   CASSANDRA_CLUSTER_NAME: ContrailConfigDB
   CASSANDRA_START_RPC: "true"
