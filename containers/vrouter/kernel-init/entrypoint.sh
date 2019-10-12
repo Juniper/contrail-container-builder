@@ -13,7 +13,7 @@ modfile=`ls -1rt /opt/contrail/vrouter-kernel-modules/${kver}-*/vrouter.ko | tai
 for k_dir in `ls -d /lib/modules/*` ; do
   mkdir -p ${k_dir}/kernel/net/vrouter
   cp -f ${modfile} ${k_dir}/kernel/net/vrouter
+  depmod -a $(echo $k_dir | awk -F '/' '{print $NF}')
 done
-depmod -a
 
 exec $@
