@@ -44,3 +44,7 @@ alphabetically, case sensitive. Names of indirect parameters are italic.
 Default values refer to other parameters with $ prefix.
 
 Default value may be a text describing what the value is instead of particular direct value.
+
+## Helper scanner
+
+PARAMS.md files can be parsed with help of containers/scan_params.sh script. It creates CSV file with ';' delimiter and columns Name/Indirect/Default/Module/Config_Value/Containers. Some of the default and config values are incorrectly extracted and need manual tweaking.
