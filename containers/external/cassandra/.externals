@@ -2,3 +2,4 @@
 ../../base/contrail-functions.sh:__contrail-functions.sh
 ../../general-base/functions.sh:__functions.sh
 ../../general-base/licensing.txt:__licensing.txt
+../upgrade_pkgs.sh:__upgrade_pkgs.sh

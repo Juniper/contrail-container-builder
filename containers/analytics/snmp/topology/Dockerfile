@@ -11,7 +11,7 @@ LABEL name=$CONTAINER_NAME \
 COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/usr/bin/python","/usr/bin/contrail-topology"]
+CMD ["/usr/bin/contrail-topology"]
 
 ENV SERVICE_NAME=topology
 ENV NODE_TYPE=analytics-snmp

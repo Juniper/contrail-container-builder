@@ -15,7 +15,7 @@ RUN yum install -y contrail-vcenter-manager && \
 COPY *.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD /usr/bin/python -m cvm
+CMD ["/usr/bin/contrail-vcenter-manager"]
 
 ENV NODE_TYPE=vcenter-manager
 ENV SERVICE_NAME=manager
