@@ -139,6 +139,12 @@ function resolve_hostname_by_ip() {
 
 function do_run_service() {
   if [[ -n "$CONTRAIL_UID" && -n "$CONTRAIL_GID" &&  "$(id -u)" = '0' ]] ; then
+    # processes are run under root and contrail users
+    # so, contrail user has to has rights to right there for
+    # core generation
+    mkdir -p /var/crashes
+    chmod 777 /var/crashes
+
     local user_name=$(id -un $CONTRAIL_UID)
     export HOME=/home/$user_name
     mkdir -p $HOME
