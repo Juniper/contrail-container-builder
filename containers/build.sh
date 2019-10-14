@@ -169,7 +169,6 @@ function process_container() {
       exit_code=${PIPESTATUS[0]}
       # retag containers
       [ ${exit_code} -eq 0 ] && docker tag $intermediate_base ${target_name} || exit_code=1
-      [ ${exit_code} -eq 0 ] && docker tag $intermediate_base ${target_name_os} || exit_code=1
     fi
     local duration_src=$(date +"%s")
     (( duration_src -= duration ))
