@@ -1,8 +1,6 @@
-ARG LINUX_DISTR=centos
-ARG LINUX_DISTR_VER=7
-FROM $LINUX_DISTR:$LINUX_DISTR_VER
-ARG VENDOR_NAME
+FROM scratch
 
+ARG VENDOR_NAME
 ARG CONTAINER_NAME
 ARG CONTRAIL_CONTAINER_TAG
 LABEL vendor=$VENDOR_NAME \
@@ -14,24 +12,3 @@ LABEL vendor=$VENDOR_NAME \
 
 COPY __licensing.txt /licenses/licensing.txt
 COPY __contrail-container-builder /contrail-container-builder
-
-ARG GENERAL_EXTRA_RPMS=""
-ARG YUM_ENABLE_REPOS=""
-
-# this copy should be before yum install
-COPY *.repo /etc/yum.repos.d/
-
-RUN YUM_ENABLE_REPOS=$(echo $YUM_ENABLE_REPOS | tr -d '"') && \
-    if [[ -n "$YUM_ENABLE_REPOS" ]] ; then \
-        echo "INFO: contrail-k8s-manifests: enable repos $YUM_ENABLE_REPOS" && \
-        yum-config-manager --enable $YUM_ENABLE_REPOS ; \
-        yum clean metadata ; \
-    fi && \
-    yum update -y && \
-    yum install -y iproute && \
-    yum clean all -y && \
-    rm -rf /var/cache/yum
-
-ENV CONTRAIL_VERSION=$CONTRAIL_CONTAINER_TAG
-COPY entrypoint.sh /
-ENTRYPOINT ["/entrypoint.sh"]
