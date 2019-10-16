@@ -7,8 +7,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
 ARG BASE_EXTRA_RPMS=""
 
 # note: ldconfig looks strange. contrail-lib installs shared libraries but do not call it...
-RUN mkdir -p -m 777 /var/crashes && \
-    BASE_EXTRA_RPMS=$(echo $BASE_EXTRA_RPMS | tr -d '"' | tr ',' ' ') && \
+RUN BASE_EXTRA_RPMS=$(echo $BASE_EXTRA_RPMS | tr -d '"' | tr ',' ' ') && \
     if [[ -n "$BASE_EXTRA_RPMS" ]] ; then \
         echo "INFO: contrail-base: install $BASE_EXTRA_RPMS" ; \
         yum install -y $BASE_EXTRA_RPMS ; \
