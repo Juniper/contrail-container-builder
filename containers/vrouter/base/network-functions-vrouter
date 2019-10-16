@@ -168,6 +168,12 @@ function restore_phys_int() {
             ifdown $i >/dev/null 2>&1
             ifup $i
         done
+        # For non-tripleo case remove ifcfg-vhost0 to avoid re-init on reboot
+        # (in tripleo case BIND_INT is defined in here because this function is called
+        # from ifdown on host, and dpdk container in tripleo has this env defined as well)
+        if [ -z "$BIND_INT" ] ; then
+            mv ifcfg-vhost0 contrail.prev.ifcfg-vhost0
+        fi
         popd
     else
         set_dev_routes $phys_int "$routes"
