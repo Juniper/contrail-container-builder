@@ -151,6 +151,7 @@ function process_container() {
        -e "LINUX_DISTR=${LINUX_DISTR}" \
        -v ${CONTRAIL_SOURCE}:${CONTRAIL_SOURCE} \
        -v ${abs_build_src_path}:/build_src \
+       -v ${CONTRAIL_BUILDER_DIR}/containers/build_from_src.template.sh:/build_src/setup.sh \
        --entrypoint /build_src/setup.sh \
       ${target_name}"
     docker run --name $intermediate_base --network host \
