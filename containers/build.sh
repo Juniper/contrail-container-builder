@@ -136,7 +136,7 @@ function process_container() {
   log "Contrail build dir ${CONTRAIL_BUILDER_DIR}" | append_log_file $logfile
   log "Abs build src path is ${abs_build_src_path}" | append_log_file $logfile
   local relative_build_src_path=${dir}/build_src
-  if [[ ${exit_code} -eq 0 && ! -z "$CONTRAIL_BUILD_FROM_SOURCE" && -e ${relative_build_src_path} ]]; then
+  if [[ ${exit_code} -eq 0 && ! -z "$CONTRAIL_BUILD_FROM_SOURCE" && -e ${relative_build_src_path} && -e ${CONTRAIL_BUILDER_DIR}/containers/build_from_src.template.sh ]]; then
     # Setup from source
     # RHEL has old docker that doesnt support neither staged build nor mount option
     # 'RUN --mount' (still experimental at the moment of writting this comment).
@@ -146,6 +146,7 @@ function process_container() {
     local cmd=$(docker inspect -f "{{json .Config.Cmd }}" ${target_name} )
     local entrypoint=$(docker inspect -f "{{json .Config.Entrypoint }}" ${target_name} )
     local intermediate_base="${container_name}-src"
+    cp ${CONTRAIL_BUILDER_DIR}/containers/build_from_src.template.sh ${abs_build_src_path}/setup.sh
     echo "docker run --name $intermediate_base --network host \
        -e "CONTRAIL_SOURCE=${CONTRAIL_SOURCE}" \
        -e "LINUX_DISTR=${LINUX_DISTR}" \
