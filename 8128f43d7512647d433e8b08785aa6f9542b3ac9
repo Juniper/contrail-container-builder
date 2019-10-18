@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f9976a51_3ef87954",
+        "filename": "containers/base/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-10-18T20:24:37Z",
+      "side": 1,
+      "message": "why we need pip in base container?",
+      "revId": "8128f43d7512647d433e8b08785aa6f9542b3ac9",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
