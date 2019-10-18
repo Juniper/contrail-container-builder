@@ -146,11 +146,12 @@ function process_container() {
     local cmd=$(docker inspect -f "{{json .Config.Cmd }}" ${target_name} )
     local entrypoint=$(docker inspect -f "{{json .Config.Entrypoint }}" ${target_name} )
     local intermediate_base="${container_name}-src"
+    cp ${CONTRAIL_BUILDER_DIR}/containers/build_from_src.template.sh ${abs_build_src_path}/setup.sh
     echo "docker run --name $intermediate_base --network host \
        -e "CONTRAIL_SOURCE=${CONTRAIL_SOURCE}" \
        -e "LINUX_DISTR=${LINUX_DISTR}" \
        -v ${CONTRAIL_SOURCE}:${CONTRAIL_SOURCE} \
-       -v ${abs_build_src_path}:/build_src \
+       -v ${abs_build_src_path}:/build_src \       
        --entrypoint /build_src/setup.sh \
       ${target_name}"
     docker run --name $intermediate_base --network host \
