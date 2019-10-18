@@ -49,9 +49,15 @@ log "Build root path $build_root"
 
 cd $build_root
 
-for i in ${components//,/ } ; do
-  pushd $i
+for src_folder in ${components//,/ } ; do
+  pushd $src_folder
   time python setup.py install
+  exitcode=${PIPESTATUS[0]}
+  log "Setup.py exitcode is finished with exitcode ${exitcode}"
+  if [[ $exitcode -ne 0 ]]; then
+   log "Setup.py within ${src_folder} finished with error"
+   exit 1
+  fi
   popd
 done
 
