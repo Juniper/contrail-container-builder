@@ -136,7 +136,7 @@ function process_container() {
   log "Contrail build dir ${CONTRAIL_BUILDER_DIR}" | append_log_file $logfile
   log "Abs build src path is ${abs_build_src_path}" | append_log_file $logfile
   local relative_build_src_path=${dir}/build_src
-  if [[ ${exit_code} -eq 0 && ! -z "$CONTRAIL_BUILD_FROM_SOURCE" && -e ${relative_build_src_path} ]]; then
+  if [[ ${exit_code} -eq 0 && ! -z "$CONTRAIL_BUILD_FROM_SOURCE" && -e ${relative_build_src_path} && -e ${CONTRAIL_BUILDER_DIR}/containers/build_from_src.template.sh ]]; then
     # Setup from source
     # RHEL has old docker that doesnt support neither staged build nor mount option
     # 'RUN --mount' (still experimental at the moment of writting this comment).
@@ -146,26 +146,22 @@ function process_container() {
     local cmd=$(docker inspect -f "{{json .Config.Cmd }}" ${target_name} )
     local entrypoint=$(docker inspect -f "{{json .Config.Entrypoint }}" ${target_name} )
     local intermediate_base="${container_name}-src"
-    echo "docker run --name $intermediate_base --network host \
+    local run_arguments="--name $intermediate_base --network host \
        -e "CONTRAIL_SOURCE=${CONTRAIL_SOURCE}" \
        -e "LINUX_DISTR=${LINUX_DISTR}" \
        -v ${CONTRAIL_SOURCE}:${CONTRAIL_SOURCE} \
        -v ${abs_build_src_path}:/build_src \
-       --entrypoint /build_src/setup.sh \
+       -v ${CONTRAIL_BUILDER_DIR}/containers/build_from_src.template.sh:/setup.sh \
+       --entrypoint /setup.sh \
       ${target_name}"
-    docker run --name $intermediate_base --network host \
-       -e "CONTRAIL_SOURCE=${CONTRAIL_SOURCE}" \
-       -e "LINUX_DISTR=${LINUX_DISTR}" \
-       -v ${CONTRAIL_SOURCE}:${CONTRAIL_SOURCE} \
-       -v ${abs_build_src_path}:/build_src \
-       --entrypoint /build_src/setup.sh \
-      ${target_name}  2>&1 | append_log_file $logfile
+    log "Run command is \"Docker run ${run_arguments}\"" | append_log_file $logfile
+    docker run ${run_arguments} 2>&1 | append_log_file $logfile true
     exit_code=${PIPESTATUS[0]}
     if [ ${exit_code} -eq 0 ]; then
       docker commit \
         --change "CMD $cmd" \
         --change "ENTRYPOINT $entrypoint" \
-        $intermediate_base $intermediate_base 2>&1 | append_log_file $logfile
+        $intermediate_base $intermediate_base 2>&1 | append_log_file $logfile true
       exit_code=${PIPESTATUS[0]}
       # retag containers
       [ ${exit_code} -eq 0 ] && docker tag $intermediate_base ${target_name} || exit_code=1
