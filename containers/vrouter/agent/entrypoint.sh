@@ -54,8 +54,11 @@ fi
 
 # For Google and Azure the underlying physical inetrface has network plumbed differently.
 # We need the following to initialize vhost0 in GC and Azure
-azure_or_gcp=$(cat /sys/devices/virtual/dmi/id/chassis_vendor)
-if [[ "$azure_or_gcp" =~ ^(Microsoft Corporation|Microsoft|Google)$ ]]; then
+cloud_provider=$(cat /sys/devices/virtual/dmi/id/chassis_vendor)
+if [ -f /sys/hypervisor/uuid ] && [ `head -c 3 /sys/hypervisor/uuid` == ec2 ]; then
+    cloud_provider="ec2"
+fi
+if [[ "$cloud_provider" =~ ^(Microsoft Corporation|Microsoft|Google|ec2)$ ]]; then
     pids=$(check_vhost0_dhcp_clients)
     if [ -z "$pids" ] ; then
         check_and_launch_dhcp_clients
