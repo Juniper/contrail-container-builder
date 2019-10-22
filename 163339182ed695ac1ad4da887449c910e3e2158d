@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "78c96226_13f9b5ed",
+        "filename": "containers/controller/config/base/build_src/.deps.rhel",
+        "patchSetId": 6
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-10-22T15:37:48Z",
+      "side": 1,
+      "message": "python-pysnmp",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 14
+      },
+      "revId": "163339182ed695ac1ad4da887449c910e3e2158d",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
