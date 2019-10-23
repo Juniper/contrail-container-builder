@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "92dacd99_ab3b0041",
+        "filename": "containers/build.sh",
+        "patchSetId": 7
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-10-23T12:05:01Z",
+      "side": 1,
+      "message": "Please remove redundant true to prevent puting them into the common log:\n- there are many runs done in parallel and output is mixed that makes it hardly possible to read it correctly\n- the common log becomes too big for browsers..",
+      "range": {
+        "startLine": 158,
+        "startChar": 64,
+        "endLine": 158,
+        "endChar": 68
+      },
+      "revId": "602b5e012a6c7f5b788ad2d214a16f4192b008be",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "30546347_70514649",
+        "filename": "containers/build_from_src.sh",
+        "patchSetId": 7
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-10-23T12:05:01Z",
+      "side": 1,
+      "message": "why do you need it in each line?\n(at least so long text)",
+      "range": {
+        "startLine": 9,
+        "startChar": 14,
+        "endLine": 9,
+        "endChar": 41
+      },
+      "revId": "602b5e012a6c7f5b788ad2d214a16f4192b008be",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "abb7fa7c_feac9678",
+        "filename": "containers/build_from_src.sh",
+        "patchSetId": 7
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-10-23T12:05:01Z",
+      "side": 1,
+      "message": "spaces",
+      "range": {
+        "startLine": 48,
+        "startChar": 27,
+        "endLine": 48,
+        "endChar": 29
+      },
+      "revId": "602b5e012a6c7f5b788ad2d214a16f4192b008be",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
