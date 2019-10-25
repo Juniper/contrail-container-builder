@@ -226,14 +226,16 @@ export REDIS_SSL_CERTFILE=${REDIS_SSL_CERTFILE:-${SERVER_CERTFILE}}
 export REDIS_SSL_KEYFILE=${REDIS_SSL_KEYFILE:-${SERVER_KEYFILE}}
 export REDIS_SSL_CACERTFILE=${REDIS_SSL_CACERTFILE-${SERVER_CA_CERTFILE}}
 
+# export container name prefix
+export PRODUCT_NAME=${PRODUCT_NAME:-'contrail'}
 
 # VRouter kernel module init image.
 if [[ "$VROUTER_DPDK" == True ]] ; then
-    export VROUTER_KERNEL_INIT_IMAGE='contrail-vrouter-kernel-init-dpdk'
+    export VROUTER_KERNEL_INIT_IMAGE='$PRODUCT_NAME-vrouter-kernel-init-dpdk'
 elif [[ "$LINUX_DISTR" == 'ubuntu' ]] ; then
-    export VROUTER_KERNEL_INIT_IMAGE='contrail-vrouter-kernel-build-init'
+    export VROUTER_KERNEL_INIT_IMAGE='$PRODUCT_NAME-vrouter-kernel-build-init'
 else
-    export VROUTER_KERNEL_INIT_IMAGE='contrail-vrouter-kernel-init'
+    export VROUTER_KERNEL_INIT_IMAGE='$PRODUCT_NAME-vrouter-kernel-init'
 fi
 
 # export vendor label info for containers

@@ -48,6 +48,7 @@ log "Parallel build: $CONTRAIL_PARALLEL_BUILD"
 log "Keep log files: $CONTRAIL_KEEP_LOG_FILES"
 log "Vendor: $VENDOR_NAME"
 log "Vendor Domain: $VENDOR_DOMAIN"
+log "Container Name Prefix: $PRODUCT_NAME"
 
 if [ -n "$opts" ]; then
   log "Options: $opts"
@@ -73,7 +74,7 @@ function process_container() {
   fi
   local start_time=$(date +"%s")
   local container_name=`echo ${dir#"./"} | tr "/" "-"`
-  local container_name="contrail-${container_name}"
+  local container_name="${PRODUCT_NAME}-${container_name}"
   local tag="${CONTRAIL_CONTAINER_TAG}"
 
   local logfile='build-'$container_name'.log'
@@ -86,7 +87,7 @@ function process_container() {
     cat ${docker_file} | awk '{if(ncmt!=1 && $1=="ARG"){print("#"$0)}else{print($0)}; if($1=="FROM"){ncmt=1}}' > ${docker_file}.nofromargs
     # and then change FROM-s that uses ARG-s
     sed -i \
-      -e "s|^FROM \${CONTRAIL_REGISTRY}/\([^:]*\):\${CONTRAIL_CONTAINER_TAG}|FROM ${CONTRAIL_REGISTRY}/\1:${tag}|" \
+      -e "s|^FROM \${CONTRAIL_REGISTRY}/\${PRODUCT_NAME}\([^:]*\):\${CONTRAIL_CONTAINER_TAG}|FROM ${CONTRAIL_REGISTRY}/${PRODUCT_NAME}\1:${tag}|" \
       -e "s|^FROM \$LINUX_DISTR:\$LINUX_DISTR_VER|FROM $LINUX_DISTR:$LINUX_DISTR_VER|" \
       -e "s|^FROM \$UBUNTU_DISTR:\$UBUNTU_DISTR_VERSION|FROM $UBUNTU_DISTR:$UBUNTU_DISTR_VERSION|" \
       ${docker_file}.nofromargs
@@ -104,6 +105,7 @@ function process_container() {
   build_arg_opts+=" --build-arg UBUNTU_DISTR=${UBUNTU_DISTR}"
   build_arg_opts+=" --build-arg VENDOR_NAME=${VENDOR_NAME}"
   build_arg_opts+=" --build-arg VENDOR_DOMAIN=${VENDOR_DOMAIN}"
+  build_arg_opts+=" --build-arg PRODUCT_NAME=${PRODUCT_NAME}"
   if [[ ! -z "$CONTRAIL_BUILD_FROM_SOURCE" ]]; then
     build_arg_opts+=" --build-arg CONTRAIL_BUILD_FROM_SOURCE=${CONTRAIL_BUILD_FROM_SOURCE}"
   fi

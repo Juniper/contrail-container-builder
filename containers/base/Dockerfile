@@ -2,8 +2,10 @@
 
 ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
-FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
+ARG PRODUCT_NAME
+FROM ${CONTRAIL_REGISTRY}/${PRODUCT_NAME}-general-base:${CONTRAIL_CONTAINER_TAG}
 ARG CONTRAIL_BUILD_FROM_SOURCE
+
 ARG BASE_EXTRA_RPMS=""
 
 # note: ldconfig looks strange. contrail-lib installs shared libraries but do not call it...
