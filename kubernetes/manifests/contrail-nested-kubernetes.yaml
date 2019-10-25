@@ -50,19 +50,19 @@ data:
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: contrail-kube-manager
+  name: {{CONTAINER_PREFIX}}-kube-manager
   namespace: kube-system
   labels:
-    app: contrail-kube-manager
+    app: {{CONTAINER_PREFIX}}-kube-manager
 spec:
   selector:
     matchLabels:
-      app: contrail-kube-manager
+      app: {{CONTAINER_PREFIX}}-kube-manager
 spec:
   template:
     metadata:
       labels:
-        app: contrail-kube-manager
+        app: {{CONTAINER_PREFIX}}-kube-manager
     spec:
       affinity:
         nodeAffinity:
@@ -81,8 +81,8 @@ spec:
       automountServiceAccountToken: false
       hostNetwork: true
       containers:
-      - name: contrail-kube-manager
-        image: "{{CONTRAIL_REGISTRY}}/contrail-kubernetes-kube-manager:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{CONTAINER_PREFIX}}-kube-manager
+        image: "{{CONTRAIL_REGISTRY}}/{{CONTAINER_PREFIX}}-kubernetes-kube-manager:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -102,15 +102,15 @@ spec:
           path: /var/log/contrail/kube-manager
       - name: pod-secret
         secret:
-          secretName: contrail-kube-manager-token
+          secretName: {{CONTAINER_PREFIX}}-kube-manager-token
 ---
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: contrail-kubernetes-cni-agent
+  name: {{CONTAINER_PREFIX}}-kubernetes-cni-agent
   namespace: kube-system
   labels:
-    app: contrail-kubernetes-cni-agent
+    app: {{CONTAINER_PREFIX}}-kubernetes-cni-agent
 spec:
   selector:
     matchLabels:
@@ -118,7 +118,7 @@ spec:
   template:
     metadata:
       labels:
-        app: contrail-agent
+        app: {{CONTAINER_PREFIX}}-agent
     spec:
       #Disable affinity for single node setup
       affinity:
@@ -137,8 +137,8 @@ spec:
         effect: NoSchedule
       hostNetwork: true
       containers:
-      - name: contrail-kubernetes-cni-init
-        image: "{{CONTRAIL_REGISTRY}}/contrail-kubernetes-cni-init:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{CONTAINER_PREFIX}}-kubernetes-cni-init
+        image: "{{CONTRAIL_REGISTRY}}/{{CONTAINER_PREFIX}}-kubernetes-cni-init:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         securityContext:
           privileged: true
@@ -168,7 +168,7 @@ spec:
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: contrail-kube-manager
+  name: {{CONTAINER_PREFIX}}-kube-manager
   namespace: kube-system
 rules:
   - apiGroups: ["*"]
@@ -178,27 +178,27 @@ rules:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: contrail-kube-manager
+  name: {{CONTAINER_PREFIX}}-kube-manager
   namespace: kube-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: contrail-kube-manager
+  name: {{CONTAINER_PREFIX}}-kube-manager
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: contrail-kube-manager
+  name: {{CONTAINER_PREFIX}}-kube-manager
 subjects:
 - kind: ServiceAccount
-  name: contrail-kube-manager
+  name: {{CONTAINER_PREFIX}}-kube-manager
   namespace: kube-system
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: contrail-kube-manager-token
+  name: {{CONTAINER_PREFIX}}-kube-manager-token
   namespace: kube-system
   annotations:
-    kubernetes.io/service-account.name: contrail-kube-manager
+    kubernetes.io/service-account.name: {{CONTAINER_PREFIX}}-kube-manager
 type: kubernetes.io/service-account-token
