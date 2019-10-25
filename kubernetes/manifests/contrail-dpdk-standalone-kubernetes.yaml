@@ -69,7 +69,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: contrail-analyticsdb-config
+  name: {{PRODUCT_NAME}}-analyticsdb-config
   namespace: kube-system
 data:
   JVM_EXTRA_OPTS: {{ JVM_EXTRA_OPTS }}
@@ -86,7 +86,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: contrail-configdb-config
+  name: {{PRODUCT_NAME}}-configdb-config
   namespace: kube-system
 data:
   JVM_EXTRA_OPTS: {{ JVM_EXTRA_OPTS }}
@@ -150,7 +150,7 @@ spec:
       hostNetwork: true
       containers:
       - name: config-zookeeper
-        image: "{{CONTRAIL_REGISTRY}}/contrail-external-zookeeper:{{CONTRAIL_CONTAINER_TAG}}"
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-external-zookeeper:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         env:
         - name: NODE_TYPE
@@ -178,18 +178,18 @@ spec:
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: contrail-analyticsdb
+  name: {{PRODUCT_NAME}}-analyticsdb
   namespace: kube-system
   labels:
-    app: contrail-analyticsdb
+    app: {{PRODUCT_NAME}}-analyticsdb
 spec:
   selector:
     matchLabels:
-      app: contrail-analyticsdb
+      app: {{PRODUCT_NAME}}-analyticsdb
   template:
     metadata:
       labels:
-        app: contrail-analyticsdb
+        app: {{PRODUCT_NAME}}-analyticsdb
     spec:
       affinity:
         nodeAffinity:
@@ -204,17 +204,17 @@ spec:
         effect: NoSchedule
       hostNetwork: true
       initContainers:
-      - name: contrail-node-init
-        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-node-init
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-node-init:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         env:
         - name: NODE_TYPE
           value: "database"
         - name: CONTRAIL_STATUS_IMAGE
-          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+          value: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-status:{{CONTRAIL_CONTAINER_TAG}}"
         envFrom:
         - configMapRef:
-            name: contrail-analyticsdb-config
+            name: {{PRODUCT_NAME}}-analyticsdb-config
         securityContext:
           privileged: true
         volumeMounts:
@@ -223,8 +223,8 @@ spec:
         - mountPath: /host/var/lib
           name: host-var-lib
       containers:
-      - name: contrail-analyticsdb-nodemgr
-        image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-analyticsdb-nodemgr
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         securityContext:
           privileged: true
@@ -234,7 +234,7 @@ spec:
         - configMapRef:
             name: nodemgr-config
         - configMapRef:
-            name: contrail-analyticsdb-config
+            name: {{PRODUCT_NAME}}-analyticsdb-config
         env:
         - name: NODE_TYPE
           value: database
@@ -245,22 +245,22 @@ spec:
           name: analyticsdb-logs
         - mountPath: /mnt
           name: docker-unix-socket
-      - name: contrail-analyticsdb
-        image: "{{CONTRAIL_REGISTRY}}/contrail-external-cassandra:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-analyticsdb
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-external-cassandra:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         env:
         - name: NODE_TYPE
           value: database
         envFrom:
         - configMapRef:
-            name: contrail-analyticsdb-config
+            name: {{PRODUCT_NAME}}-analyticsdb-config
         volumeMounts:
         - mountPath: /var/lib/cassandra
           name: analyticsdb-data
         - mountPath: /var/log/cassandra
           name: analyticsdb-logs
-      - name: contrail-analytics-query-engine
-        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-query-engine:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-analytics-query-engine
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-analytics-query-engine:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         securityContext:
           privileged: true
@@ -297,18 +297,18 @@ spec:
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: contrail-configdb
+  name: {{PRODUCT_NAME}}-configdb
   namespace: kube-system
   labels:
-    app: contrail-configdb
+    app: {{PRODUCT_NAME}}-configdb
 spec:
   selector:
     matchLabels:
-      app: contrail-configdb
+      app: {{PRODUCT_NAME}}-configdb
   template:
     metadata:
       labels:
-        app: contrail-configdb
+        app: {{PRODUCT_NAME}}-configdb
     spec:
       affinity:
         nodeAffinity:
@@ -323,15 +323,15 @@ spec:
         effect: NoSchedule
       hostNetwork: true
       containers:
-      - name: contrail-configdb
-        image: "{{CONTRAIL_REGISTRY}}/contrail-external-cassandra:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-configdb
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-external-cassandra:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         env:
         - name: NODE_TYPE
           value: config-database
         envFrom:
         - configMapRef:
-            name: contrail-configdb-config
+            name: {{PRODUCT_NAME}}-configdb-config
         volumeMounts:
         - mountPath: /var/lib/cassandra
           name: configdb-data
@@ -350,18 +350,18 @@ spec:
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: contrail-config-database-nodemgr
+  name: {{PRODUCT_NAME}}-config-database-nodemgr
   namespace: kube-system
   labels:
-    app: contrail-config-database-nodemgr
+    app: {{PRODUCT_NAME}}-config-database-nodemgr
 spec:
   selector:
     matchLabels:
-      app: contrail-config-database-nodemgr
+      app: {{PRODUCT_NAME}}-config-database-nodemgr
   template:
     metadata:
       labels:
-        app: contrail-config-database-nodemgr
+        app: {{PRODUCT_NAME}}-config-database-nodemgr
     spec:
       affinity:
         nodeAffinity:
@@ -376,14 +376,14 @@ spec:
         effect: NoSchedule
       hostNetwork: true
       initContainers:
-      - name: contrail-node-init
-        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-node-init
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-node-init:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         securityContext:
           privileged: true
         env:
         - name: CONTRAIL_STATUS_IMAGE
-          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+          value: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-status:{{CONTRAIL_CONTAINER_TAG}}"
         envFrom:
         - configMapRef:
             name: env
@@ -391,8 +391,8 @@ spec:
         - mountPath: /host/usr/bin
           name: host-usr-bin
       containers:
-      - name: contrail-config-database-nodemgr
-        image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-config-database-nodemgr
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -400,7 +400,7 @@ spec:
         - configMapRef:
             name: nodemgr-config
         - configMapRef:
-            name: contrail-configdb-config
+            name: {{PRODUCT_NAME}}-configdb-config
         env:
         - name: NODE_TYPE
           value: config-database
@@ -432,18 +432,18 @@ spec:
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: contrail-analytics
+  name: {{PRODUCT_NAME}}-analytics
   namespace: kube-system
   labels:
-    app: contrail-analytics
+    app: {{PRODUCT_NAME}}-analytics
 spec:
   selector:
     matchLabels:
-      app: contrail-analytics
+      app: {{PRODUCT_NAME}}-analytics
   template:
     metadata:
       labels:
-        app: contrail-analytics
+        app: {{PRODUCT_NAME}}-analytics
     spec:
       affinity:
         nodeAffinity:
@@ -458,14 +458,14 @@ spec:
         effect: NoSchedule
       hostNetwork: true
       initContainers:
-      - name: contrail-node-init
-        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-node-init
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-node-init:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         securityContext:
           privileged: true
         env:
         - name: CONTRAIL_STATUS_IMAGE
-          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+          value: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-status:{{CONTRAIL_CONTAINER_TAG}}"
         envFrom:
         - configMapRef:
             name: env
@@ -473,8 +473,8 @@ spec:
         - mountPath: /host/usr/bin
           name: host-usr-bin
       containers:
-      - name: contrail-analytics-api
-        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-api:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-analytics-api
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-analytics-api:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -484,8 +484,8 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: analytics-logs
-      - name: contrail-analytics-collector
-        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-collector:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-analytics-collector
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-analytics-collector:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -493,8 +493,8 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: analytics-logs
-      - name: contrail-analytics-nodemgr
-        image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-analytics-nodemgr
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -532,18 +532,18 @@ spec:
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: contrail-analytics-snmp
+  name: {{PRODUCT_NAME}}-analytics-snmp
   namespace: kube-system
   labels:
-    app: contrail-analytics-snmp
+    app: {{PRODUCT_NAME}}-analytics-snmp
 spec:
   selector:
     matchLabels:
-      app: contrail-analytics-snmp
+      app: {{PRODUCT_NAME}}-analytics-snmp
   template:
     metadata:
       labels:
-        app: contrail-analytics-snmp
+        app: {{PRODUCT_NAME}}-analytics-snmp
     spec:
       affinity:
         nodeAffinity:
@@ -558,19 +558,19 @@ spec:
         effect: NoSchedule
       hostNetwork: true
       initContainers:
-      - name: contrail-node-init
-        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-node-init
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-node-init:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         env:
         - name: NODE_TYPE
           value: "analytics-snmp"
         - name: CONTRAIL_STATUS_IMAGE
-          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+          value: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-status:{{CONTRAIL_CONTAINER_TAG}}"
         envFrom:
         - configMapRef:
             name: env
         - configMapRef:
-            name: contrail-analyticsdb-config
+            name: {{PRODUCT_NAME}}-analyticsdb-config
         securityContext:
           privileged: true
         volumeMounts:
@@ -579,8 +579,8 @@ spec:
         - mountPath: /host/var/lib
           name: host-var-lib
       containers:
-      - name: contrail-analytics-snmp-collector
-        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-snmp-collector:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-analytics-snmp-collector
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-analytics-snmp-collector:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         securityContext:
           privileged: true
@@ -593,8 +593,8 @@ spec:
         env:
         - name: NODE_TYPE
           value: analytics-snmp
-      - name: contrail-analytics-snmp-topology
-        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-snmp-topology:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-analytics-snmp-topology
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-analytics-snmp-topology:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         securityContext:
           privileged: true
@@ -607,8 +607,8 @@ spec:
         env:
         - name: NODE_TYPE
           value: analytics-snmp
-      - name: contrail-analytics-snmp-nodemgr
-        image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-analytics-snmp-nodemgr
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         securityContext:
           privileged: true
@@ -618,7 +618,7 @@ spec:
         - configMapRef:
             name: nodemgr-config
         - configMapRef:
-            name: contrail-analyticsdb-config
+            name: {{PRODUCT_NAME}}-analyticsdb-config
         env:
         - name: NODE_TYPE
           value: analytics-snmp
@@ -646,18 +646,18 @@ spec:
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: contrail-analytics-alarm
+  name: {{PRODUCT_NAME}}-analytics-alarm
   namespace: kube-system
   labels:
-    app: contrail-analytics-alarm
+    app: {{PRODUCT_NAME}}-analytics-alarm
 spec:
   selector:
     matchLabels:
-      app: contrail-analytics-alarm
+      app: {{PRODUCT_NAME}}-analytics-alarm
   template:
     metadata:
       labels:
-        app: contrail-analytics-alarm
+        app: {{PRODUCT_NAME}}-analytics-alarm
     spec:
       affinity:
         nodeAffinity:
@@ -672,19 +672,19 @@ spec:
         effect: NoSchedule
       hostNetwork: true
       initContainers:
-      - name: contrail-node-init
-        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-node-init
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-node-init:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         env:
         - name: NODE_TYPE
           value: "analytics-alarm"
         - name: CONTRAIL_STATUS_IMAGE
-          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+          value: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-status:{{CONTRAIL_CONTAINER_TAG}}"
         envFrom:
         - configMapRef:
             name: env
         - configMapRef:
-            name: contrail-analyticsdb-config
+            name: {{PRODUCT_NAME}}-analyticsdb-config
         securityContext:
           privileged: true
         volumeMounts:
@@ -694,7 +694,7 @@ spec:
           name: host-var-lib
       containers:
       - name: kafka
-        image: "{{ CONTRAIL_REGISTRY }}/contrail-external-kafka:{{ CONTRAIL_CONTAINER_TAG }}"
+        image: "{{ CONTRAIL_REGISTRY }}/{{PRODUCT_NAME}}-external-kafka:{{ CONTRAIL_CONTAINER_TAG }}"
         imagePullPolicy: "IfNotPresent"
         securityContext:
           privileged: true
@@ -708,8 +708,8 @@ spec:
             name: env
         - configMapRef:
             name: configzookeeperenv
-      - name: contrail-analytics-alarm-gen
-        image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-alarm-gen:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-analytics-alarm-gen
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-analytics-alarm-gen:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         securityContext:
           privileged: true
@@ -724,8 +724,8 @@ spec:
         env:
         - name: NODE_TYPE
           value: analytics-alarm
-      - name: contrail-analytics-alarm-nodemgr
-        image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-analytics-alarm-nodemgr
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         securityContext:
           privileged: true
@@ -733,7 +733,7 @@ spec:
         - configMapRef:
             name: env
         - configMapRef:
-            name: contrail-analyticsdb-config
+            name: {{PRODUCT_NAME}}-analyticsdb-config
         - configMapRef:
             name: nodemgr-config
         env:
@@ -763,18 +763,18 @@ spec:
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: contrail-controller-control
+  name: {{PRODUCT_NAME}}-controller-control
   namespace: kube-system
   labels:
-    app: contrail-controller-control
+    app: {{PRODUCT_NAME}}-controller-control
 spec:
   selector:
     matchLabels:
-      app: contrail-controller-control
+      app: {{PRODUCT_NAME}}-controller-control
   template:
     metadata:
       labels:
-        app: contrail-controller-control
+        app: {{PRODUCT_NAME}}-controller-control
     spec:
       affinity:
         nodeAffinity:
@@ -789,14 +789,14 @@ spec:
         effect: NoSchedule
       hostNetwork: true
       initContainers:
-      - name: contrail-node-init
-        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-node-init
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-node-init:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         securityContext:
           privileged: true
         env:
         - name: CONTRAIL_STATUS_IMAGE
-          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+          value: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-status:{{CONTRAIL_CONTAINER_TAG}}"
         envFrom:
         - configMapRef:
             name: env
@@ -804,8 +804,8 @@ spec:
         - mountPath: /host/usr/bin
           name: host-usr-bin
       containers:
-      - name: contrail-controller-control
-        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-control-control:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-controller-control
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-controller-control-control:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -813,8 +813,8 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: control-logs
-      - name: contrail-controller-control-dns
-        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-control-dns:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-controller-control-dns
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-controller-control-dns:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -824,8 +824,8 @@ spec:
           name: dns-config
         - mountPath: /var/log/contrail
           name: control-logs
-      - name: contrail-controller-control-named
-        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-control-named:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-controller-control-named
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-controller-control-named:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -837,8 +837,8 @@ spec:
           name: dns-config
         - mountPath: /var/log/contrail
           name: control-logs
-      - name: contrail-controller-nodemgr
-        image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-controller-nodemgr
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -878,18 +878,18 @@ spec:
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: contrail-controller-config
+  name: {{PRODUCT_NAME}}-controller-config
   namespace: kube-system
   labels:
-    app: contrail-controller-config
+    app: {{PRODUCT_NAME}}-controller-config
 spec:
   selector:
     matchLabels:
-      app: contrail-controller-config
+      app: {{PRODUCT_NAME}}-controller-config
   template:
     metadata:
       labels:
-        app: contrail-controller-config
+        app: {{PRODUCT_NAME}}-controller-config
     spec:
       affinity:
         nodeAffinity:
@@ -904,14 +904,14 @@ spec:
         effect: NoSchedule
       hostNetwork: true
       initContainers:
-      - name: contrail-node-init
-        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-node-init
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-node-init:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         securityContext:
           privileged: true
         env:
         - name: CONTRAIL_STATUS_IMAGE
-          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+          value: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-status:{{CONTRAIL_CONTAINER_TAG}}"
         envFrom:
         - configMapRef:
             name: env
@@ -919,8 +919,8 @@ spec:
         - mountPath: /host/usr/bin
           name: host-usr-bin
       containers:
-      - name: contrail-controller-config-api
-        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-config-api:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-controller-config-api
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-controller-config-api:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -930,8 +930,8 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: config-logs
-      - name: contrail-controller-config-devicemgr
-        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-config-devicemgr:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-controller-config-devicemgr
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-controller-config-devicemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -941,8 +941,8 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: config-logs
-      - name: contrail-controller-config-schema
-        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-config-schema:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-controller-config-schema
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-controller-config-schema:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -952,8 +952,8 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: config-logs
-      - name: contrail-controller-config-svcmonitor
-        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-config-svcmonitor:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-controller-config-svcmonitor
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-controller-config-svcmonitor:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -963,8 +963,8 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: config-logs
-      - name: contrail-controller-config-nodemgr
-        image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-controller-config-nodemgr
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -1008,18 +1008,18 @@ spec:
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: contrail-controller-webui
+  name: {{PRODUCT_NAME}}-controller-webui
   namespace: kube-system
   labels:
-    app: contrail-controller-webui
+    app: {{PRODUCT_NAME}}-controller-webui
 spec:
   selector:
     matchLabels:
-      app: contrail-controller-webui
+      app: {{PRODUCT_NAME}}-controller-webui
   template:
     metadata:
       labels:
-        app: contrail-controller-webui
+        app: {{PRODUCT_NAME}}-controller-webui
     spec:
       affinity:
         nodeAffinity:
@@ -1034,14 +1034,14 @@ spec:
         effect: NoSchedule
       hostNetwork: true
       initContainers:
-      - name: contrail-node-init
-        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-node-init
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-node-init:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         securityContext:
           privileged: true
         env:
         - name: CONTRAIL_STATUS_IMAGE
-          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+          value: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-status:{{CONTRAIL_CONTAINER_TAG}}"
         envFrom:
         - configMapRef:
             name: env
@@ -1049,8 +1049,8 @@ spec:
         - mountPath: /host/usr/bin
           name: host-usr-bin
       containers:
-      - name: contrail-controller-webui-job
-        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-webui-job:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-controller-webui-job
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-controller-webui-job:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -1058,8 +1058,8 @@ spec:
         volumeMounts:
         - mountPath: /var/log/contrail
           name: webui-logs
-      - name: contrail-controller-webui-web
-        image: "{{CONTRAIL_REGISTRY}}/contrail-controller-webui-web:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-controller-webui-web
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-controller-webui-web:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -1110,7 +1110,7 @@ spec:
       hostNetwork: true
       containers:
       - name: redis
-        image: "{{CONTRAIL_REGISTRY}}/contrail-external-redis:{{CONTRAIL_CONTAINER_TAG}}"
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-external-redis:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -1158,7 +1158,7 @@ spec:
       hostNetwork: true
       containers:
       - name: rabbitmq
-        image: "{{CONTRAIL_REGISTRY}}/contrail-external-rabbitmq:{{CONTRAIL_CONTAINER_TAG}}"
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-external-rabbitmq:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         env:
         - name: NODE_TYPE
@@ -1186,18 +1186,18 @@ spec:
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: contrail-kube-manager
+  name: {{PRODUCT_NAME}}-kube-manager
   namespace: kube-system
   labels:
-    app: contrail-kube-manager
+    app: {{PRODUCT_NAME}}-kube-manager
 spec:
   selector:
     matchLabels:
-      app: contrail-kube-manager
+      app: {{PRODUCT_NAME}}-kube-manager
   template:
     metadata:
       labels:
-        app: contrail-kube-manager
+        app: {{PRODUCT_NAME}}-kube-manager
     spec:
       affinity:
         nodeAffinity:
@@ -1216,14 +1216,14 @@ spec:
       automountServiceAccountToken: false
       hostNetwork: true
       initContainers:
-      - name: contrail-node-init
-        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-node-init
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-node-init:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         securityContext:
           privileged: true
         env:
         - name: CONTRAIL_STATUS_IMAGE
-          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+          value: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-status:{{CONTRAIL_CONTAINER_TAG}}"
         envFrom:
         - configMapRef:
             name: env
@@ -1231,8 +1231,8 @@ spec:
         - mountPath: /host/usr/bin
           name: host-usr-bin
       containers:
-      - name: contrail-kube-manager
-        image: "{{CONTRAIL_REGISTRY}}/contrail-kubernetes-kube-manager:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-kube-manager
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-kubernetes-kube-manager:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -1252,7 +1252,7 @@ spec:
           path: /var/log/contrail/kube-manager
       - name: pod-secret
         secret:
-          secretName: contrail-kube-manager-token
+          secretName: {{PRODUCT_NAME}}-kube-manager-token
       - name: host-usr-bin
         hostPath:
           path: /usr/bin
@@ -1260,18 +1260,18 @@ spec:
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: contrail-agent
+  name: {{PRODUCT_NAME}}-agent
   namespace: kube-system
   labels:
-    app: contrail-agent
+    app: {{PRODUCT_NAME}}-agent
 spec:
   selector:
     matchLabels:
-      app: contrail-agent
+      app: {{PRODUCT_NAME}}-agent
   template:
     metadata:
       labels:
-        app: contrail-agent
+        app: {{PRODUCT_NAME}}-agent
     spec:
       #Disable affinity for single node setup
       affinity:
@@ -1292,21 +1292,21 @@ spec:
       automountServiceAccountToken: false
       hostNetwork: true
       initContainers:
-      - name: contrail-node-init
-        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-node-init
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-node-init:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         securityContext:
           privileged: true
         env:
         - name: CONTRAIL_STATUS_IMAGE
-          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
+          value: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-status:{{CONTRAIL_CONTAINER_TAG}}"
         envFrom:
         - configMapRef:
             name: env
         volumeMounts:
         - mountPath: /host/usr/bin
           name: host-usr-bin
-      - name: contrail-vrouter-kernel-init-dpdk
+      - name: {{PRODUCT_NAME}}-vrouter-kernel-init-dpdk
         image: "{{CONTRAIL_REGISTRY}}/{{VROUTER_KERNEL_INIT_IMAGE}}:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         securityContext:
@@ -1325,8 +1325,8 @@ spec:
           name: host-etc-contrail
         - mountPath: /var/run
           name: var-run
-      - name: contrail-kubernetes-cni-init
-        image: "{{CONTRAIL_REGISTRY}}/contrail-kubernetes-cni-init:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-kubernetes-cni-init
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-kubernetes-cni-init:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -1339,17 +1339,17 @@ spec:
         - mountPath: /host/opt_cni_bin
           name: opt-cni-bin
         - mountPath: /host/log_cni
-          name: var-log-contrail-cni
+          name: var-log-{{PRODUCT_NAME}}-cni
         - mountPath: /var/log/contrail
           name: agent-logs
       containers:
-      - name: contrail-vrouter-agent-dpdk
-        image: "{{CONTRAIL_REGISTRY}}/contrail-vrouter-agent-dpdk:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-vrouter-agent-dpdk
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-vrouter-agent-dpdk:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         # TODO: Priveleged mode is requied because w/o it the device /dev/net/tun
         # is not present in the container. The mounting it into container
         # doesnt help because of permissions are not enough syscalls,
-        # e.g. https://github.com/Juniper/contrail-controller/blob/master/src/vnsw/agent/contrail/linux/pkt0_interface.cc: 48.
+        # e.g. https://github.com/Juniper/{{PRODUCT_NAME}}-controller/blob/master/src/vnsw/agent/contrail/linux/pkt0_interface.cc: 48.
         securityContext:
           privileged: true
         envFrom:
@@ -1374,13 +1374,13 @@ spec:
           name: var-crashes
         - mountPath: /tmp/serviceaccount
           name: pod-secret
-      - name: contrail-vrouter-agent
-        image: "{{CONTRAIL_REGISTRY}}/contrail-vrouter-agent:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-vrouter-agent
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-vrouter-agent:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         # TODO: Priveleged mode is requied because w/o it the device /dev/net/tun
         # is not present in the container. The mounting it into container
         # doesnt help because of permissions are not enough syscalls,
-        # e.g. https://github.com/Juniper/contrail-controller/blob/master/src/vnsw/agent/contrail/linux/pkt0_interface.cc: 48.
+        # e.g. https://github.com/Juniper/{{PRODUCT_NAME}}-controller/blob/master/src/vnsw/agent/contrail/linux/pkt0_interface.cc: 48.
         securityContext:
           privileged: true
         envFrom:
@@ -1410,8 +1410,8 @@ spec:
           name: var-crashes
         - mountPath: /tmp/serviceaccount
           name: pod-secret
-      - name: contrail-agent-nodemgr
-        image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
+      - name: {{PRODUCT_NAME}}-agent-nodemgr
+        image: "{{CONTRAIL_REGISTRY}}/{{PRODUCT_NAME}}-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
         envFrom:
         - configMapRef:
@@ -1445,7 +1445,7 @@ spec:
           path: /var/run
       - name: pod-secret
         secret:
-          secretName: contrail-kube-manager-token
+          secretName: {{PRODUCT_NAME}}-kube-manager-token
       - name: usr-src
         hostPath:
           path: /usr/src
@@ -1464,7 +1464,7 @@ spec:
       - name: opt-cni-bin
         hostPath:
           path: /opt/cni/bin
-      - name: var-log-contrail-cni
+      - name: var-log-{{PRODUCT_NAME}}-cni
         hostPath:
           path: /var/log/contrail/cni
       - name: agent-logs
@@ -1482,7 +1482,7 @@ spec:
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: contrail-kube-manager
+  name: {{PRODUCT_NAME}}-kube-manager
   namespace: kube-system
 rules:
   - apiGroups: ["*"]
@@ -1492,27 +1492,27 @@ rules:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: contrail-kube-manager
+  name: {{PRODUCT_NAME}}-kube-manager
   namespace: kube-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: contrail-kube-manager
+  name: {{PRODUCT_NAME}}-kube-manager
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: contrail-kube-manager
+  name: {{PRODUCT_NAME}}-kube-manager
 subjects:
 - kind: ServiceAccount
-  name: contrail-kube-manager
+  name: {{PRODUCT_NAME}}-kube-manager
   namespace: kube-system
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: contrail-kube-manager-token
+  name: {{PRODUCT_NAME}}-kube-manager-token
   namespace: kube-system
   annotations:
-    kubernetes.io/service-account.name: contrail-kube-manager
+    kubernetes.io/service-account.name: {{PRODUCT_NAME}}-kube-manager
 type: kubernetes.io/service-account-token

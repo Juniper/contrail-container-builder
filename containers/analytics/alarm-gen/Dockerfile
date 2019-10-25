@@ -1,6 +1,7 @@
 ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
-FROM ${CONTRAIL_REGISTRY}/contrail-analytics-base:${CONTRAIL_CONTAINER_TAG}
+ARG PRODUCT_NAME
+FROM ${CONTRAIL_REGISTRY}/${PRODUCT_NAME}-analytics-base:${CONTRAIL_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
 
 ARG CONTAINER_NAME
@@ -9,7 +10,7 @@ LABEL name=$CONTAINER_NAME \
       description="Contrail Alarm Generator generates alerts (alarms) which highlight unusual conditions that may require more urgent administrator attention and action."
 
 # TODO: split contrail-analytics package to several small packages and use contrail-base then
-# FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
+# FROM ${CONTRAIL_REGISTRY}/${PRODUCT_NAME}-base:${CONTRAIL_CONTAINER_TAG}
 
 COPY entrypoint.sh /
 

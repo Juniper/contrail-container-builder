@@ -1,14 +1,15 @@
 ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
-FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
+ARG PRODUCT_NAME
+FROM ${CONTRAIL_REGISTRY}/${PRODUCT_NAME}-base:${CONTRAIL_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
 ENV VENDOR_DOMAIN=$VENDOR_DOMAIN
 ARG CONTRAIL_BUILD_FROM_SOURCE
 
 ARG CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
-      summary="Contrail Node Manager" \
-      description="Contrail Node Manager is a monitor process per contrail virtual node that tracks the running state of the processes."
+      summary=${PRODUCT_NAME}" Node Manager" \
+      description=${PRODUCT_NAME}" Node Manager is a monitor process per ${PRODUCT_NAME} virtual node that tracks the running state of the processes."
 # for building from rpms
 # install chrony, ntp and iputils-clockdiff to enable checking time sync by nodemgr
 RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
