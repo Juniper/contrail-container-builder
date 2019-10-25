@@ -3,7 +3,7 @@
 # Can be used in a multi-node deployment. For all non-master kubernetes nodes this could be run:
 # setup-k8s.sh join-token=<token>
 # Token can be found in output from setup-k8s.sh run on master node or from "sudo kubeadm token list"
-# For multi-node setup on non-master kubernetes nodes common.env should contain CONTRAIL_REGISTRY and KUBERNETES_API_SERVER
+# For multi-node setup on non-master kubernetes nodes common.env should contain CONTRAIL_REGISTRY, KUBERNETES_API_SERVER and CONTAINER_PREFIX
 # configured.
 # Parameters:
 # join-token: used on non-master nodes
