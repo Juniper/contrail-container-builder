@@ -491,11 +491,26 @@ function check_vrouter_agent_settings() {
     return 0
 }
 
+function ensure_host_resolv_conf() {
+    local path='/etc/resolv.conf'
+    local host_path="/host${path}"
+    if [[ -e $path && -e $host_path  ]] && ! diff -U 3 $host_path $path > /dev/null 2>&1 ; then
+        local container_content=$(cat $path)
+        echo -e "INFO: $path:\n${container_content}"
+        echo -e "INFO: $host_path:\n$(cat $host_path)"
+        if [ -n "$container_content" ] ; then
+            echo "INFO: sync $path to $host_path"
+            cp -f $path $host_path
+        fi
+    fi
+}
+
 function init_vhost0() {
     # Probe vhost0
     local vrouter_cidr="$(get_cidr_for_nic vhost0)"
     if [[ "$vrouter_cidr" != '' ]] ; then
         echo "INFO: vhost0 is already up"
+        ensure_host_resolv_conf
         return 0
     fi
 
@@ -591,6 +606,9 @@ function init_vhost0() {
         local _phys_int_routes=$(get_dev_routes $phys_int)
         del_dev_routes ${phys_int} "$_phys_int_routes"
     fi
+
+    [[ $ret == 0 ]] && ensure_host_resolv_conf
+
     return $ret
 }
 
@@ -776,6 +794,7 @@ function check_and_launch_dhcp_clients() {
     if launch_dhcp_clients ; then
        kill_dhcp_clients $phys_int
        ip addr flush $phys_int
+       ensure_host_resolv_conf
     else
         echo "WARNING: dhcp clients not running for vhost0. If this is not static configuration, connectivity will be lost"
     fi
