@@ -18,21 +18,29 @@ function is_ssl_enabled() {
    || is_enabled "$SANDESH_SSL_ENABLE"
 }
 
+function wait_cmd_success() {
+  local cmd=$1
+  local interval=${2:-3}
+  local max=${3:-20}
+  local i=0
+  while ! $cmd 2>/dev/null; do
+      printf "."
+      i=$((i + 1))
+      if (( i > max )) ; then
+        return 1
+      fi
+      sleep $interval
+  done
+  return 0
+}
+
 function wait_files() {
   local file1=$1
   local file2=$2
-  local count=0
-  while (true) ; do
-    if [[ -f "$file1" && -f "$file2" ]] ; then
-      return
-    fi
-    (( count+=1 ))
-    if (( count == 60 ))  ; then
-      break
-    fi
-    sleep 1
-  done
-  return 1
+  printf "INFO: wait for files $file1 and $file2"
+  wait_cmd_success "test -f $file1" || { echo -e "\nERROR: failed to wait $file1" && return 1; }
+  wait_cmd_success "test -f $file2" || { echo -e "\nERROR: failed to wait $file2" && return 1; }
+  echo -e "\nINFO: files $file1 and $file2 are present"
 }
 
 function wait_certs_if_ssl_enabled() {
@@ -234,4 +242,15 @@ function get_vrouter_physical_iface() {
     fi
   fi
   echo $iface
+}
+
+function nic_has_ip() {
+  test -n "$(get_cidr_for_nic $1)"
+}
+
+function wait_nic_up() {
+  local nic=$1
+  printf "INFO: wait for $nic is up"
+  wait_cmd_success "nic_has_ip $nic" || { echo -e "\nERROR: $nic is not up" && return 1; }
+  echo -e "\nINFO: $nic is up"
 }
