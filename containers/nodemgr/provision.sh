@@ -165,6 +165,23 @@ control)
   ;;
 
 vrouter)
+  # Wait if vhost0 is up.
+  # Nodemgr in vrouter mode is run on the node with vhost0.
+  # During vhost0 initialization there is possible race between
+  # the host_ip deriving logic belowe and vhost0 initialization
+  max=20
+  i=0
+  printf "INFO: wait vhost0 to be initilaized."
+  while ! ip addr show dev vhost0 2>/dev/null | grep -q "inet " ; do
+      printf "."
+      i=$((i + 1))
+      if (( i > max )) ; then
+        echo -e "\nERROR: vhost0 is ready. Exiting.."
+        exit 1
+      fi
+      sleep 3
+  done
+  echo -e "\nINFO: vhost0 is ready."
   host_ip=$(get_ip_for_vrouter_from_control)
   vhost_if=$(get_iface_for_vrouter_from_control)
   if_cidr=$(get_cidr_for_nic $vhost_if)
