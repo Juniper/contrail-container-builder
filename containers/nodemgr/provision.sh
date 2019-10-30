@@ -165,6 +165,11 @@ control)
   ;;
 
 vrouter)
+  # Ensure vhost0 is up.
+  # Nodemgr in vrouter mode is run on the node with vhost0.
+  # During vhost0 initialization there is possible race between
+  # the host_ip deriving logic and vhost0 initialization
+  wait_nic_up vhost0
   host_ip=$(get_ip_for_vrouter_from_control)
   vhost_if=$(get_iface_for_vrouter_from_control)
   if_cidr=$(get_cidr_for_nic $vhost_if)
