@@ -1,4 +1,4 @@
-FROM rabbitmq:3.6.10-management
+FROM rabbitmq:3.7.20-management
 ARG VENDOR_NAME
 ARG VENDOR_DOMAIN
 
