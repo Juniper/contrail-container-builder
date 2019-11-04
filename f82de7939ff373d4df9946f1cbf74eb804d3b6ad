@@ -81,6 +81,24 @@
       "revId": "f82de7939ff373d4df9946f1cbf74eb804d3b6ad",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "150991a0_d0cc81f1",
+        "filename": "kubernetes/manifests/contrail-dpdk-standalone-kubernetes.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 688
+      },
+      "writtenOn": "2019-11-04T16:45:20Z",
+      "side": 1,
+      "message": "sed seems to be working fine for both braces with or without spaces",
+      "parentUuid": "2a6a74dc_0f42fa96",
+      "revId": "f82de7939ff373d4df9946f1cbf74eb804d3b6ad",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
