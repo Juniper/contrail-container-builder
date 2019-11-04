@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "042adf85_a2dffb4d",
+        "filename": "common.env.sample",
+        "patchSetId": 2
+      },
+      "lineNbr": 297,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-11-04T14:17:08Z",
+      "side": 1,
+      "message": "Guys, what do you think of the name it like BRAND_NAME or PRODUCT_NAME?\n(or something else with a semantic)",
+      "range": {
+        "startLine": 297,
+        "startChar": 0,
+        "endLine": 297,
+        "endChar": 16
+      },
+      "revId": "f82de7939ff373d4df9946f1cbf74eb804d3b6ad",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "cc76beb3_21c250e5",
         "filename": "kubernetes/manifests/contrail-dpdk-standalone-kubernetes.yaml",
         "patchSetId": 2
