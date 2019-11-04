@@ -182,10 +182,10 @@ function process_container() {
   duration=$(date +"%s")
   (( duration -= start_time ))
   if [ ${exit_code} -eq 0 ]; then
+    log "Building $container_name finished successfully, duration: $duration seconds" | append_log_file $logfile true
     if [[ "${CONTRAIL_KEEP_LOG_FILES,,}" != 'true' ]] ; then
       rm -f $logfile
     fi
-    log "Building $container_name finished successfully, duration: $duration seconds" | append_log_file $logfile true
   else
     err "Building $container_name failed, duration: $duration seconds" 2>&1 | append_log_file $logfile true
     was_errors=1
