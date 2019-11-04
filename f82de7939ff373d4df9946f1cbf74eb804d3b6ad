@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cc76beb3_21c250e5",
+        "filename": "kubernetes/manifests/contrail-dpdk-standalone-kubernetes.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-11-04T12:02:14Z",
+      "side": 1,
+      "message": "in https://github.com/Juniper/contrail-container-builder/blob/master/kubernetes/manifests/resolve-manifest.sh#L11 we have ugly code that relies on spaces inside braces as I see.\n\nI suggest to write this also with spaces. and change ugly sed to jinja2 later.",
+      "revId": "f82de7939ff373d4df9946f1cbf74eb804d3b6ad",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
