@@ -129,14 +129,18 @@ Manifests are designed in a way prescribing kubernetes to lay out Contrail roles
 Examples of deployment are described in sections in the beginning.
 
 These manifests are also stored and published in a container "contrail-k8s-manifests". You can generate deployment yamls using this container:
-* Download contrail image "contrail-k8s-manifests" container from a registry of your choice (TF, Juniper, DockerHub, etc).
-* Run docker, specifying KUBE_MANIFEST you want to generate and common.env file with parameters, and store its output in contrail.yaml:
-``` docker run --rm --network host -it -e KUBE_MANIFEST=contrail-standalone-kubernetes.yaml --env-file common.env $CONTRAIL_K8S_MANIFESTS > contrail.yaml```
-* In order to obtain all available KUBE_MANIFEST values - run the command without parameters and a list of values will be generated to output:
-``` docker run --rm $CONTRAIL_K8S_MANIFESTS```
-* Additionally the image contains contrail-container-builder repository, which you can use for any development or viewing purposes.
-* To run the container and connect to its shell:
-``` docker run --rm --network host -it --entrypoint "/bin/bash" $CONTRAIL_K8S_MANIFESTS ```
+* Download contrail image "contrail-k8s-manifests" container from a registry of your choice (TF, Juniper, DockerHub, etc) with `docker pull`.
+* Create docker container
+``` docker create --name k8s-manifests tungstenfabric/contrail-k8s-manifests```
+* Copy content from container to local folder
+``` docker cp k8s-manifests:contrail-container-builder .```
+* Remove container
+``` docker rm -fv k8s-manifests```
+* Check list of manifests in folder contrail-container-builder/kubernetes/manifests/
+* Create required common.env in folder contrail-container-builder
+* Prepare manifest with simple manifests (or use your own one)
+``` contrail-container-builder/kubernetes/manifests/resolve-manifest.sh contrail-standalone-kubernetes.yaml > contrail.yaml```
+* Additionally you can use contrail-container-builder for any development or viewing purposes.
 
 ### Adding new container
 
