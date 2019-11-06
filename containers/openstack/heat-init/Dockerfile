@@ -2,7 +2,7 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
-
+ARG CONTRAIL_BUILD_FROM_SOURCE
 ARG CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
       summary="Init container for OpenStack Heat" \
@@ -18,6 +18,11 @@ RUN rpm -Uvh --nodeps $(repoquery --location python-contrail) && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 
+RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
+    yum install -y contrail-heat && \
+    yum clean all -y && \
+    rm -rf /var/cache/yum; \
+    fi
 COPY *.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]

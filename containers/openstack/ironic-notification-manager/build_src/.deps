@@ -1,0 +1,7 @@
+python-contrail
+python-ironicclient
+python-keystoneclient
+python-gevent
+python-geventhttpclient
+python-netaddr
+python-kombu
