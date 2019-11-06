@@ -1,0 +1,3 @@
+build/production/api-lib/vnc_api/. /opt/contrail/site-packages/vnc_api/
+openstack/neutron_plugin/neutron_plugin_contrail/. /opt/contrail/site-packages/neutron_plugin_contrail/
+openstack/neutron_plugin/neutron_plugin_contrail.egg-info/. /opt/contrail/site-packages/neutron_plugin_contrail-0.1dev-py2.7.egg-info/
