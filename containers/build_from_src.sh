@@ -8,7 +8,6 @@ build_path="/build_src"
 function log() {
   echo "INFO: SETUP.SH: $@"
 }
-
 CONTRAIL_DEPS=''
 [ -e ${build_path}/.deps ] && CONTRAIL_DEPS+=$(cat ${build_path}/.deps)
 [ -e ${build_path}/.deps.$LINUX_DISTR ] && CONTRAIL_DEPS+="\n$(cat ${build_path}/.deps.$LINUX_DISTR)"
@@ -36,22 +35,24 @@ if [[ -z "$build_root" ]] ; then
   exit 1
 fi
 log "Build root is ${build_root}"
-
 if [[ -f ${build_path}/.src ]]; then
- CONTRAIL_COMPONENTS=$(cat "${build_path}/.src" | sed '/^$/d' | tr '\n' ',')
- components=${CONTRAIL_COMPONENTS//\"/}
- log "Components is ${components}"
- cd $build_root
- for src_folder in ${components//,/ } ; do
-  pushd $src_folder
-  time python setup.py install --root=/
-  exitcode=${PIPESTATUS[0]}
-  if [[ $exitcode -ne 0 ]]; then
-   log "Setup.py within ${src_folder} finished with error"
-   exit 1
-  fi
-  popd
- done
+  cd $build_root
+  while read line; do
+    src_folder=$(echo $line | awk '{ print $1 }' | tr -d "[:space:]")
+    dst_folder=$(echo $line | awk '{ print $2 }' | tr -d "[:space:]")    
+    pushd $src_folder
+    if [[ $dst_folder == '' ]]; then
+     dst_folder='/'
+    fi
+    log "Launch Setup.py within ${src_folder} with root to ${dst_folder}..."
+    time python setup.py install --root=${dst_folder}
+    exitcode=${PIPESTATUS[0]}
+    if [[ $exitcode -ne 0 ]]; then
+      log "Setup.py within ${src_folder} finished with error"
+      exit 1
+    fi
+    popd
+  done < "${build_path}/.src"
 fi
 function setup_user() {
   local path="$1"
