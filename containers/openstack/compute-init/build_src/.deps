@@ -1,0 +1,8 @@
+python2-docker
+python2-passlib
+python2-requests
+python-configparser
+python-enum34
+python-thrift
+python-paramiko
+xmltodict

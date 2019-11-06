@@ -1,0 +1,4 @@
+python2-setuptools
+python-configparser
+python-gevent
+python-geventhttpclient
