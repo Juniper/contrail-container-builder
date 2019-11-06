@@ -1,0 +1,5 @@
+contrail-vrouter-agent
+python-novaclient
+python-oslo-config
+python-os-vif
+python-thrift
