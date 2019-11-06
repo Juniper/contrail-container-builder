@@ -21,6 +21,7 @@ ARG YUM_ENABLE_REPOS=""
 ENV CONTRAIL_GID=1999
 ENV CONTRAIL_UID=1999
 ENV CONTRAIL_USER=contrail
+# version is used by contrail-version tool
 ENV CONTRAIL_VERSION=$CONTRAIL_CONTAINER_TAG
 
 # this copy should be before yum install

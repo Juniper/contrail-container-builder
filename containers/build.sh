@@ -1,5 +1,5 @@
 #!/bin/bash
-# Builds containers. Parses common.env to take CONTRAIL_REGISTRY, CONTRAIL_REPOSITORY, CONTRAIL_VERSION or takes them from
+# Builds containers. Parses common.env to take CONTRAIL_REGISTRY, CONTRAIL_REPOSITORY, CONTRAIL_CONTAINER_TAG or takes them from
 # environment.
 # Parameters:
 # path: relative path (from this directory) to module(s) for selective build. Example: ./build.sh controller/webui
@@ -38,10 +38,9 @@ function append_log_file() {
 
 log "Target platform: $LINUX_DISTR:$LINUX_DISTR_VER"
 [ -n ${CONTRAIL_BUILD_FROM_SOURCE} ] && log "Contrail source root: $CONTRAIL_SOURCE" && log "Contrail builder root: $CONTRAIL_BUILDER_DIR"
-log "Contrail version: $CONTRAIL_VERSION"
+log "Contrail container tag: $CONTRAIL_CONTAINER_TAG"
 log "Contrail registry: $CONTRAIL_REGISTRY"
 log "Contrail repository: $CONTRAIL_REPOSITORY"
-log "Contrail container tag: $CONTRAIL_CONTAINER_TAG"
 log "Contrail generic base extra rpms: $GENERAL_EXTRA_RPMS"
 log "Contrail base extra rpms: $BASE_EXTRA_RPMS"
 log "yum additional repos to enable: $YUM_ENABLE_REPOS"

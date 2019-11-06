@@ -10,7 +10,7 @@ source "$DIR/../parse-env.sh"
 
 echo 'Build platform: '$LINUX_ID:$LINUX_VER_ID
 echo 'Target platform: '$LINUX_DISTR:$LINUX_DISTR_VER
-echo 'Contrail version: '$CONTRAIL_VERSION
+echo 'Contrail container tag: '$CONTRAIL_CONTAINER_TAG
 echo 'Contrail registry: '$CONTRAIL_REGISTRY
 echo 'Contrail repository: '$CONTRAIL_REPOSITORY
 
@@ -31,9 +31,9 @@ export package_root_dir="/var/www"
 
 # TODO: do not download/install rpm repository if CONTRAIL_REPOSITORY is defined.
 if [[ -n "$CONTRAIL_REPOSITORY" ]]; then
-  dir_prefix=$(echo $CONTRAIL_REPOSITORY | awk -F'/' '{print $4}' | sed 's/'$CONTRAIL_VERSION'$//')
+  dir_prefix=$(echo $CONTRAIL_REPOSITORY | awk -F'/' '{print $4}' | sed 's/'$CONTRAIL_CONTAINER_TAG'$//')
 fi
-export repo_dir="${package_root_dir}/${dir_prefix}${CONTRAIL_VERSION}"
+export repo_dir="${package_root_dir}/${dir_prefix}${CONTRAIL_CONTAINER_TAG}"
 if [ -d $repo_dir ]; then
   echo 'Remove existing packages in '$repo_dir
   sudo rm -rf $repo_dir
