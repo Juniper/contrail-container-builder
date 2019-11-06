@@ -49,13 +49,11 @@ export CONTRAIL_BUILDER_DIR=${CONTRAIL_BUILDER_DIR:-$CONTRAIL_SOURCE'/contrail-c
 # Flag to switch to build from sources
 export CONTRAIL_BUILD_FROM_SOURCE=${CONTRAIL_BUILD_FROM_SOURCE:-}
 
-export CONTRAIL_VERSION=${CONTRAIL_VERSION:-'4.1.0.0-8'}
 export K8S_VERSION=${K8S_VERSION:-'1.15.4'}
 export OPENSTACK_VERSION=${OPENSTACK_VERSION:-'queens'}
-default_tag="${CONTRAIL_VERSION}"
-export CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG:-$default_tag}
+export CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG:-'dev'}
 
-default_packages_url="https://s3-us-west-2.amazonaws.com/contrailrhel7/contrail-install-packages-${CONTRAIL_VERSION}.el7.noarch.rpm"
+default_packages_url="https://s3-us-west-2.amazonaws.com/contrailrhel7/contrail-install-packages-${CONTRAIL_CONTAINER_TAG}.el7.noarch.rpm"
 export CONTRAIL_INSTALL_PACKAGES_URL=${CONTRAIL_INSTALL_PACKAGES_URL:-$default_packages_url}
 export CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY:-'auto'}
 export CONTRAIL_REGISTRY_PUSH=${CONTRAIL_REGISTRY_PUSH:-1}
@@ -65,7 +63,7 @@ if [[ $CONTRAIL_REGISTRY == 'auto' ]] ; then
   export CONTRAIL_REGISTRY="${default_registry_ip}:5000"
 fi
 if [[ $CONTRAIL_REPOSITORY == 'auto' ]] ; then
-  export CONTRAIL_REPOSITORY="http://${default_registry_ip}/${CONTRAIL_VERSION}"
+  export CONTRAIL_REPOSITORY="http://${default_registry_ip}/${CONTRAIL_CONTAINER_TAG}"
 fi
 export CONTRAIL_PARALLEL_BUILD=${CONTRAIL_PARALLEL_BUILD:-'false'}
 export CONTRAIL_KEEP_LOG_FILES=${CONTRAIL_KEEP_LOG_FILES:-'false'}
