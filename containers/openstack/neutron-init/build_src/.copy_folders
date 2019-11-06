@@ -1,0 +1,2 @@
+build/production/api-lib/vnc_api /opt/contrail/site-packages/
+openstack/neutron_plugin/neutron_plugin_contrail /opt/contrail/site-packages/

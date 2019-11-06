@@ -1,0 +1,2 @@
+build/production/api-lib/vnc_api /opt/contrail/site-packages/
+openstack/contrail-heat/contrail_heat /opt/contrail/site-packages/
