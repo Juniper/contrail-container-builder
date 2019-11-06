@@ -1,0 +1,3 @@
+build/noarch/nova_contrail_vif/vif_plug_vrouter /opt/contrail/site-packages/
+build/noarch/nova_contrail_vif/nova_contrail_vif /opt/contrail/site-packages/
+build/noarch/nova_contrail_vif/vif_plug_contrail_vrouter /opt/contrail/site-packages/
