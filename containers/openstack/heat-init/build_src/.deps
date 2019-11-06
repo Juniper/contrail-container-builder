@@ -1,0 +1,8 @@
+python2-future
+python2-idna
+python2-pysocks
+python2-six
+python2-setuptools
+python-configparser
+python-gevent
+python-geventhttpclient
