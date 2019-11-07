@@ -1,34 +1,24 @@
 #!/usr/bin/python
 
-from optparse import OptionParser
-import os
-import subprocess
-import ConfigParser
 import operator
+import optparse
+import os
 import socket
-import requests
+import subprocess
 import warnings
+
 import docker
+from lxml import etree
+import requests
+from sandesh_common.vns import constants as vns_constants
 import six
-import os.path
-try:
-    from requests.packages.urllib3.exceptions import SubjectAltNameWarning
-    warnings.filterwarnings('ignore', category=SubjectAltNameWarning)
-except:
-    try:
-        from urllib3.exceptions import SubjectAltNameWarning
-        warnings.filterwarnings('ignore', category=SubjectAltNameWarning)
-    except:
-        pass
+from urllib3.exceptions import SubjectAltNameWarning
+import yaml
+
+warnings.filterwarnings('ignore', category=SubjectAltNameWarning)
 warnings.filterwarnings('ignore', ".*SNIMissingWarning.*")
 warnings.filterwarnings('ignore', ".*InsecurePlatformWarning.*")
 warnings.filterwarnings('ignore', ".*SubjectAltNameWarning.*")
-from lxml import etree
-from sandesh_common.vns.constants import ServiceHttpPortMap
-from sandesh_common.vns.constants import NodeUVEImplementedServices
-from sandesh_common.vns.constants import BackupImplementedServices
-from sandesh_common.vns import constants as vns_constants
-import yaml
 
 
 CONTRAIL_SERVICES_TO_SANDESH_SVC = {
@@ -222,7 +212,7 @@ class IntrospectUtil(object):
                     if ip == '*':
                         return default_addr
                     return socket.getfqdn(ip)
-        except Exception as ex:
+        except Exception:
             pass
         return default_addr
 
@@ -232,7 +222,8 @@ class IntrospectUtil(object):
             resp = requests.get(url, timeout=self._timeout)
         except requests.ConnectionError:
             url = self._mk_url_str(path, True)
-            resp = requests.get(url, timeout=self._timeout,
+            resp = requests.get(
+                url, timeout=self._timeout,
                 verify=self._cacert, cert=(self._certfile, self._keyfile))
         if resp.status_code != requests.codes.ok:
             print_debug('URL: %s : HTTP error: %s' % (url, str(resp.status_code)))
@@ -262,7 +253,7 @@ def get_http_server_port(svc_name, env, port_env_key):
     if port_env_key:
         port = int(get_value_from_env(env, port_env_key))
     if not port:
-        port = ServiceHttpPortMap.get(svc_name)
+        port = vns_constants.ServiceHttpPortMap.get(svc_name)
     if port:
         return port
 
@@ -304,8 +295,8 @@ def get_svc_uve_info(svc_name, container, port_env_key, options):
         return svc_status
     # Extract UVE state only for running processes
     svc_uve_description = None
-    if (svc_name not in NodeUVEImplementedServices
-            and svc_name.rsplit('-', 1)[0] not in NodeUVEImplementedServices):
+    if (svc_name not in vns_constants.NodeUVEImplementedServices
+            and svc_name.rsplit('-', 1)[0] not in vns_constants.NodeUVEImplementedServices):
         return svc_status
 
     svc_uve_status = None
@@ -316,7 +307,7 @@ def get_svc_uve_info(svc_name, container, port_env_key, options):
         if http_server_port:
             svc_uve_status, svc_uve_description = \
                 get_svc_uve_status(svc_name, http_server_port, options)
-    except (requests.ConnectionError,IOError), e:
+    except (requests.ConnectionError, IOError) as e:
         print_debug('Socket Connection error : %s' % (str(e)))
         svc_uve_status = "connection-error"
     except (requests.Timeout, socket.timeout) as te:
@@ -327,7 +318,7 @@ def get_svc_uve_info(svc_name, container, port_env_key, options):
         if svc_uve_status == 'Non-Functional':
             svc_status = 'initializing'
         elif svc_uve_status == 'connection-error':
-            if svc_name in BackupImplementedServices:
+            if svc_name in vns_constants.BackupImplementedServices:
                 svc_status = 'backup'
             else:
                 svc_status = 'initializing'
@@ -347,7 +338,7 @@ def vcenter_plugin(container, options):
         # Now check the NodeStatus UVE
         svc_introspect = IntrospectUtil(8234, options)
         node_status = svc_introspect.get_data("Snh_VCenterPluginInfo", 'VCenterPlugin')
-    except (requests.ConnectionError,IOError), e:
+    except (requests.ConnectionError, IOError) as e:
         print_debug('Socket Connection error : %s' % (str(e)))
         return "initializing"
     except (requests.Timeout, socket.timeout) as te:
@@ -411,7 +402,6 @@ def contrail_pod_status(pod_name, pod_services, options):
 
 
 def contrail_service_status(container, pod_name, service, internal_svc_name, options):
-    status = 'active'
     if internal_svc_name:
         # TODO: pass env key for introspect port if needed
         return get_svc_uve_info(internal_svc_name, container, None, options)
@@ -502,24 +492,24 @@ def print_containers(containers):
     items.sort(key=operator.itemgetter(0, 1))
     items.insert(0, hdr)
 
-    cols = [1 for _ in xrange(0, len(items[0]))]
+    cols = [1 for _ in range(0, len(items[0]))]
     for item in items:
-        for i in xrange(0, len(cols)):
+        for i in range(0, len(cols)):
             cl = 2 + len(item[i])
             if cols[i] < cl:
                 cols[i] = cl
-    for i in xrange(0, len(cols)):
+    for i in range(0, len(cols)):
         cols[i] = '{{:{}}}'.format(cols[i])
     for item in items:
         res = ''
-        for i in xrange(0, len(cols)):
+        for i in range(0, len(cols)):
             res += cols[i].format(item[i])
         print(res)
     print('')
 
 
 def parse_args():
-    parser = OptionParser()
+    parser = optparse.OptionParser()
     parser.add_option('-d', '--detail', dest='detail',
                       default=False, action='store_true',
                       help="show detailed status")
