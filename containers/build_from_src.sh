@@ -53,6 +53,24 @@ if [[ -f ${build_path}/.src ]]; then
   popd
  done
 fi
+
+if [[ -f -f ${build_path}/.copy ]]; then
+ CONTRAIL_COMPONENTS_COPY=$(cat "${build_path}/.copy" | sed '/^$/d' | tr '\n' ',')
+ copy_path=${CONTRAIL_COMPONENTS_COPY//\"/}
+ log "Component is ${copy_path}"
+ cd $build_root
+ for src_folder in ${copy_path//,/ }; do
+  cp -rf $src_folder
+  exitcode=${PIPESTATUS[0]}
+  if [[ $exitcode -ne 0 ]]; then
+   log "Copying of ${src_folder} finished with error"
+   exit 1
+  fi
+ done
+ #grant permissions for destination folder
+ chmod 775 ${src_folder% *}
+fi
+
 function setup_user() {
   local path="$1"
   local mode=${2:-"0744"}

@@ -1,0 +1,7 @@
+libxml2-devel
+libxslt-devel
+net-snmp-python
+python-prettytable
+python-psutil
+python-pycassa
+python-xmltodict
