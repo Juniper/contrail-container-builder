@@ -4,9 +4,18 @@ sed -e '/^tsflags=nodocs/d' -i /etc/yum.conf
 [ -e "/contrail-setup-common.sh" ] && source /contrail-setup-common.sh
 
 build_path="/build_src"
-
+setup_prefix="/usr"
 function log() {
   echo "INFO: SETUP.SH: $@"
+}
+
+function setup_user() {
+  local path="$1"
+  local mode=${2:-"0744"}
+  [[ -n "$CONTRAIL_UID" && \
+     -n "$CONTRAIL_GID" && \
+     "$(id -u)" = '0' ]] && chown -R $CONTRAIL_UID:$CONTRAIL_GID $path
+  [[ -n $"mode" ]] && chmod -R $mode $path
 }
 
 CONTRAIL_DEPS=''
@@ -38,29 +47,61 @@ fi
 log "Build root is ${build_root}"
 
 if [[ -f ${build_path}/.src ]]; then
- CONTRAIL_COMPONENTS=$(cat "${build_path}/.src" | sed '/^$/d' | tr '\n' ',')
- components=${CONTRAIL_COMPONENTS//\"/}
- log "Components is ${components}"
- cd $build_root
- for src_folder in ${components//,/ } ; do
-  pushd $src_folder
-  time python setup.py install --root=/
-  exitcode=${PIPESTATUS[0]}
-  if [[ $exitcode -ne 0 ]]; then
-   log "Setup.py within ${src_folder} finished with error"
-   exit 1
-  fi
-  popd
- done
+  cd $build_root
+  while read line; do
+    src_folder=$(echo $line | awk '{ print $1 }' | tr -d "[:space:]")
+    dst_folder=$(echo $line | awk '{ print $2 }' | tr -d "[:space:]")
+    pushd $src_folder
+    [[ -z ${dst_folder} ]] && dst_folder='/'
+    log "Launch Setup.py within ${src_folder} with root to ${dst_folder} and prefix ${setup_prefix} ..."
+    time python setup.py install --root=${dst_folder} --prefix=${setup_prefix}
+    exitcode=${PIPESTATUS[0]}
+    if [[ $exitcode -ne 0 ]]; then
+      log "Setup.py within ${src_folder} finished with error"
+      exit 1
+    fi
+    popd
+  done < "${build_path}/.src"
 fi
-function setup_user() {
-  local path="$1"
-  local mode=${2:-"0744"}
-  [[ -n "$CONTRAIL_UID" && \
-     -n "$CONTRAIL_GID" && \
-     "$(id -u)" = '0' ]] && chown -R $CONTRAIL_UID:$CONTRAIL_GID $path
-  [[ -n $"mode" ]] && chmod -R $mode $path
-}
+
+if [[ -f ${build_path}/.copy_folders ]]; then
+  cd $build_root
+  while read line; do
+    if [[ -z ${line} ]]; then
+      log "Empty line, End of file."
+      break
+    fi
+    src_folder=$(echo $line | awk '{ print $1 }' | tr -d "[:space:]")
+    dst_folder=$(echo $line | awk '{ print $2 }' | tr -d "[:space:]")
+    [ ! -d "${dst_folder}" ] && mkdir -p $dst_folder
+    cp -v -rf $src_folder $dst_folder && setup_user $dst_folder
+    exitcode=${PIPESTATUS[0]}
+    if [[ $exitcode -ne 0 ]]; then
+      log "Copying of source folder ${src_folder} to ${dst_folder} finished with error"
+      exit 1
+    fi
+  done < "${build_path}/.copy_folders"
+fi
+
+if [[ -f ${build_path}/.copy_files ]]; then
+  cd $build_root
+  while read line; do
+    if [[ -z ${line} ]]; then
+      log "Empty line, End of file."
+      break
+    fi
+    src_file=$(echo $line | awk '{ print $1 }' | tr -d "[:space:]")
+    dst_file=$(echo $line | awk '{ print $2 }' | tr -d "[:space:]")
+    dst_folder="${dst_file%/*}"
+    [ ! -d "${dst_folder}" ] && mkdir -p $dst_folder
+    cp -v -f $src_file $dst_file && setup_user $dst_folder && chmod 775 $dst_file 
+    exitcode=${PIPESTATUS[0]}
+    if [[ $exitcode -ne 0 ]]; then
+      log "Copying of source file ${src_file} to ${dst_file} finished with error"
+      exit 1
+    fi
+  done < "${build_path}/.copy_files"
+fi
 
 for i in /var/lib/contrail /var/log/contrail ; do
   mkdir -p $i
