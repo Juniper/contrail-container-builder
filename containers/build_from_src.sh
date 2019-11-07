@@ -53,6 +53,24 @@ if [[ -f ${build_path}/.src ]]; then
   popd
  done
 fi
+
+if [[ -f ${build_path}/.copy ]]; then
+  while read line; do
+    src_folder=$(echo $line | awk '{ print $1 }' | tr -d "[:space:]")
+    dst_folder=$(echo $line | awk '{ print $2 }' | tr -d "[:space:]")
+    cd $build_root
+    mkdir -p $dst_folder
+    cp -rf $src_folder $dst_folder
+    chmod 775 $dst_folder
+    exitcode=${PIPESTATUS[0]}
+    if [[ $exitcode -ne 0 ]]; then
+      log "Copying of ${src_folder} finished with error"
+      exit 1
+    fi
+    popd
+  done < "${build_path}/.copy"
+fi
+
 function setup_user() {
   local path="$1"
   local mode=${2:-"0744"}

@@ -1,0 +1,3 @@
+src/contrail-analytics/contrail-collector /usr/bin/
+src/contrail-analytics/contrail-query-engine /usr/bin/
+build/production/sandesh/common /usr/bin/
