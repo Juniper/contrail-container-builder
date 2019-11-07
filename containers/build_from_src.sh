@@ -44,7 +44,7 @@ if [[ -f ${build_path}/.src ]]; then
  cd $build_root
  for src_folder in ${components//,/ } ; do
   pushd $src_folder
-  time python setup.py install --root=/
+  time python setup.py install --root=/ --prefix=/usr
   exitcode=${PIPESTATUS[0]}
   if [[ $exitcode -ne 0 ]]; then
    log "Setup.py within ${src_folder} finished with error"
@@ -53,6 +53,48 @@ if [[ -f ${build_path}/.src ]]; then
   popd
  done
 fi
+
+if [[ -f ${build_path}/.copy_folders ]]; then
+  cd $build_root
+  while read line; do
+    if [[ -z ${line} ]]; then
+      log "Empty line, End of file."
+      break
+    fi
+    src_folder=$(echo $line | awk '{ print $1 }' | tr -d "[:space:]")
+    dst_folder=$(echo $line | awk '{ print $2 }' | tr -d "[:space:]")
+    [ ! -d "${dst_folder}" ] && mkdir -p $dst_folder
+    log "command cp -v -rf $src_folder $dst_folder && chmod -R 775 $dst_folder"
+    cp -v -rf $src_folder $dst_folder && chmod -R 775 $dst_folder
+    exitcode=${PIPESTATUS[0]}
+    if [[ $exitcode -ne 0 ]]; then
+      log "Copying of source folder ${src_folder} to ${dst_folder} finished with error"
+      exit 1
+    fi
+  done < "${build_path}/.copy_folders"
+fi
+
+if [[ -f ${build_path}/.copy_files ]]; then
+  cd $build_root
+  while read line; do    
+    if [[ -z ${line} ]]; then
+      log "Empty line, End of file."
+      break
+    fi
+    src_file=$(echo $line | awk '{ print $1 }' | tr -d "[:space:]")
+    dst_file=$(echo $line | awk '{ print $2 }' | tr -d "[:space:]")
+    dst_folder="${dst_file%/*}"
+    [ ! -d "${dst_folder}" ] && mkdir -p $dst_folder
+    log "command cp -v -f $src_file $dst_file && chmod 775 $dst_file"
+    cp -v -f $src_file $dst_file && chmod 775 $dst_file
+    exitcode=${PIPESTATUS[0]}
+    if [[ $exitcode -ne 0 ]]; then
+      log "Copying of source file ${src_file} to ${dst_file} finished with error"
+      exit 1
+    fi
+  done < "${build_path}/.copy_files"
+fi
+
 function setup_user() {
   local path="$1"
   local mode=${2:-"0744"}
