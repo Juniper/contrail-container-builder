@@ -1,0 +1,9 @@
+python2-future
+python2-requests
+python-bottle
+python-configparser
+python-fysom
+python-gevent
+python-geventhttpclient
+python-netaddr
+python-sqlalchemy

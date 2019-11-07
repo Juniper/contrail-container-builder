@@ -2,11 +2,18 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-analytics-base:${CONTRAIL_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
-
+ARG CONTRAIL_BUILD_FROM_SOURCE
 ARG CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
       summary="Contrail Query Engine" \
       description="Contrail Query Engine handles the queries to access data from Analytics DB."
+
+RUN if [[ -n "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
+    sed -e '/^tsflags=nodocs/d' -i /etc/yum.conf && \
+    yum install -y contrail-analytics && \
+    yum clean all -y && \
+    rm -rf /var/cache/yum; \
+    fi
 
 COPY entrypoint.sh /
 
