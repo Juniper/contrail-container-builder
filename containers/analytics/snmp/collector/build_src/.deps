@@ -1,0 +1,6 @@
+libxml2-devel
+libxslt-devel
+python-prettytable
+python-psutil
+python-pycassa
+python-xmltodict
