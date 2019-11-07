@@ -1,0 +1,13 @@
+
+python2-requests
+python-pycassa
+libxml2-devel
+libxslt-devel
+python-gevent
+python-geventhttpclient
+python-xmltodict
+python-prettytable
+python-psutil
+python-bottle
+python2-future
+python-configparser
