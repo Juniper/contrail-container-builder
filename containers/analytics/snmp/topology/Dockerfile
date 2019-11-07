@@ -2,8 +2,8 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-analytics-base:${CONTRAIL_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
-
 ARG CONTAINER_NAME
+
 LABEL name=$CONTAINER_NAME \
       summary="Contrail SNMP Topology" \
       description="Contrail SNMP Topology periodically updates topology table, which is used by UI to draw maps."
