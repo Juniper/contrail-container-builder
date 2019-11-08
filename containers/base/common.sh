@@ -350,6 +350,7 @@ if is_enabled ${INTROSPECT_SSL_ENABLE} ; then
   read -r -d '' sandesh_client_config << EOM || true
 [SANDESH]
 introspect_ssl_enable=${INTROSPECT_SSL_ENABLE}
+introspect_ssl_insecure=${INTROSPECT_SSL_INSECURE}
 sandesh_ssl_enable=${SANDESH_SSL_ENABLE}
 sandesh_keyfile=${SANDESH_KEYFILE}
 sandesh_certfile=${SANDESH_CERTFILE}
