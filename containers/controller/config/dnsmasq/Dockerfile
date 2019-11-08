@@ -8,8 +8,10 @@ LABEL name=$CONTAINER_NAME \
       summary="Contrail Dnsmasq" \
       description="Contrail Dnsmasq provides network infrastructure: DNS, DHCP, router advertisement and network boot."
 
+RUN mkdir -p /opt/scripts/
+
 COPY entrypoint.sh /
-COPY conf/* /etc/dnsmasq/
+COPY conf/* /opt/scripts/
 
 RUN yum install -y wget gcc make && \
     wget -nv --tries=3 -c http://www.thekelleys.org.uk/dnsmasq/dnsmasq-2.80.tar.xz && \

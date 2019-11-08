@@ -24,6 +24,7 @@ my_ord=$(echo $my_ip_and_order | cut -d ' ' -f 2)
 # convert order to delay. order starts from 1 and it means 0, order=2 means delay 2 and further
 my_ord=$((2*my_ord - 2))
 
+cp -f /opt/scripts/* /etc/dnsmasq/
 cat > /etc/dnsmasq/base.conf << EOM
 log-facility=${LOG_DIR}/dnsmasq.log
 bogus-priv
