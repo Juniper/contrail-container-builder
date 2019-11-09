@@ -24,9 +24,7 @@ function copy_sources() {
 }
 
 mkdir -p /opt/plugin/site-packages
-for module in neutron_plugin_contrail vnc_api cfgm_common ; do
-  copy_sources $lib_path $module
-done
+cp -rf /opt/contrail/site-packages/* /opt/plugin/site-packages/
 
 # install appropriate version of python-neutron-lbaas based on OPENSTACK_VERSION
 pkg=$(ls -1 /opt/packages/ | grep python-neutron-lbaas-$OPENSTACK_VERSION)
