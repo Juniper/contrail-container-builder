@@ -1,6 +1,6 @@
 ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
-FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
+FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
 
 ARG CONTAINER_NAME
@@ -8,8 +8,13 @@ LABEL name=$CONTAINER_NAME \
       summary="Init container for OpenStack Heat" \
       description="Sidecar container with libraries for heat services."
 
-RUN yum install -y contrail-heat && \
-    yum clean all -y && \
+RUN yum install -y --skip-broken python-contrail contrail-heat && \
+    mkdir -p /opt/contrail/site-packages && \
+    cp -rf /usr/lib/python2.7/site-packages/contrail_heat /opt/contrail/site-packages && \
+    cp -rf /usr/lib/python2.7/site-packages/vnc_api /opt/contrail/site-packages && \
+    cp -rf /usr/lib/python2.7/site-packages/cfgm_common /opt/contrail/site-packages && \
+    yum remove -y python-contrail contrail-heat && \
+    yum autoremove -y && yum clean all -y && \
     rm -rf /var/cache/yum
 
 COPY *.sh /
