@@ -10,7 +10,7 @@ LABEL name=$CONTAINER_NAME \
 
 COPY *.sh /
 RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done' && \
-    yum install -y openssl stunnel && \
+    yum install -y iproute less hostname python3 openssl stunnel && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 

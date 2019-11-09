@@ -1,6 +1,6 @@
 ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
-FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
+FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
 
 ARG CONTAINER_NAME
@@ -13,9 +13,15 @@ ARG LINUX_DISTR
 COPY *.sh /
 
 # run _prepare_packages.sh as a last step cause it can break some repositories
-RUN yum install -y neutron-plugin-contrail && \
+RUN rpm -Uvh --nodeps $(repoquery --location python-contrail) && \
+    rpm -Uvh --nodeps $(repoquery --location neutron-plugin-contrail) && \
+    mkdir -p /opt/contrail/site-packages && \
+    cp -rf /usr/lib/python2.7/site-packages/neutron_plugin_contrail* /opt/contrail/site-packages && \
+    cp -rf /usr/lib/python2.7/site-packages/vnc_api* /opt/contrail/site-packages && \
+    cp -rf /usr/lib/python2.7/site-packages/cfgm_common* /opt/contrail/site-packages && \
+    yum remove -y python-contrail neutron-plugin-contrail && \
     /_prepare_packages.sh && rm -f /_prepare_packages.sh && \
-    yum clean all -y && \
+    yum autoremove -y && yum clean all -y && \
     rm -rf /var/cache/yum
 
 ENTRYPOINT ["/entrypoint.sh"]
