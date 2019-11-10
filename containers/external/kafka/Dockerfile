@@ -18,7 +18,7 @@ ENV KAFKA_DIR=/opt/$KAFKA_DISTRO_NAME \
     KAFKA_USER=kafka \
     KAFKA_GROUP=kafka
 
-RUN yum install -y java java-1.8.0-openjdk-devel iproute openssl wget && \
+RUN yum install -y java java-1.8.0-openjdk-devel iproute less hostname python3 openssl wget && \
     wget -nv --tries=3 -c -O $KAFKA_DISTRO_NAME.tgz $KAFKA_CACHE/$KAFKA_DISTRO_NAME.tgz?raw=true && \
     tar -xvf $KAFKA_DISTRO_NAME.tgz && \
     mkdir -p $KAFKA_CONF_DIR && \
