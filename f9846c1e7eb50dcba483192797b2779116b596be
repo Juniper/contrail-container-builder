@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d177d25e_be72481d",
+        "filename": "containers/analytics/snmp/topology/build_src/.src",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-11-11T12:16:35Z",
+      "side": 1,
+      "message": "lets move to base",
+      "range": {
+        "startLine": 1,
+        "startChar": 20,
+        "endLine": 1,
+        "endChar": 27
+      },
+      "revId": "f9846c1e7eb50dcba483192797b2779116b596be",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
