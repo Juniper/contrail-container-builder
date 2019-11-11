@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "78d437ff_9cdf0b8c",
+        "filename": "containers/openstack/compute-init/build_src/.deps",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-11-11T12:24:24Z",
+      "side": 1,
+      "message": "lets remove.\ninit container doesnt run services , it just copies files.",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 3,
+        "endChar": 19
+      },
+      "revId": "29d888ec579288aefbf44ba52579cc8d9540728d",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "50d22f55_601c7543",
+        "filename": "containers/openstack/heat-init/build_src/.deps",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-11-11T12:24:24Z",
+      "side": 1,
+      "message": "I would try remove deps at all. this init container ust copy some contrail\nfiles onto the heat volume and doesnt run any service.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 23
+      },
+      "revId": "29d888ec579288aefbf44ba52579cc8d9540728d",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
