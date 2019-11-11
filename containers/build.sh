@@ -79,7 +79,7 @@ function process_container() {
   local logfile='build-'$container_name'.log'
   log "Building $container_name" | append_log_file $logfile true
 
-  local build_arg_opts=''
+  local build_arg_opts='--network host'
   if [[ "$docker_ver" < '17.06' ]] ; then
     # old docker can't use ARG-s before FROM:
     # comment all ARG-s before FROM
