@@ -69,3 +69,4 @@ done
 
 yum clean all -y
 rm -rf /var/cache/yum
+ldconfig
