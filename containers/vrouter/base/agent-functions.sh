@@ -784,8 +784,6 @@ function launch_dhcp_clients() {
     mkdir -p /var/lib/dhcp
     dhclient -v -1  -sf /vhost-dhcp.sh -cf /dhclient-vhost0.conf -pf /run/dhclient.vhost0.pid -lf /var/lib/dhcp/dhclient.vhost0.leases -I vhost0 2>&1 </dev/null & disown -h "$!"
     sleep 3
-    dhclient vhost0 2>&1 </dev/null & disown -h "$!"
-    sleep 3
 }
 
 function check_and_launch_dhcp_clients() {
