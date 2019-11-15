@@ -2,23 +2,24 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
-
+ARG CONTRAIL_BUILD_FROM_SOURCE
 ARG CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
       summary="Contrail statistics client" \
       description="Contrail statistics client collects statistics about number of virtual networks, virtual routers , etc. No private information is collected."
 
-COPY entrypoint.sh /
-
-RUN yum install -y python2-setuptools git && \
+RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
+    yum install -y python2-setuptools git && \
     git clone --single-branch https://github.com/Juniper/contrail-controller.git && \
     cd contrail-controller/src/stats && \
     python setup.py install && \
     yum autoremove -y git && \
     yum clean all -y && \
     rm -rf /var/cache/yum && \
-    rm -rf /contrail-controller
+    rm -rf /contrail-controller; \
+    fi
 
+COPY *.sh /
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/bin/contrail-stats-client", "--config-file", "/etc/contrail/contrail-stats-client.conf"]
 

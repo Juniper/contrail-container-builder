@@ -1,0 +1,5 @@
+python2-future
+python2-requests
+python-configparser
+python-gevent
+python-geventhttpclient
