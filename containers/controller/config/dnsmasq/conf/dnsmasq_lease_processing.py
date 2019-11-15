@@ -17,6 +17,7 @@ vnc_api = VncApi(username=os.environ['KEYSTONE_AUTH_ADMIN_USER'],
              tenant_name=os.environ['KEYSTONE_AUTH_ADMIN_TENANT'],
              api_server_host=(os.environ['CONTROLLER_NODES']).split(','))
 
+
 def main():
     logging.basicConfig(
         filename=DEFAULT_LOG_PATH,
@@ -53,15 +54,24 @@ def main():
     elif sys.argv[1] == 'write':
         # write to the DB dummy PR with mac:ip
         fq_name = ['default-global-system-config', sys.argv[3]]
+        # In case of MX boxes it's not sending the hostname, so using the ip
+        #  as hostname for creating the temp PR record.
+        if len(sys.argv) < 6:
+            hostname = sys.argv[3]
+            lease_expiry_time = sys.argv[4]
+        else:
+            hostname = sys.argv[4]
+            lease_expiry_time = sys.argv[5]
+
         physicalrouter = PhysicalRouter(
             parent_type='global-system-config',
             fq_name=fq_name,
             physical_router_management_mac=sys.argv[2],
             physical_router_management_ip=sys.argv[3],
             physical_router_managed_state='dhcp',
-            physical_router_hostname=sys.argv[4],
+            physical_router_hostname=hostname,
             physical_router_dhcp_parameters={
-                'lease_expiry_time': sys.argv[5]
+                'lease_expiry_time': lease_expiry_time
             }
         )
         try:
@@ -82,5 +92,7 @@ def main():
             vnc_api.physical_router_delete(fq_name=fq_name)
         except Exception:
             logger.info("Router '%s' doesnot exist" % fq_name[-1])
+
+
 if __name__ == '__main__':
     main()
