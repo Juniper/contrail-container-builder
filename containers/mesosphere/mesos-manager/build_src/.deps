@@ -1,0 +1,15 @@
+python2-bitstring
+python2-future
+python2-requests
+python2-six
+python-bitarray
+python-bitstring
+python-configparser
+python-enum34
+python-eventlet
+python-gevent
+python-geventhttpclient
+python-kazoo
+python-netaddr
+python-pycassa
+python-setuptools
