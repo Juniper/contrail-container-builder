@@ -1,0 +1,3 @@
+controller/src/container/cni/cni/common /usr/bin/contrail-k8s-cni/
+controller/src/container/cni/cni/kube_cni /usr/bin/contrail-k8s-cni/
+controller/src/container/cni/cni/contrail usr/bin/contrail-k8s-cni/

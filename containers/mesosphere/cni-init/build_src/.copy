@@ -1,0 +1,3 @@
+controller/src/container/cni/cni/common /usr/bin/contrail-mesos-cni/
+controller/src/container/cni/cni/mesos_cni /usr/bin/contrail-mesos-cni/
+controller/src/container/cni/cni/contrail /usr/bin/contrail-mesos-cni/
