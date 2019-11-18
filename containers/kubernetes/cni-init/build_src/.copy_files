@@ -1,0 +1,1 @@
+build/production/container/cni/bin/kube_cni /usr/bin/contrail-k8s-cni
