@@ -1,0 +1,1 @@
+build/production/container/cni/bin/mesos_cni /usr/bin/contrail-mesos-cni
