@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "989e0e3a_f48e2ba3",
+        "filename": "containers/build_from_src.sh",
+        "patchSetId": 11
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-11-21T13:33:06Z",
+      "side": 1,
+      "message": "replace with\n-z \"$dst_folder\"",
+      "range": {
+        "startLine": 44,
+        "startChar": 10,
+        "endLine": 44,
+        "endChar": 27
+      },
+      "revId": "2981aa30edb9c28b2c2bc983442a459b22fe69ed",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2ea51d18_f585ec9b",
+        "filename": "containers/openstack/compute-init/Dockerfile",
+        "patchSetId": 11
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-11-21T13:33:06Z",
+      "side": 1,
+      "message": "it cannot be done before rpm .. calls.",
+      "range": {
+        "startLine": 13,
+        "startChar": 4,
+        "endLine": 13,
+        "endChar": 54
+      },
+      "revId": "2981aa30edb9c28b2c2bc983442a459b22fe69ed",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3d870509_027c83bb",
+        "filename": "containers/openstack/compute-init/build_src/.deps",
+        "patchSetId": 11
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-11-21T13:33:06Z",
+      "side": 1,
+      "message": "My understanding is that 3rd party packages can be removed as they are actually not run inside this container.  (it is applicable to all deps files for all init containers here in review)",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 5,
+        "endChar": 13
+      },
+      "revId": "2981aa30edb9c28b2c2bc983442a459b22fe69ed",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a2d0420e_33033f90",
+        "filename": "containers/openstack/heat-init/Dockerfile",
+        "patchSetId": 11
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-11-21T13:33:06Z",
+      "side": 1,
+      "message": "Looks this part is wrong here.",
+      "range": {
+        "startLine": 13,
+        "startChar": 4,
+        "endLine": 17,
+        "endChar": 9
+      },
+      "revId": "2981aa30edb9c28b2c2bc983442a459b22fe69ed",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "23c2f9be_a9e4ca15",
+        "filename": "containers/openstack/neutron-init/Dockerfile",
+        "patchSetId": 11
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-11-21T13:33:06Z",
+      "side": 1,
+      "message": "why it is needed here?  How it works now for rpm w/o that?",
+      "range": {
+        "startLine": 14,
+        "startChar": 4,
+        "endLine": 18,
+        "endChar": 10
+      },
+      "revId": "2981aa30edb9c28b2c2bc983442a459b22fe69ed",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
