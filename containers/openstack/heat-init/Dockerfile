@@ -13,7 +13,6 @@ RUN rpm -Uvh --nodeps $(repoquery --location python-contrail) && \
     mkdir -p /opt/contrail/site-packages && \
     cp -rf /usr/lib/python2.7/site-packages/contrail_heat* /opt/contrail/site-packages && \
     cp -rf /usr/lib/python2.7/site-packages/vnc_api* /opt/contrail/site-packages && \
-    cp -rf /usr/lib/python2.7/site-packages/cfgm_common* /opt/contrail/site-packages && \
     yum autoremove -y python-contrail contrail-heat && \
     yum clean all -y && \
     rm -rf /var/cache/yum
