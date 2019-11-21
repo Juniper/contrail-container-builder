@@ -3,7 +3,7 @@
 ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
-
+ARG CONTRAIL_BUILD_FROM_SOURCE
 ARG BASE_EXTRA_RPMS=""
 
 # note: ldconfig looks strange. contrail-lib installs shared libraries but do not call it...
@@ -12,10 +12,12 @@ RUN BASE_EXTRA_RPMS=$(echo $BASE_EXTRA_RPMS | tr -d '"' | tr ',' ' ') && \
         echo "INFO: contrail-base: install $BASE_EXTRA_RPMS" ; \
         yum install -y $BASE_EXTRA_RPMS ; \
     fi && \
+    if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
     yum install -y iproute less hostname python3 python3-setuptools contrail-lib contrail-setup contrail-utils python-contrail && \
     yum clean all -y && \
     rm -rf /var/cache/yum && \
-    ldconfig
+    ldconfig; \
+    fi
 
 COPY *.sh /
 
