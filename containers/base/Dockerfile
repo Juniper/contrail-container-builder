@@ -14,6 +14,8 @@ RUN BASE_EXTRA_RPMS=$(echo $BASE_EXTRA_RPMS | tr -d '"' | tr ',' ' ') && \
     fi && \
     yum install -y iproute less hostname python3 python3-setuptools contrail-lib contrail-setup contrail-utils python-contrail && \
     yum clean all -y && \
+    python3 -m pip install --upgrade future  && \
+    python3 -m pip install --upgrade six && \
     rm -rf /var/cache/yum && \
     ldconfig
 
