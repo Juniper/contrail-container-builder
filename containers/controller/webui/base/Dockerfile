@@ -2,8 +2,8 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
-
 ARG BASE_EXTRA_RPMS=""
+ARG CONTRAIL_BUILD_FROM_SOURCE
 
 # python3 is required for helper scripts
 RUN BASE_EXTRA_RPMS=$(echo $BASE_EXTRA_RPMS | tr -d '"' | tr ',' ' ') && \
@@ -11,10 +11,12 @@ RUN BASE_EXTRA_RPMS=$(echo $BASE_EXTRA_RPMS | tr -d '"' | tr ',' ' ') && \
         echo "INFO: contrail-base: install $BASE_EXTRA_RPMS" ; \
         yum install -y $BASE_EXTRA_RPMS ; \
     fi && \
-    yum install -y iproute less hostname python3 nodejs-0.10.48-1contrail.el7 contrail-web-controller contrail-web-core && \
-    yum clean all -y && \
-    rm -rf /var/cache/yum && \
-    chown -R $CONTRAIL_USER:$CONTRAIL_USER /usr/src/contrail
+    if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
+        yum install -y iproute less hostname python3 nodejs-0.10.48-1contrail.el7 contrail-web-controller contrail-web-core && \
+        yum clean all -y && \
+        rm -rf /var/cache/yum && \
+        chown -R $CONTRAIL_USER:$CONTRAIL_USER /usr/src/contrail; \
+    fi
 
 COPY custom-images/logo.png /opt/contrail/images/logo.png
 COPY custom-images/favicon.ico /opt/contrail/images/favicon.ico
