@@ -8,11 +8,13 @@ LABEL name=$CONTAINER_NAME \
       summary="Init container for OpenStack Heat" \
       description="Sidecar container with libraries for heat services."
 
+# python2-future is required for python-contrail
 RUN rpm -Uvh --nodeps $(repoquery --location python-contrail) && \
     rpm -Uvh --nodeps $(repoquery --location contrail-heat) && \
     mkdir -p /opt/contrail/site-packages && \
     cp -rf /usr/lib/python2.7/site-packages/contrail_heat* /opt/contrail/site-packages && \
     cp -rf /usr/lib/python2.7/site-packages/vnc_api* /opt/contrail/site-packages && \
+    pip install -t /opt/contrail/site-packages "future==0.16.0" && \
     yum autoremove -y python-contrail contrail-heat && \
     yum clean all -y && \
     rm -rf /var/cache/yum
