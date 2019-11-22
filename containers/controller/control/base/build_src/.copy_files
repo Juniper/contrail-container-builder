@@ -1,0 +1,4 @@
+build/production/control-node/contrail-control /usr/bin/contrail-control
+build/production/dns/contrail-dns /usr/bin/contrail-dns
+build/sbin/contrail-named /usr/bin/contrail-named
+build/sbin/contrail-rndc /usr/bin/contrail-rndc
