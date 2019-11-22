@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b9178b53_22411c32",
+        "filename": "containers/controller/webui/base/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-11-22T20:21:59Z",
+      "side": 1,
+      "message": "iproute, less, hostname, python3 are used in common scripts. they are not a webui deps but container infra deps. I suggest to leave them outside of this condition.",
+      "revId": "668332c39c07c56fe9d64f2a2ecbe363b8c10f3a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
