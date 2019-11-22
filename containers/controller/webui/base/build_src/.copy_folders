@@ -1,0 +1,3 @@
+contrail-web-controller/. /usr/src/contrail/contrail-web-controller/
+contrail-web-core/. /usr/src/contrail/contrail-web-core/
+contrail-webui-third-party/node_modules/. /usr/lib/node_modules/
