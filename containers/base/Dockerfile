@@ -7,6 +7,12 @@ ARG CONTRAIL_BUILD_FROM_SOURCE
 ARG BASE_EXTRA_RPMS=""
 
 # note: ldconfig looks strange. contrail-lib installs shared libraries but do not call it...
+# note: we decide to install python3 packages by pip because they are absent in RHEL7/CentOS7 repos.
+# these two packages (six, future) are installed here because they are needed for contrail-utils at least.
+# further all deps should be moved to modules itself and here we must use requirements.txt to install deps.
+# and one more next step is to install python modules from sources without creating RPM.
+# WARNING! all pip deps must be installed with pinned version to avoid breakages when pypi is upgraded.
+# NOTE! all other deps must be installed in the container that requires such deps.
 RUN BASE_EXTRA_RPMS=$(echo $BASE_EXTRA_RPMS | tr -d '"' | tr ',' ' ') && \
     if [[ -n "$BASE_EXTRA_RPMS" ]] ; then \
         echo "INFO: contrail-base: install $BASE_EXTRA_RPMS" ; \
@@ -15,6 +21,7 @@ RUN BASE_EXTRA_RPMS=$(echo $BASE_EXTRA_RPMS | tr -d '"' | tr ',' ' ') && \
     if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
     yum install -y iproute less hostname python3 python3-setuptools contrail-lib contrail-setup contrail-utils python-contrail && \
     yum clean all -y && \
+    python3 -m pip install "future==0.18.2" "six==1.13.0" && \
     rm -rf /var/cache/yum && \
     ldconfig; \
     fi
