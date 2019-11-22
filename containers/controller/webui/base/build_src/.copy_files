@@ -1,0 +1,2 @@
+contrail-web-core/config/config.global.js /etc/config/config.global.js
+contrail-web-core/config/userAuth.js /etc/config/contrail-webui-userauth.js
