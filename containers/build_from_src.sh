@@ -25,7 +25,7 @@ if [[ -n "$CONTRAIL_DEPS" ]] ; then
   if [[ $exitcode -ne 0 ]]; then
    log "YUM is finished with error"
    exit 1
-  fi
+  fi  
 else
    log "There is no dependecies to install. Continue."
 fi
