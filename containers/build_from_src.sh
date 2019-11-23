@@ -26,6 +26,10 @@ if [[ -n "$CONTRAIL_DEPS" ]] ; then
    log "YUM is finished with error"
    exit 1
   fi
+  if [[ -e ${build_path}/.pip ]]; then
+    log "pip installation"
+    easy_install pip
+  fi
 else
    log "There is no dependecies to install. Continue."
 fi
