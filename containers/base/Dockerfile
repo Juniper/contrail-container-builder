@@ -13,7 +13,8 @@ ARG BASE_EXTRA_RPMS=""
 # and one more next step is to install python modules from sources without creating RPM.
 # WARNING! all pip deps must be installed with pinned version to avoid breakages when pypi is upgraded.
 # NOTE! all other deps must be installed in the container that requires such deps.
-RUN BASE_EXTRA_RPMS=$(echo $BASE_EXTRA_RPMS | tr -d '"' | tr ',' ' ') && \
+RUN curl https://bootstrap.pypa.io/get-pip.py | python2 && /
+    BASE_EXTRA_RPMS=$(echo $BASE_EXTRA_RPMS | tr -d '"' | tr ',' ' ') && \
     if [[ -n "$BASE_EXTRA_RPMS" ]] ; then \
         echo "INFO: contrail-base: install $BASE_EXTRA_RPMS" ; \
         yum install -y $BASE_EXTRA_RPMS ; \
