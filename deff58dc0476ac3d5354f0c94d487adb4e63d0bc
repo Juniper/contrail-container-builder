@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7f151fca_0ee6b041",
+        "filename": "containers/build_from_src.sh",
+        "patchSetId": 4
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-11-25T14:14:40Z",
+      "side": 1,
+      "message": "revert this file",
+      "range": {
+        "startLine": 28,
+        "startChar": 4,
+        "endLine": 28,
+        "endChar": 6
+      },
+      "revId": "deff58dc0476ac3d5354f0c94d487adb4e63d0bc",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
