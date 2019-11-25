@@ -1,0 +1,5 @@
+controller/src/vnsw/agent/contrail/contrail-vrouter-agent-health-check.py /usr/bin/contrail-vrouter-agent-health-check.py
+build/production/vnsw/agent/contrail/contrail-vrouter-agent /usr/bin/contrail-vrouter-agent
+build/production/vnsw/agent/ovs_tor_agent/contrail-tor-agent /usr/bin/contrail-tor-agent
+controller/src/vnsw/agent/contrail/contrail_crypt_tunnel_client.py /usr/bin/contrail_crypt_tunnel_client.py
+controller/src/vnsw/agent/port_ipc/vrouter-port-control /usr/bin/vrouter-port-control
