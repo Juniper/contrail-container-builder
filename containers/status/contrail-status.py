@@ -517,7 +517,7 @@ def parse_args():
                       default=False, action='store_true',
                       help="show debugging information")
     parser.add_option('-t', '--timeout', dest='timeout', type="float",
-                      default=2,
+                      default=5,
                       help="timeout in seconds to use for HTTP requests to services")
     parser.add_option('-k', '--keyfile', dest='keyfile', type="string",
                       default="/etc/contrail/ssl/private/server-privkey.pem",
