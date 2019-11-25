@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f47ca482_b2b0b7ea",
+        "filename": "containers/mesosphere/mesos-manager/Dockerfile",
+        "patchSetId": 4
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-11-25T15:40:40Z",
+      "side": 1,
+      "message": "mesos",
+      "range": {
+        "startLine": 14,
+        "startChar": 28,
+        "endLine": 14,
+        "endChar": 32
+      },
+      "revId": "dbf8d7ae04ac32f44113a91e5dc037a19d0b4e24",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
