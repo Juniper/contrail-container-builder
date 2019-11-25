@@ -1,0 +1,6 @@
+java-api/target/juniper-contrail-api-3.0-SNAPSHOT.jar /usr/share/contrail-vcenter-plugin/juniper-contrail-api.jar
+vcenter-plugin/target/juniper-contrail-vcenter-3.0-SNAPSHOT.jar /usr/share/contrail-vcenter-plugin/juniper-contrail-vcenter.jar
+vijava/target/juniper-contrail-vijava-3.0-SNAPSHOT.jar /usr/share/contrail-vcenter-plugin/juniper-contrail-vijava.jar
+vrouter-java-api/target/juniper-contrail-vrouter-api-3.0-SNAPSHOT.jar /usr/share/contrail-vcenter-plugin/juniper-contrail-vrouter-api.jar
+vcenter-plugin/control_files/contrail-vcenter-plugin /usr/bin/contrail-vcenter-plugin
+vcenter-plugin/log4j.properties /usr/share/contrail-vcenter-plugin/log4j.properties
