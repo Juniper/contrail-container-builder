@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "eea23a18_b1348309",
+        "filename": "containers/build.sh",
+        "patchSetId": 19
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 846
+      },
+      "writtenOn": "2019-11-25T19:57:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "031e9cdb_3f3c429c",
+      "revId": "5e7ca473eabd194f3bcfae97a307608e8ec9ad11",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1d489f9d_1daf2359",
         "filename": "containers/build.sh",
         "patchSetId": 19
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "d42f2e08_507cdd24",
+        "filename": "containers/build.sh",
+        "patchSetId": 19
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 846
+      },
+      "writtenOn": "2019-11-25T19:57:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1d489f9d_1daf2359",
+      "revId": "5e7ca473eabd194f3bcfae97a307608e8ec9ad11",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8f6c0f55_c1693667",
         "filename": "containers/controller/config/api/Dockerfile",
         "patchSetId": 19
@@ -47,6 +83,30 @@
       "writtenOn": "2019-11-21T17:29:30Z",
       "side": 1,
       "message": "AS i remember it was decided to avoid this env?\nps: it is for all docker files in this review",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 58
+      },
+      "revId": "5e7ca473eabd194f3bcfae97a307608e8ec9ad11",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "79bb4a37_7a117557",
+        "filename": "containers/controller/config/api/Dockerfile",
+        "patchSetId": 19
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 846
+      },
+      "writtenOn": "2019-11-25T19:57:19Z",
+      "side": 1,
+      "message": "yeah, it was missed, already remove from others review",
+      "parentUuid": "8f6c0f55_c1693667",
       "range": {
         "startLine": 12,
         "startChar": 0,
@@ -185,6 +245,30 @@
       "writtenOn": "2019-11-21T17:29:30Z",
       "side": 1,
       "message": "not sure if it is needed here.. looks like a part of device manager",
+      "range": {
+        "startLine": 3,
+        "startChar": 0,
+        "endLine": 3,
+        "endChar": 38
+      },
+      "revId": "5e7ca473eabd194f3bcfae97a307608e8ec9ad11",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "abb136f7_3983f4f7",
+        "filename": "containers/controller/config/devicemgr/build_src/.src",
+        "patchSetId": 19
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 846
+      },
+      "writtenOn": "2019-11-25T19:57:19Z",
+      "side": 1,
+      "message": "it is device manager",
+      "parentUuid": "396967e0_e1eb7fdb",
       "range": {
         "startLine": 3,
         "startChar": 0,
