@@ -307,12 +307,12 @@ def get_svc_uve_info(svc_name, container, port_env_key, options):
         if http_server_port:
             svc_uve_status, svc_uve_description = \
                 get_svc_uve_status(svc_name, http_server_port, options)
-    except (requests.ConnectionError, IOError) as e:
-        print_debug('Socket Connection error : %s' % (str(e)))
-        svc_uve_status = "connection-error"
     except (requests.Timeout, socket.timeout) as te:
         print_debug('Timeout error : %s' % (str(te)))
         svc_uve_status = "connection-timeout"
+    except (requests.ConnectionError, IOError) as e:
+        print_debug('Socket Connection error : %s' % (str(e)))
+        svc_uve_status = "connection-error"
 
     if svc_uve_status is not None:
         if svc_uve_status == 'Non-Functional':
@@ -517,7 +517,7 @@ def parse_args():
                       default=False, action='store_true',
                       help="show debugging information")
     parser.add_option('-t', '--timeout', dest='timeout', type="float",
-                      default=2,
+                      default=5,
                       help="timeout in seconds to use for HTTP requests to services")
     parser.add_option('-k', '--keyfile', dest='keyfile', type="string",
                       default="/etc/contrail/ssl/private/server-privkey.pem",
