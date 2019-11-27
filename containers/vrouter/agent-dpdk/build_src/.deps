@@ -1,0 +1,8 @@
+dhclient
+NetworkManager
+liburcu2
+libnl3
+numactl-libs
+rdma-core-devel
+rdma-core
+libibverbs
