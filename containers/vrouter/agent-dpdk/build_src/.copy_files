@@ -1,0 +1,2 @@
+build/production/vrouter/dpdk/contrail-vrouter-dpdk /usr/bin/contrail-vrouter-dpdk
+tools/packages/rpm/contrail-vrouter-dpdk-init/dpdk_nic_bind.py /opt/contrail/bin/dpdk_nic_bind.py

@@ -8,9 +8,12 @@ LABEL name=$CONTAINER_NAME \
       summary="Kernel init container for vrouter" \
       description="Prepares the host operating system for the contrail vrouter kernel interface."
 
-RUN rpm -Uvh --nodeps $(repoquery --location contrail-vrouter) && \
+ARG CONTRAIL_BUILD_FROM_SOURCE
+RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
+    rpm -Uvh --nodeps $(repoquery --location contrail-vrouter) && \
     yum clean all -y && \
-    rm -rf /var/cache/yum
+    rm -rf /var/cache/yum; \
+    fi
 
 COPY entrypoint.sh /
 

@@ -1,0 +1,2 @@
+vrouter/utils/dkms/gen_build_info.sh /contrail_tools/gen_build_info.sh
+build/production/vrouter/utils/vif /contrail_tools/vif
