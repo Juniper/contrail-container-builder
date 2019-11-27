@@ -1,0 +1,16 @@
+build/production/vrouter/dpdk/contrail-vrouter-dpdk /usr/bin/contrail-vrouter-dpdk
+tools/packages/rpm/contrail-vrouter-dpdk-init/dpdk_nic_bind.py /opt/contrail/bin/dpdk_nic_bind.py
+tools/packages/rpm/contrail-vrouter-dpdk-init/ifquery /usr/bin/ifquery
+tools/packages/rpm/contrail-vrouter-dpdk-init/dpdk_vnagent_ExecStartPost.sh /etc/contrail/vnagent_ExecStartPost.sh
+tools/packages/rpm/contrail-vrouter-dpdk-init/dpdk_vnagent_ExecStartPre.sh /etc/contrail/vnagent_ExecStartPre.sh
+tools/packages/rpm/contrail-vrouter-dpdk-init/dpdk_vnagent_ExecStopPost.sh /etc/contrail/vnagent_ExecStopPost.sh
+tools/packages/rpm/contrail-vrouter-dpdk-init/contrail_reboot /etc/contrail/contrail_reboot
+tools/packages/rpm/contrail-vrouter-dpdk-init/vrouter-functions.sh /opt/contrail/bin/vrouter-functions.sh
+tools/packages/rpm/contrail-vrouter-dpdk-init/vnagent_param_setup.sh /opt/contrail/bin/vnagent_param_setup.sh
+tools/packages/rpm/contrail-vrouter-dpdk-init/if-vhost0 /opt/contrail/bin/if-vhost0
+tools/packages/rpm/contrail-vrouter-dpdk-init/core-pattern.upstart /etc/init/core-pattern.conf
+controller/src/vnsw/agent/contrail/contrail-vrouter-agent-health-check.py /usr/bin/contrail-vrouter-agent-health-check.py
+build/production/vnsw/agent/contrail/contrail-vrouter-agent /usr/bin/contrail-vrouter-agent
+build/production/vnsw/agent/ovs_tor_agent/contrail-tor-agent /usr/bin/contrail-tor-agent
+controller/src/vnsw/agent/contrail/contrail_crypt_tunnel_client.py /usr/bin/contrail_crypt_tunnel_client.py
+controller/src/vnsw/agent/port_ipc/vrouter-port-control /usr/bin/vrouter-port-control

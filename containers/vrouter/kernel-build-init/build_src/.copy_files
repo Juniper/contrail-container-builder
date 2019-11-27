@@ -1,0 +1,16 @@
+build/production/vrouter/utils/dkms/gen_build_info.sh /contrail_tools/gen_build_info.sh
+build/production/vrouter/utils/vif /contrail_tools/vif
+build/production/vrouter/utils/rt /contrail_tools/rt
+build/production/vrouter/utils/nh /contrail_tools/nh
+build/production/vrouter/utils/mpls /contrail_tools/mpls
+build/production/vrouter/utils/flow /contrail_tools/flow
+build/production/vrouter/utils/vrfstats /contrail_tools/vrfstats
+build/production/vrouter/utils/dropstats /contrail_tools/dropstats
+build/production/vrouter/utils/vxlan /contrail_tools/vxlan
+build/production/vrouter/utils/vrouter/contrail_tools/vrouter
+build/production/vrouter/utils/vrmemstats /contrail_tools/vrmemstats
+build/production/vrouter/utils/mirror /contrail_tools/mirror
+build/production/vrouter/utils/qosmap /contrail_tools/qosmap
+build/production/vrouter/utils/vifdump /contrail_tools/vifdump
+build/production/vrouter/utils/dpdkvifstats.py /contrail_tools/dpdkvifstats.py
+build/production/vrouter/utils/vrftable /contrail_tools/vrftable
