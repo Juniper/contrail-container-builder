@@ -1,0 +1,4 @@
+build/noarch/contrail-vrouter-api
+build/noarch/vcenter-manager
+build/noarch/provisioning
+build/production/utils/contrail-cli/contrail_vrouter_cli
