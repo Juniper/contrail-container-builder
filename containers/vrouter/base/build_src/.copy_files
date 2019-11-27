@@ -1,0 +1,16 @@
+build/production/vrouter/utils/vif /usr/bin/vif
+build/production/vrouter/utils/rt /usr/bin/rt
+build/production/vrouter/utils/nh /usr/bin/nh
+build/production/vrouter/utils/mpls /usr/bin/mpls
+build/production/vrouter/utils/flow /usr/bin/flow
+build/production/vrouter/utils/vrfstats /usr/bin/vrfstats
+build/production/vrouter/utils/dropstats /usr/bin/dropstats
+build/production/vrouter/utils/vxlan /usr/bin/vxlan
+build/production/vrouter/utils/vrouter /usr/bin/vrouter
+build/production/vrouter/utils/vrmemstats /usr/bin/vrmemstats
+build/production/vrouter/utils/mirror /usr/bin/mirror
+build/production/vrouter/utils/qosmap /usr/bin/qosmap
+build/production/vrouter/utils/vrftable /usr/bin/vrftable
+vrouter/utils/vifdump /usr/bin/vifdump
+vrouter/utils/dpdkvifstats.py /usr/bin/dpdkvifstats.py
+vrouter/utils/dkms/gen_build_info.sh /usr/src/vrouter/utils/dkms/gen_build_info.sh
