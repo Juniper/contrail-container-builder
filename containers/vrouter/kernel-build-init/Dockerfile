@@ -3,7 +3,8 @@ ARG UBUNTU_DISTR_VERSION=18.10
 FROM $UBUNTU_DISTR:$UBUNTU_DISTR_VERSION
 ARG VENDOR_NAME
 ARG VENDOR_DOMAIN
-
+ARG CONTRAIL_VERSION
+ARG CONTRAIL_BUILD_FROM_SOURCE
 ARG CONTRAIL_CONTAINER_TAG
 ARG CONTAINER_NAME
 LABEL vendor=$VENDOR_NAME \
@@ -25,13 +26,15 @@ COPY __licensing.txt /licenses/licensing.txt
 # this copy should be before yum install
 COPY *.repo /etc/yum.repos.d/
 
-RUN export DEBIAN_FRONTEND=noninteractive && \
+RUN mkdir -p /opt/contrail/src /contrail_tools && \
+    contrail_version=${CONTRAIL_VERSION:-$CONTRAIL_CONTAINER_TAG} && \
+    echo "${contrail_version}" > /contrail_version && \
+    if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
+    export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get install -y --no-install-recommends yum yum-utils rpm2cpio cpio dkms && \
     yum install -y contrail-vrouter-source && \
-    mkdir -p /opt/contrail/src /contrail_tools && \
-    mv /usr/src/* /opt/contrail/src/ && \
-    rpm -q --qf "%{VERSION}" contrail-vrouter-source > /contrail_version && \
+    mv /usr/src/* /opt/contrail/src/ && \  
     cd /contrail_tools && \
     yumdownloader contrail-vrouter-utils && \
     rpm2cpio $(ls contrail-vrouter-utils*.rpm) | cpio -iuvd && \
@@ -40,7 +43,8 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     yum clean all -y && \
     rm -rf /var/cache/yum && \
     apt-get purge -y yum yum-utils rpm2cpio cpio && \
-    apt-get autoremove -y
+    apt-get autoremove -y; \
+    fi
 
 COPY dkms.conf /opt/contrail/src/
 COPY entrypoint.sh /
