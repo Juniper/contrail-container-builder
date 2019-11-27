@@ -8,9 +8,12 @@ LABEL name=$CONTAINER_NAME \
       summary="Kernel init container for vrouter in DPDK mode" \
       description="Prepares the host operating system for the contrail vrouter dpdk interface."
 
+ARG CONTRAIL_BUILD_FROM_SOURCE
+RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
 RUN yum install -y contrail-vrouter-dpdk-init && \
     yum clean all -y && \
-    rm -rf /var/cache/yum
+    rm -rf /var/cache/yum; \
+    fi
 
 COPY entrypoint.sh /
 

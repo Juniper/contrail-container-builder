@@ -1,0 +1,4 @@
+build/noarch/opencontrail-vrouter-netns
+build/noarch/contrail-vrouter-api
+build/noarch/provisioning
+build/production/utils/contrail-cli/contrail_vrouter_cli

@@ -25,11 +25,14 @@ COPY __licensing.txt /licenses/licensing.txt
 # this copy should be before yum install
 COPY *.repo /etc/yum.repos.d/
 
-RUN export DEBIAN_FRONTEND=noninteractive && \
+
+ARG CONTRAIL_BUILD_FROM_SOURCE
+RUN mkdir -p /opt/contrail/src /contrail_tools && \
+    if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
+    export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get install -y --no-install-recommends yum yum-utils rpm2cpio cpio dkms && \
-    yum install -y contrail-vrouter-source && \
-    mkdir -p /opt/contrail/src /contrail_tools && \
+    yum install -y contrail-vrouter-source && \    
     mv /usr/src/* /opt/contrail/src/ && \
     rpm -q --qf "%{VERSION}" contrail-vrouter-source > /contrail_version && \
     cd /contrail_tools && \
@@ -40,7 +43,8 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     yum clean all -y && \
     rm -rf /var/cache/yum && \
     apt-get purge -y yum yum-utils rpm2cpio cpio && \
-    apt-get autoremove -y
+    apt-get autoremove -y; \
+    fi
 
 COPY dkms.conf /opt/contrail/src/
 COPY entrypoint.sh /
