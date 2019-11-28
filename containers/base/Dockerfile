@@ -18,6 +18,8 @@ RUN curl https://bootstrap.pypa.io/get-pip.py | python2 && \
     if [[ -n "$BASE_EXTRA_RPMS" ]] ; then \
         echo "INFO: contrail-base: install $BASE_EXTRA_RPMS" ; \
         yum install -y $BASE_EXTRA_RPMS ; \
+        echo "INFO: importing gpg keys from any newly installed repos" ; \
+        rpm --import /etc/pki/rpm-gpg/* ; \
     fi && \
     if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
       yum install -y iproute less hostname python3 python3-setuptools contrail-lib contrail-setup contrail-utils python-contrail && \
