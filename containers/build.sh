@@ -148,9 +148,9 @@ function process_container() {
     local run_arguments="--name $intermediate_base --network host \
        -e "CONTRAIL_SOURCE=${CONTRAIL_SOURCE}" \
        -e "LINUX_DISTR=${LINUX_DISTR}" \
-       -v ${CONTRAIL_SOURCE}:${CONTRAIL_SOURCE}:Z \
-       -v ${abs_build_src_path}:/build_src:Z \
-       -v ${CONTRAIL_BUILDER_DIR}/containers/build_from_src.sh:/setup.sh:Z \
+       -v ${CONTRAIL_SOURCE}:${CONTRAIL_SOURCE}:z \
+       -v ${abs_build_src_path}:/build_src:z \
+       -v ${CONTRAIL_BUILDER_DIR}/containers/build_from_src.sh:/setup.sh:z \
        --entrypoint /setup.sh \
       ${target_name}"
     log "Run command is \"Docker run ${run_arguments}\"" | append_log_file $logfile
