@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5d1c2894_a18c66b8",
+        "filename": "containers/openstack/compute-init/Dockerfile",
+        "patchSetId": 21
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-11-29T17:28:14Z",
+      "side": 1,
+      "message": "this is missed in .src",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 55
+      },
+      "revId": "510247740cac9c893e729b781181899d73fb8a34",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4b76ff36_6100c549",
+        "filename": "containers/openstack/compute-init/Dockerfile",
+        "patchSetId": 21
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-11-29T17:28:14Z",
+      "side": 1,
+      "message": "these 2 are missed in .src",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 103
+      },
+      "revId": "510247740cac9c893e729b781181899d73fb8a34",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bff9ee8a_a182e731",
+        "filename": "containers/openstack/heat-init/Dockerfile",
+        "patchSetId": 21
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-11-29T17:28:14Z",
+      "side": 1,
+      "message": "this is missed in .src\nIt might be that this is easier to move out the if and do unconditionally..",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 29,
+        "endChar": 56
+      },
+      "revId": "510247740cac9c893e729b781181899d73fb8a34",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fa92b87a_0a0aca1b",
+        "filename": "containers/openstack/neutron-init/Dockerfile",
+        "patchSetId": 21
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-11-29T17:28:14Z",
+      "side": 1,
+      "message": "it looks to be done unconditionally..",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 56
+      },
+      "revId": "510247740cac9c893e729b781181899d73fb8a34",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
