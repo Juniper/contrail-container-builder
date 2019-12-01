@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "303d488e_e0737216",
+        "filename": "containers/vcenter/manager/build_src/.copy_files",
+        "patchSetId": 9
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-12-01T12:42:33Z",
+      "side": 1,
+      "message": "all theses looks not used in these container. why we need agent files here?",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 6,
+        "endChar": 0
+      },
+      "revId": "e8d8dbea145a8f4a2f7f2b5d90bee9cae0826d97",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
