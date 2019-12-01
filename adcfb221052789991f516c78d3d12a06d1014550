@@ -1,0 +1,182 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2d5b17c9_fb31e97a",
+        "filename": "containers/vrouter/agent-dpdk/build_src/.copy_files",
+        "patchSetId": 4
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-12-01T11:44:38Z",
+      "side": 1,
+      "message": "these now are not used, can be removed",
+      "range": {
+        "startLine": 3,
+        "startChar": 0,
+        "endLine": 12,
+        "endChar": 0
+      },
+      "revId": "adcfb221052789991f516c78d3d12a06d1014550",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "21a13a18_d1b8de45",
+        "filename": "containers/vrouter/agent/build_src/.deps",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-12-01T11:44:38Z",
+      "side": 1,
+      "message": "do we know how to install it w/o rpm?",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 12
+      },
+      "revId": "adcfb221052789991f516c78d3d12a06d1014550",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c112a9c9_6213bc10",
+        "filename": "containers/vrouter/base/Dockerfile",
+        "patchSetId": 4
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-12-01T11:44:38Z",
+      "side": 1,
+      "message": "it looks to be done unconditionally",
+      "range": {
+        "startLine": 13,
+        "startChar": 4,
+        "endLine": 13,
+        "endChar": 42
+      },
+      "revId": "adcfb221052789991f516c78d3d12a06d1014550",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "353e7d73_5c3f7458",
+        "filename": "containers/vrouter/kernel-build-init/Dockerfile",
+        "patchSetId": 4
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-12-01T11:44:38Z",
+      "side": 1,
+      "message": "this somehow to be done also unconditionally",
+      "range": {
+        "startLine": 37,
+        "startChar": 4,
+        "endLine": 37,
+        "endChar": 72
+      },
+      "revId": "adcfb221052789991f516c78d3d12a06d1014550",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "be92c2b6_589dc8f1",
+        "filename": "containers/vrouter/kernel-build-init/Dockerfile",
+        "patchSetId": 4
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-12-01T11:44:38Z",
+      "side": 1,
+      "message": "it looks that something is to be copied into this folder?",
+      "range": {
+        "startLine": 38,
+        "startChar": 4,
+        "endLine": 38,
+        "endChar": 22
+      },
+      "revId": "adcfb221052789991f516c78d3d12a06d1014550",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5c5107d9_7bfd710b",
+        "filename": "containers/vrouter/kernel-build-init/build_src/.copy_files",
+        "patchSetId": 4
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-12-01T11:44:38Z",
+      "side": 1,
+      "message": "afaik, they are not used by init contianer.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 54
+      },
+      "revId": "adcfb221052789991f516c78d3d12a06d1014550",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "03d68334_07af43a7",
+        "filename": "containers/vrouter/kernel-init-dpdk/build_src/.copy_files",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-12-01T11:44:38Z",
+      "side": 1,
+      "message": "afaik all these are not used in this container.\nbut check the tool /bin/vif is installed.",
+      "revId": "adcfb221052789991f516c78d3d12a06d1014550",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1965f441_c8d02e80",
+        "filename": "containers/vrouter/kernel-init-dpdk/build_src/.src",
+        "patchSetId": 4
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-12-01T11:44:38Z",
+      "side": 1,
+      "message": "check where is /bin/vif tool.   \nAll these packages are not needed int init contianer, but the vif tool only",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 4,
+        "endChar": 56
+      },
+      "revId": "adcfb221052789991f516c78d3d12a06d1014550",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
