@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "49c78571_ca311ece",
+        "filename": "containers/controller/webui/base/Dockerfile",
+        "patchSetId": 12
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-12-01T11:46:40Z",
+      "side": 1,
+      "message": "\u0026\u0026 \\",
+      "range": {
+        "startLine": 17,
+        "startChar": 29,
+        "endLine": 17,
+        "endChar": 36
+      },
+      "revId": "91012956072d61008c4316357d2856d793cc33b6",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
