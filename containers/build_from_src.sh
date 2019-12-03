@@ -64,6 +64,7 @@ if [[ -f ${build_path}/.src ]]; then
   done < "${build_path}/.src"
 fi
 
+log "Copying folders call.."
 if [[ -f ${build_path}/.copy_folders ]]; then
   cd $build_root
   while read line; do
@@ -73,8 +74,9 @@ if [[ -f ${build_path}/.copy_folders ]]; then
     fi
     src_folder=$(echo $line | awk '{ print $1 }' | tr -d "[:space:]")
     dst_folder=$(echo $line | awk '{ print $2 }' | tr -d "[:space:]")
-    [ ! -d "${dst_folder}" ] && mkdir -p $dst_folder
-    cp -v -rf $src_folder $dst_folder && setup_user $dst_folder
+    mkdir -p $dst_folder
+    log "Copying files from  $src_folder to $dst_folder"
+    cp -ap  $src_folder $dst_folder && setup_user $dst_folder
     exitcode=${PIPESTATUS[0]}
     if [[ $exitcode -ne 0 ]]; then
       log "Copying of source folder ${src_folder} to ${dst_folder} finished with error"
@@ -83,6 +85,7 @@ if [[ -f ${build_path}/.copy_folders ]]; then
   done < "${build_path}/.copy_folders"
 fi
 
+log "Copyting files call.."
 if [[ -f ${build_path}/.copy_files ]]; then
   cd $build_root
   while read line; do
@@ -93,8 +96,9 @@ if [[ -f ${build_path}/.copy_files ]]; then
     src_file=$(echo $line | awk '{ print $1 }' | tr -d "[:space:]")
     dst_file=$(echo $line | awk '{ print $2 }' | tr -d "[:space:]")
     dst_folder="${dst_file%/*}"
-    [ ! -d "${dst_folder}" ] && mkdir -p $dst_folder
-    cp -v -f $src_file $dst_file && setup_user $dst_folder && chmod 775 $dst_file 
+    mkdir -p $dst_folder
+    log "Copying files from  $src_file to $dst_file"
+    cp -fp $src_file $dst_file && setup_user $dst_folder && chmod 775 $dst_file
     exitcode=${PIPESTATUS[0]}
     if [[ $exitcode -ne 0 ]]; then
       log "Copying of source file ${src_file} to ${dst_file} finished with error"
