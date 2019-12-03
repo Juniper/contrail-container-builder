@@ -22,6 +22,30 @@
       "revId": "e8d8dbea145a8f4a2f7f2b5d90bee9cae0826d97",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d1ab1e03_54dd56a5",
+        "filename": "containers/vcenter/manager/build_src/.copy_files",
+        "patchSetId": 9
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 846
+      },
+      "writtenOn": "2019-12-03T15:17:05Z",
+      "side": 1,
+      "message": "Name:       contrail-vcenter-manager\nVersion:    %{_verstr}\nRelease:    %{_relstr}%{?dist}\nSummary:    Contrail vCenter Manager\n\nGroup:      Applications/System\nLicense:    Commercial\nURL:        http://www.juniper.net/\nVendor:     Juniper Networks Inc\n\nBuildArch: noarch\nBuildRequires: python-setuptools\nBuildRequires: python3-setuptools\nBuildRequires: scons\n\nRequires: python-contrail-vrouter-api\nRequires: python-contrail\nRequires: python-gevent\nRequires: PyYAML\nRequires: python2-pyvmomi\nRequires: python-ipaddress\nRequires: contrail-vrouter-agent\nRequires: python2-future\nRequires: python-configparser",
+      "parentUuid": "303d488e_e0737216",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 6,
+        "endChar": 0
+      },
+      "revId": "e8d8dbea145a8f4a2f7f2b5d90bee9cae0826d97",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
     }
   ]
 }
