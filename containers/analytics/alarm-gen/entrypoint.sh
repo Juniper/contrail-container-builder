@@ -57,4 +57,6 @@ add_ini_params_from_env ALARM_GEN /etc/contrail/contrail-alarm-gen.conf
 set_third_party_auth_config
 set_vnc_api_lib_ini
 
+exit 1
+
 run_service "$@"
