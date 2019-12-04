@@ -4,7 +4,7 @@ source /common.sh
 
 VROUTER_PORT=${VROUTER_PORT:-9091}
 KUBEMANAGER_NESTED_MODE=${KUBEMANAGER_NESTED_MODE:-'0'}
-run_command="$@"
+run_command="/bin/true"
 
 trap cleanup SIGHUP SIGINT SIGTERM
 

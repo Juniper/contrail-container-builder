@@ -50,5 +50,3 @@ cat << EOM > /host/opt_mesos_etc_dcos_network/cni/contrail-cni-plugin.conf
     "type": "contrail-cni-plugin"
 }
 EOM
-
-exec "$@"
