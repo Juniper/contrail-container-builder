@@ -101,7 +101,9 @@ cmd="$@ --no-daemon $DPDK_COMMAND_ADDITIONAL_ARGS"
 if [[ -n "$CPU_CORE_MASK" ]] ; then
     taskset_param="$CPU_CORE_MASK"
     if [[ "${CPU_CORE_MASK}" =~ [,-] ]]; then
-        taskset_param="-c $CPU_CORE_MASK"
+        SERVICE_CORES=${CPU_CORE_MASK##*,}
+        FORWARD_CORES=${CPU_CORE_MASK%,*}
+        taskset_param="-c $FORWARD_CORES"
     fi
     cmd="/bin/taskset $taskset_param $cmd"
 fi
@@ -178,5 +180,21 @@ for i in {1..3} ; do
     fi
     sleep 3
 done
+
+if [[ -n "${FORWARD_CORES}" ]]; then
+    echo "INFO: Sleeping 10ss to allow vrouter to settle"
+    sleep 10
+    cd /proc/${dpdk_agent_process}/task
+    for i in *; do
+        THREAD=$(cat ${i}/comm)
+        if [[ ${THREAD} =~ ^lcore-slave-[0-9]{2} ]]; then
+            echo "INFO: ${THREAD} is a forwarding thread."
+        else
+            echo "INFO: ${THREAD} is a service thread. Moving it to ${SERVICE_CORES}"
+            /bin/taskset -cp ${SERVICE_CORES} ${i}
+        fi
+    done
+    echo "INFO: Finished assigning cores to threads"
+fi
 
 wait $dpdk_agent_process
