@@ -100,8 +100,14 @@ cmd="$@ --no-daemon $DPDK_COMMAND_ADDITIONAL_ARGS"
 # TODO: consider to avoid taskset here and leave to manage by Docker
 if [[ -n "$CPU_CORE_MASK" ]] ; then
     taskset_param="$CPU_CORE_MASK"
+    # TODO: This is a temporary workaround.
+    #       Once dpdk vrouter starts accepting additional env vars
+    #       in order to assign service threads to particular cores
+    #       It's scheduled to get in in R2002
     if [[ "${CPU_CORE_MASK}" =~ [,-] ]]; then
-        taskset_param="-c $CPU_CORE_MASK"
+        service_core=${CPU_CORE_MASK##*,}
+        forwarding_cores=${CPU_CORE_MASK%,*}
+        taskset_param="-c ${forwarding_cores}"
     fi
     cmd="/bin/taskset $taskset_param $cmd"
 fi
@@ -178,5 +184,22 @@ for i in {1..3} ; do
     fi
     sleep 3
 done
+
+# TODO: This is a temprary workaround (see above)
+if [[ -n "${service_core}" ]]; then
+    echo "INFO: Waiting 10s to allow vrouter to settle."
+    sleep 10
+    cd /proc/${dpdk_agent_process}/task
+    for i in *; do
+        thread=$(cat ${i}/comm)
+        if [[ "${thread}" =~ ^lcore-slave-[0-9]{2} ]]; then
+            echo "INFO: ${thread} is a forwarding thread."
+        else
+            echo "INFO: ${thread} is a service thread. Moving it to core #${service_core}."
+            /bin/taskset -cp ${service_core} ${i}
+        fi
+    done
+    echo "INFO: Finished"
+fi
 
 wait $dpdk_agent_process
