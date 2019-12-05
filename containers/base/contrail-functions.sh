@@ -139,6 +139,16 @@ keyfile = $KEYSTONE_AUTH_KEYFILE
 cafile = $KEYSTONE_AUTH_CA_CERTFILE
 EOM
   fi
+  if [ "$KEYSTONE_AUTH_ENDPOINT_TYPE" ] ; then
+    cat >> $tmp_file << EOM
+endpoint_type = $KEYSTONE_AUTH_ENDPOINT_TYPE
+EOM
+  fi
+  if [ "$KEYSTONE_AUTH_SYNC_ON_DEMAND" ] ; then
+    cat >> $tmp_file << EOM
+keystone_sync_on_demand = $KEYSTONE_AUTH_SYNC_ON_DEMAND
+EOM
+  fi
   mv $tmp_file /etc/contrail/contrail-keystone-auth.conf
 }
 
