@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2aba7262_83c352c8",
+        "filename": "containers/controller/config/devicemgr/build_src/.deps",
+        "patchSetId": 34
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-12-05T14:41:50Z",
+      "side": 1,
+      "message": "it is installed by pip in RUN \nansible\u003d\u003d2.6.13",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 7
+      },
+      "revId": "88a46f5f1e1b872eae38c3b18c0de3b09f578f4d",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}

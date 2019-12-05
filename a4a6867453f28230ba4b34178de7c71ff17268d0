@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "126096ee_d03df7db",
+        "filename": "containers/controller/config/stats/build_src/.deps",
+        "patchSetId": 34
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-12-05T14:41:50Z",
+      "side": 0,
+      "message": "Am I correct that this list is installed in the contrail-base?",
+      "revId": "a4a6867453f28230ba4b34178de7c71ff17268d0",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
