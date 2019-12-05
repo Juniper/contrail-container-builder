@@ -44,6 +44,8 @@
 | KEYSTONE_AUTH_URL_TOKENS          | /v3/auth/tokens                                     |
 | KEYSTONE_AUTH_URL_VERSION         | /v3                                                 |
 | KEYSTONE_AUTH_USER_DOMAIN_NAME    | Default                                             |
+| KEYSTONE_ENDPOINT_TYPE            |                                                     |
+| KEYSTONE_SYNC_ON_DEMAND           | True                                                |
 | **Kubernetes**                    |                                                     |
 | K8S_TOKEN                         | $(cat $K8S_TOKEN_FILE)                              |
 | K8S_TOKEN_FILE                    | /var/run/secrets/kubernetes.io/serviceaccount/token |

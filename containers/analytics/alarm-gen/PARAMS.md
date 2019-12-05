@@ -63,6 +63,8 @@
 | KEYSTONE_AUTH_URL_TOKENS           | /v3/auth/tokens or /v2.0/tokens in depned on $KEYSTONE_AUTH_URL_VERSION |
 | KEYSTONE_AUTH_USER_DOMAIN_NAME     | Default                                                                 |
 | *KEYSTONE_AUTH_URL_VERSION*        | /v3                                                                     |
+| KEYSTONE_ENDPOINT_TYPE             |                                                                         |
+| KEYSTONE_SYNC_ON_DEMAND            | True                                                                    |
 | **RabbitMQ**                       |                                                                         |
 | RABBITMQ_CLIENT_SSL_CACERTFILE     | $RABBITMQ_SSL_CACERTFILE                                                |
 | RABBITMQ_CLIENT_SSL_CERTFILE       | $RABBITMQ_SSL_CERTFILE                                                  |

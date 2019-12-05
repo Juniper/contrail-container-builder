@@ -48,6 +48,8 @@
 | KEYSTONE_AUTH_URL_VERSION            | /v3                                                                                     |
 | KEYSTONE_AUTH_USER_DOMAIN_NAME       | Default                                                                                 |
 | *KEYSTONE_AUTH_URL_VERSION*          | /v3                                                                                     |
+| KEYSTONE_ENDPOINT_TYPE               |                                                                                         |
+| KEYSTONE_SYNC_ON_DEMAND              | True                                                                                    |
 | **Logging**                          |                                                                                         |
 | LOG_DIR                              | /var/log/contrail                                                                       |
 | LOG_LEVEL                            | SYS_NOTICE                                                                              |

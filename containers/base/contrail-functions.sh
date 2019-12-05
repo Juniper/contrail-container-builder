@@ -124,6 +124,8 @@ auth_protocol = $KEYSTONE_AUTH_PROTO
 auth_url = $KEYSTONE_AUTH_PROTO://${KEYSTONE_AUTH_HOST}:${KEYSTONE_AUTH_ADMIN_PORT}${KEYSTONE_AUTH_URL_VERSION}
 auth_type = password
 region_name = $KEYSTONE_AUTH_REGION_NAME
+endpoint_type=$KEYSTONE_ENDPOINT_TYPE
+keystone_sync_on_demand=$KEYSTONE_SYNC_ON_DEMAND
 EOM
   if [[ "$KEYSTONE_AUTH_URL_VERSION" == '/v3' ]] ; then
     cat >> $tmp_file << EOM

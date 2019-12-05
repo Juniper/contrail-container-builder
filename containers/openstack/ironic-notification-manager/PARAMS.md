@@ -27,6 +27,8 @@
 | KEYSTONE_AUTH_PROJECT_DOMAIN_NAME           | Default                                      |
 | KEYSTONE_AUTH_PROTO                         | http                                         |
 | KEYSTONE_AUTH_URL_TOKENS                    | /v3/auth/tokens                              |
+| KEYSTONE_ENDPOINT_TYPE                      |                                              |
+| KEYSTONE_SYNC_ON_DEMAND                     | True                                         |
 | **Logging**                                 |                                              |
 | LOG_DIR                                     | /var/log/contrail                            |
 | LOG_LEVEL                                   | SYS_NOTICE                                   |
