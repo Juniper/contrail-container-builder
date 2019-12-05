@@ -100,6 +100,8 @@
 | KEYSTONE_AUTH_URL_VERSION                          | /v3                                                                     |
 | KEYSTONE_AUTH_USER_DOMAIN_NAME                     | Default                                                                 |
 | *KEYSTONE_AUTH_URL_VERSION*                        | /v3                                                                     |
+| KEYSTONE_AUTH_ENDPOINT_TYPE                        |                                                                         |
+| KEYSTONE_AUTH_SYNC_ON_DEMAND                       |                                                                         |
 | **Logging**                                        |                                                                         |
 | COLLECTOR_LOG_FILE_COUNT                           | 10                                                                      |
 | COLLECTOR_LOG_FILE_SIZE                            | 1048576                                                                 |
