@@ -245,8 +245,7 @@ function update_file() {
 function update_repos() {
   local repo_ext="$1"
   for rfile in $(ls $my_dir/../*.${repo_ext}.template) ; do
-    templ=$(cat $rfile)
-    content=$(eval "echo \"$templ\"")
+    content=$(envsubst '${CONTRAIL_REPOSITORY}' < "$rfile")
     dfile=$(basename $rfile | sed 's/.template//')
     update_file "general-base/$dfile" "$content"
     update_file "k8s-manifests/$dfile" "$content"
