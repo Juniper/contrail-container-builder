@@ -16,6 +16,24 @@
       "revId": "a4a6867453f28230ba4b34178de7c71ff17268d0",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "da0f7b6a_a21fc288",
+        "filename": "containers/controller/config/stats/build_src/.deps",
+        "patchSetId": 34
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 846
+      },
+      "writtenOn": "2019-12-06T13:47:54Z",
+      "side": 0,
+      "message": "yes",
+      "parentUuid": "126096ee_d03df7db",
+      "revId": "a4a6867453f28230ba4b34178de7c71ff17268d0",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
     }
   ]
 }
