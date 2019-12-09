@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3f334916_28022eb5",
+        "filename": "containers/vrouter/agent-dpdk/entrypoint.sh",
+        "patchSetId": 4
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-12-09T12:18:03Z",
+      "side": 1,
+      "message": "How it is supposed to be implemented in 2002? I mean, if we have to have a change here - might be easier to have the right change now?",
+      "range": {
+        "startLine": 103,
+        "startChar": 3,
+        "endLine": 103,
+        "endChar": 43
+      },
+      "revId": "a1ca7d0dbb7cb643baed09aab1a5a485b46329f5",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
