@@ -22,6 +22,30 @@
       "revId": "a1ca7d0dbb7cb643baed09aab1a5a485b46329f5",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "13e9ac53_6fb4f480",
+        "filename": "containers/vrouter/agent-dpdk/entrypoint.sh",
+        "patchSetId": 4
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 501
+      },
+      "writtenOn": "2019-12-09T12:28:11Z",
+      "side": 1,
+      "message": "It\u0027s being developed right now, so I don\u0027t know how exactly this is going to look like. \nAnyway - we can just ignore that and not merge this and have to implement even crappier workarounds like crontab, which would pin given threads just in order to not touch entrypoint in this repo or we could just accept slightly more elegant workaround (which is this one) and have all bits and bobs in place just after vrouter startup.",
+      "parentUuid": "3f334916_28022eb5",
+      "range": {
+        "startLine": 103,
+        "startChar": 3,
+        "endLine": 103,
+        "endChar": 43
+      },
+      "revId": "a1ca7d0dbb7cb643baed09aab1a5a485b46329f5",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
