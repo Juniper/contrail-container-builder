@@ -69,6 +69,30 @@
       "revId": "a1ca7d0dbb7cb643baed09aab1a5a485b46329f5",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a8c5f0cd_3a1fd233",
+        "filename": "containers/vrouter/agent-dpdk/entrypoint.sh",
+        "patchSetId": 4
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-12-10T09:55:46Z",
+      "side": 1,
+      "message": "the wait loop above check vhost0 is up.",
+      "parentUuid": "9b5e2b42_508517b2",
+      "range": {
+        "startLine": 191,
+        "startChar": 4,
+        "endLine": 191,
+        "endChar": 12
+      },
+      "revId": "a1ca7d0dbb7cb643baed09aab1a5a485b46329f5",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
