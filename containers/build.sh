@@ -157,11 +157,16 @@ function process_container() {
     docker run ${run_arguments} 2>&1 | append_log_file $logfile
     exit_code=${PIPESTATUS[0]}
     if [ ${exit_code} -eq 0 ]; then
-      docker commit \
-        --change "CMD $cmd" \
-        --change "ENTRYPOINT $entrypoint" \
-        $intermediate_base $intermediate_base 2>&1 | append_log_file $logfile
-      exit_code=${PIPESTATUS[0]}
+      if [[ "${cmd}" == 'null' ]]; then
+        docker commit  --change "ENTRYPOINT ${entrypoint}" \
+                      ${intermediate_base} ${intermediate_base} 2>&1 | append_log_file $logfile
+        exit_code=${PIPESTATUS[0]}
+      else
+        docker commit --change "CMD ${cmd}" \
+                      --change "ENTRYPOINT ${entrypoint}" \
+                      ${intermediate_base} ${intermediate_base} 2>&1 | append_log_file $logfile
+        exit_code=${PIPESTATUS[0]}
+      fi
       # retag containers
       [ ${exit_code} -eq 0 ] && docker tag $intermediate_base ${target_name} || exit_code=1
     fi
@@ -169,13 +174,15 @@ function process_container() {
     (( duration_src -= duration ))
     log "Docker build from source duration: $duration_src seconds" | append_log_file $logfile
   fi
-
   if [ $exit_code -eq 0 -a ${CONTRAIL_REGISTRY_PUSH} -eq 1 ]; then
     docker push $target_name 2>&1 | append_log_file $logfile
     exit_code=${PIPESTATUS[0]}
   fi
-  log "Remove ${intermediate_base} temp build container" | append_log_file $logfile
-  docker rm -f ${intermediate_base} 2>&1 | append_log_file $logfile
+  container_exists=$(docker ps -a --filter name=${intermediate_base} | awk 'NR>1 {print $1}')
+  if [[ -n ${container_exists} ]] ; then
+    log "Remove ${intermediate_base} temp build container" | append_log_file $logfile
+    docker rm -f ${intermediate_base} 2>&1 | append_log_file $logfile
+  fi
   duration=$(date +"%s")
   (( duration -= start_time ))
   if [ ${exit_code} -eq 0 ]; then
