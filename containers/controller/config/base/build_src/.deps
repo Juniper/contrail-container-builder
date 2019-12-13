@@ -2,6 +2,7 @@ ipmitool
 libxml2-devel
 libxslt-devel
 openssh-clients
+python2-crypto
 python2-docker
 python2-future
 python2-jmespath
