@@ -1,6 +1,5 @@
 #!/bin/bash
 
-sed -e '/^tsflags=nodocs/d' -i /etc/yum.conf
 [ -e "/contrail-setup-common.sh" ] && source /contrail-setup-common.sh
 
 build_path="/build_src"

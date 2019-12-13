@@ -1,5 +1,4 @@
 ansible
-python2-crypto
 python2-flexmock
 python2-mock
 python2-vine
