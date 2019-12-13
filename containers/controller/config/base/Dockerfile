@@ -6,10 +6,9 @@ ENV VENDOR_DOMAIN=$VENDOR_DOMAIN
 ARG CONTRAIL_BUILD_FROM_SOURCE
 
 RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]]; then \
-    sed -e '/^tsflags=nodocs/d' -i /etc/yum.conf && \
-    yum install -y contrail-config contrail-config-openstack && \
-    yum clean all -y && \
-    rm -rf /var/cache/yum; \
+      yum install -y contrail-config contrail-config-openstack && \
+      yum clean all -y && \
+      rm -rf /var/cache/yum; \
     fi
 
 ENV NODE_TYPE=config

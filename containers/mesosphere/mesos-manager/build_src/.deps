@@ -8,7 +8,6 @@ python-configparser
 python-enum34
 python-eventlet
 python-gevent
-python-geventhttpclient
 python-kazoo
 python-netaddr
 python-pycassa

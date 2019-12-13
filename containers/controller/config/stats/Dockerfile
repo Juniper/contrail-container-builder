@@ -9,14 +9,14 @@ LABEL name=$CONTAINER_NAME \
       description="Contrail statistics client collects statistics about number of virtual networks, virtual routers , etc. No private information is collected."
 
 RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
-    yum install -y python2-setuptools git && \
-    git clone --single-branch https://github.com/Juniper/contrail-controller.git && \
-    cd contrail-controller/src/stats && \
-    python setup.py install && \
-    yum autoremove -y git && \
-    yum clean all -y && \
-    rm -rf /var/cache/yum && \
-    rm -rf /contrail-controller; \
+      yum install -y python2-setuptools git && \
+      git clone --single-branch https://github.com/Juniper/contrail-controller.git && \
+      cd contrail-controller/src/stats && \
+      python setup.py install --no-compile && \
+      yum autoremove -y git && \
+      yum clean all -y && \
+      rm -rf /var/cache/yum && \
+      rm -rf /contrail-controller; \
     fi
 
 COPY *.sh /

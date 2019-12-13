@@ -9,7 +9,6 @@ python-bottle
 python-configparser
 python-contrail
 python-gevent
-python-geventhttpclient
 python-lxml
 python-prettytable
 python-psutil
