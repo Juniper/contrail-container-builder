@@ -3,8 +3,6 @@ python-bitarray
 python-attrdict
 python-configparser
 openstack-utils
-python2-crypto
-python2-eventlet-0.18.4-2.el7.noarch
 python2-future
 python2-gevent
 python2-idna
@@ -12,12 +10,10 @@ python2-netaddr
 python2-pysocks
 python2-requests
 python2-six
-python2-sqlalchemy
 python2-urllib3
 python-bottle
 python-devel
 python-fysom
-python-geventhttpclient
 python-kazoo
 python-kombu
 python-pycassa
