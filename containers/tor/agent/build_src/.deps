@@ -1,8 +1,4 @@
-contrail-lib
 openssl
-python2-future
 python2-passlib
-python2-six
-python-configparser
 python-paramiko
 xmltodict
