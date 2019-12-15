@@ -8,9 +8,16 @@ LABEL name=$CONTAINER_NAME \
       summary="Contrail Device Manager" \
       description="Contrail Device Manager is used to manage network devices in the Contrail system."
 
+<<<<<<< HEAD   (024541 Merge "Add SERVICE_CORE_MASK support for dpdk vrouter" into )
 RUN easy_install pip && \
     pip install "inflection>=0.3.1" "jxmlease>=1.0.1" "ncclient==0.6.3" "junos-eznc>=2.1.7,<=2.2.0" "timeout_decorator>=0.4.0" "python-jsonschema-objects>=0.3.3" "jsnapy>=1.3.2" "ansible==2.6.13" && \
     ansible-galaxy install Juniper.junos && \
+=======
+RUN pip install "inflection>=0.3.1" "jxmlease>=1.0.1" "ncclient==0.6.3" "junos-eznc>=2.1.7,<=2.2.0" "timeout_decorator>=0.4.0" "python-jsonschema-objects>=0.3.3" "jsnapy>=1.3.2" "ansible==2.6.13" && \
+    ansible-galaxy install git+https://github.com/Juniper/ansible-junos-stdlib.git,,Juniper.junos && \
+    if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]]; then \
+    sed -e '/^tsflags=nodocs/d' -i /etc/yum.conf && \
+>>>>>>> CHANGE (ba8a51 Juniper.junos library got removed from the ansible-galaxy)
     yum install -y iputils && \
     yum clean all -y && \
     rm -rf /var/cache/yum
