@@ -8,11 +8,10 @@ LABEL name=$CONTAINER_NAME \
       summary="Mellanox plugin for RedHat" \
       description="DPDK Mellanox kernel module for RedHat."
 
-# this copy should be before yum install
-COPY *.repo /etc/yum.repos.d/
 
 RUN yum update -y && \
-    yum install --downloadonly -y mlnx-ofed-dpdk-upstream-libs && \
+    yum install -y mstflint && \
+    yum install -y pciutils && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 
