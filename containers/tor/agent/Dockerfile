@@ -9,9 +9,10 @@ LABEL name=$CONTAINER_NAME \
       description="A ToR agent provisioned in the Contrail cluster acts as the OVSDB client for the ToR switch, and all of the OVSDB interactions with the ToR switch are performed by using the ToR agent."
 ARG CONTRAIL_BUILD_FROM_SOURCE
 RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
-    yum install -y contrail-vrouter-agent python-contrail-vrouter-api openssl && \
-    yum clean all -y && \
-    rm -rf /var/cache/yum; \
+      yum install -y contrail-vrouter-agent python-contrail-vrouter-api openssl && \
+      yum clean all -y && \
+      rm -rf /var/cache/yum && \
+      find / -name '__pycache__' -delete -o -name "*.pyc" -delete -o -name "*.pyo" -delete ;\
     fi
 
 COPY *.sh /

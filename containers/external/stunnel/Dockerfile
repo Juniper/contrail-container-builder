@@ -12,7 +12,8 @@ COPY *.sh /
 RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done' && \
     yum install -y iproute less hostname python3 openssl stunnel && \
     yum clean all -y && \
-    rm -rf /var/cache/yum
+    rm -rf /var/cache/yum && \
+    find / -name '__pycache__' -delete -o -name "*.pyc" -delete -o -name "*.pyo" -delete
 
 ENTRYPOINT ["/contrail-entrypoint.sh"]
 CMD ["stunnel", "/etc/stunnel/stunnel.conf"]

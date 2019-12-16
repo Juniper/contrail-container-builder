@@ -6,10 +6,11 @@ ARG VENDOR_DOMAIN
 # removing network-scripts: this folder will mounted from the host (or not used in Ubuntu) so the one installed by initscripts package in container is removed.
 ARG CONTRAIL_BUILD_FROM_SOURCE
 RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
-    yum install -y initscripts ethtool pciutils sudo contrail-vrouter-utils && \
-    yum clean all -y && \
-    rm -rf /var/cache/yum && \
-    ldconfig; \
+      yum install -y initscripts ethtool pciutils sudo contrail-vrouter-utils && \
+      yum clean all -y && \
+      rm -rf /var/cache/yum && \
+      find / -name '__pycache__' -delete -o -name "*.pyc" -delete -o -name "*.pyo" -delete && \
+      ldconfig; \
     fi && \
     rm -rf /etc/sysconfig/network-scripts
 

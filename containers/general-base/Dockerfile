@@ -42,6 +42,7 @@ RUN YUM_ENABLE_REPOS=$(echo $YUM_ENABLE_REPOS | tr -d '"') && \
     fi && \
     yum clean all -y && \
     rm -rf /var/cache/yum && \
+    find / -name '__pycache__' -delete -o -name "*.pyc" -delete -o -name "*.pyo" -delete && \
     groupadd --gid $CONTRAIL_GID --system $CONTRAIL_USER && \
     useradd -md /home/contrail --uid $CONTRAIL_UID --shell /sbin/nologin --system --gid $CONTRAIL_GID $CONTRAIL_USER
 

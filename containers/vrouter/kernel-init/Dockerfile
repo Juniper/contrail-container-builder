@@ -10,9 +10,10 @@ LABEL name=$CONTAINER_NAME \
 
 ARG CONTRAIL_BUILD_FROM_SOURCE
 RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
-    rpm -Uvh --nodeps $(repoquery --location contrail-vrouter) && \
-    yum clean all -y && \
-    rm -rf /var/cache/yum; \
+      rpm -Uvh --nodeps $(repoquery --location contrail-vrouter) && \
+      yum clean all -y && \
+      rm -rf /var/cache/yum && \
+      find / -name '__pycache__' -delete -o -name "*.pyc" -delete -o -name "*.pyo" -delete ;\
     fi
 
 COPY entrypoint.sh /

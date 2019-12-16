@@ -27,7 +27,8 @@ RUN rpm -Uvh --nodeps $(repoquery --location python-contrail) && \
     popd && rm -rf /tmp/future && \
     /_prepare_packages.sh && rm -f /_prepare_packages.sh && \
     yum autoremove -y && yum clean all -y && \
-    rm -rf /var/cache/yum
+    rm -rf /var/cache/yum && \
+    find / -name '__pycache__' -delete -o -name "*.pyc" -delete -o -name "*.pyo" -delete
 
 ENTRYPOINT ["/entrypoint.sh"]
 

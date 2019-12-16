@@ -10,8 +10,8 @@ LABEL name=$CONTAINER_NAME \
 
 RUN yum install -y contrail-debuginfo contrail-vrouter-dpdk-debuginfo contrail-manifest && \
     yum clean all -y && \
-    rm -rf /var/cache/yum
-RUN ln -s /opt/contrail/manifest.xml /manifest.xml
+    rm -rf /var/cache/yum && \
+    ln -s /opt/contrail/manifest.xml /manifest.xml
 
 ENV PS1="\033[1m($CONTAINER_NAME)\033[m\017[$(id -un)@$(hostname -s) $(pwd)]$ "
 LABEL $VENDOR_DOMAIN".container.name"=$CONTAINER_NAME

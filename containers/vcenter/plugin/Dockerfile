@@ -9,12 +9,13 @@ LABEL name=$CONTAINER_NAME \
       description="VMware vCenter plugin workflows are represented as simple workflows in vRO plugin."
 
 RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
-    yum install -y java-1.7.0-openjdk \
-    libcontrail-java-api libcontrail-vijava \
-    libcontrail-vrouter-java-api contrail-vcenter-plugin \
-    yum clean all -y && \
-    rm -rf /var/cache/yum && \
-    ldconfig; \
+      yum install -y java-1.7.0-openjdk \
+      libcontrail-java-api libcontrail-vijava \
+      libcontrail-vrouter-java-api contrail-vcenter-plugin \
+      yum clean all -y && \
+      rm -rf /var/cache/yum && \
+      find / -name '__pycache__' -delete -o -name "*.pyc" -delete -o -name "*.pyo" -delete && \
+      ldconfig; \
     fi
 
 COPY entrypoint.sh /

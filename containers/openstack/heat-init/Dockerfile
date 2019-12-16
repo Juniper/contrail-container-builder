@@ -21,7 +21,8 @@ RUN rpm -Uvh --nodeps $(repoquery --location python-contrail) && \
     cp -r usr/lib/python2.7/site-packages /opt/contrail/ && \
     popd && rm -rf /tmp/future && \
     yum clean all -y && \
-    rm -rf /var/cache/yum
+    rm -rf /var/cache/yum && \
+    find / -name '__pycache__' -delete -o -name "*.pyc" -delete -o -name "*.pyo" -delete
 
 COPY *.sh /
 

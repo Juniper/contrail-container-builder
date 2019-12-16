@@ -26,6 +26,7 @@ RUN yum install -y java java-1.8.0-openjdk-devel iproute less hostname python3 o
     rm -f $KAFKA_DISTRO_NAME.tgz && \
     yum clean all -y && \
     rm -rf /var/cache/yum && \
+    find / -name '__pycache__' -delete -o -name "*.pyc" -delete -o -name "*.pyo" -delete && \
     groupadd -f -g 1011 kafka && adduser -M -g kafka kafka && \
     mkdir -p $LOG_DIR && \
     chown -R $KAFKA_USER:$KAFKA_GROUP $LOG_DIR && \

@@ -14,7 +14,8 @@ COPY *.sh /
 RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done' && \
     yum -y install rsyslog-$RSYSLOG_VERSION && \
     yum clean all -y && \
-    rm -rf /var/cache/yum
+    rm -rf /var/cache/yum && \
+    find / -name '__pycache__' -delete -o -name "*.pyc" -delete -o -name "*.pyo" -delete
 
 # Copy configuration files
 COPY rsyslog.conf /etc/

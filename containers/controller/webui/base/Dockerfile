@@ -14,6 +14,7 @@ RUN BASE_EXTRA_RPMS=$(echo $BASE_EXTRA_RPMS | tr -d '"' | tr ',' ' ') && \
     yum install -y iproute less hostname python3 nodejs-0.10.48-1contrail.el7 contrail-web-controller contrail-web-core && \
     yum clean all -y && \
     rm -rf /var/cache/yum && \
+    find / -name '__pycache__' -delete -o -name "*.pyc" -delete -o -name "*.pyo" -delete && \
     chown -R $CONTRAIL_USER:$CONTRAIL_USER /usr/src/contrail
 
 COPY custom-images/logo.png /opt/contrail/images/logo.png

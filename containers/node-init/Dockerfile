@@ -11,7 +11,8 @@ LABEL name=$CONTAINER_NAME \
 RUN yum install -y openssl && \
     yum install -y --downloadonly --downloaddir=/ contrail-tripleo-puppet && \
     yum clean all -y && \
-    rm -rf /var/cache/yum
+    rm -rf /var/cache/yum && \
+    find / -name '__pycache__' -delete -o -name "*.pyc" -delete -o -name "*.pyo" -delete
 
 COPY *.sh /
 

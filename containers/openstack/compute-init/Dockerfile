@@ -18,7 +18,8 @@ RUN rpm -Uvh --nodeps $(repoquery --location contrail-vrouter-agent) && \
     cp -rf /usr/lib/python2.7/site-packages/nova_contrail_vif* /opt/contrail/site-packages && \
     yum autoremove -y contrail-vrouter-agent contrail-nova-vif && \
     yum clean all -y && \
-    rm -rf /var/cache/yum
+    rm -rf /var/cache/yum && \
+    find / -name '__pycache__' -delete -o -name "*.pyc" -delete -o -name "*.pyo" -delete
 
 COPY *.sh /
 

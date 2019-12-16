@@ -24,7 +24,8 @@ RUN yum install -y wget gcc make && \
     yum autoremove -y wget gcc make && \
     echo "conf-dir=/etc/dnsmasq,*.conf" > /etc/dnsmasq.conf && \
     yum clean all -y && \
-    rm -rf /var/cache/yum
+    rm -rf /var/cache/yum && \
+    find / -name '__pycache__' -delete -o -name "*.pyc" -delete -o -name "*.pyo" -delete
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["dnsmasq", "-k", "-p0"]
