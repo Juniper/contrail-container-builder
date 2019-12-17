@@ -10,9 +10,9 @@ LABEL name=$CONTAINER_NAME \
 
 ARG CONTRAIL_BUILD_FROM_SOURCE
 RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
-    rpm -Uvh --nodeps $(repoquery --location contrail-vrouter) && \
-    yum clean all -y && \
-    rm -rf /var/cache/yum; \
+      rpm -Uvh --nodeps $(repoquery --location contrail-vrouter) && \
+      yum clean all -y && \
+      rm -rf /var/cache/yum; \
     fi
 
 COPY entrypoint.sh /

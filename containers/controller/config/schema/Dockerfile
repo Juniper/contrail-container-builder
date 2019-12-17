@@ -8,13 +8,6 @@ LABEL name=$CONTAINER_NAME \
       description="Contrail Schema Transformer compiles the high level, intent based data model into a low level configuration data model."
 ARG CONTRAIL_BUILD_FROM_SOURCE
 
-# contrail-config-openstack contains svc_monitor and vnc_openstack modules
-RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]]; then \
-    sed -e '/^tsflags=nodocs/d' -i /etc/yum.conf && \
-    yum clean all -y && \
-    rm -rf /var/cache/yum; \
-    fi
-
 COPY *.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]

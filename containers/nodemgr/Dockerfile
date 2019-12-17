@@ -12,10 +12,9 @@ LABEL name=$CONTAINER_NAME \
 # for building from rpms
 # install chrony, ntp and iputils-clockdiff to enable checking time sync by nodemgr
 RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
-      sed -e '/^tsflags=nodocs/d' -i /etc/yum.conf; \
       yum install -y contrail-nodemgr python2-docker chrony ntp && \
       yum clean all -y && \
-      rm -rf /var/cache/yum;\
+      rm -rf /var/cache/yum; \
     fi
 COPY *.sh /
 ENTRYPOINT ["/entrypoint.sh"]

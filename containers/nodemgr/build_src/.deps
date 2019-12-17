@@ -14,5 +14,4 @@ python-lxml
 python-prettytable
 python-psutil
 python-redis
-python-setuptools
 PyYAML

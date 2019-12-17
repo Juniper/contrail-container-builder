@@ -8,7 +8,6 @@ python2-jmespath
 python2-jsonschema
 python2-pip
 python2-requests
-python2-setuptools
 python-amqp
 python-attrdict
 python-bitarray
@@ -33,7 +32,6 @@ python-novaclient
 python-psutil
 python-pycassa
 python-pyhash
-python-setuptools
 python-simplejson
 python-stevedore
 python-subprocess32
