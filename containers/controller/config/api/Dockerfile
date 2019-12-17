@@ -10,10 +10,9 @@ LABEL name=$CONTAINER_NAME \
 
 # contrail-config-openstack contains svc_monitor and vnc_openstack modules
 RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]]; then \
-    sed -e '/^tsflags=nodocs/d' -i /etc/yum.conf && \
-    yum install -y python-neutron-lib && \
-    yum clean all -y && \
-    rm -rf /var/cache/yum; \
+      yum install -y python-neutron-lib && \
+      yum clean all -y && \
+      rm -rf /var/cache/yum; \
     fi
 
 COPY *.sh /

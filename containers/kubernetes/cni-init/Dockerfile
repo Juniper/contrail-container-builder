@@ -10,9 +10,9 @@ LABEL name=$CONTAINER_NAME \
 
 RUN curl -sSL --retry 5 -o /opt/cni-v0.3.0.tgz https://github.com/containernetworking/cni/releases/download/v0.3.0/cni-v0.3.0.tgz && \
     if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
-    yum install -y contrail-k8s-cni && \
-    yum clean all -y && \
-    rm -rf /var/cache/yum; \
+      yum install -y contrail-k8s-cni && \
+      yum clean all -y && \
+      rm -rf /var/cache/yum; \
     fi
 COPY entrypoint.sh /
 

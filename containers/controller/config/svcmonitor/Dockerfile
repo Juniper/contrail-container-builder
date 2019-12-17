@@ -8,13 +8,6 @@ LABEL name=$CONTAINER_NAME \
       summary="Contrail Service Monitor" \
       description="Contrail Service Monitor brings up and monitors any service instance that are spawned."
 
-# contrail-config-openstack contains svc_monitor and vnc_openstack modules
-RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]]; then \
-    sed -e '/^tsflags=nodocs/d' -i /etc/yum.conf && \
-    yum clean all -y && \
-    rm -rf /var/cache/yum; \
-    fi
-
 COPY *.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
