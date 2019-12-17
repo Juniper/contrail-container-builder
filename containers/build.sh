@@ -179,7 +179,7 @@ function process_container() {
     exit_code=${PIPESTATUS[0]}
   fi
   container_exists=$(docker ps -a --filter name=${intermediate_base} | awk 'NR>1 {print $1}')
-  if [[ -n ${container_exists} ]] ; then
+  if [[ -n "${container_exists}" && ! -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then
     log "Remove ${intermediate_base} temp build container" | append_log_file $logfile
     docker rm -f ${intermediate_base} 2>&1 | append_log_file $logfile
   fi

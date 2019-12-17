@@ -130,6 +130,9 @@ for i in /var/lib/contrail /var/log/contrail ; do
   setup_user $i
 done
 
-yum clean all -y
-rm -rf /var/cache/yum
+if [ -x "$(command -v yum)" ] ; then
+  yum clean all -y
+  rm -rf /var/cache/yum
+fi
+
 ldconfig

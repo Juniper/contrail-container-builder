@@ -20,10 +20,9 @@ fi
 
 vrouter_dir="/usr/src/vrouter-${contrail_version}"
 mkdir -p $vrouter_dir
-pushd $vrouter_dir
-tar -xf /opt/contrail/src/modules/contrail-vrouter/contrail-vrouter-${contrail_version}.tar.gz
-popd
-
+cp -ap /vrouter_src/. ${vrouter_dir}/
+chmod -R 755  ${vrouter_dir}
+rm -rf /vrouter_src
 templ=$(cat /opt/contrail/src/dkms.conf)
 content=$(eval "echo \"$templ\"")
 echo "$content" > $vrouter_dir/dkms.conf
@@ -45,4 +44,10 @@ touch $vrouter_dir/module_compiled
 if [[ -d /host/bin && ! -f /host/bin/vif ]] ; then
     /bin/cp -f /contrail_tools/usr/bin/vif /host/bin/vif
     chmod +x /host/bin/vif
+fi
+
+# remove third-party folder
+
+if [[ -d /root/contrail/third_party ]] ; then
+    rm -rf /root/contrail/third_party
 fi
