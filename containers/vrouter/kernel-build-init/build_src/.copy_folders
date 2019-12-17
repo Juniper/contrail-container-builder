@@ -1,1 +1,2 @@
-vrouter/. /opt/contrail/src/
+third_party/dpdk/. /root/contrail/third_party/dpdk/
+build/production/vrouter/. /vrouter_src/
