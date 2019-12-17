@@ -26,24 +26,27 @@ COPY __licensing.txt /licenses/licensing.txt
 # this copy should be before yum install
 COPY *.repo /etc/yum.repos.d/
 
-RUN mkdir -p /opt/contrail/src /contrail_tools && \
+RUN mkdir -p /opt/contrail/src /contrail_tools /vrouter_src && \
     contrail_version=${CONTRAIL_VERSION:-$CONTRAIL_CONTAINER_TAG} && \
     echo "${contrail_version}" > /contrail_version && \
-    if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
     export DEBIAN_FRONTEND=noninteractive && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends yum yum-utils rpm2cpio cpio dkms && \
-    yum install -y contrail-vrouter-source && \
-    mv /usr/src/* /opt/contrail/src/ && \  
-    cd /contrail_tools && \
-    yumdownloader contrail-vrouter-utils && \
-    rpm2cpio $(ls contrail-vrouter-utils*.rpm) | cpio -iuvd && \
-    rm -f $(ls contrail-vrouter-utils*.rpm) && \
-    cd .. && \
-    yum clean all -y && \
-    rm -rf /var/cache/yum && \
-    apt-get purge -y yum yum-utils rpm2cpio cpio && \
-    apt-get autoremove -y; \
+    apt-get install -y --no-install-recommends dkms && \
+    if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
+        apt-get update && \
+        apt-get install -y --no-install-recommends yum yum-utils rpm2cpio cpio && \
+        yum install -y contrail-vrouter-source && \
+        mv /usr/src/* /opt/contrail/src/ && \
+        cd  /vrouter_src && \
+        tar -xf /opt/contrail/src/modules/contrail-vrouter/contrail-vrouter-${contrail_version}.tar.gz && \
+        cd /contrail_tools && \
+        yumdownloader contrail-vrouter-utils && \
+        rpm2cpio $(ls contrail-vrouter-utils*.rpm) | cpio -iuvd && \
+        rm -f $(ls contrail-vrouter-utils*.rpm) && \
+        cd .. && \
+        yum clean all -y && \
+        rm -rf /var/cache/yum && \
+        apt-get purge -y yum yum-utils rpm2cpio cpio && \
+        apt-get autoremove -y; \
     fi
 
 COPY dkms.conf /opt/contrail/src/
