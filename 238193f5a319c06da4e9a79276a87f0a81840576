@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3244f51b_bdfe7a90",
+        "filename": "containers/openstack/neutron-init/Dockerfile",
+        "patchSetId": 35
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-12-17T08:46:54Z",
+      "side": 1,
+      "message": "why pip is installed in all cases?",
+      "revId": "238193f5a319c06da4e9a79276a87f0a81840576",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0950b31c_321a6abc",
+        "filename": "containers/openstack/neutron-init/Dockerfile",
+        "patchSetId": 35
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-12-17T08:46:54Z",
+      "side": 1,
+      "message": "why six is needed?",
+      "range": {
+        "startLine": 18,
+        "startChar": 60,
+        "endLine": 18,
+        "endChar": 64
+      },
+      "revId": "238193f5a319c06da4e9a79276a87f0a81840576",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "11863d2b_d34e869a",
+        "filename": "containers/openstack/neutron-init/Dockerfile",
+        "patchSetId": 35
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2019-12-17T08:46:54Z",
+      "side": 1,
+      "message": "why we don\u0027t have indentation for this condition?",
+      "revId": "238193f5a319c06da4e9a79276a87f0a81840576",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
