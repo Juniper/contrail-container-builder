@@ -1,1 +1,1 @@
-vrouter/. /opt/contrail/src/
+build/production/vrouter/. /vrouter_src/
