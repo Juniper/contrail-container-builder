@@ -17,12 +17,16 @@ if [ ! -d "/usr/src/linux-headers-$kver" ] ; then
   echo "ERROR: There is no kernel headers in /usr/src for current kernel. Exiting..."
   exit 1
 fi
+if [[ -e /opt/contrail/src/modules/contrail-vrouter/contrail-vrouter-${contrail_version}.tar.gz ]] ; then
+  vrouter_dir="/usr/src/vrouter-${contrail_version}"
+  mkdir -p $vrouter_dir
+  pushd $vrouter_dir
+  tar -xf /opt/contrail/src/modules/contrail-vrouter/contrail-vrouter-${contrail_version}.tar.gz
+  popd
+else
+  vrouter_dir="/usr/src/vrouter"
+fi
 
-vrouter_dir="/usr/src/vrouter-${contrail_version}"
-mkdir -p $vrouter_dir
-pushd $vrouter_dir
-tar -xf /opt/contrail/src/modules/contrail-vrouter/contrail-vrouter-${contrail_version}.tar.gz
-popd
 
 templ=$(cat /opt/contrail/src/dkms.conf)
 content=$(eval "echo \"$templ\"")

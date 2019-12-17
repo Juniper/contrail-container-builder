@@ -29,22 +29,22 @@ COPY *.repo /etc/yum.repos.d/
 RUN mkdir -p /opt/contrail/src /contrail_tools && \
     contrail_version=${CONTRAIL_VERSION:-$CONTRAIL_CONTAINER_TAG} && \
     echo "${contrail_version}" > /contrail_version && \
-    if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
     export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get install -y --no-install-recommends yum yum-utils rpm2cpio cpio dkms && \
-    yum install -y contrail-vrouter-source && \
-    mv /usr/src/* /opt/contrail/src/ && \  
-    cd /contrail_tools && \
-    yumdownloader contrail-vrouter-utils && \
-    rpm2cpio $(ls contrail-vrouter-utils*.rpm) | cpio -iuvd && \
-    rm -f $(ls contrail-vrouter-utils*.rpm) && \
-    cd .. && \
-    yum clean all -y && \
-    rm -rf /var/cache/yum && \
+    if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
+        yum install -y contrail-vrouter-source && \
+        mv /usr/src/* /opt/contrail/src/ && \
+        cd /contrail_tools && \
+        yumdownloader contrail-vrouter-utils && \
+        rpm2cpio $(ls contrail-vrouter-utils*.rpm) | cpio -iuvd && \
+        rm -f $(ls contrail-vrouter-utils*.rpm) && \
+        cd .. && \
+        yum clean all -y && \
+        rm -rf /var/cache/yum ; \
+    fi && \
     apt-get purge -y yum yum-utils rpm2cpio cpio && \
-    apt-get autoremove -y; \
-    fi
+    apt-get autoremove -y
 
 COPY dkms.conf /opt/contrail/src/
 COPY entrypoint.sh /
