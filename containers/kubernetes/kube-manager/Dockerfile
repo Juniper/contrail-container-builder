@@ -9,11 +9,11 @@ LABEL name=$CONTAINER_NAME \
       description="Contrail Kubernetes Manager provides listening to the Kubernetes API messages and creating corresponding resources in the Contrail API database."
 
 RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
-    yum install -y python-eventlet python-setuptools python-kazoo \
-                   python-bitarray python-pycassa python-bitstring \
-                   contrail-kube-manager python-enum34 && \
-    yum clean all -y && \
-    rm -rf /var/cache/yum; \
+      yum install -y python-eventlet python-kazoo \
+                      python-bitarray python-pycassa python-bitstring \
+                      contrail-kube-manager python-enum34 && \
+      yum clean all -y && \
+      rm -rf /var/cache/yum; \
     fi
 COPY entrypoint.sh /
 

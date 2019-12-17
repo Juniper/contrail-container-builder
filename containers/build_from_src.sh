@@ -1,6 +1,5 @@
 #!/bin/bash
 
-sed -e '/^tsflags=nodocs/d' -i /etc/yum.conf
 [ -e "/contrail-setup-common.sh" ] && source /contrail-setup-common.sh
 
 build_path="/build_src"
@@ -16,6 +15,22 @@ function setup_user() {
      -n "$CONTRAIL_GID" && \
      "$(id -u)" = '0' ]] && chown -R $CONTRAIL_UID:$CONTRAIL_GID $path
   [[ -n $"mode" ]] && chmod -R $mode $path
+}
+
+function is_elf() {
+  [[ 'ELF' == "$(dd if=$1 count=3 bs=1 skip=1 2>/dev/null)" ]]
+}
+
+function strip_file() {
+  local file=$1
+  is_elf $file &&  strip --strip-unneeded -p $file
+}
+
+function strip_folder() {
+  local folder=$1
+  find $folder -type f | while read file ; do
+    strip_file $file
+  done
 }
 
 CONTRAIL_DEPS=''
@@ -54,7 +69,7 @@ if [[ -f ${build_path}/.src ]]; then
     pushd $src_folder
     [[ -z ${dst_folder} ]] && dst_folder='/'
     log "Launch Setup.py within ${src_folder} with root to ${dst_folder} and prefix ${setup_prefix} ..."
-    time python setup.py install --root=${dst_folder} --prefix=${setup_prefix}
+    time python setup.py install --root=${dst_folder} --prefix=${setup_prefix} --no-compile
     exitcode=${PIPESTATUS[0]}
     if [[ $exitcode -ne 0 ]]; then
       log "Setup.py within ${src_folder} finished with error"
@@ -76,16 +91,17 @@ if [[ -f ${build_path}/.copy_folders ]]; then
     dst_folder=$(echo $line | awk '{ print $2 }' | tr -d "[:space:]")
     mkdir -p $dst_folder
     log "Copying files from  $src_folder to $dst_folder"
-    cp -ap  $src_folder $dst_folder && setup_user $dst_folder
+    cp -R --dereference $src_folder $dst_folder && setup_user $dst_folder
     exitcode=${PIPESTATUS[0]}
     if [[ $exitcode -ne 0 ]]; then
       log "Copying of source folder ${src_folder} to ${dst_folder} finished with error"
       exit 1
     fi
+    strip_folder $dst_file
   done < "${build_path}/.copy_folders"
 fi
 
-log "Copyting files call.."
+log "Copying files call.."
 if [[ -f ${build_path}/.copy_files ]]; then
   cd $build_root
   while read line; do
@@ -97,13 +113,15 @@ if [[ -f ${build_path}/.copy_files ]]; then
     dst_file=$(echo $line | awk '{ print $2 }' | tr -d "[:space:]")
     dst_folder="${dst_file%/*}"
     mkdir -p $dst_folder
+    setup_user $dst_folder 0755
     log "Copying files from  $src_file to $dst_file"
-    cp -fp $src_file $dst_file && setup_user $dst_folder && chmod 775 $dst_file
+    cp -fp $src_file $dst_file && setup_user $dst_file 0755
     exitcode=${PIPESTATUS[0]}
     if [[ $exitcode -ne 0 ]]; then
       log "Copying of source file ${src_file} to ${dst_file} finished with error"
       exit 1
     fi
+    strip_file $dst_file
   done < "${build_path}/.copy_files"
 fi
 

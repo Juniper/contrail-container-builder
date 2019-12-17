@@ -12,4 +12,3 @@ python-geventhttpclient
 python-kazoo
 python-netaddr
 python-pycassa
-python-setuptools
