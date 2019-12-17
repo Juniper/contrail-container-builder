@@ -20,10 +20,8 @@ fi
 
 vrouter_dir="/usr/src/vrouter-${contrail_version}"
 mkdir -p $vrouter_dir
-pushd $vrouter_dir
-tar -xf /opt/contrail/src/modules/contrail-vrouter/contrail-vrouter-${contrail_version}.tar.gz
-popd
-
+cp -ap /vrouter_src/. ${vrouter_dir}/
+rm -rf /vrouter_src
 templ=$(cat /opt/contrail/src/dkms.conf)
 content=$(eval "echo \"$templ\"")
 echo "$content" > $vrouter_dir/dkms.conf
