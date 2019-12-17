@@ -10,9 +10,9 @@ LABEL name=$CONTAINER_NAME \
 
 ARG CONTRAIL_BUILD_FROM_SOURCE
 RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
-    yum install -y contrail-vcenter-fabric-manager && \
-    yum clean all -y && \
-    rm -rf /var/cache/yum; \
+      yum install -y contrail-vcenter-fabric-manager && \
+      yum clean all -y && \
+      rm -rf /var/cache/yum; \
     fi
 
 COPY *.sh /
