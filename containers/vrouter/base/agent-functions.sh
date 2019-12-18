@@ -773,7 +773,7 @@ function add_vrouter_decrypt_intf() {
 # dhclp clients for vhost0 is running
 # for the dhcp lease renewal
 function check_vhost0_dhcp_clients() {
-    local pids=$(ps -A -o pid,cmd|grep 'vhost-dhcp\|vhost0' | grep -v grep | awk '{print $1}')
+    local pids=$(ps -A -o pid,cmd|grep 'vhost-dhcp\|dhclient-vhost0.conf' | grep -v grep | awk '{print $1}')
     echo $pids
 }
 
@@ -781,6 +781,10 @@ function check_vhost0_dhcp_clients() {
 # reason for the sleeps here are for the DHCP response and populting the lease file
 # and also for making sure the arp table is updated with the mac of the GW
 function launch_dhcp_clients() {
+    local pids=$(ps -A -o pid,cmd|grep 'dhclient--vhost0.lease\|dhclient-vhost0.pid' | grep -v grep | awk '{print $1}')
+    if [ ! -z "$pids" ] ; then
+       kill $pids
+    fi
     mkdir -p /var/lib/dhcp
     dhclient -v -1  -sf /vhost-dhcp.sh -cf /dhclient-vhost0.conf -pf /run/dhclient.vhost0.pid -lf /var/lib/dhcp/dhclient.vhost0.leases -I vhost0 2>&1 </dev/null & disown -h "$!"
     sleep 3
