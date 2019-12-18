@@ -773,7 +773,7 @@ function add_vrouter_decrypt_intf() {
 # dhclp clients for vhost0 is running
 # for the dhcp lease renewal
 function check_vhost0_dhcp_clients() {
-    local pids=$(ps -A -o pid,cmd|grep 'vhost-dhcp\|vhost0' | grep -v grep | awk '{print $1}')
+    local pids=$(ps -A -o pid,cmd|grep 'dhclient--vhost0.lease\|dhclient-vhost0.pid' | grep -v grep | awk '{print $1}')
     echo $pids
 }
 

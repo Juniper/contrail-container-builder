@@ -58,6 +58,7 @@ azure_or_gcp_or_aws=$(cat /sys/devices/virtual/dmi/id/chassis_vendor && cat /sys
 if [[ "$azure_or_gcp_or_aws" =~ ^(.*Microsoft*.|.*Google*.|.*amazon*.) ]]; then
     pids=$(check_vhost0_dhcp_clients)
     if [ -z "$pids" ] ; then
+        kill $pids
         check_and_launch_dhcp_clients
     else
         # this is an important case when dhcp clients are running
