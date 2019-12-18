@@ -22,6 +22,30 @@
       "revId": "e2675801adfed8164008f96a34e0fc15e1c7fabe",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "628750e6_4e77e643",
+        "filename": "containers/vrouter/base/agent-functions.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 776,
+      "author": {
+        "id": 53
+      },
+      "writtenOn": "2019-12-18T23:01:49Z",
+      "side": 1,
+      "message": "Alexey, Thanks for reviewing. \n\nPlease check the new version. \n\n-Sanju",
+      "parentUuid": "4038d25c_b5eccbfb",
+      "range": {
+        "startLine": 776,
+        "startChar": 40,
+        "endLine": 776,
+        "endChar": 83
+      },
+      "revId": "e2675801adfed8164008f96a34e0fc15e1c7fabe",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
     }
   ]
 }
