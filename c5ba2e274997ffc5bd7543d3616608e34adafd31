@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8c9648a0_749ff4e0",
+        "filename": "containers/controller/config/base/build_src/.deps",
+        "patchSetId": 5
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-12-19T17:37:04Z",
+      "side": 1,
+      "message": "remove it is in base",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 8,
+        "endChar": 11
+      },
+      "revId": "c5ba2e274997ffc5bd7543d3616608e34adafd31",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "89f6ddd3_d67a520e",
+        "filename": "containers/controller/config/base/build_src/.deps",
+        "patchSetId": 5
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-12-19T17:37:04Z",
+      "side": 1,
+      "message": "remove, it is in base.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 18
+      },
+      "revId": "c5ba2e274997ffc5bd7543d3616608e34adafd31",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}

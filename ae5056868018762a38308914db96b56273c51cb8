@@ -16,6 +16,24 @@
       "revId": "ae5056868018762a38308914db96b56273c51cb8",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "53daf0a3_e817e1c6",
+        "filename": "containers/controller/config/base/build_src/.deps",
+        "patchSetId": 5
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-12-19T17:37:04Z",
+      "side": 0,
+      "message": "yes, in base container",
+      "parentUuid": "3489940c_e60b1607",
+      "revId": "ae5056868018762a38308914db96b56273c51cb8",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
