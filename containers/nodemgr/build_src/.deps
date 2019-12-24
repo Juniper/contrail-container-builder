@@ -1,15 +1,8 @@
 chrony
-contrail-lib
 libxml2-devel
 libxslt-devel
 ntp
 python2-docker
-python2-future
-python-bottle
-python-configparser
-python-contrail
-python-gevent
-python-geventhttpclient
 python-lxml
 python-prettytable
 python-psutil
