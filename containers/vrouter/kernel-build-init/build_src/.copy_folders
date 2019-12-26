@@ -1,3 +1,3 @@
-third_party/dpdk/. /root/contrail/third_party/dpdk/
-build/production/vrouter/. /vrouter_src/
-vrouter/utils/dkms/. /vrouter_src/utils/dkms/
+vrouter/include/.  /vrouter_src/include/
+vrouter/linux/.  /vrouter_src/linux/
+vrouter/dp-core/.  /vrouter_src/dp-core/
