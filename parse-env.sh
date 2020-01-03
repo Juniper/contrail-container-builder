@@ -105,6 +105,9 @@ if [[ "$LINUX_DISTR" == 'rhel'* ]] ; then
       stein)
         rhel_os_repo_num='15'
         ;;
+      stein)
+        rhel_os_repo_num='16'
+        ;;
       *)
         echo "ERROR: unsupported OS $OPENSTACK_VERSION for RHEL"
         exit 1
