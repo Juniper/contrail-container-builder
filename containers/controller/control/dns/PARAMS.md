@@ -23,7 +23,7 @@
 | **Control**                       |                                                |
 | CONTROL_NODES                     | $CONFIG_NODES                                  |
 | **Controller**                    |                                                |
-| *CONTROLLER_NODES*                | $DEFAULT_LOCAL_IP                              |
+| *CONTROLLER_NODES*                | IP address of the NIC performs default routing |
 | **DNS**                           |                                                |
 | DNS_INTROSPECT_LISTEN_PORT        | $DNS_INTROSPECT_PORT                           |
 | DNS_NAMED_CONFIG_DIRECTORY        | /etc/contrail/dns                              |
@@ -35,9 +35,6 @@
 | DNS_SERVER_PORT                   | 53                                             |
 | RNDC_KEY                          | xvysmOR8lnUQRBcunkC6vg==                       |
 | *DNS_INTROSPECT_PORT*             | 8092                                           |
-| **Host**                          |                                                |
-| DEFAULT_HOSTNAME                  | hostname -f                                    |
-| *DEFAULT_LOCAL_IP*                | IP address of the NIC performs default routing |
 | **Introspect**                    |                                                |
 | INTROSPECT_LISTEN_ALL             | True                                           |
 | INTROSPECT_SSL_ENABLE             | $SSL_ENABLE                                    |

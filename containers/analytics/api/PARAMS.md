@@ -25,9 +25,7 @@
 | CONFIG_NODES                         | $CONTROLLER_NODES                                                                       |
 | CONFIG_SERVERS                       | $CONFIG_NODES with $CONFIG_API_PORT                                                     |
 | **Controller**                       |                                                                                         |
-| *CONTROLLER_NODES*                   | $DEFAULT_LOCAL_IP                                                                       |
-| **Host**                             |                                                                                         |
-| *DEFAULT_LOCAL_IP*                   | IP address of the NIC performs default routing                                          |
+| *CONTROLLER_NODES*                   | IP address of the NIC performs default routing                                          |
 | **Introspect**                       |                                                                                         |
 | INTROSPECT_LISTEN_ALL                | True                                                                                    |
 | INTROSPECT_SSL_ENABLE                | $SSL_ENABLE                                                                             |

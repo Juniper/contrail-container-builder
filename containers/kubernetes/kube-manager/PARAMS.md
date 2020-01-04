@@ -23,9 +23,7 @@
 | *CONFIGDB_NODES*                  | $CONTROLLER_NODES                                   |
 | *CONFIGDB_PORT*                   | 9161                                                |
 | **Controller**                    |                                                     |
-| *CONTROLLER_NODES*                | $DEFAULT_LOCAL_IP                                   |
-| **Host**                          |                                                     |
-| *DEFAULT_LOCAL_IP*                | IP address of the NIC performs default routing      |
+| *CONTROLLER_NODES*                | IP address of the NIC performs default routing      |
 | **Introspect**                    |                                                     |
 | INTROSPECT_SSL_ENABLE             | $SSL_ENABLE                                         |
 | **Keystone authentication**       |                                                     |
@@ -52,7 +50,7 @@
 | KUBEMANAGER_NESTED_MODE           |                                                     |
 | KUBERNETES_API_PORT               | 8080                                                |
 | KUBERNETES_API_SECURE_PORT        | 6443                                                |
-| KUBERNETES_API_SERVER             | $DEFAULT_LOCAL_IP                                   |
+| KUBERNETES_API_SERVER             | IP address of the NIC performs default routing      |
 | KUBERNETES_CLUSTER_NAME           | k8s                                                 |
 | KUBERNETES_CLUSTER_NETWORK        | {}                                                  |
 | KUBERNETES_CLUSTER_PROJECT        | {}                                                  |

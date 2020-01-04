@@ -27,10 +27,7 @@
 | CONFIG_API_SSL_ENABLE              | $SSL_ENABLE                                                             |
 | CONFIG_NODES                       | $CONTROLLER_NODES                                                       |
 | **Controller**                     |                                                                         |
-| *CONTROLLER_NODES*                 | $DEFAULT_LOCAL_IP                                                       |
-| **Host**                           |                                                                         |
-| DEFAULT_HOSTNAME                   | FQDN host name from /etc/hosts                                          |
-| *DEFAULT_LOCAL_IP*                 | IP address of the NIC performs default routing                          |
+| *CONTROLLER_NODES*                 | IP address of the NIC performs default routing                          |
 | **Introspect**                     |                                                                         |
 | INTROSPECT_LISTEN_ALL              | True                                                                    |
 | INTROSPECT_SSL_ENABLE              | $SSL_ENABLE                                                             |

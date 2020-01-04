@@ -44,8 +44,6 @@
 | **DNS**                                   |                                                      |
 | DNS_INTROSPECT_PORT                       | 8092                                                 |
 | DNS_SERVER_PORT                           | 53                                                   |
-| **Host**                                  |                                                      |
-| DEFAULT_LOCAL_IP                          | IP address of the NIC performs default routing       |
 | **IP tables**                             |                                                      |
 | CONFIGURE_IPTABLES                        | false                                                |
 | IPTABLES_CHAIN                            | INPUT                                                |

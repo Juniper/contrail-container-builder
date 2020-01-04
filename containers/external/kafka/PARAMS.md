@@ -7,9 +7,7 @@
 | *ANALYTICS_ALARM_NODES*              | $ANALYTICS_NODES                               |
 | *ANALYTICS_NODES*                    | $CONTROLLER_NODES                              |
 | **Controller**                       |                                                |
-| *CONTROLLER_NODES*                   | $DEFAULT_LOCAL_IP                              |
-| **Host**                             |                                                |
-| *DEFAULT_LOCAL_IP*                   | IP address of the NIC performs default routing |
+| *CONTROLLER_NODES*                   | IP address of the NIC performs default routing |
 | **Kafka**                            |                                                |
 | KAFKA_BROKER_ID                      | 1                                              |
 | KAFKA_CONF_DIR                       |                                                |

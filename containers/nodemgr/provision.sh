@@ -41,13 +41,13 @@ function provision_subcluster() {
   provision $script --oper add $rest_params
 }
 
-
+default_hostname=$(get_default_hostname)
 case $NODE_TYPE in
 
 config)
   host_ip=$(get_listen_ip_for_node CONFIG)
   host_name=$(resolve_hostname_by_ip $host_ip)
-  provision_node provision_config_node.py $host_ip ${host_name:-$DEFAULT_HOSTNAME}
+  provision_node provision_config_node.py $host_ip ${host_name:-$default_hostname}
 
   if [[ -n "$IPFABRIC_SERVICE_HOST" ]]; then
     fabric_host_arg=''
@@ -86,31 +86,31 @@ config)
 database)
   host_ip=$(get_listen_ip_for_node ANALYTICSDB)
   host_name=$(resolve_hostname_by_ip $host_ip)
-  provision_node provision_database_node.py $host_ip ${host_name:-$DEFAULT_HOSTNAME}
+  provision_node provision_database_node.py $host_ip ${host_name:-$default_hostname}
   ;;
 
 config-database)
   host_ip=$(get_listen_ip_for_node CONFIGDB)
   host_name=$(resolve_hostname_by_ip $host_ip)
-  provision_node provision_config_database_node.py $host_ip ${host_name:-$DEFAULT_HOSTNAME}
+  provision_node provision_config_database_node.py $host_ip ${host_name:-$default_hostname}
   ;;
 
 analytics)
   host_ip=$(get_listen_ip_for_node ANALYTICS)
   host_name=$(resolve_hostname_by_ip $host_ip)
-  provision_node provision_analytics_node.py $host_ip ${host_name:-$DEFAULT_HOSTNAME}
+  provision_node provision_analytics_node.py $host_ip ${host_name:-$default_hostname}
   ;;
 
 analytics-snmp)
   host_ip=$(get_listen_ip_for_node ANALYTICS_SNMP)
   host_name=$(resolve_hostname_by_ip $host_ip)
-  provision_node provision_analytics_snmp_node.py $host_ip ${host_name:-$DEFAULT_HOSTNAME}
+  provision_node provision_analytics_snmp_node.py $host_ip ${host_name:-$default_hostname}
   ;;
 
 analytics-alarm)
   host_ip=$(get_listen_ip_for_node ANALYTICS_ALARM)
   host_name=$(resolve_hostname_by_ip $host_ip)
-  provision_node provision_analytics_alarm_node.py $host_ip ${host_name:-$DEFAULT_HOSTNAME}
+  provision_node provision_analytics_alarm_node.py $host_ip ${host_name:-$default_hostname}
   ;;
 
 control)
@@ -139,7 +139,7 @@ control)
 
   host_ip=$(get_listen_ip_for_node CONTROL)
   host_name=$(resolve_hostname_by_ip $host_ip)
-  provision_node provision_control.py $host_ip ${host_name:-$DEFAULT_HOSTNAME} \
+  provision_node provision_control.py $host_ip ${host_name:-$default_hostname} \
     --router_asn ${BGP_ASN} \
     --bgp_server_port ${BGP_PORT} ${subcluster_name}
 
@@ -189,7 +189,7 @@ vrouter)
   fi
   params="$params --ip_fabric_subnet $ip_fabric_subnet"
   host_name=$(resolve_hostname_by_ip $host_ip)
-  provision_node provision_vrouter.py $host_ip ${VROUTER_HOSTNAME:-${host_name:-${DEFAULT_HOSTNAME}}} $params
+  provision_node provision_vrouter.py $host_ip ${VROUTER_HOSTNAME:-${host_name:-${default_hostname}}} $params
 
   ;;
 

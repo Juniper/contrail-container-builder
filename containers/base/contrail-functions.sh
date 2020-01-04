@@ -244,7 +244,7 @@ function get_vrouter_physical_iface() {
   if [[ -z "$iface" ]]; then
     iface=$(get_iface_for_vrouter_from_control)
     if [[ -z "$iface" ]] ; then
-      iface=$DEFAULT_IFACE
+      iface=$(get_default_nic)
     fi
   fi
   echo $iface

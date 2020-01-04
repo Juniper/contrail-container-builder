@@ -33,13 +33,11 @@
 | **Control**                       |                                                |
 | CONTROL_NODES                     | $CONFIG_NODES                                  |
 | **Controller**                    |                                                |
-| *CONTROLLER_NODES*                | $DEFAULT_LOCAL_IP                              |
+| *CONTROLLER_NODES*                | IP address of the NIC performs default routing |
 | **Host**                          |                                                |
-| DEFAULT_HOSTNAME                  | hostname -f                                    |
 | DIST_SNAT_PROTO_PORT_LIST         | ""                                             |
 | ENCAP_PRIORITY                    | MPLSoUDP,MPLSoGRE,VXLAN                        |
 | FLOW_EXPORT_RATE                  | 0                                              |
-| *DEFAULT_LOCAL_IP*                | IP address of the NIC performs default routing |
 | **Introspect**                    |                                                |
 | INTROSPECT_LISTEN_ALL             | True                                           |
 | INTROSPECT_SSL_ENABLE             | $SSL_ENABLE                                    |

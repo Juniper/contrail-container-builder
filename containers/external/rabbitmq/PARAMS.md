@@ -6,9 +6,7 @@
 | *CONFIGDB_NODES*                  | $CONFIG_NODES                                  |
 | *CONFIG_NODES*                    | $CONTROLLER_NODES                              |
 | **Controller**                    |                                                |
-| *CONTROLLER_NODES*                | $DEFAULT_LOCAL_IP                              |
-| **Host**                          |                                                |
-| *DEFAULT_LOCAL_IP*                | IP address of the NIC performs default routing |
+| *CONTROLLER_NODES*                | IP address of the NIC performs default routing |
 | **RabbitMQ**                      |                                                |
 | RABBITMQ_ERLANG_COOKIE            |                                                |
 | RABBITMQ_HEARTBEAT_INTERVAL       | 10                                             |
