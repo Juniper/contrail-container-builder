@@ -23,9 +23,7 @@
 | *CONFIGDB_NODES*                  | $CONFIG_NODES                                  |
 | *CONFIGDB_PORT*                   | 9161                                           |
 | **Controller**                    |                                                |
-| *CONTROLLER_NODES*                | $DEFAULT_LOCAL_IP                              |
-| **Host**                          |                                                |
-| *DEFAULT_LOCAL_IP*                | IP address of the NIC performs default routing |
+| *CONTROLLER_NODES*                | IP address of the NIC performs default routing |
 | **Introspect**                    |                                                |
 | INTROSPECT_SSL_ENABLE             | $SSL_ENABLE                                    |
 | **Keystone authentication**       |                                                |

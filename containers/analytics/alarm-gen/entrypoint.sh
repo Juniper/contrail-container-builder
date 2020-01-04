@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source /common.sh
-export ALARMGEN_REDIS_AGGREGATE_DB_OFFSET=${ALARMGEN_REDIS_AGGREGATE_DB_OFFSET:-1}
+export ALARMGEN_REDIS_AGGREGATE_DB_OFFSET=${ALARMGEN_REDIS_AGGREGATE_DB_OFFSET:-`get_order_for_node ANALYTICS`}
 
 pre_start_init
 wait_redis_certs_if_ssl_enabled

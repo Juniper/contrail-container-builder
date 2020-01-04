@@ -40,7 +40,7 @@ named_max_retransmissions=${DNS_NAMED_MAX_RETRANSMISSIONS:-12}
 named_retransmission_interval=${DNS_RETRANSMISSION_INTERVAL:-1000} # msec
 
 hostip=${hostip}
-hostname=${hostname:-$DEFAULT_HOSTNAME}
+hostname=${hostname:-$(get_default_hostname)}
 http_server_port=${DNS_INTROSPECT_LISTEN_PORT:-$DNS_INTROSPECT_PORT}
 http_server_ip=$(get_introspect_listen_ip_for_node CONTROL)
 dns_server_port=$DNS_SERVER_PORT

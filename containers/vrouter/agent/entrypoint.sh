@@ -129,7 +129,7 @@ if [[ -z "$vrouter_cidr" ]] ; then
 fi
 vrouter_ip=${vrouter_cidr%/*}
 agent_name=${VROUTER_HOSTNAME:-"$(resolve_hostname_by_ip $vrouter_ip)"}
-[ -z "$agent_name" ] && agent_name="$DEFAULT_HOSTNAME"
+[ -z "$agent_name" ] && agent_name="$(get_default_hostname)"
 
 # Google has point to point DHCP address to the VM, but we need to initialize
 # with the network address mask. This is needed for proper forwarding of pkts

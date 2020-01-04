@@ -20,19 +20,16 @@
 | **Control**                        |                                                     |
 | CONTROL_NODES                      | $CONFIG_NODES                                       |
 | **Controller**                     |                                                     |
-| *CONTROLLER_NODES*                 | $DEFAULT_LOCAL_IP                                   |
+| *CONTROLLER_NODES*                 | IP address of the NIC performs default routing      |
 | **DNS**                            |                                                     |
 | DNS_SERVERS                        | $DNS_NODES with $DNS_SERVER_PORT                    |
 | *DNS_NODES*                        | $CONTROL_NODES                                      |
 | *DNS_SERVER_PORT*                  | 53                                                  |
 | **Host**                           |                                                     |
-| DEFAULT_HOSTNAME                   | hostname -f                                         |
-| DEFAULT_IFACE                      | Default NIC                                         |
 | DPDK_UIO_DRIVER                    | uio_pci_generic                                     |
 | PHYSICAL_INTERFACE                 |                                                     |
 | SRIOV_PHYSICAL_INTERFACE           |                                                     |
 | SRIOV_VF                           |                                                     |
-| *DEFAULT_LOCAL_IP*                 | IP address of the NIC performs default routing      |
 | **Introspect**                     |                                                     |
 | INTROSPECT_LISTEN_ALL              | True                                                |
 | INTROSPECT_SSL_ENABLE              | $SSL_ENABLE                                         |
@@ -55,7 +52,7 @@
 | K8S_TOKEN_FILE                     | /var/run/secrets/kubernetes.io/serviceaccount/token |
 | KUBERNETES_API_PORT                | 8080                                                |
 | KUBERNETES_API_SECURE_PORT         | 6443                                                |
-| KUBERNETES_API_SERVER              | $DEFAULT_LOCAL_IP                                   |
+| KUBERNETES_API_SERVER              | IP address of the NIC performs default routing      |
 | KUBERNETES_POD_SUBNETS             | 10.32.0.0/12                                        |
 | **Logging**                        |                                                     |
 | LOG_DIR                            | /var/log/contrail                                   |

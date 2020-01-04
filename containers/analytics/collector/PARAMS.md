@@ -66,10 +66,7 @@
 | *CONFIGDB_NODES*                                   | $CONFIG_NODES                                                           |
 | *CONFIG_API_PORT*                                  | 8082                                                                    |
 | **Controller**                                     |                                                                         |
-| *CONTROLLER_NODES*                                 | $DEFAULT_LOCAL_IP                                                       |
-| **Host**                                           |                                                                         |
-| DEFAULT_HOSTNAME                                   | FQDN host name from /etc/hosts                                          |
-| *DEFAULT_LOCAL_IP*                                 | IP address of the NIC performs default routing                          |
+| *CONTROLLER_NODES*                                 | IP address of the NIC performs default routing                          |
 | **Introspect**                                     |                                                                         |
 | INTROSPECT_LISTEN_ALL                              | True                                                                    |
 | INTROSPECT_SSL_ENABLE                              | $SSL_ENABLE                                                             |
