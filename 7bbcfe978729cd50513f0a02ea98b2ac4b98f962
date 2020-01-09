@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4832663d_2ebfb8a4",
+        "filename": "containers/vrouter/base/agent-functions.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 776,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-01-09T13:22:58Z",
+      "side": 1,
+      "message": "what is wrong with the previous grep?",
+      "range": {
+        "startLine": 776,
+        "startChar": 40,
+        "endLine": 776,
+        "endChar": 72
+      },
+      "revId": "7bbcfe978729cd50513f0a02ea98b2ac4b98f962",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9884a8fa_8ebd99a5",
+        "filename": "containers/vrouter/base/agent-functions.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 787,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-01-09T13:22:58Z",
+      "side": 1,
+      "message": "this function is not called directly from entrypoint, the check_and_launch_dhcp_clients is called instead that has required kill.\nIf that kill is wrong (or not enought) it\u0027d be better to fix the kill logic there then in this function.",
+      "range": {
+        "startLine": 784,
+        "startChar": 0,
+        "endLine": 787,
+        "endChar": 6
+      },
+      "revId": "7bbcfe978729cd50513f0a02ea98b2ac4b98f962",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
