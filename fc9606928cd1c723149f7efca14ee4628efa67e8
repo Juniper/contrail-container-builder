@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1924bbfd_942eb158",
+        "filename": "containers/vrouter/plugin/mellanox/init/redhat/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-01-12T19:56:18Z",
+      "side": 1,
+      "message": "why COPY should be removed?",
+      "revId": "fc9606928cd1c723149f7efca14ee4628efa67e8",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "37424f6e_dbf054d3",
+        "filename": "containers/vrouter/plugin/mellanox/init/redhat/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-01-12T19:56:18Z",
+      "side": 1,
+      "message": "please do just one install for both libraries.",
+      "revId": "fc9606928cd1c723149f7efca14ee4628efa67e8",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9f189c57_0b685bfe",
+        "filename": "containers/vrouter/plugin/mellanox/init/redhat/entrypoint.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-01-12T19:56:18Z",
+      "side": 1,
+      "message": "please use two spaces instead each tabulation",
+      "revId": "fc9606928cd1c723149f7efca14ee4628efa67e8",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
