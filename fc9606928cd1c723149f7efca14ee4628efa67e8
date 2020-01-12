@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "0a0203ac_ff6e8537",
+        "filename": "containers/vrouter/plugin/mellanox/init/redhat/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 880
+      },
+      "writtenOn": "2020-01-12T20:23:32Z",
+      "side": 1,
+      "message": "it was needed for mounting relevant files for mlnx ofed.",
+      "parentUuid": "1924bbfd_942eb158",
+      "revId": "fc9606928cd1c723149f7efca14ee4628efa67e8",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "37424f6e_dbf054d3",
         "filename": "containers/vrouter/plugin/mellanox/init/redhat/Dockerfile",
         "patchSetId": 1
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "c30433da_7535941a",
+        "filename": "containers/vrouter/plugin/mellanox/init/redhat/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 880
+      },
+      "writtenOn": "2020-01-12T20:23:32Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "37424f6e_dbf054d3",
+      "revId": "fc9606928cd1c723149f7efca14ee4628efa67e8",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9f189c57_0b685bfe",
         "filename": "containers/vrouter/plugin/mellanox/init/redhat/entrypoint.sh",
         "patchSetId": 1
@@ -50,6 +86,24 @@
       "revId": "fc9606928cd1c723149f7efca14ee4628efa67e8",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "70ed3c8c_842d2f33",
+        "filename": "containers/vrouter/plugin/mellanox/init/redhat/entrypoint.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 880
+      },
+      "writtenOn": "2020-01-12T20:23:32Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "9f189c57_0b685bfe",
+      "revId": "fc9606928cd1c723149f7efca14ee4628efa67e8",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
     }
   ]
 }
