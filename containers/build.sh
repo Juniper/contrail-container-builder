@@ -146,9 +146,9 @@ function process_container() {
     local entrypoint=$(docker inspect -f "{{json .Config.Entrypoint }}" ${target_name} )
     local intermediate_base="${container_name}-src"
     local run_arguments="--name $intermediate_base --network host \
-       -e "CONTRAIL_SOURCE=${CONTRAIL_SOURCE}" \
+       -e "CONTRAIL_SOURCE=/root/contrail" \
        -e "LINUX_DISTR=${LINUX_DISTR}" \
-       -v ${CONTRAIL_SOURCE}:${CONTRAIL_SOURCE}:z \
+       -v ${CONTRAIL_SOURCE}:/root/contrail:z \
        -v ${abs_build_src_path}:/build_src:z \
        -v ${CONTRAIL_BUILDER_DIR}/containers/build_from_src.sh:/setup.sh:z \
        --entrypoint /setup.sh \
