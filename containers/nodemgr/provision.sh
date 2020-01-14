@@ -64,7 +64,7 @@ config)
       --ipfabric_service_port $IPFABRIC_SERVICE_PORT
   fi
   provision provision_alarm.py
-  provision provision_encap.py --encap_priority $ENCAP_PRIORITY
+  provision provision_encap.py --encap_priority $ENCAP_PRIORITY --vxlan_vn_id_mode $VXLAN_VN_ID_MODE
   dist_snat_list=""
   dist_snat_params=""
   if [[ -n "${DIST_SNAT_PROTO_PORT_LIST}" ]]; then
