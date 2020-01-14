@@ -15,6 +15,7 @@ source /contrail-functions.sh
 # Host
 DEFAULT_LOCAL_IP=$(get_default_ip)
 ENCAP_PRIORITY=${ENCAP_PRIORITY:-'MPLSoUDP,MPLSoGRE,VXLAN'}
+VXLAN_VN_ID_MODE=${VXLAN_VN_ID_MODE:-'automatic'}
 DPDK_UIO_DRIVER=${DPDK_UIO_DRIVER-'uio_pci_generic'}
 CPU_CORE_MASK=${CPU_CORE_MASK:-'0x01'}
 HUGE_PAGES=${HUGE_PAGES:-""}
