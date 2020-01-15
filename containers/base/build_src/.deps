@@ -1,6 +1,9 @@
 contrail-setup
 contrail-utils
 crudini
+hostname
+iproute
+less
 openstack-utils
 python2-crypto
 python2-eventlet-0.18.4-2.el7.noarch
@@ -10,9 +13,12 @@ python2-idna
 python2-netaddr
 python2-pysocks
 python2-requests
+python2-setuptools
 python2-six
 python2-sqlalchemy
 python2-urllib3
+python3
+python3-setuptools
 python-bottle
 python-configparser
 python-devel
