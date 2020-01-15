@@ -2,7 +2,4 @@ build/noarch/contrail-vrouter-api
 build/noarch/vcenter-manager
 build/noarch/provisioning
 build/production/utils/contrail-cli/contrail_vrouter_cli
-build/production/config/common
 build/production/libpartition
-build/production/tools/sandesh/library/python
-build/production/api-lib

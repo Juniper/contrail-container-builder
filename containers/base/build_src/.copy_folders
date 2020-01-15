@@ -1,0 +1,6 @@
+controller/src/config/utils/. /opt/contrail/utils/
+controller/src/config/utils/*py /usr/share/contrail-utils/
+controller/src/config/utils/*sh /usr/share/contrail-utils/
+controller/src/dns/scripts/. /opt/contrail/utils/
+controller/src/dns/scripts/*py /usr/share/contrail-utils/
+controller/src/config/utils/*sh /usr/share/contrail-utils/
