@@ -1,5 +1,5 @@
 #!/bin/bash
-
+[ -e "/prepare_repos.sh" ] && source /prepare_repos.sh
 [ -e "/contrail-setup-common.sh" ] && source /contrail-setup-common.sh
 
 build_path="/build_src"
@@ -33,6 +33,50 @@ function strip_folder() {
   done
 }
 
+function pip_installation() {
+  local python_exec=$1
+  log "Start downloading and installing pip..."
+  curl "https://bootstrap.pypa.io/get-pip.py" | "${python_exec}"
+  exitcode=${PIPESTATUS[0]}
+  log "Pip installation exitcode is ${exitcode}"
+  if [[ $exitcode -ne 0 ]] ; then
+   log "Pip installation is finished with error"
+   exit 1
+  fi
+
+}
+
+function pip_pypi() {
+  if [[ -e "${build_path}/.pypi3" ]] ; then
+    local python_exec="python3"
+    local file_with_libs="${build_path}/.pypi3"
+  elif [[ -e "${build_path}/.pypi2" ]] ; then
+      local python_exec="python2"
+      local file_with_libs="${build_path}/.pypi2"
+  else
+    log "No pip files to install"
+  fi
+  
+  if [[ -n "${python_exec}" && -n "${file_with_libs}" ]] ; then
+    pip_installation "${python_exec}"
+    local opt="--no-compile"
+    local libs=""
+    while read line; do
+      libs="${libs} ${line}"
+    done < "${file_with_libs}"
+    libs="$(echo "${libs}" | sed -e 's/[[:space:]]*$//')"
+    log "We are going to install the following ${libs} "
+    log "The command for pip run is: ${python_exec} -m pip install ${opt} ${libs}"
+    ${python_exec} -m pip install ${opt} ${libs}
+    exitcode=${PIPESTATUS[0]}
+    log "Pip libs installation exitcode is ${exitcode}"
+    if [[ $exitcode -ne 0 ]]; then
+      log "Pip libs installation is finished with error"
+      exit 1
+    fi
+  fi
+}
+
 CONTRAIL_DEPS=''
 [ -e ${build_path}/.deps ] && CONTRAIL_DEPS+=$(cat ${build_path}/.deps)
 [ -e ${build_path}/.deps.$LINUX_DISTR ] && CONTRAIL_DEPS+="\n$(cat ${build_path}/.deps.$LINUX_DISTR)"
@@ -51,8 +95,11 @@ if [[ -n "$CONTRAIL_DEPS" ]] ; then
    exit 1
   fi
 else
-   log "There is no dependecies to install. Continue."
+   log "There is no dependencies to install. Continue."
 fi
+
+log "Let's start pip execution..."
+pip_pypi
 
 build_root=${CONTRAIL_SOURCE//\"/}
 if [[ -z "$build_root" ]] ; then
