@@ -1,3 +1,1 @@
-build/production/api-lib
-build/production/config/common
 build/production/container/kube-manager
