@@ -48,7 +48,7 @@ export CONTRAIL_SOURCE=${CONTRAIL_SOURCE:-'/root/contrail'}
 export CONTRAIL_BUILDER_DIR=${CONTRAIL_BUILDER_DIR:-'/root/contrail/contrail-container-builder'}
 # Flag to switch to build from sources
 export CONTRAIL_BUILD_FROM_SOURCE=${CONTRAIL_BUILD_FROM_SOURCE:-}
-
+export DISTROLESS_ENABLED=${DISTROLESS_ENABLED:-'true'}
 export K8S_VERSION=${K8S_VERSION:-'1.15.4'}
 export OPENSTACK_VERSION=${OPENSTACK_VERSION:-'queens'}
 # CONTRAIL_VERSION is depricated.
