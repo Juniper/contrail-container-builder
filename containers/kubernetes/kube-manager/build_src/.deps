@@ -1,3 +1,5 @@
 python-bitstring
-python2-bitarray
 python-enum34
+python-kazoo
+python2-bitarray
+python2-eventlet
