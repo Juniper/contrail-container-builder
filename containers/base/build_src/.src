@@ -2,3 +2,4 @@ build/production/config/common
 build/production/libpartition
 build/production/tools/sandesh/library/python
 build/production/api-lib
+build/production/sandesh/common
