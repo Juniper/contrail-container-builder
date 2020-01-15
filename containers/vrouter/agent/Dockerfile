@@ -8,14 +8,11 @@ LABEL name=$CONTAINER_NAME \
       summary="Contrail Vrouter Agent" \
       description="The vRouter agent is a user space process running inside Linux. It acts as the local, lightweight control plane."
 
-ARG CONTRAIL_BUILD_FROM_SOURCE
-RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
-      yum install -y dhclient NetworkManager contrail-vrouter-agent haproxy libvirt-client \
-        python-opencontrail-vrouter-netns python-contrail-vrouter-api && \
-      yum clean all -y && \
-      rm -rf /var/cache/yum && \
-      ldconfig; \
-    fi
+RUN  yum install -y dhclient NetworkManager contrail-vrouter-agent haproxy libvirt-client \
+     python-opencontrail-vrouter-netns python-contrail-vrouter-api && \
+     yum clean all -y && \
+     rm -rf /var/cache/yum && \
+     ldconfig   
 
 COPY *.sh /
 
