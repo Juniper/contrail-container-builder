@@ -6,7 +6,6 @@ ARG CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
       summary="Contrail VNC Configuration Schema Transformer" \
       description="Contrail Schema Transformer compiles the high level, intent based data model into a low level configuration data model."
-ARG CONTRAIL_BUILD_FROM_SOURCE
 
 COPY *.sh /
 
@@ -16,4 +15,3 @@ CMD ["/usr/bin/contrail-schema", "--conf_file", "/etc/contrail/contrail-schema.c
 ENV SERVICE_NAME=schema
 LABEL $VENDOR_DOMAIN".service"=$SERVICE_NAME
 LABEL $VENDOR_DOMAIN".container.name"=$CONTAINER_NAME
-
