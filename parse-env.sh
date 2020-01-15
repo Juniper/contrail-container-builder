@@ -17,7 +17,7 @@ if [[ "$linux_id" == 'centos' ]] ; then
   # ver id is taken from available versions from docker.io
   linux_ver_id=`cat /etc/redhat-release | awk '{print($4)}'`
 else
-  # for ubuntu ver id matchs 14.04, 16.04, etc from host system
+  # for ubuntu ver id matchs 14.04, 16.04, etc from host system/
   linux_ver_id=$(awk -F"=" '/^VERSION_ID=/{print $2}' /etc/os-release | tr -d '"')
 fi
 
@@ -49,7 +49,7 @@ export CONTRAIL_SOURCE=${CONTRAIL_SOURCE:-'/root/contrail'}
 export CONTRAIL_BUILD_FROM_SOURCE=${CONTRAIL_BUILD_FROM_SOURCE:-}
 
 export K8S_VERSION=${K8S_VERSION:-'1.15.4'}
-export OPENSTACK_VERSION=${OPENSTACK_VERSION:-'queens'}
+export OPENSTACK_VERSION=${OPENSTACK_VERSION:-'rocky'}
 # CONTRAIL_VERSION is depricated.
 # For Compatibility with Juniper CI. Will be removed.
 [ -z "$CONTRAIL_CONTAINER_TAG" ] && [ -n "$CONTRAIL_VERSION" ] && CONTRAIL_CONTAINER_TAG=$CONTRAIL_VERSION

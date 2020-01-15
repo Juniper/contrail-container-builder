@@ -1,5 +1,5 @@
 #!/bin/bash
-
+[ -e "/pre_setup.sh" ] && source /pre_setup.sh
 [ -e "/contrail-setup-common.sh" ] && source /contrail-setup-common.sh
 
 build_root=${CONTRAIL_SOURCE//\"/}
@@ -19,6 +19,11 @@ function setup_user() {
   [[ -n $"mode" ]] && chmod -R $mode $path
 }
 
+function trim() {
+   read -r line
+   echo "$line"
+}
+
 function is_elf() {
   [[ 'ELF' == "$(dd if=$1 count=3 bs=1 skip=1 2>/dev/null)" ]]
 }
@@ -35,6 +40,48 @@ function strip_folder() {
   done
 }
 
+function pip_installation() {
+  local python_exec=$1
+  if [ -x "$(command -v ${python_exec} )" ] ; then
+    $python_exec -m pip --version
+    local exitcode=${PIPESTATUS[0]}
+    if [ $pip_check -ne 0 ] ; then
+      log "Start downloading and installing pip for ${python_exec}..."
+      curl "https://bootstrap.pypa.io/get-pip.py" | "${python_exec}"
+      local exitcode=${PIPESTATUS[0]}
+      log "Pip installation exitcode is ${exitcode}"
+      if [[ $exitcode -ne 0 ]] ; then
+        log "Pip installation is finished with error"
+        exit 1
+      fi
+  fi
+
+}
+
+function pip_libs_install() {
+  local python_exec=$1
+  local file_with_libs=$2
+  local opt="--no-compile --no-cache-dir"
+  local libs=""
+  while read line; do
+    libs="${libs} ${line}"
+  done < "${file_with_libs}"
+  if [[ $( echo $libs | trim ) == "" ]] ; then
+    log "The list of libs is empty. Continue... "
+  else
+    libs="$(echo "${libs}" | sed -e 's/[[:space:]]*$//')"
+    log "We are going to install the following ${libs} "
+    log "The command for pip run is: ${python_exec} -m pip install ${opt} ${libs}"
+    ${python_exec} -m pip install ${opt} ${libs}
+    exitcode=${PIPESTATUS[0]}
+    log "Pip libs installation exitcode is ${exitcode}"
+    if [[ $exitcode -ne 0 ]]; then
+      log "Pip libs installation is finished with error"
+      exit 1
+    fi
+  fi
+}
+
 CONTRAIL_DEPS=''
 [ -e ${build_path}/.deps ] && CONTRAIL_DEPS+=$(cat ${build_path}/.deps)
 [ -e ${build_path}/.deps.$LINUX_DISTR ] && CONTRAIL_DEPS+="\n$(cat ${build_path}/.deps.$LINUX_DISTR)"
@@ -43,6 +90,7 @@ CONTRAIL_DEPS=${CONTRAIL_DEPS%%//,}
 CONTRAIL_DEPS=${CONTRAIL_DEPS##//,}
 CONTRAIL_DEPS=$(echo ${CONTRAIL_DEPS//,/ } | tr -d '"' | sort | uniq)
 log "Contrail deps is ${CONTRAIL_DEPS}"
+sed -e '/^tsflags=nodocs/d' -i /etc/yum.conf
 if [[ -n "$CONTRAIL_DEPS" ]] ; then
   time yum update all -y
   time yum install -y $CONTRAIL_DEPS
@@ -53,7 +101,7 @@ if [[ -n "$CONTRAIL_DEPS" ]] ; then
    exit 1
   fi
 else
-   log "There is no dependecies to install. Continue."
+   log "There is no dependencies to install. Continue."
 fi
 
 if [[ -z "$build_root" ]] ; then
@@ -62,9 +110,13 @@ if [[ -z "$build_root" ]] ; then
 fi
 log "Build root is ${build_root}"
 
+[ -e "${build_path}/.pip2" ] && pip_installation "python2"
+[ -e "${build_path}/.pip3" ] && pip_installation "python3"
+
 if [[ -f ${build_path}/.src ]]; then
   cd $build_root
   while read line; do
+    [ -z "$line" ] && continue
     src_folder=$(echo $line | awk '{ print $1 }' | tr -d "[:space:]")
     dst_folder=$(echo $line | awk '{ print $2 }' | tr -d "[:space:]")
     pushd $src_folder
@@ -84,10 +136,7 @@ log "Copying folders call.."
 if [[ -f ${build_path}/.copy_folders ]]; then
   cd $build_root
   while read line; do
-    if [[ -z ${line} ]]; then
-      log "Empty line, End of file."
-      break
-    fi
+    [ -z "$line" ] && continue
     src_folder=$(echo $line | awk '{ print $1 }' | tr -d "[:space:]")
     dst_folder=$(echo $line | awk '{ print $2 }' | tr -d "[:space:]")
     mkdir -p $dst_folder
@@ -98,7 +147,7 @@ if [[ -f ${build_path}/.copy_folders ]]; then
       log "Copying of source folder ${src_folder} to ${dst_folder} finished with error"
       exit 1
     fi
-    strip_folder $dst_file
+    strip_folder ${dst_folder}
   done < "${build_path}/.copy_folders"
 fi
 
@@ -106,10 +155,7 @@ log "Copying files call.."
 if [[ -f ${build_path}/.copy_files ]]; then
   cd $build_root
   while read line; do
-    if [[ -z ${line} ]]; then
-      log "Empty line, End of file."
-      break
-    fi
+    [ -z "$line" ] && continue
     src_file=$(echo $line | awk '{ print $1 }' | tr -d "[:space:]")
     dst_file=$(echo $line | awk '{ print $2 }' | tr -d "[:space:]")
     dst_folder="${dst_file%/*}"
@@ -126,14 +172,37 @@ if [[ -f ${build_path}/.copy_files ]]; then
   done < "${build_path}/.copy_files"
 fi
 
+log "Let's install packages from pip execution..."
+if [ -x "$(command -v python2)" && -f ${build_path}/.pip2 ] ; then
+  pip_libs_install "python2" "${build_path}/.pip2"
+fi
+
+if [ -x "$(command -v python3)" && -f ${build_path}/.pip3 ] ; then
+  pip_libs_install "python3" "${build_path}/.pip3"
+fi
+
+[ -e "/post_setup.sh" ] && source /post_setup.sh
+
 for i in /var/lib/contrail /var/log/contrail ; do
   mkdir -p $i
   setup_user $i
 done
 
+##
+##Cleanup section
+##
+
 if [ -x "$(command -v yum)" ] ; then
+  log "Start cleaning packages"
   yum clean all -y
   rm -rf /var/cache/yum
 fi
+
+rm -rf /usr/share/doc/*
+rm -rf /usr/share/man/*
+rm -rf /usr/share/info/*
+find / -type f \( -name "*.pyo" -o -name "*.pyc" -o -name "*.pyd" \) \
+  -exec sh -c 'rm -rf "$0"' {} \;
+rm -rf /pre_setup.sh /post_setup.sh
 
 ldconfig
