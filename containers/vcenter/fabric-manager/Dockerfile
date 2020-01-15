@@ -8,12 +8,10 @@ LABEL name=$CONTAINER_NAME \
       summary="Contrail vCenter Fabric Manager" \
       description="CVFM manages VMware datacenter underlay network configuration based on vCenter events"
 
-ARG CONTRAIL_BUILD_FROM_SOURCE
-RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
-      yum install -y contrail-vcenter-fabric-manager && \
-      yum clean all -y && \
-      rm -rf /var/cache/yum; \
-    fi
+RUN  yum install -y contrail-vcenter-fabric-manager && \
+     yum clean all -y && \
+     rm -rf /var/cache/yum
+    
 
 COPY *.sh /
 
