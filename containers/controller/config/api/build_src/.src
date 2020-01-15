@@ -1,2 +1,4 @@
+build/production/config/common
+build/production/api-lib
 build/production/config/api-server
 build/production/config/contrail_issu

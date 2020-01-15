@@ -1,5 +1,3 @@
-build/production/api-lib
-build/production/config/common
 build/noarch/config/svc-monitor
 build/production/config/fabric-ansible
 build/production/config/vnc_openstack
