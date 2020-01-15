@@ -1,0 +1,7 @@
+contrail-web-core/src/. /usr/src/contrail/contrail-web-core/src/
+contrail-webui-third-party/node_modules/. /usr/lib64/node_modules/
+contrail-web-core/webroot/. /usr/src/contrail/contrail-web-core/webroot/
+contrail-web-core/wiki/. /usr/src/contrail/contrail-web-core/wiki/
+contrail-web-core/config/. /usr/src/contrail/contrail-web-core/config/
+contrail-web-controller/specs/. /usr/src/contrail/contrail-web-controller/specs/
+contrail-web-controller/webroot/. /usr/src/contrail/contrail-web-controller/webroot/

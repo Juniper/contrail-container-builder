@@ -3,17 +3,14 @@ ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-controller-config-base:${CONTRAIL_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
 ARG CONTAINER_NAME
-ARG CONTRAIL_BUILD_FROM_SOURCE
 LABEL name=$CONTAINER_NAME \
       summary="Contrail Controller Configuration API" \
       description="Controller Configuration API provides a REST API to an orchestration system."
 
 # contrail-config-openstack contains svc_monitor and vnc_openstack modules
-RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]]; then \
-      yum install -y python-neutron-lib && \
-      yum clean all -y && \
-      rm -rf /var/cache/yum; \
-    fi
+RUN yum install -y python-neutron-lib && \
+    yum clean all -y && \
+    rm -rf /var/cache/yum
 
 COPY *.sh /
 
