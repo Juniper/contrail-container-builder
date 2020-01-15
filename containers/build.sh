@@ -137,8 +137,7 @@ function process_container() {
   local relative_build_src_path=${dir}/build_src
   if [[ ${exit_code} -eq 0 && ! -z "$CONTRAIL_BUILD_FROM_SOURCE" && -e ${relative_build_src_path} ]]; then
     # Setup from source
-    # RHEL has old docker that doesnt support neither staged build nor mount option
-    # 'RUN --mount' (still experimental at the moment of writting this comment).
+    # RHEL has old docker that does not support neither staged build nor mount option
     # So, ther is WA: previously build image is empty w/o RPMs but with all
     # other stuff required, so, now the final step to run a intermediate container,
     # install components inside and commit is as the final image.
@@ -173,13 +172,33 @@ function process_container() {
     local duration_src=$(date +"%s")
     (( duration_src -= duration ))
     log "Docker build from source duration: $duration_src seconds" | append_log_file $logfile
+    ########
+    if [[ "${DISTROLESS_ENABLED}" == 'true' ]] ; then
+      #get parent image for compare files from parent and new image
+      local parent_image=$(grep -E "^FROM" ${docker_file}  | awk '{print $2}')
+      local parent_container_suffix=$(echo "${parent_image}" | awk -F '/' '{print $2}' | awk -F ':' '{print $1}')
+      local parent_container="container-${parent_container_suffix}"
+      log "The parent image is ${parent_image} and the parent container name is ${parent_container}" | append_log_file $logfile
+      #start container from parent image in the background to compare files with intermediate container
+      docker run -d --name ${parent_container} ${parent_image}
+      exit_code=${PIPESTATUS[0]}
+      if [ ${exit_code} -eq 0 ]; then
+        local files_different="${parent_container}-diff-${intermediate_base}"
+        log "Files to include to container"
+        docker diff $intermediate_base > ${files_different} | append_log_file $logfile
+      fi
+
+    fi
+
+    ########
   fi
+  
   if [ $exit_code -eq 0 -a ${CONTRAIL_REGISTRY_PUSH} -eq 1 ]; then
     docker push $target_name 2>&1 | append_log_file $logfile
     exit_code=${PIPESTATUS[0]}
   fi
-  container_exists=$(docker ps -a --filter name=${intermediate_base} | awk 'NR>1 {print $1}')
-  if [[ -n "${container_exists}" && ! -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then
+  intermediate_container_exists=$(docker ps -a --filter name=${intermediate_base} | awk 'NR>1 {print $1}')
+  if [[ -n "${intermediate_container_exists}" && ! -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then
     log "Remove ${intermediate_base} temp build container" | append_log_file $logfile
     docker rm -f ${intermediate_base} 2>&1 | append_log_file $logfile
   fi
