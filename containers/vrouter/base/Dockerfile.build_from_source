@@ -1,0 +1,10 @@
+ARG CONTRAIL_REGISTRY
+ARG CONTRAIL_CONTAINER_TAG
+FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
+ARG VENDOR_DOMAIN
+
+COPY *.sh ifup-* ifdown-* network-functions-vrouter* dhclient-vhost0.conf /
+
+ENV NODE_TYPE=vrouter
+LABEL $VENDOR_DOMAIN".pod"=$NODE_TYPE
+CMD ["/usr/bin/tail","-f","/dev/null"]
