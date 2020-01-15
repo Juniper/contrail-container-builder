@@ -80,6 +80,11 @@ function process_container() {
   log "Building $container_name" | append_log_file $logfile true
 
   local build_arg_opts='--network host'
+  if [[ -n "${CONTRAIL_BUILD_FROM_SOURCE}"  ]] ; then
+     if [[ -e "${docker_file}.build_from_source" ]] ; then
+       docker_file="${docker_file}.build_from_source"
+     fi
+  fi
   if [[ "$docker_ver" < '17.06' ]] ; then
     # old docker can't use ARG-s before FROM:
     # comment all ARG-s before FROM
@@ -104,7 +109,7 @@ function process_container() {
   build_arg_opts+=" --build-arg UBUNTU_DISTR=${UBUNTU_DISTR}"
   build_arg_opts+=" --build-arg VENDOR_NAME=${VENDOR_NAME}"
   build_arg_opts+=" --build-arg VENDOR_DOMAIN=${VENDOR_DOMAIN}"
-  if [[ ! -z "$CONTRAIL_BUILD_FROM_SOURCE" ]]; then
+  if [[ -n "$CONTRAIL_BUILD_FROM_SOURCE" ]]; then    
     build_arg_opts+=" --build-arg CONTRAIL_BUILD_FROM_SOURCE=${CONTRAIL_BUILD_FROM_SOURCE}"
   fi
 
@@ -148,6 +153,7 @@ function process_container() {
     local run_arguments="--name $intermediate_base --network host \
        -e "CONTRAIL_SOURCE=/root/contrail" \
        -e "LINUX_DISTR=${LINUX_DISTR}" \
+       -e "BASE_EXTRA_RPMS=${BASE_EXTRA_RPMS}" \
        -v ${CONTRAIL_SOURCE}:/root/contrail:z \
        -v ${abs_build_src_path}:/build_src:z \
        -v ${CONTRAIL_BUILDER_DIR}/containers/build_from_src.sh:/setup.sh:z \

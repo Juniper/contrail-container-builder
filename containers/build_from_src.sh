@@ -1,5 +1,5 @@
 #!/bin/bash
-
+[ -e "/prepare_repos.sh" ] && source /prepare_repos.sh
 [ -e "/contrail-setup-common.sh" ] && source /contrail-setup-common.sh
 
 build_path="/build_src"
@@ -32,6 +32,37 @@ function strip_folder() {
     strip_file $file
   done
 }
+
+function pip_installation() {
+  local python_exec=$1
+  curl https://bootstrap.pypa.io/get-pip.py | ${python_exec}
+}
+
+function pip_pypi() {
+  if [[ -e "${build_path}/.pypi3" ]] ; then
+    local python_exec="python3"
+    local file_with_libs="${build_path}/.pypi3"
+  elif [[ -e "${build_path}/.pypi2" ]] ; then
+      local python_exec="python2"
+      local file_with_libs="${build_path}/.pypi2"
+  else
+    log "No pip files to install"
+  fi
+  
+  if [[ -n "${python_exec}" && -n "${file_with_libs}" ]] ; then
+    pip_installation ${python_exec}
+    local opt="--no-compile"
+    while read line; do
+      libs="${line} "
+    done < "${file_with_libs}"
+    libs="$(echo "${libs}" | sed -e 's/[[:space:]]*$//')"
+    lob "We are going to install the following ${libs} "
+    ${python_exec} -m pip install ${opt} ${libs}
+  fi
+
+  
+}
+pip_pypi
 
 CONTRAIL_DEPS=''
 [ -e ${build_path}/.deps ] && CONTRAIL_DEPS+=$(cat ${build_path}/.deps)
