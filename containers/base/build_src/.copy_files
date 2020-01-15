@@ -2,3 +2,4 @@ build/lib/libtcmalloc.so.4.1.2 /usr/lib/libtcmalloc.so.4.1.2
 build/lib/libtbb.so.2 /usr/lib/libtbb.so.2
 build/lib/liblog4cplus-1.1.so.7.0.0 /usr/lib/liblog4cplus-1.1.so.7.0.0
 build/lib/libipfix.so.1.0 /usr/lib/libipfix.so.1.0
+tools/packages/rpm/contrail-setup/contrail_ifrename.sh /opt/contrail/bin/getifname.sh
