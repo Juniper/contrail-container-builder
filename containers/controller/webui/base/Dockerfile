@@ -19,7 +19,6 @@ RUN BASE_EXTRA_RPMS=$(echo $BASE_EXTRA_RPMS | tr -d '"' | tr ',' ' ') && \
 COPY custom-images/logo.png /opt/contrail/images/logo.png
 COPY custom-images/favicon.ico /opt/contrail/images/favicon.ico
 COPY *.sh /
-RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done'
 
 ENV NODE_TYPE=webui
 LABEL $VENDOR_DOMAIN".pod"=$NODE_TYPE
