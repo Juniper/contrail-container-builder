@@ -1,0 +1,14 @@
+ARG CONTRAIL_REGISTRY
+ARG CONTRAIL_CONTAINER_TAG
+FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
+ARG VENDOR_DOMAIN
+ARG CONTAINER_NAME
+LABEL name=$CONTAINER_NAME \
+      summary="Contrail Mesosphere Container Network Interface" \
+      description="Contrail supports Mesosphere Container Network Interface."
+    
+COPY entrypoint.sh /
+
+ENTRYPOINT ["/entrypoint.sh"]
+
+LABEL $VENDOR_DOMAIN".container.name"=$CONTAINER_NAME
