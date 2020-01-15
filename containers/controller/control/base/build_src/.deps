@@ -6,13 +6,5 @@ boost-regex
 boost-system
 boost-thread
 cassandra-cpp-driver
-libxml2-devel
-libxslt-devel
-python2-future
-python-configparser
-python-gevent
-python-geventhttpclient
-python-prettytable
-python-psutil
-python-redis
-python-xmltodict
+libicu
+libuv
