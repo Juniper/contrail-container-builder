@@ -9,13 +9,11 @@ LABEL name=$CONTAINER_NAME \
       description="DPDK support for Contrail vrouter agent"
 
 # contrail-vrouter-dpdk-init contains dpdk_nic_bind.py that is used by this container.
-ARG CONTRAIL_BUILD_FROM_SOURCE
-RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
-      yum install -y dhclient NetworkManager contrail-vrouter-dpdk contrail-vrouter-dpdk-init && \
-      yum clean all -y && \
-      rm -rf /var/cache/yum && \
-      ldconfig; \
-    fi
+
+RUN yum install -y dhclient NetworkManager contrail-vrouter-dpdk contrail-vrouter-dpdk-init && \
+    yum clean all -y && \
+    rm -rf /var/cache/yum && \
+    ldconfig
 
 COPY entrypoint.sh /
 COPY *_defs /
