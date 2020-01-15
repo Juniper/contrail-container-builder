@@ -80,6 +80,11 @@ function process_container() {
   log "Building $container_name" | append_log_file $logfile true
 
   local build_arg_opts='--network host'
+  if [[ -n "${CONTRAIL_BUILD_FROM_SOURCE}"  ]] ; then
+     if [[ -e "${docker_file}.build_from_source" ]] ; then
+       docker_file="${docker_file}.build_from_source"
+     fi
+  fi
   if [[ "$docker_ver" < '17.06' ]] ; then
     # old docker can't use ARG-s before FROM:
     # comment all ARG-s before FROM
@@ -104,7 +109,7 @@ function process_container() {
   build_arg_opts+=" --build-arg UBUNTU_DISTR=${UBUNTU_DISTR}"
   build_arg_opts+=" --build-arg VENDOR_NAME=${VENDOR_NAME}"
   build_arg_opts+=" --build-arg VENDOR_DOMAIN=${VENDOR_DOMAIN}"
-  if [[ ! -z "$CONTRAIL_BUILD_FROM_SOURCE" ]]; then
+  if [[ -n "$CONTRAIL_BUILD_FROM_SOURCE" ]]; then    
     build_arg_opts+=" --build-arg CONTRAIL_BUILD_FROM_SOURCE=${CONTRAIL_BUILD_FROM_SOURCE}"
   fi
 
@@ -137,9 +142,9 @@ function process_container() {
   local relative_build_src_path=${dir}/build_src
   if [[ ${exit_code} -eq 0 && ! -z "$CONTRAIL_BUILD_FROM_SOURCE" && -e ${relative_build_src_path} ]]; then
     # Setup from source
-    # RHEL has old docker that doesnt support neither staged build nor mount option
-    # 'RUN --mount' (still experimental at the moment of writting this comment).
-    # So, ther is WA: previously build image is empty w/o RPMs but with all
+    # RHEL has old docker that does not support neither staged build nor mount option
+    # 'RUN --mount' (still experimental at the moment of writing this comment).
+    # So, there is WA: previously build image is empty w/o RPMs but with all
     # other stuff required, so, now the final step to run a intermediate container,
     # install components inside and commit is as the final image.
     local cmd=$(docker inspect -f "{{json .Config.Cmd }}" ${target_name} )
@@ -148,6 +153,7 @@ function process_container() {
     local run_arguments="--name $intermediate_base --network host \
        -e "CONTRAIL_SOURCE=/root/contrail" \
        -e "LINUX_DISTR=${LINUX_DISTR}" \
+       -e "BASE_EXTRA_RPMS=${BASE_EXTRA_RPMS}" \
        -v ${CONTRAIL_SOURCE}:/root/contrail:z \
        -v ${abs_build_src_path}:/build_src:z \
        -v ${CONTRAIL_BUILDER_DIR}/containers/build_from_src.sh:/setup.sh:z \
@@ -178,10 +184,9 @@ function process_container() {
     docker push $target_name 2>&1 | append_log_file $logfile
     exit_code=${PIPESTATUS[0]}
   fi
-  container_exists=$(docker ps -a --filter name=${intermediate_base} | awk 'NR>1 {print $1}')
-  if [[ -n "${container_exists}" && ! -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then
+  if [[ -n "${intermediate_base}" && -n "${CONTRAIL_BUILD_FROM_SOURCE}" ]] ; then
     log "Remove ${intermediate_base} temp build container" | append_log_file $logfile
-    docker rm -f ${intermediate_base} 2>&1 | append_log_file $logfile
+    docker rm -f ${intermediate_base} || true 2>&1 | append_log_file $logfile
   fi
   duration=$(date +"%s")
   (( duration -= start_time ))
