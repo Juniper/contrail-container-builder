@@ -1,4 +1,2 @@
-build/production/sandesh/common
 build/production/opserver
-src/contrail-analytics/contrail-broadview
 build/production/utils/contrail-cli/contrail_analytics_cli

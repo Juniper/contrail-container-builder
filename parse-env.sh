@@ -17,7 +17,7 @@ if [[ "$linux_id" == 'centos' ]] ; then
   # ver id is taken from available versions from docker.io
   linux_ver_id=`cat /etc/redhat-release | awk '{print($4)}'`
 else
-  # for ubuntu ver id matchs 14.04, 16.04, etc from host system
+  # for ubuntu ver id matchs 14.04, 16.04, etc from host system/
   linux_ver_id=$(awk -F"=" '/^VERSION_ID=/{print $2}' /etc/os-release | tr -d '"')
 fi
 
@@ -72,7 +72,7 @@ export CONTRAIL_KEEP_LOG_FILES=${CONTRAIL_KEEP_LOG_FILES:-'false'}
 
 export GENERAL_EXTRA_RPMS=${GENERAL_EXTRA_RPMS-""}
 # use some stable OpenStack repo for Contrail's dependencies
-export BASE_EXTRA_RPMS=${BASE_EXTRA_RPMS-"https://repos.fedorapeople.org/repos/openstack/openstack-queens/rdo-release-queens-1.noarch.rpm"}
+export BASE_EXTRA_RPMS=${BASE_EXTRA_RPMS-"https://repos.fedorapeople.org/repos/openstack/openstack-queens/rdo-release-queens-2.noarch.rpm"}
 export DOCKER_REPO=${DOCKER_REPO:-'https://download.docker.com/linux/centos/docker-ce.repo'}
 export YUM_ENABLE_REPOS=${YUM_ENABLE_REPOS:-}
 if [[ "$LINUX_DISTR" == 'rhel'* ]] ; then
