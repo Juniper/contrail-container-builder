@@ -8,12 +8,9 @@ LABEL name=$CONTAINER_NAME \
       summary="vSphereESX Agent Manager" \
       description="VMware provides a standard vCenter solution called vSphereESX Agent Manager (EAM), that allows you to deploy, monitor, and manage ContrailVMs on ESXi hosts."
 
-ARG CONTRAIL_BUILD_FROM_SOURCE
-RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
-      yum install -y contrail-vcenter-manager && \
-      yum clean all -y && \
-      rm -rf /var/cache/yum; \
-    fi
+RUN  yum install -y contrail-vcenter-manager && \
+     yum clean all -y && \
+     rm -rf /var/cache/yum   
 
 COPY *.sh /
 
