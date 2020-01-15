@@ -4,7 +4,6 @@ FROM $UBUNTU_DISTR:$UBUNTU_DISTR_VERSION
 ARG VENDOR_NAME
 ARG VENDOR_DOMAIN
 ARG CONTRAIL_VERSION
-ARG CONTRAIL_BUILD_FROM_SOURCE
 ARG CONTRAIL_CONTAINER_TAG
 ARG CONTAINER_NAME
 LABEL vendor=$VENDOR_NAME \
@@ -32,24 +31,22 @@ RUN mkdir -p /opt/contrail/src /contrail_tools /vrouter_src && \
     echo "${contrail_version}" > /contrail_version && \
     export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
-    apt-get install -y --no-install-recommends dkms && \
-    if [ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]; then \
-        apt-get install -y --no-install-recommends yum yum-utils rpm2cpio cpio && \
-        yum install -y contrail-vrouter-source && \
-        mv /usr/src/* /opt/contrail/src/ && \
-        vrouter_path=$(find /opt/contrail/src -type f -name "contrail-vrouter-*.tar.gz") && \
-        cd  /vrouter_src && \
-        tar -xf "${vrouter_path}" && \
-        cd /contrail_tools && \
-        yumdownloader contrail-vrouter-utils && \
-        rpm2cpio $(ls contrail-vrouter-utils*.rpm) | cpio -iuvd && \
-        rm -f $(ls contrail-vrouter-utils*.rpm) && \
-        cd .. && \
-        yum clean all -y && \
-        rm -rf /var/cache/yum && \
-        apt-get purge -y yum yum-utils rpm2cpio cpio && \
-        apt-get autoremove -y; \
-    fi
+    apt-get install -y --no-install-recommends dkms && \    
+    apt-get install -y --no-install-recommends yum yum-utils rpm2cpio cpio && \
+    yum install -y contrail-vrouter-source && \
+    mv /usr/src/* /opt/contrail/src/ && \
+    vrouter_path=$(find /opt/contrail/src -type f -name "contrail-vrouter-*.tar.gz") && \
+    cd  /vrouter_src && \
+    tar -xf "${vrouter_path}" && \
+    cd /contrail_tools && \
+    yumdownloader contrail-vrouter-utils && \
+    rpm2cpio $(ls contrail-vrouter-utils*.rpm) | cpio -iuvd && \
+    rm -f $(ls contrail-vrouter-utils*.rpm) && \
+    cd .. && \
+    yum clean all -y && \
+    rm -rf /var/cache/yum && \
+    apt-get purge -y yum yum-utils rpm2cpio cpio && \
+    apt-get autoremove -y    
 
 COPY dkms.conf /opt/contrail/src/
 COPY entrypoint.sh /
