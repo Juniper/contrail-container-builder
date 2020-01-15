@@ -1,9 +1,2 @@
-python2-flexmock
-python2-mock
-python2-vine
-python3-timeout-decorator
-python-coverage
-python-fysom
-python-six
-python-webtest
-python-iputils
+git
+iputils

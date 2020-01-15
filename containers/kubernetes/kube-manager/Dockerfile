@@ -2,19 +2,17 @@ ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
-ARG CONTRAIL_BUILD_FROM_SOURCE
 ARG CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
       summary="Contrail Kubernetes Manager" \
       description="Contrail Kubernetes Manager provides listening to the Kubernetes API messages and creating corresponding resources in the Contrail API database."
 
-RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
-      yum install -y python-eventlet python-kazoo \
+RUN  yum install -y python-eventlet python-kazoo \
                       python-bitarray python-pycassa python-bitstring \
                       contrail-kube-manager python-enum34 && \
       yum clean all -y && \
-      rm -rf /var/cache/yum; \
-    fi
+      rm -rf /var/cache/yum
+    
 COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
