@@ -1,0 +1,12 @@
+# This is the base for contrail specific children
+
+ARG CONTRAIL_REGISTRY
+ARG CONTRAIL_CONTAINER_TAG
+FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
+ARG BASE_EXTRA_RPMS=""
+
+COPY *.sh /
+
+ENV PS1="\033[1m($(printenv NODE_TYPE)-$(printenv SERVICE_NAME))\033[m\017[$(id -un)@$(hostname -s) $(pwd)]$ "
+
+CMD ["/usr/bin/tail","-f","/dev/null"]
