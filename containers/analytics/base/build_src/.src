@@ -1,4 +1,4 @@
-build/production/sandesh/common
 build/production/opserver
-src/contrail-analytics/contrail-broadview
 build/production/utils/contrail-cli/contrail_analytics_cli
+build/production/contrail-snmp-collector
+build/production/contrail-topology
