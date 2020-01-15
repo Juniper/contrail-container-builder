@@ -1,10 +1,10 @@
 chrony
-libxml2-devel
-libxslt-devel
 ntp
 python2-docker
-python-lxml
-python-prettytable
-python-psutil
-python-redis
-PyYAML
+autogen-libopts
+libedit
+libseccomp
+libyaml
+ntpdate
+python-websocket-client
+python2-docker-pycreds
