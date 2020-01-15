@@ -1,0 +1,13 @@
+ARG CONTRAIL_REGISTRY
+ARG CONTRAIL_CONTAINER_TAG
+FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
+ARG VENDOR_DOMAIN
+ARG BASE_EXTRA_RPMS=""
+
+COPY custom-images/logo.png /opt/contrail/images/logo.png
+COPY custom-images/favicon.ico /opt/contrail/images/favicon.ico
+COPY *.sh /
+
+ENV NODE_TYPE=webui
+LABEL $VENDOR_DOMAIN".pod"=$NODE_TYPE
+CMD ["/usr/bin/tail","-f","/dev/null"]

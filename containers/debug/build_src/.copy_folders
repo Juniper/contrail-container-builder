@@ -1,0 +1,3 @@
+BUILDROOT/contrail-20[0-9][0-9]-*.x86_64/usr/lib/debug/.build-id /usr/lib/debug/
+BUILDROOT/contrail-20[0-9][0-9]-*.x86_64/usr/lib/debug/opt /usr/lib/debug/
+BUILDROOT/contrail-20[0-9][0-9]-*.x86_64/usr/lib/debug/usr /usr/lib/debug/
