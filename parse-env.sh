@@ -45,7 +45,6 @@ fi
 # It should be root created by scons.
 # (SRC_ROOT - is used as default to inherit value from TF CI)
 export CONTRAIL_SOURCE=${CONTRAIL_SOURCE:-'/root/contrail'}
-export CONTRAIL_BUILDER_DIR=${CONTRAIL_BUILDER_DIR:-'/root/contrail/contrail-container-builder'}
 # Flag to switch to build from sources
 export CONTRAIL_BUILD_FROM_SOURCE=${CONTRAIL_BUILD_FROM_SOURCE:-}
 
