@@ -2,7 +2,9 @@
 
 [ -e "/contrail-setup-common.sh" ] && source /contrail-setup-common.sh
 
-build_path="/build_src"
+build_root=${CONTRAIL_SOURCE//\"/}
+build_path=${build_root}/${CONTAINER_SOURCE_DATA_PATH//\"/}
+
 setup_prefix="/usr"
 function log() {
   echo "INFO: SETUP.SH: $@"
@@ -54,7 +56,6 @@ else
    log "There is no dependecies to install. Continue."
 fi
 
-build_root=${CONTRAIL_SOURCE//\"/}
 if [[ -z "$build_root" ]] ; then
   log "No source code provided, exiting with error"
   exit 1

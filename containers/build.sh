@@ -37,7 +37,7 @@ function append_log_file() {
 }
 
 log "Target platform: $LINUX_DISTR:$LINUX_DISTR_VER"
-[ -n ${CONTRAIL_BUILD_FROM_SOURCE} ] && log "Contrail source root: $CONTRAIL_SOURCE" && log "Contrail builder root: $CONTRAIL_BUILDER_DIR"
+[ -n ${CONTRAIL_BUILD_FROM_SOURCE} ] && log "Contrail source root: $CONTRAIL_SOURCE"
 log "Contrail container tag: $CONTRAIL_CONTAINER_TAG"
 log "Contrail registry: $CONTRAIL_REGISTRY"
 log "Contrail repository: $CONTRAIL_REPOSITORY"
@@ -131,9 +131,8 @@ function process_container() {
   local duration=$(date +"%s")
   (( duration -= start_time ))
   log "Docker build duration: $duration seconds" | append_log_file $logfile
-  local abs_build_src_path=${CONTRAIL_BUILDER_DIR}/containers/${dir##./}/build_src
-  log "Contrail build dir ${CONTRAIL_BUILDER_DIR}" | append_log_file $logfile
-  log "Abs build src path is ${abs_build_src_path}" | append_log_file $logfile
+  local rel_build_src_path="contrail-container-builder/containers/${dir##./}/build_src"
+  log "Rel build src path is ${rel_build_src_path}" | append_log_file $logfile
   local relative_build_src_path=${dir}/build_src
   if [[ ${exit_code} -eq 0 && ! -z "$CONTRAIL_BUILD_FROM_SOURCE" && -e ${relative_build_src_path} ]]; then
     # Setup from source
@@ -147,11 +146,10 @@ function process_container() {
     local intermediate_base="${container_name}-src"
     local run_arguments="--name $intermediate_base --network host \
        -e "CONTRAIL_SOURCE=/root/contrail" \
+       -e "CONTAINER_SOURCE_DATA_PATH=$rel_build_src_path" \
        -e "LINUX_DISTR=${LINUX_DISTR}" \
        -v ${CONTRAIL_SOURCE}:/root/contrail:z \
-       -v ${abs_build_src_path}:/build_src:z \
-       -v ${CONTRAIL_BUILDER_DIR}/containers/build_from_src.sh:/setup.sh:z \
-       --entrypoint /setup.sh \
+       --entrypoint /root/contrail/contrail-container-builder/containers/build_from_src.sh \
       ${target_name}"
     log "Run command is \"Docker run ${run_arguments}\"" | append_log_file $logfile
     docker run ${run_arguments} 2>&1 | append_log_file $logfile
