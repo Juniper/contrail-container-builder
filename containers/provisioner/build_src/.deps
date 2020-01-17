@@ -1,0 +1,10 @@
+chrony
+libxml2-devel
+libxslt-devel
+ntp
+python2-docker
+python-lxml
+python-prettytable
+python-psutil
+python-redis
+PyYAML
