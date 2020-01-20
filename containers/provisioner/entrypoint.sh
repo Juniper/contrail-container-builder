@@ -15,3 +15,5 @@ elif ! /provision.sh ; then
   echo "ERROR: provision.sh was failed. Exiting..."
   exit 1
 fi
+
+tail -f /dev/null

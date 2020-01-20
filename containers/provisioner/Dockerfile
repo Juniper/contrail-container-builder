@@ -11,10 +11,8 @@ LABEL name=$CONTAINER_NAME \
       description="Contrail Provisioner ia caoneiner that manage env for other containers."
 
 COPY *.sh /
-ENTRYPOINT ["/entrypoint.sh"]
 
 ENV SERVICE_NAME=provisioner
 LABEL $VENDOR_DOMAIN".service"=$SERVICE_NAME
 LABEL $VENDOR_DOMAIN".container.name"=$CONTAINER_NAME
-
-CMD ["/usr/bin/tail","-f","/dev/null"]
+ENTRYPOINT ["/entrypoint.sh"]
