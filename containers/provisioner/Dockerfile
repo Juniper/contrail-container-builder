@@ -12,7 +12,10 @@ LABEL name=$CONTAINER_NAME \
 
 COPY *.sh /
 
+ENTRYPOINT ["/entrypoint.sh"]
+
 ENV SERVICE_NAME=provisioner
 LABEL $VENDOR_DOMAIN".service"=$SERVICE_NAME
 LABEL $VENDOR_DOMAIN".container.name"=$CONTAINER_NAME
-ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["/usr/bin/tail","-f","/dev/null"]
