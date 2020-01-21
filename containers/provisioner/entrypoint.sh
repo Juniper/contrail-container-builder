@@ -20,4 +20,4 @@ elif ! /provision.sh ; then
   exit 1
 fi
 
-tail -f /dev/null
+exec $@
