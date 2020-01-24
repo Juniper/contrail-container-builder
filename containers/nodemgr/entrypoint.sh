@@ -9,6 +9,13 @@ pre_start_init
 
 set_vnc_api_lib_ini
 
+if is_enabled ${MAINTENANCE_MODE} ; then
+  echo "WARNING: MAINTENANCE_MODE is switched on - provision.sh is not called."
+elif ! /provision.sh ; then
+  echo "ERROR: provision.sh was failed. Exiting..."
+  exit 1
+fi
+
 if [[ $NODE_TYPE == 'toragent' ]]; then
   # we don't have support of this node_type in nodemgr itself.
   exit 0
