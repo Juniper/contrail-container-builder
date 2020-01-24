@@ -6,6 +6,7 @@ import os
 import socket
 import subprocess
 import warnings
+import json
 
 import docker
 from lxml import etree
@@ -101,11 +102,15 @@ debug_output = False
 # docker client is used in several places - just cache it at start
 client = None
 
+json_output = {'containers': {}, 'pods': {}, 'msgs':[]}
+
+def print_msg(msg):
+  if output_format == 'text':
+        print(msg)
 
 def print_debug(str):
     if debug_output:
         print("DEBUG: " + str)
-
 
 class EtreeToDict(object):
     """Converts the xml etree to dictionary/list of dictionary."""
@@ -377,28 +382,29 @@ def toragent_tor_agent(container, options):
     return get_svc_uve_info(vns_constants.SERVICE_TOR_AGENT,
                             container, 'TOR_HTTP_SERVER_PORT', options)
 
-
 def contrail_pod_status(pod_name, pod_services, options):
-    print("== Contrail {} ==".format(pod_name))
+    print_msg("== Contrail {} ==".format(pod_name))
     pod_map = CONTRAIL_SERVICES_TO_SANDESH_SVC.get(pod_name)
     if not pod_map:
-        print('')
+        print_msg('')
         return
 
     for service, internal_svc_name in six.iteritems(pod_map):
         if service not in INDEXED_SERVICES:
             container = pod_services.get(service)
             status = contrail_service_status(container, pod_name, service, internal_svc_name, options)
-            print('{}: {}'.format(service, status))
+            print_msg("{}: {}".format(service, status))
+            json_output['pods'].setdefault(pod_name, list()).append({service: status})
         else:
             for srv_key in pod_services:
                 if not srv_key.startswith(service):
                     continue
                 container = pod_services[srv_key]
                 status = contrail_service_status(container, pod_name, service, internal_svc_name, options)
-                print('{}: {}'.format(service, status))
+                print_msg("{}: {}".format(service, status))
+                json_output['pods'].setdefault(pod_name, list()).append({service: status})
 
-    print('')
+    print_msg('')
 
 
 def contrail_service_status(container, pod_name, service, internal_svc_name, options):
@@ -482,7 +488,6 @@ def get_containers():
 
     return items
 
-
 def print_containers(containers):
     # containers is a dict of dicts
     hdr = ['Pod', 'Service', 'Original Name', 'Original Version', 'State', 'Id', 'Status']
@@ -504,8 +509,8 @@ def print_containers(containers):
         res = ''
         for i in range(0, len(cols)):
             res += cols[i].format(item[i])
-        print(res)
-    print('')
+        print_msg(res)
+    print_msg('')
 
 
 def parse_args():
@@ -528,6 +533,9 @@ def parse_args():
     parser.add_option('-a', '--cacert', dest='cacert', type="string",
                       default="/etc/contrail/ssl/certs/ca-cert.pem",
                       help="ca-certificate file to use for HTTP requests to services")
+    parser.add_option('-f', '--format', dest='format', type="choice",
+                      default="text", choices=("text", "json"),
+                      help="Output format: shell, json")
     options, _ = parser.parse_args()
     return options
 
@@ -535,9 +543,11 @@ def parse_args():
 def main():
     global debug_output
     global client
+    global output_format
 
     options = parse_args()
     debug_output = options.debug
+    output_format = options.format
 
     client = docker.from_env()
     if hasattr(client, 'api'):
@@ -545,6 +555,7 @@ def main():
 
     containers = get_containers()
     print_containers(containers)
+    json_output['containers'] = containers
 
     # first check and store containers dict as a tree
     fail = False
@@ -560,20 +571,24 @@ def main():
             continue
         if not pod and v['Original Name'] in SHARED_SERVICES:
             continue
-        print("WARNING: container with original name '{}' "
+        msg = ("WARNING: container with original name '{}' "
               "have Pod or Service empty. Pod: '{}' / Service: '{}'. "
               "Please pass NODE_TYPE with pod name to container's env".format(
                   v['Original Name'], v['Pod'], v['Service']))
+        print_msg(msg)
+        json_output['msgs'].append(msg)
         fail = True
     if fail:
-        print('')
+        print_msg('')
 
     vrouter_driver = False
     try:
         lsmod = subprocess.Popen('lsmod', stdout=subprocess.PIPE).communicate()[0]
         if lsmod.find('vrouter') != -1:
             vrouter_driver = True
-            print("vrouter kernel module is PRESENT")
+            msg = "vrouter kernel module is PRESENT"
+            print_msg(msg)
+            json_output['msgs'].append(msg)
     except Exception as ex:
         print_debug('lsmod FAILED: {0}'.format(ex))
     try:
@@ -581,14 +596,20 @@ def main():
             ['netstat', '-xl'], stdout=subprocess.PIPE).communicate()[0])
         if lsof.find('dpdk_netlink') != -1:
             vrouter_driver = True
-            print("vrouter DPDK module is PRESENT")
+            msg = "vrouter DPDK module is PRESENT"
+            print_msg(msg)
+            json_output['msgs'].append(msg)
     except Exception as ex:
         print_debug('lsof FAILED: {0}'.format(ex))
     if 'vrouter' in pods and not vrouter_driver:
-        print("vrouter driver is not PRESENT but agent pod is present")
+        msg = "vrouter driver is not PRESENT but agent pod is present"
+        print_msg(msg)
+        json_output['msgs'].append(msg)
 
     for pod_name in pods:
         contrail_pod_status(pod_name, pods[pod_name], options)
+    if output_format == "json":
+        print(json.dumps(json_output))
 
 
 if __name__ == '__main__':
