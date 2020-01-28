@@ -271,6 +271,8 @@ auth.admin_user = '$KEYSTONE_AUTH_ADMIN_USER';
 auth.admin_password = '$KEYSTONE_AUTH_ADMIN_PASSWORD';
 auth.admin_token = '';
 auth.admin_tenant_name = '$KEYSTONE_AUTH_ADMIN_TENANT';
+auth.project_domain_name = '$KEYSTONE_AUTH_PROJECT_DOMAIN_NAME';
+auth.user_domain_name = '$KEYSTONE_AUTH_USER_DOMAIN_NAME';
 
 module.exports = auth;
 EOM
