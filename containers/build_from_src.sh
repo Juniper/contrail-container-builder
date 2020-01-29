@@ -28,13 +28,6 @@ function strip_file() {
   is_elf $file &&  strip --strip-unneeded -p $file
 }
 
-function strip_folder() {
-  local folder=$1
-  find $folder -type f | while read file ; do
-    strip_file $file
-  done
-}
-
 CONTRAIL_DEPS=''
 [ -e ${build_path}/.deps ] && CONTRAIL_DEPS+=$(cat ${build_path}/.deps)
 [ -e ${build_path}/.deps.$LINUX_DISTR ] && CONTRAIL_DEPS+="\n$(cat ${build_path}/.deps.$LINUX_DISTR)"
@@ -53,7 +46,7 @@ if [[ -n "$CONTRAIL_DEPS" ]] ; then
    exit 1
   fi
 else
-   log "There is no dependecies to install. Continue."
+   log "There is no dependencies to install. Continue."
 fi
 
 if [[ -z "$build_root" ]] ; then
@@ -97,8 +90,7 @@ if [[ -f ${build_path}/.copy_folders ]]; then
     if [[ $exitcode -ne 0 ]]; then
       log "Copying of source folder ${src_folder} to ${dst_folder} finished with error"
       exit 1
-    fi
-    strip_folder $dst_file
+    fi    
   done < "${build_path}/.copy_folders"
 fi
 
