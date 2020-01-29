@@ -142,8 +142,7 @@ if [[ -f ${build_path}/.copy_folders ]]; then
     if [[ $exitcode -ne 0 ]]; then
       log "Copying of source folder ${src_folder} to ${dst_folder} finished with error"
       exit 1
-    fi
-    strip_folder $dst_file
+    fi    
   done < "${build_path}/.copy_folders"
 fi
 
