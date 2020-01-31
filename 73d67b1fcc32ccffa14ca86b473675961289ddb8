@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d506d5cf_6258735d",
+        "filename": "containers/controller/webui/base/Dockerfile",
+        "patchSetId": 31
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-01-31T16:20:59Z",
+      "side": 1,
+      "message": "it is not needed anymore ?",
+      "range": {
+        "startLine": 14,
+        "startChar": 3,
+        "endLine": 14,
+        "endChar": 54
+      },
+      "revId": "73d67b1fcc32ccffa14ca86b473675961289ddb8",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bb472239_eaf7b055",
+        "filename": "containers/controller/webui/base/Dockerfile",
+        "patchSetId": 31
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-01-31T16:20:59Z",
+      "side": 1,
+      "message": "it is missing in post script",
+      "range": {
+        "startLine": 18,
+        "startChar": 9,
+        "endLine": 18,
+        "endChar": 65
+      },
+      "revId": "73d67b1fcc32ccffa14ca86b473675961289ddb8",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e7d9bcd6_a86f9c4a",
+        "filename": "containers/controller/webui/base/pre_setup.sh",
+        "patchSetId": 31
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-01-31T16:20:59Z",
+      "side": 1,
+      "message": "it will not work as it use env variable, but this is ARG in dockerfile.",
+      "range": {
+        "startLine": 2,
+        "startChar": 24,
+        "endLine": 2,
+        "endChar": 39
+      },
+      "revId": "73d67b1fcc32ccffa14ca86b473675961289ddb8",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
