@@ -1,0 +1,129 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "117aa9f2_492627c9",
+        "filename": "containers/status/contrail-status.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-02-02T16:11:02Z",
+      "side": 1,
+      "message": "let\u0027s fill json_output always and add one more function like:\n\ndef print_msg(msg):\n    if output_format \u003d\u003d \u0027text\u0027:\n        print(msg)\n\nall other occurrences of print() can be changed to print_msg().\nand then at the end just print json_output if output_format is \u0027json\u0027",
+      "revId": "6fb4085830ca0fbacedc781e7c9cc66e4b14ce1c",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7c7f737e_0df97d89",
+        "filename": "containers/status/contrail-status.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-02-02T16:11:02Z",
+      "side": 1,
+      "message": "please add import in alphabetical order",
+      "revId": "6fb4085830ca0fbacedc781e7c9cc66e4b14ce1c",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "90d316d6_0381a409",
+        "filename": "containers/status/contrail-status.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-02-02T16:11:02Z",
+      "side": 1,
+      "message": "please use python3 style everywhere.\nfor exmaple - print requires braces in python3",
+      "revId": "6fb4085830ca0fbacedc781e7c9cc66e4b14ce1c",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0045910a_9996bfb5",
+        "filename": "containers/status/contrail-status.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 411,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-02-02T16:11:02Z",
+      "side": 1,
+      "message": "print_msg(...)\njson_output[\u0027pods\u0027].setdefault(pod_name, list()).append({service: status})",
+      "revId": "6fb4085830ca0fbacedc781e7c9cc66e4b14ce1c",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2c020aaf_7491685f",
+        "filename": "containers/status/contrail-status.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 418,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-02-02T16:11:02Z",
+      "side": 1,
+      "message": "print_msg(...)\njson_output[\u0027pods\u0027].setdefault(pod_name, list()).append({service: status})",
+      "revId": "6fb4085830ca0fbacedc781e7c9cc66e4b14ce1c",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "69166652_e94ce6ae",
+        "filename": "containers/status/contrail-status.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 556,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-02-02T16:11:02Z",
+      "side": 1,
+      "message": "let\u0027s use \u0027text\u0027 instead of \u0027shell\u0027 like aws cli.",
+      "range": {
+        "startLine": 556,
+        "startChar": 49,
+        "endLine": 556,
+        "endChar": 54
+      },
+      "revId": "6fb4085830ca0fbacedc781e7c9cc66e4b14ce1c",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9848bbeb_f6811c6d",
+        "filename": "containers/status/contrail-status.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 576,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-02-02T16:11:02Z",
+      "side": 1,
+      "message": "print_containers(containers)\njson_output[\u0027containers\u0027] \u003d containers",
+      "revId": "6fb4085830ca0fbacedc781e7c9cc66e4b14ce1c",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
