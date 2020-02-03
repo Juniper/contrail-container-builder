@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "db6ca0eb_0a4fa7be",
+        "filename": "containers/controller/webui/base/Dockerfile",
+        "patchSetId": 32
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-02-03T17:12:14Z",
+      "side": 1,
+      "message": "this file looks unchanged. we should not commit such ones.",
+      "range": {
+        "startLine": 12,
+        "startChar": 11,
+        "endLine": 12,
+        "endChar": 15
+      },
+      "revId": "bef77c4a6766ffdcd5c1f48fc9fbcb1da05ffbe7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
