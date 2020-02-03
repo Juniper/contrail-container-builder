@@ -16,6 +16,24 @@
       "revId": "98173e1c1b5ca09aa77a27d7fdbd99728a16231e",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "01f19d31_718f6079",
+        "filename": "containers/status/contrail-status.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 554
+      },
+      "writtenOn": "2020-02-03T13:29:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "59d9c39e_f924b708",
+      "revId": "98173e1c1b5ca09aa77a27d7fdbd99728a16231e",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
     }
   ]
 }
