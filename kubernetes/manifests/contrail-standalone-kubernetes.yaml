@@ -37,6 +37,15 @@ data:
   WEBUI_NODES: {{ WEBUI_NODES }}
   WEBUI_VIP: "{{ WEBUI_VIP }}"
 ---
+# default params will be set in provisioner environment  
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: defaults-env
+  namespace: kube-system
+data:  
+  VXLAN_VN_ID_MODE: {{ VXLAN_VN_ID_MODE }}
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -234,6 +243,28 @@ spec:
           name: analyticsdb-logs
         - mountPath: /mnt
           name: docker-unix-socket
+      - name: contrail-analyticsdb-provisioner
+        image: "{{CONTRAIL_REGISTRY}}/contrail-provisioner:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        securityContext:
+          privileged: true
+        envFrom:
+        - configMapRef:
+            name: env
+        - configMapRef:
+            name: defaults-env
+        - configMapRef:
+            name: nodemgr-config
+        - configMapRef:
+            name: contrail-analyticsdb-config
+        env:
+        - name: NODE_TYPE
+          value: database
+        - name: DATABASE_NODEMGR__DEFAULTS__minimum_diskGB
+          value: "2"
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: analyticsdb-logs
       - name: contrail-analyticsdb
         image: "{{CONTRAIL_REGISTRY}}/contrail-external-cassandra:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -326,60 +357,6 @@ spec:
           name: configdb-data
         - mountPath: /var/log/cassandra
           name: configdb-logs
-      imagePullSecrets:
-      - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
-      volumes:
-      - name: configdb-data
-        hostPath:
-          path: /var/lib/contrail/configdb
-      - name: configdb-logs
-        hostPath:
-          path: /var/log/contrail/configdb
----
-apiVersion: apps/v1
-kind: DaemonSet
-metadata:
-  name: contrail-config-database-nodemgr
-  namespace: kube-system
-  labels:
-    app: contrail-config-database-nodemgr
-spec:
-  selector:
-    matchLabels:
-      app: contrail-config-database-nodemgr
-  template:
-    metadata:
-      labels:
-        app: contrail-config-database-nodemgr
-    spec:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: "node-role.opencontrail.org/configdb"
-                operator: Exists
-      tolerations:
-      - key: node-role.kubernetes.io/master
-        operator: Exists
-        effect: NoSchedule
-      hostNetwork: true
-      initContainers:
-      - name: contrail-node-init
-        image: "{{CONTRAIL_REGISTRY}}/contrail-node-init:{{CONTRAIL_CONTAINER_TAG}}"
-        imagePullPolicy: ""
-        securityContext:
-          privileged: true
-        env:
-        - name: CONTRAIL_STATUS_IMAGE
-          value: "{{CONTRAIL_REGISTRY}}/contrail-status:{{CONTRAIL_CONTAINER_TAG}}"
-        envFrom:
-        - configMapRef:
-            name: env
-        volumeMounts:
-        - mountPath: /host/usr/bin
-          name: host-usr-bin
-      containers:
       - name: contrail-config-database-nodemgr
         image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -399,15 +376,38 @@ spec:
 # path:
 # hostPath:
 #   path: /var/run/docker.sock and
-#   type: Socket
+ #   type: Socket
         volumeMounts:
         - mountPath: /var/log/contrail
           name: configdb-logs
         - mountPath: /mnt
           name: docker-unix-socket
+      - name: contrail-config-database-provisioner
+        image: "{{CONTRAIL_REGISTRY}}/contrail-provisioner:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        envFrom:
+        - configMapRef:
+            name: env
+        - configMapRef:
+            name: defaults-env
+        - configMapRef:
+            name: nodemgr-config
+        - configMapRef:
+            name: contrail-configdb-config
+        env:
+        - name: NODE_TYPE
+          value: config-database
+        - name: CONFIG_DATABASE_NODEMGR__DEFAULTS__minimum_diskGB
+          value: "2"
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: configdb-logs
       imagePullSecrets:
       - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
+      - name: configdb-data
+        hostPath:
+          path: /var/lib/contrail/configdb
       - name: configdb-logs
         hostPath:
           path: /var/log/contrail/configdb
@@ -416,7 +416,7 @@ spec:
           path: /var/run
       - name: host-usr-bin
         hostPath:
-          path: /usr/bin
+          path: /usr/bin      
 ---
 apiVersion: apps/v1
 kind: DaemonSet
@@ -505,6 +505,24 @@ spec:
           name: analytics-logs
         - mountPath: /mnt
           name: docker-unix-socket
+      - name: contrail-analytics-provisioner
+        image: "{{CONTRAIL_REGISTRY}}/contrail-provisioner:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        envFrom:
+        - configMapRef:
+            name: env
+        - configMapRef:
+            name: defaults-env
+        - configMapRef:
+            name: configzookeeperenv
+        - configMapRef:
+            name: nodemgr-config
+        env:
+        - name: NODE_TYPE
+          value: analytics
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: analytics-logs      
       imagePullSecrets:
       - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
@@ -616,6 +634,26 @@ spec:
           name: analytics-snmp-logs
         - mountPath: /mnt
           name: docker-unix-socket
+      - name: contrail-analytics-snmp-provisioner
+        image: "{{CONTRAIL_REGISTRY}}/contrail-provisioner:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        securityContext:
+          privileged: true
+        envFrom:
+        - configMapRef:
+            name: env
+        - configMapRef:
+            name: defaults-env
+        - configMapRef:
+            name: nodemgr-config
+        - configMapRef:
+            name: contrail-analyticsdb-config
+        env:
+        - name: NODE_TYPE
+          value: analytics-snmp
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: analytics-snmp-logs
       imagePullSecrets:
       - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
@@ -733,6 +771,26 @@ spec:
           name: analytics-alarm-logs
         - mountPath: /mnt
           name: docker-unix-socket
+      - name: contrail-analytics-alarm-provisioner
+        image: "{{CONTRAIL_REGISTRY}}/contrail-provisioner:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        securityContext:
+          privileged: true
+        envFrom:
+        - configMapRef:
+            name: env
+        - configMapRef:
+            name: defaults-env
+        - configMapRef:
+            name: contrail-analyticsdb-config
+        - configMapRef:
+            name: nodemgr-config
+        env:
+        - name: NODE_TYPE
+          value: analytics-alarm
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: analytics-alarm-logs
       imagePullSecrets:
       - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
@@ -849,6 +907,24 @@ spec:
           name: control-logs
         - mountPath: /mnt
           name: docker-unix-socket
+      - name: contrail-controller-provisioner
+        image: "{{CONTRAIL_REGISTRY}}/contrail-provisioner:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        envFrom:
+        - configMapRef:
+            name: env
+        - configMapRef:
+            name: defaults-env
+        - configMapRef:
+            name: configzookeeperenv
+        - configMapRef:
+            name: nodemgr-config
+        env:
+        - name: NODE_TYPE
+          value: control
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: control-logs
       imagePullSecrets:
       - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
@@ -981,6 +1057,26 @@ spec:
           name: config-logs
         - mountPath: /mnt
           name: docker-unix-socket
+      - name: contrail-controller-config-provisioner
+        image: "{{CONTRAIL_REGISTRY}}/contrail-provisioner:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        envFrom:
+        - configMapRef:
+            name: env
+        - configMapRef:
+            name: defaults-env
+        - configMapRef:
+            name: configzookeeperenv
+        - configMapRef:
+            name: nodemgr-config
+        env:
+        - name: NODE_TYPE
+          value: config
+        - name: CONFIG_NODEMGR__DEFAULTS__minimum_diskGB
+          value: "2"
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: config-logs
       imagePullSecrets:
       - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
@@ -1386,6 +1482,22 @@ spec:
           name: agent-logs
         - mountPath: /mnt
           name: docker-unix-socket
+      - name: contrail-agent-provisioner
+        image: "{{CONTRAIL_REGISTRY}}/contrail-provisioner:{{CONTRAIL_CONTAINER_TAG}}"
+        imagePullPolicy: ""
+        envFrom:
+        - configMapRef:
+            name: env
+        - configMapRef:
+            name: defaults-env
+        - configMapRef:
+            name: nodemgr-config
+        env:
+        - name: NODE_TYPE
+          value: vrouter
+        volumeMounts:
+        - mountPath: /var/log/contrail
+          name: agent-logs
       imagePullSecrets:
       - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
