@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "59d9c39e_f924b708",
+        "filename": "containers/status/contrail-status.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-02-03T13:24:35Z",
+      "side": 1,
+      "message": "please do not remove empty lines. pep8 requires two empty line between global objects - functions, classes",
+      "revId": "98173e1c1b5ca09aa77a27d7fdbd99728a16231e",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
