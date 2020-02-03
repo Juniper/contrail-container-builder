@@ -2,6 +2,10 @@
 
 source /common.sh
 
+if [[ ${APPLY_DEFAULTS} != 'true' ]]; then
+  exit 0
+fi
+
 pre_start_init
 
 # Env variables:

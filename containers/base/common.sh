@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# If set to true - run provisioner.sh in provisioner container
+APPLY_DEFAULTS=${APPLY_DEFAULTS:-"true"}
+
 # Logging
 LOG_LEVEL=${LOG_LEVEL:-SYS_NOTICE}
 LOG_DIR=${LOG_DIR:-"/var/log/contrail"}
