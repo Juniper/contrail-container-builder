@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "356b75a2_90871e43",
+        "filename": "containers/base/common.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-02-04T12:17:34Z",
+      "side": 1,
+      "message": "Andrey, might be PROVISION_DEFAULTS ?",
+      "range": {
+        "startLine": 80,
+        "startChar": 0,
+        "endLine": 80,
+        "endChar": 14
+      },
+      "revId": "1a616f96738758457ba1a82bf1aad4704516f73b",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aecfdaf8_5833e123",
+        "filename": "containers/provisioner/entrypoint.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-02-04T12:17:34Z",
+      "side": 1,
+      "message": "let add echo with info",
+      "revId": "1a616f96738758457ba1a82bf1aad4704516f73b",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
