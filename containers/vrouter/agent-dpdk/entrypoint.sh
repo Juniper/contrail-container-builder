@@ -106,6 +106,20 @@ if [[ -n "$CPU_CORE_MASK" ]] ; then
     cmd="/bin/taskset $taskset_param $cmd"
 fi
 
+if [[ -n "$SERVICE_CORE_MASK" ]] ; then
+    if [[ ! "$SERVICE_CORE_MASK" =~ "0x" ]] ; then
+        SERVICE_CORE_MASK="(${SERVICE_CORE_MASK})"
+    fi
+    cmd+=" --service_core_mask $SERVICE_CORE_MASK"
+fi
+
+if [[ -n "$DPDK_CTRL_THREAD_MASK" ]] ; then
+    if [[ ! "$DPDK_CTRL_THREAD_MASK" =~ "0x" ]] ; then
+        DPDK_CTRL_THREAD_MASK="(${DPDK_CTRL_THREAD_MASK})"
+    fi
+    cmd+=" --dpdk_ctrl_thread_mask $DPDK_CTRL_THREAD_MASK"
+fi
+
 # update command with socket mem option
 dpdk_socket_mem=''
 for _ in /sys/devices/system/node/node*/hugepages ; do
@@ -178,30 +192,5 @@ for i in {1..3} ; do
     fi
     sleep 3
 done
-
-# TODO: This is a temporary workaround.
-#       Once dpdk vrouter starts accepting additional env vars
-#       in order to assign service threads to particular cores
-#       It's scheduled to get in in R2002
-if [[ -n "${SERVICE_CORE_MASK}" ]]; then
-    if [[ "${SERVICE_CORE_MASK}" =~ [,-] ]]; then
-        taskset_param="-c ${SERVICE_CORE_MASK}"
-    else
-        taskset_param="$SERVICE_CORE_MASK"
-    fi
-    echo "INFO: Waiting 10s to allow vrouter to settle."
-    sleep 10
-    cd /proc/${dpdk_agent_process}/task
-    for i in *; do
-        thread=$(cat ${i}/comm)
-        if [[ "${thread}" =~ ^lcore-slave-[0-9]{2} ]]; then
-            echo "INFO: ${thread} is a forwarding thread."
-        else
-            echo "INFO: ${thread} is a service thread. Moving it to core #${service_core}."
-            /bin/taskset -p ${taskset_param} ${i}
-        fi
-    done
-    echo "INFO: Finished"
-fi
 
 wait $dpdk_agent_process
