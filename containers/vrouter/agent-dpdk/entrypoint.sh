@@ -110,6 +110,10 @@ if [[ -n "$SERVICE_CORE_MASK" ]] ; then
     cmd+=" --service_core_mask $SERVICE_CORE_MASK"
 fi
 
+if [[ -n "$DPDK_CTRL_THREAD_MASK" ]] ; then
+    cmd+=" --dpdk_ctrl_thread_mask $DPDK_CTRL_THREAD_MASK"
+fi
+
 # update command with socket mem option
 dpdk_socket_mem=''
 for _ in /sys/devices/system/node/node*/hugepages ; do

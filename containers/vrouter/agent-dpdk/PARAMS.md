@@ -5,6 +5,7 @@
 | **Host**                     |                 |
 | CPU_CORE_MASK                | 0x01            |
 | SERVICE_CORE_MASK            |                 |
+| DPDK_CTRL_THREAD_MASK        |                 |
 | DPDK_COMMAND_ADDITIONAL_ARGS |                 |
 | DPDK_MEM_PER_SOCKET          | 1024            |
 | DPDK_UIO_DRIVER              | uio_pci_generic |

@@ -98,6 +98,7 @@ function start_dpdk_container() {
     [ -n "$DRIVER" ] && env_options+=" -e DPDK_UIO_DRIVER=$DRIVER"
     [ -n "$CPU_LIST" ] && env_options+=" -e CPU_CORE_MASK=$CPU_LIST"
     [ -n "$SERVICE_CORE_MASK" ] && env_options+=" -e SERVICE_CORE_MASK=$SERVICE_CORE_MASK"
+    [ -n "$DPDK_CTRL_THREAD_MASK" ] && env_options+=" -e DPDK_CTRL_THREAD_MASK=$DPDK_CTRL_THREAD_MASK"
     [ -n "$DPDK_COMMAND_ADDITIONAL_ARGS" ] && env_options+=" -e \"DPDK_COMMAND_ADDITIONAL_ARGS=$DPDK_COMMAND_ADDITIONAL_ARGS\""
     [ -n "$NIC_OFFLOAD_ENABLE" ] && env_options+=" -e \"NIC_OFFLOAD_ENABLE=$NIC_OFFLOAD_ENABLE\""
     [ -n "$LACP_RATE" ] && env_options+=" -e \"LACP_RATE=$LACP_RATE\""
@@ -190,6 +191,7 @@ function restore_phys_int_dpdk() {
 #       VLAN_ID=<vlan_id>
 #   there are variables from network-functions-vrouter-dpdk-env
 #       SERVICE_CORE_MASK=<cpu mask>
+#       DPDK_CTRL_THREAD_MASK=<cpu mask>
 function ifup_init_vhost() {
     ip addr show dev vhost0 >/dev/null 2>&1 && return 0
     declare phys_int phys_int_mac pci
