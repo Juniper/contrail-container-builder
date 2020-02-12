@@ -72,8 +72,15 @@ function process_container() {
     return
   fi
   local start_time=$(date +"%s")
-  local container_name=`echo ${dir#"./"} | tr "/" "-"`
-  local container_name="contrail-${container_name}"
+  # if variable CONTRAIL_CONTAINER_NAME has been set up - use its value as builded container name
+  # use CONTRAIL_CONTAINER_NAME for build the only conainer
+  if [[ -z "${CONTRAIL_CONTAINER_NAME}" ]] ; then
+    local container_name=`echo ${dir#"./"} | tr "/" "-"`
+    local container_name="contrail-${container_name}"
+  else
+    container_name=${CONTRAIL_CONTAINER_NAME}
+  fi
+
   local tag="${CONTRAIL_CONTAINER_TAG}"
 
   local logfile='build-'$container_name'.log'
