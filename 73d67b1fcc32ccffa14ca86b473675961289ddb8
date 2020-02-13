@@ -68,6 +68,30 @@
       "revId": "73d67b1fcc32ccffa14ca86b473675961289ddb8",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5fc2cf94_81c0739e",
+        "filename": "containers/controller/webui/base/pre_setup.sh",
+        "patchSetId": 31
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 846
+      },
+      "writtenOn": "2020-02-13T13:18:28Z",
+      "side": 1,
+      "message": "i run with -e \"BASE_EXTRA_RPMS\u003d${BASE_EXTRA_RPMS}\" \\",
+      "parentUuid": "e7d9bcd6_a86f9c4a",
+      "range": {
+        "startLine": 2,
+        "startChar": 24,
+        "endLine": 2,
+        "endChar": 39
+      },
+      "revId": "73d67b1fcc32ccffa14ca86b473675961289ddb8",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
