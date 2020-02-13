@@ -339,7 +339,7 @@ if [[ -n "${PRIORITY_ID}" ]] || [[ -n "${QOS_QUEUE_ID}" ]]; then
         interface_list="${phys_int}"
         if is_bonding ${phys_int} ; then
             IFS=' ' read -r mode policy slaves pci_addresses bond_numa <<< $(get_bonding_parameters $phys_int)
-            interface_list="${slaves}"
+            interface_list="${slaves//,/ }"
         fi
         /opt/contrail/utils/qosmap.py --interface_list ${interface_list}
     fi
