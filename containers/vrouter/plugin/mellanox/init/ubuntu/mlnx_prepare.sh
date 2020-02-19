@@ -5,7 +5,7 @@ apt-get update
 apt-get -y install --no-install-recommends apt-utils dpkg-dev
 
 
-for UBUNTU_RELEASE in 18.10
+for UBUNTU_RELEASE in 18.04
 do
 cat << EOF > /etc/apt/sources.list.d/mellanox_mlnx_ofed.list
 #
