@@ -179,7 +179,7 @@ function run_service() {
     find $LOG_DIR -uid 0 -exec chown $owner_opts {} + ;
     # some orchetrators configure other services to log into this dif, e.g. rabbit
     # that are run under their users.
-    chmod 777 $LOG_DIR
+    chmod 770 $LOG_DIR
 
     mkdir -p /etc/contrail
     chown $owner_opts /etc/contrail
