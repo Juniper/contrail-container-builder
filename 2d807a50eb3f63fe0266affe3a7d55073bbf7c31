@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5bd106fb_cd96c4ca",
+        "filename": "containers/vrouter/base/agent-functions.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 629,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-02-20T20:05:52Z",
+      "side": 1,
+      "message": "lets use quotes in grep like\ngrep \u0027^..\u0027\n\nplease, style lile:\nfor .. ; do\n..\ndone\nand\nif.. ; then\n..\nfi",
+      "revId": "2d807a50eb3f63fe0266affe3a7d55073bbf7c31",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "75d27fd7_89962d56",
+        "filename": "containers/vrouter/base/agent-functions.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 631,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-02-20T20:05:52Z",
+      "side": 1,
+      "message": "looks not neede as for loop already has grep",
+      "revId": "2d807a50eb3f63fe0266affe3a7d55073bbf7c31",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
