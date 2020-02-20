@@ -33,6 +33,24 @@
       "revId": "3ffb37f3e536a23d60a798328e570a4ac367bc8c",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "45e512a2_acd77803",
+        "filename": "containers/controller/config/devicemgr/Dockerfile",
+        "patchSetId": 2
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 843
+      },
+      "writtenOn": "2020-02-20T09:20:04Z",
+      "side": 1,
+      "message": "Can we use different way (version) instead of the commit number example:\n\n$ ansible-galaxy install Juniper.junos,2.3.0\n\nSo that it will be clear?",
+      "parentUuid": "b189c9ab_a01d3e49",
+      "revId": "3ffb37f3e536a23d60a798328e570a4ac367bc8c",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
