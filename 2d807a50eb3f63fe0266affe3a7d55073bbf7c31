@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "961853dc_3b82fc2a",
+        "filename": "containers/vrouter/base/agent-functions.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 629,
+      "author": {
+        "id": 175
+      },
+      "writtenOn": "2020-02-20T20:22:21Z",
+      "side": 1,
+      "message": "i will modify it",
+      "parentUuid": "5bd106fb_cd96c4ca",
+      "revId": "2d807a50eb3f63fe0266affe3a7d55073bbf7c31",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "75d27fd7_89962d56",
         "filename": "containers/vrouter/base/agent-functions.sh",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2020-02-20T20:05:52Z",
       "side": 1,
       "message": "looks not neede as for loop already has grep",
+      "revId": "2d807a50eb3f63fe0266affe3a7d55073bbf7c31",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fc44d1aa_99358acd",
+        "filename": "containers/vrouter/base/agent-functions.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 631,
+      "author": {
+        "id": 175
+      },
+      "writtenOn": "2020-02-20T20:22:21Z",
+      "side": 1,
+      "message": "if the netns list  is \"vrouter-fc9f7b96-6398-4577-8080-6e5ed9ecb5e4 (id: 3)\nvrouter-45fd3dd4-69cc-4352-b825-1f7010902973:4c72a81a-53f8-11ea-965e-002590a54583 (id: 1)\" we need the grep to ignore (id: 3) and (id: 1)",
+      "parentUuid": "75d27fd7_89962d56",
       "revId": "2d807a50eb3f63fe0266affe3a7d55073bbf7c31",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
