@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fbe64348_8883a80e",
+        "filename": "containers/controller/config/devicemgr/Dockerfile",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 843
+      },
+      "writtenOn": "2020-02-20T08:58:49Z",
+      "side": 1,
+      "message": "From the DockerFile point of view it\u0027s good. I see some more modules being used in requirements.txt and test-requirements.txt files (Aprathi, already working). I assume you are okay to fix them as part of this bug or you wanted us to create a different bug?",
+      "revId": "3ffb37f3e536a23d60a798328e570a4ac367bc8c",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b189c9ab_a01d3e49",
+        "filename": "containers/controller/config/devicemgr/Dockerfile",
+        "patchSetId": 2
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 843
+      },
+      "writtenOn": "2020-02-20T08:58:49Z",
+      "side": 1,
+      "message": "This is the lastest 909b3826f64326d21c7a3b0107be2e7dbc257a6c commit in the master repo, so we wanted to go with this?",
+      "revId": "3ffb37f3e536a23d60a798328e570a4ac367bc8c",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
