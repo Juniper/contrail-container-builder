@@ -567,8 +567,14 @@ function init_sriov() {
 }
 
 function cleanup_lbaas_netns_config() {
+    for netns in `ip netns 2>/dev/null | grep ^vrouter-`
+    do
+        if `echo $netns | grep -q 'vrouter'`;
+        then
+            ip netns delete $netns
+        fi
+    done
     rm -rf /var/lib/contrail/loadbalancer/*
-    rm -rf /var/run/netns/
 }
 
 function cleanup_contrail_cni_config() {
