@@ -66,6 +66,7 @@
 | METADATA_SSL_ENABLE                | false                                               |
 | METADATA_SSL_KEYFILE               |                                                     |
 | **OpenStack**                      |                                                     |
+| BARBICAN_TENANT_NAME               | service                                             |
 | BARBICAN_PASSWORD                  | $KEYSTONE_AUTH_ADMIN_PASSWORD                       |
 | BARBICAN_USER                      | barbican                                            |
 | **Sandesh**                        |                                                     |

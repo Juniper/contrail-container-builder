@@ -358,9 +358,9 @@ if [[ -z "$K8S_TOKEN" ]]; then
 fi
 cat << EOM > /etc/contrail/contrail-lbaas-auth.conf
 [BARBICAN]
-admin_tenant_name = service
-admin_user = ${BARBICAN_USER}
-admin_password = ${BARBICAN_PASSWORD}
+admin_tenant_name = ${BARBICAN_TENANT_NAME:-'service'}
+admin_user = ${BARBICAN_USER:-'barbican'}
+admin_password = ${BARBICAN_PASSWORD:-${KEYSTONE_AUTH_ADMIN_PASSWORD}}
 auth_url = $KEYSTONE_AUTH_PROTO://${KEYSTONE_AUTH_HOST}:${KEYSTONE_AUTH_ADMIN_PORT}${KEYSTONE_AUTH_URL_VERSION}
 region = $KEYSTONE_AUTH_REGION_NAME
 user_domain_name = $KEYSTONE_AUTH_USER_DOMAIN_NAME
