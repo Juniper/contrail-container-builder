@@ -107,10 +107,16 @@ if [[ -n "$CPU_CORE_MASK" ]] ; then
 fi
 
 if [[ -n "$SERVICE_CORE_MASK" ]] ; then
+    if [[ ! "$SERVICE_CORE_MASK" =~ "0x" ]] ; then
+        SERVICE_CORE_MASK="(${SERVICE_CORE_MASK})"
+    fi
     cmd+=" --service_core_mask $SERVICE_CORE_MASK"
 fi
 
 if [[ -n "$DPDK_CTRL_THREAD_MASK" ]] ; then
+    if [[ ! "$DPDK_CTRL_THREAD_MASK" =~ "0x" ]] ; then
+        DPDK_CTRL_THREAD_MASK="(${DPDK_CTRL_THREAD_MASK})"
+    fi
     cmd+=" --dpdk_ctrl_thread_mask $DPDK_CTRL_THREAD_MASK"
 fi
 
