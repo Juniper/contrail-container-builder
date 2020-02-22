@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "effca917_28dc1fd1",
+        "filename": "containers/base/post_setup.sh",
+        "patchSetId": 62
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-02-22T11:12:09Z",
+      "side": 1,
+      "message": "local cannot be used outside of function..",
+      "range": {
+        "startLine": 6,
+        "startChar": 8,
+        "endLine": 6,
+        "endChar": 14
+      },
+      "revId": "8a9f9e1a5572546283bd735c6f5f034ba45c7e83",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e6a36f2a_820e92c6",
+        "filename": "containers/build_from_src.sh",
+        "patchSetId": 62
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-02-22T11:12:09Z",
+      "side": 1,
+      "message": "are they absent in base? I mean if it exists in previous layer the removal all the folder (not just additive of this layer ) would increase the whole size?\n\nbtw, the removal of nodocs \u0027sed -e \u0027/^tsflags\u003dnodocs/d\u0027 -i /etc/yum.conf\u0027 you added back above plays for all containers.. it means yum will install docs..  As i remember docs are needed for config and anlytic APIs containers only, no?",
+      "range": {
+        "startLine": 201,
+        "startChar": 0,
+        "endLine": 203,
+        "endChar": 24
+      },
+      "revId": "8a9f9e1a5572546283bd735c6f5f034ba45c7e83",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "13d01764_7cd851ce",
+        "filename": "containers/build_from_src.sh",
+        "patchSetId": 62
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-02-22T11:12:09Z",
+      "side": 1,
+      "message": "root \u0027/\u0027 containes lots of pyc from underlying centos image.. \nis this tesp needed to be on root?",
+      "range": {
+        "startLine": 204,
+        "startChar": 0,
+        "endLine": 205,
+        "endChar": 33
+      },
+      "revId": "8a9f9e1a5572546283bd735c6f5f034ba45c7e83",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9693a930_7cf127e2",
+        "filename": "containers/build_from_src.sh",
+        "patchSetId": 62
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-02-22T11:12:09Z",
+      "side": 1,
+      "message": "they are mounted to container from host, why you remove them?",
+      "range": {
+        "startLine": 206,
+        "startChar": 0,
+        "endLine": 206,
+        "endChar": 35
+      },
+      "revId": "8a9f9e1a5572546283bd735c6f5f034ba45c7e83",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "64280c90_7cfb1c75",
+        "filename": "containers/controller/config/devicemgr/build_src/post_setup.sh",
+        "patchSetId": 62
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-02-22T11:12:09Z",
+      "side": 1,
+      "message": "remove it.  I already tried that. removal of git leads to removal some deps packages..\nin origin container it is not removed.",
+      "range": {
+        "startLine": 3,
+        "startChar": 0,
+        "endLine": 3,
+        "endChar": 17
+      },
+      "revId": "8a9f9e1a5572546283bd735c6f5f034ba45c7e83",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
