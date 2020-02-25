@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "401d8323_373356cc",
+        "filename": "containers/build_from_src.sh",
+        "patchSetId": 62
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 846
+      },
+      "writtenOn": "2020-02-25T22:03:19Z",
+      "side": 1,
+      "message": "removal of files do not increase the size, but not decrease too.\nI return nodocs to all cts excep analytics/base and config/base as they were in dockerfile previously...",
+      "parentUuid": "e6a36f2a_820e92c6",
+      "range": {
+        "startLine": 201,
+        "startChar": 0,
+        "endLine": 203,
+        "endChar": 24
+      },
+      "revId": "8a9f9e1a5572546283bd735c6f5f034ba45c7e83",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "13d01764_7cd851ce",
         "filename": "containers/build_from_src.sh",
         "patchSetId": 62
@@ -71,6 +95,30 @@
     },
     {
       "key": {
+        "uuid": "479afcbc_2dabc203",
+        "filename": "containers/build_from_src.sh",
+        "patchSetId": 62
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 846
+      },
+      "writtenOn": "2020-02-25T22:03:19Z",
+      "side": 1,
+      "message": "we remove the files in iterative way for every layer, so the impact to size is significant.",
+      "parentUuid": "13d01764_7cd851ce",
+      "range": {
+        "startLine": 204,
+        "startChar": 0,
+        "endLine": 205,
+        "endChar": 33
+      },
+      "revId": "8a9f9e1a5572546283bd735c6f5f034ba45c7e83",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "9693a930_7cf127e2",
         "filename": "containers/build_from_src.sh",
         "patchSetId": 62
@@ -82,6 +130,30 @@
       "writtenOn": "2020-02-22T11:12:09Z",
       "side": 1,
       "message": "they are mounted to container from host, why you remove them?",
+      "range": {
+        "startLine": 206,
+        "startChar": 0,
+        "endLine": 206,
+        "endChar": 35
+      },
+      "revId": "8a9f9e1a5572546283bd735c6f5f034ba45c7e83",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cbddac97_ee5669b0",
+        "filename": "containers/build_from_src.sh",
+        "patchSetId": 62
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 846
+      },
+      "writtenOn": "2020-02-25T22:03:19Z",
+      "side": 1,
+      "message": "it is build files, they are not needed in prod.",
+      "parentUuid": "9693a930_7cf127e2",
       "range": {
         "startLine": 206,
         "startChar": 0,
