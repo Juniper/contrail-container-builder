@@ -16,6 +16,24 @@
       "revId": "8772260ba2d6e18fe532a187737d6baafdf35f69",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bc2e7726_58808857",
+        "filename": "containers/vrouter/agent/PARAMS.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 797
+      },
+      "writtenOn": "2020-02-25T12:21:50Z",
+      "side": 1,
+      "message": "Done!\n\nAlso i saw that default values for BARBICAN_USER and BARBICAN_PASSWORD were already set in common.sh, so i have removed setting default values in entrypoint.sh.",
+      "parentUuid": "52ee4c0f_498b9cbd",
+      "revId": "8772260ba2d6e18fe532a187737d6baafdf35f69",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
