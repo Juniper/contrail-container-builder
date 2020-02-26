@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b021bfd7_c153ad96",
+        "filename": "containers/controller/config/devicemgr/Dockerfile",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 843
+      },
+      "writtenOn": "2020-02-26T05:49:40Z",
+      "side": 1,
+      "message": "Looks this is typo, can you pl. take a care.",
+      "revId": "586b9c22a981eb92b6a875ada30c88f6978bacf1",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
