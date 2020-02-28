@@ -41,6 +41,7 @@ Here documented only parameters user in provision.sh script now.
 #TODO To be documented (These params are mentioned in the provision.sh file but not in the defaults table):
 VXLAN_VN_ID_MODE
 VROUTER_HOSTNAME
+CONTROL_HOSTNAME
 DEFAULT_HOSTNAME
 TOR_TSN_IP
 TOR_AGENT_NAME

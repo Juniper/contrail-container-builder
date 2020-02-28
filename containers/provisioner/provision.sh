@@ -139,7 +139,8 @@ control)
 
   host_ip=$(get_listen_ip_for_node CONTROL)
   host_name=$(resolve_hostname_by_ip $host_ip)
-  provision_node provision_control.py $host_ip ${host_name:-$default_hostname} \
+  provision_node provision_control.py $host_ip \
+    ${CONTROL_HOSTNAME:-${host_name:-${default_hostname}}} \
     --router_asn ${BGP_ASN} \
     --bgp_server_port ${BGP_PORT} ${subcluster_name}
 
