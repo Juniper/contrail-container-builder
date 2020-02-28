@@ -5,7 +5,8 @@ source /common.sh
 pre_start_init
 
 hostip=$(get_listen_ip_for_node CONTROL)
-hostname=$(resolve_hostname_by_ip $hostip)
+ip_hostname=$(resolve_hostname_by_ip $hostip)
+hostname=${CONTROL_HOSTNAME:-${ip_hostname:-$DEFAULT_HOSTNAME}}
 
 rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')
 configdb_cql_servers=$(echo $CONFIGDB_CQL_SERVERS | sed 's/,/ /g')
@@ -18,7 +19,7 @@ collectors=$COLLECTOR_SERVERS
 # gr_helper_bgp_disable=0
 # gr_helper_xmpp_disable=0
 hostip=${hostip}
-hostname=${hostname:-$DEFAULT_HOSTNAME}
+hostname=${hostname}
 http_server_ip=$(get_introspect_listen_ip_for_node CONTROL)
 http_server_port=${CONTROL_INTROSPECT_LISTEN_PORT:-$CONTROL_INTROSPECT_PORT}
 log_file=$LOG_DIR/contrail-control.log

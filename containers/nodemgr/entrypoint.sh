@@ -40,7 +40,9 @@ else
   else
     htype="$ntype"
   fi
-
+  if [[ $ntype == 'CONTROL' ]] ; then
+    host_name=${CONTROL_HOSTNAME:-}
+  fi
   hostip=$(get_listen_ip_for_node ${htype})
 fi
 
