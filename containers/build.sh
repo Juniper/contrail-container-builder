@@ -132,8 +132,6 @@ function process_container() {
   (( duration -= start_time ))
   log "Docker build duration: $duration seconds" | append_log_file $logfile
   local rel_build_src_path="contrail-container-builder/containers/${dir##./}/build_src"
-  log "Rel build src path is ${rel_build_src_path}" | append_log_file $logfile
-  local relative_build_src_path=${dir}/build_src
   if [[ ${exit_code} -eq 0 && ! -z "$CONTRAIL_BUILD_FROM_SOURCE" && -e ${relative_build_src_path} ]]; then
     # Setup from source
     # RHEL has old docker that doesnt support neither staged build nor mount option
@@ -141,6 +139,8 @@ function process_container() {
     # So, ther is WA: previously build image is empty w/o RPMs but with all
     # other stuff required, so, now the final step to run a intermediate container,
     # install components inside and commit is as the final image.
+    log "Rel build src path is ${rel_build_src_path}" | append_log_file $logfile
+    local relative_build_src_path=${dir}/build_src
     local cmd=$(docker inspect -f "{{json .Config.Cmd }}" ${target_name} )
     local entrypoint=$(docker inspect -f "{{json .Config.Entrypoint }}" ${target_name} )
     local intermediate_base="${container_name}-src"
