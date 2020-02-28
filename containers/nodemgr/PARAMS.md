@@ -32,6 +32,7 @@
 | *CONFIG_NODES*                    | $CONTROLLER_NODES                              |
 | **Control**                       |                                                |
 | CONTROL_NODES                     | $CONFIG_NODES                                  |
+| CONTROL_HOSTNAME                  | $CONTROL_HOSTNAME                              |
 | **Controller**                    |                                                |
 | *CONTROLLER_NODES*                | IP address of the NIC performs default routing |
 | **Host**                          |                                                |
