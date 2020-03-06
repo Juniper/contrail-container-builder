@@ -170,7 +170,10 @@ vrouter)
   # Nodemgr in vrouter mode is run on the node with vhost0.
   # During vhost0 initialization there is possible race between
   # the host_ip deriving logic and vhost0 initialization
-  wait_nic_up vhost0
+  if ! wait_nic_up vhost0 ; then
+    echo "ERROR: vhost0 is not up .. exit to allow docker policy to restart container if needed"
+    exit 1
+  fi
   host_ip=$(get_ip_for_vrouter_from_control)
   vhost_if=$(get_iface_for_vrouter_from_control)
   if_cidr=$(get_cidr_for_nic $vhost_if)
