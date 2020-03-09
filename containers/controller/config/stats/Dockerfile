@@ -8,6 +8,8 @@ LABEL name=$CONTAINER_NAME \
       description="Contrail statistics client collects statistics about number of virtual networks, virtual routers , etc. No private information is collected."
 
 RUN   yum install -y git && \
+      git config --global http.lowSpeedLimit 1000 && \
+      git config --global http.lowSpeedTime 350 && \
       git clone --single-branch https://github.com/Juniper/contrail-controller.git && \
       cd contrail-controller/src/stats && \
       python setup.py install --no-compile && \
