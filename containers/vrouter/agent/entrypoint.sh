@@ -254,6 +254,19 @@ crypt_interface=$VROUTER_CRYPT_INTERFACE
 EOM
 fi
 
+hugepages_option=""
+if [[ -n "${HUGE_PAGES_1GB}" ]] ; then
+    read -r -d '' hugepages_option << EOM || true
+[RESTART]
+huge_page_1G=$HUGE_PAGES_1GB
+EOM
+elif [[ -n "${HUGE_PAGES_2MB}" ]] ; then
+    read -r -d '' hugepages_option << EOM || true
+[RESTART]
+huge_page_1G=$HUGE_PAGES_2MB
+EOM
+fi
+
 introspect_ip='0.0.0.0'
 if ! is_enabled ${INTROSPECT_LISTEN_ALL} ; then
   introspect_ip=$vrouter_ip
@@ -326,6 +339,8 @@ slo_destination = $SLO_DESTINATION
 sample_destination = $SAMPLE_DESTINATION
 
 $collector_stats_config
+
+$hugepages_option
 EOM
 
 cleanup_lbaas_netns_config
