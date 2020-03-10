@@ -111,3 +111,6 @@
 | XMPP_SERVER_KEYFILE                | $SERVER_KEYFILE                                     |
 | XMPP_SERVER_PORT                   | 5269                                                |
 | XMPP_SSL_ENABLE                    | $SSL_ENABLE                                         |
+| **HugePages**                      |                                                     |
+| HUGE_PAGES_2MB                     | 0                                                   |
+| HUGE_PAGES_1GB                     | 0                                                   |
