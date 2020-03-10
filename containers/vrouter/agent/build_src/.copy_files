@@ -3,7 +3,6 @@ build/production/vnsw/agent/contrail/contrail-vrouter-agent /usr/bin/contrail-vr
 build/production/vnsw/agent/ovs_tor_agent/contrail-tor-agent /usr/bin/contrail-tor-agent
 controller/src/vnsw/agent/contrail/contrail_crypt_tunnel_client.py /usr/bin/contrail_crypt_tunnel_client.py
 controller/src/vnsw/agent/port_ipc/vrouter-port-control /usr/bin/vrouter-port-control
-build/lib/libtcmalloc.so.4.1.2 /usr/lib/libtcmalloc.so.4.1.2
 build/lib/libtbb.so.2 /usr/lib/libtbb.so.2
 build/lib/liblog4cplus-1.1.so.7.0.0 /usr/lib/liblog4cplus-1.1.so.7.0.0
 build/lib/libipfix.so.1.0 /usr/lib/libipfix.so.1.0

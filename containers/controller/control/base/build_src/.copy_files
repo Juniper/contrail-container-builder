@@ -2,3 +2,4 @@ build/production/control-node/contrail-control /usr/bin/contrail-control
 build/production/dns/contrail-dns /usr/bin/contrail-dns
 build/sbin/contrail-named /usr/bin/contrail-named
 build/sbin/contrail-rndc /usr/bin/contrail-rndc
+BUILDROOT/contrail-[0-9][0-9][0-9][0-9]-*.x86_64/etc/contrail/vnc_api_lib.ini /etc/contrail/vnc_api_lib.ini
