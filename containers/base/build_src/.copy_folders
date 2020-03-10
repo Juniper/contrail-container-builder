@@ -4,3 +4,4 @@ controller/src/config/utils/*sh /usr/share/contrail-utils/
 controller/src/dns/scripts/. /opt/contrail/utils/
 controller/src/dns/scripts/*py /usr/share/contrail-utils/
 controller/src/config/utils/*sh /usr/share/contrail-utils/
+BUILDROOT/contrail-[0-9][0-9][0-9][0-9]-*.x86_64/etc/contrail/. /etc/contrail/
