@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dc9cd4f0_130efd48",
+        "filename": "containers/vrouter/agent/entrypoint.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-03-12T19:06:29Z",
+      "side": 1,
+      "message": "this options comes from orchestrator and it is a kind of number.\nbut here it is expected 2 paths - see spec from Anand.\nso.\n1. it is needed here to find somehow appropriate mount point and for patsh (usually  it is /dev/hugepages, algorithm might be: do mount |grep hugetlbfs\u0027 if only one found - use it, if more - select by grep -i \u0027gb\u0027 or \u0027mb\u0027 accordingly.  If not found - fail and exit with error.\n2. it is needed to check appropriate /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages and if it returns 0 then try to write there value form appropriate HUGE_PAGES_ variable to try to allocate dynamically)",
+      "range": {
+        "startLine": 261,
+        "startChar": 13,
+        "endLine": 261,
+        "endChar": 28
+      },
+      "revId": "5a41a37369d45e31d697ef6ad7ff1557c09dffc3",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5efc5126_3951ceff",
+        "filename": "containers/vrouter/agent/entrypoint.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 266,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-03-12T19:06:29Z",
+      "side": 1,
+      "message": "2MB",
+      "range": {
+        "startLine": 266,
+        "startChar": 10,
+        "endLine": 266,
+        "endChar": 12
+      },
+      "revId": "5a41a37369d45e31d697ef6ad7ff1557c09dffc3",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
