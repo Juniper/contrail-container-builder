@@ -54,8 +54,8 @@ fi
 
 # For Google and Azure the underlying physical inetrface has network plumbed differently.
 # We need the following to initialize vhost0 in GC and Azure
-azure_or_gcp=$(cat /sys/devices/virtual/dmi/id/chassis_vendor)
-if [[ "$azure_or_gcp" =~ ^(Microsoft Corporation|Microsoft|Google)$ ]]; then
+azure_or_gcp_or_aws=$(cat /sys/devices/virtual/dmi/id/chassis_vendor && cat /sys/devices/virtual/dmi/id/product_version)
+if [[ "${azure_or_gcp_or_aws,,}" =~ ^(.*microsoft*.|.*google*.|.*amazon*.) ]]; then
     pids=$(check_vhost0_dhcp_clients)
     if [ -z "$pids" ] ; then
         check_and_launch_dhcp_clients

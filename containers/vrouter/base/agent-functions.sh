@@ -716,6 +716,13 @@ function add_vrouter_decrypt_intf() {
 # for the dhcp lease renewal
 function check_vhost0_dhcp_clients() {
     local pids=$(ps -A -o pid,cmd|grep 'vhost-dhcp\|vhost0' | grep -v grep | awk '{print $1}')
+    if [ ! -z $pids ] ; then
+       local dhcp_conf_options=$(ps -p $pids -o cmd | grep 'dhclient-vhost0.conf')
+       if [ -z $dhcp_conf_options ] ; then
+           kill $pids
+           pids=''
+       fi
+    fi
     echo $pids
 }
 
@@ -724,14 +731,7 @@ function check_vhost0_dhcp_clients() {
 # and also for making sure the arp table is updated with the mac of the GW
 function launch_dhcp_clients() {
     mkdir -p /var/lib/dhcp
-    aws_azure_or_gcp=$(cat /sys/devices/virtual/dmi/id/chassis_vendor)
-    if [[ "$aws_azure_or_gcp" =~ ^(Google)$ ]]; then
-       dhclient -v -1  -sf /vhost-dhcp.sh -cf /dhclient-vhost0.conf -pf /run/dhclient.vhost0.pid -lf /var/lib/dhcp/dhclient.vhost0.leases -I vhost0 2>&1 </dev/null & disown -h "$!"
-    else
-       dhclient -v -1  -sf /vhost-dhcp.sh -pf /run/dhclient.vhost0.pid -lf /var/lib/dhcp/dhclient.vhost0.leases -I vhost0 2>&1 </dev/null & disown -h "$!"
-    fi
-    sleep 3
-    dhclient vhost0 2>&1 </dev/null & disown -h "$!"
+    dhclient -v -1  -sf /vhost-dhcp.sh -cf /dhclient-vhost0.conf -pf /run/dhclient.vhost0.pid -lf /var/lib/dhcp/dhclient.vhost0.leases -I vhost0 2>&1 </dev/null & disown -h "$!"
     sleep 3
 }
 
