@@ -11,6 +11,10 @@ LABEL vendor=$VENDOR_NAME \
       summary="Contrail RabbitMQ" \
       description="Contrail Rabbitmq is the message bus that different Contrail processes subscribe to."
 
+# These definitions are just for build purposes and must not be changed at runtime
+ENV CONTRAIL_GID=1999 \
+    CONTRAIL_USER=contrail
+
 # Add required license as text file in Liceses directory
 RUN mkdir /licenses
 COPY __licensing.txt /licenses/licensing.txt
@@ -24,7 +28,9 @@ RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done' && \
     export DEBIAN_FRONTEND=noninteractive && \
     apt-get update || /bin/true && \
     apt-get -fy install bind9-host xxd && \
-    /upgrade_pkgs.sh
+    /upgrade_pkgs.sh && \
+    groupadd --gid $CONTRAIL_GID --system $CONTRAIL_USER && \
+    usermod -a -G $CONTRAIL_GID $RABBITMQ_USER
 
 ENTRYPOINT ["/contrail-entrypoint.sh"]
 CMD ["rabbitmq-server"]
