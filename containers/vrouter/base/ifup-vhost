@@ -56,6 +56,9 @@ if [ -n "${DYNCONFIG}" ] && [ -x /sbin/dhclient ]; then
        ONESHOT="-1";
     fi;
     generate_config_file_name
+    if [ -z "${DHCLIENTCONF}" ]; then
+        DHCLIENTCONF="-cf /etc/sysconfig/network-scripts/dhclient$ver-${DEVICE}.conf"
+    fi
     generate_lease_file_name
     DHCLIENTARGS="${DHCLIENTARGS} -H ${DHCP_HOSTNAME:-${HOSTNAME%%.*}} ${ONESHOT} -q ${DHCLIENTCONF} -lf ${LEASEFILE} -pf /var/run/dhclient-${DEVICE}.pid"
     echo

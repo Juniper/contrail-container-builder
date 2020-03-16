@@ -19,8 +19,8 @@ function get_default_vrouter_gateway() {
 function create_vhost_network_functions() {
     local dir=$1
     pushd "$dir"
-    /bin/cp -f /ifup-vhost /ifdown-vhost ./
-    chmod 744 ./ifup-vhost ./ifdown-vhost
+    /bin/cp -f /ifup-vhost /ifdown-vhost /dhclient-vhost0.conf ./
+    chmod 744 ./ifup-vhost ./ifdown-vhost ./dhclient-vhost0.conf
     /bin/cp -f  /network-functions-vrouter /network-functions-vrouter-${AGENT_MODE} ./
     chmod 644 ./network-functions-vrouter ./network-functions-vrouter-${AGENT_MODE}
     if [ -f /network-functions-vrouter-${AGENT_MODE}-env ] ; then
