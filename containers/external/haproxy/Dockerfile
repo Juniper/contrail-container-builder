@@ -21,10 +21,16 @@ ENV HAPROXY_GID=1999
 ENV HAPROXY_UID=1999
 ENV HAPROXY_USER=haproxy
 
+# These definitions are just for build purposes and must not be changed at runtime
+ENV CONTRAIL_GID=1999 \
+    CONTRAIL_USER=contrail
+
 RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done' && \
     groupadd --gid $HAPROXY_GID --system $HAPROXY_USER && \
     useradd --uid $HAPROXY_UID --no-create-home --shell /sbin/nologin --system --gid $HAPROXY_GID $HAPROXY_USER && \
-    /upgrade_pkgs.sh
+    /upgrade_pkgs.sh && \
+    groupadd --gid $CONTRAIL_GID --system $CONTRAIL_USER && \
+    usermod -a -G $CONTRAIL_GID $HAPROXY_USER
 
 ENTRYPOINT ["/contrail-entrypoint.sh"]
 CMD ["haproxy", "-f", "/usr/local/etc/haproxy/haproxy.cfg"]
