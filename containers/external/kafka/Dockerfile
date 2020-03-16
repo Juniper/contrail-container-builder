@@ -16,7 +16,9 @@ ENV KAFKA_DIR=/opt/$KAFKA_DISTRO_NAME \
     LOG_DIR=/var/log/kafka \
     KAFKA_OPTS="-XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=100M" \
     KAFKA_USER=kafka \
-    KAFKA_GROUP=kafka
+    KAFKA_GROUP=kafka \
+    CONTRAIL_GID=1999 \
+    CONTRAIL_USER=contrail
 
 RUN yum install -y java java-1.8.0-openjdk-devel iproute less hostname python3 openssl wget && \
     wget -nv --tries=3 -c -O $KAFKA_DISTRO_NAME.tgz $KAFKA_CACHE/$KAFKA_DISTRO_NAME.tgz?raw=true && \
@@ -27,6 +29,7 @@ RUN yum install -y java java-1.8.0-openjdk-devel iproute less hostname python3 o
     yum clean all -y && \
     rm -rf /var/cache/yum && \
     groupadd -f -g 1011 kafka && adduser -M -g kafka kafka && \
+    usermod -a -G $CONTRAIL_GID $KAFKA_USER && \
     mkdir -p $LOG_DIR && \
     chown -R $KAFKA_USER:$KAFKA_GROUP $LOG_DIR && \
     chown -R $KAFKA_USER:$KAFKA_GROUP $KAFKA_DIR
