@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "31c35c0e_5caae3be",
+        "filename": "containers/vrouter/agent/entrypoint.sh",
+        "patchSetId": 4
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-03-16T09:56:16Z",
+      "side": 1,
+      "message": "please see example of impl below",
+      "range": {
+        "startLine": 257,
+        "startChar": 0,
+        "endLine": 264,
+        "endChar": 2
+      },
+      "revId": "55b34cc5016d6166bdf9c2f24b490e74176843e9",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1f61ef8a_db4a6103",
+        "filename": "containers/vrouter/agent/entrypoint.sh",
+        "patchSetId": 4
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-03-16T09:56:16Z",
+      "side": 1,
+      "message": "please use \u003d\u003d",
+      "range": {
+        "startLine": 268,
+        "startChar": 28,
+        "endLine": 268,
+        "endChar": 31
+      },
+      "revId": "55b34cc5016d6166bdf9c2f24b490e74176843e9",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8f4ac54c_e9b7078b",
+        "filename": "containers/vrouter/agent/entrypoint.sh",
+        "patchSetId": 4
+      },
+      "lineNbr": 285,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-03-16T09:56:16Z",
+      "side": 1,
+      "message": "see, logic is pretty simple:\nif [[ -n \"${HUGE_PAGES_1GB}\" ]] ; then\n  ensure_hugepages $HUGE_PAGES_DIR\n  allocated_pages\u003d$(cat /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages)\n  if  (( HUGE_PAGES_1GB \u003e allocated_pages )) ; then\n    echo \"Requested HP1GB  $HUGE_PAGES_1GB less then available $allocated_pages.. try to allocate\"\n    echo $HUGE_PAGES_1GB \u003e sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages)\n  fi\n  read -r -d \u0027\u0027 hugepages_option \u003c\u003c EOM || true\n[RESTART]\nhuge_page_1GB\u003d/dev/hugepages/bridge /dev/hugepages/flow\nEOM\n\nelif [[ -n \"${HUGE_PAGES_1MB}\" ]] ; then\n  ensure_hugepages $HUGE_PAGES_DIR\n...\nfi",
+      "range": {
+        "startLine": 266,
+        "startChar": 0,
+        "endLine": 285,
+        "endChar": 2
+      },
+      "revId": "55b34cc5016d6166bdf9c2f24b490e74176843e9",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
