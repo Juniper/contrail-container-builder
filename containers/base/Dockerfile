@@ -13,7 +13,7 @@ ARG BASE_EXTRA_RPMS=""
 # WARNING! all pip deps must be installed with pinned version to avoid breakages when pypi is upgraded.
 # WARNING! python2-setuptools is to be installed as it here below to get correct version -
 #   from the yum repo install via BASE_EXTRA_RPMS. pip2 is to installed BEFORE python3 that installs pip3
-#   byt dependencies. 
+#   byt dependencies.
 # NOTE! all other deps must be installed in the container that requires such deps.
 RUN BASE_EXTRA_RPMS=$(echo $BASE_EXTRA_RPMS | tr -d '"' | tr ',' ' ') && \
     if [[ -n "$BASE_EXTRA_RPMS" ]] ; then \
