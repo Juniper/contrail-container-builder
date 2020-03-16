@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b85dec92_9abf4df7",
+        "filename": "containers/vrouter/base/ifup-vhost",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-03-16T16:19:50Z",
+      "side": 1,
+      "message": "it is not needed the same action is done by the call of generate_config_file_name\nbased on the checking of file existance.",
+      "range": {
+        "startLine": 59,
+        "startChar": 0,
+        "endLine": 61,
+        "endChar": 6
+      },
+      "revId": "5e276f189f237ed1637124ddb8b33a895125b0a4",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
