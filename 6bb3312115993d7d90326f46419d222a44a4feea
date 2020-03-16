@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8b01c358_c32ac535",
+        "filename": "containers/vrouter/agent/entrypoint.sh",
+        "patchSetId": 5
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-03-16T21:24:13Z",
+      "side": 1,
+      "message": "please, just remove this block and usage of  mount_count:  it is up to orchestrator to guarantee a mount point from $HUGE_PAGES_DIR be available. You cannot here know in advance the names..\ne.g. on my systemL\n[stack@undercloud-20 ~]$ cat /proc/mounts | grep huge\ncgroup /sys/fs/cgroup/hugetlb cgroup rw,seclabel,nosuid,nodev,noexec,relatime,hugetlb 0 0\nhugetlbfs /dev/hugepages hugetlbfs rw,seclabel,relatime 0 0",
+      "range": {
+        "startLine": 257,
+        "startChar": 0,
+        "endLine": 262,
+        "endChar": 2
+      },
+      "revId": "6bb3312115993d7d90326f46419d222a44a4feea",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
