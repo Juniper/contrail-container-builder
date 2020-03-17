@@ -32,14 +32,14 @@ for d in $installed_kernels ; do
     enable_kernel_module "$d" "$d"
     continue
   fi
-  # Add oOS kernel version to list of avaiable and sort them
+  # Add OS kernel version to list of available and sort them
   sorted_list=$(echo -e "${available_modules}\n${d}" | sed 's/\.el/ el/' | sort -V | sed 's/ /./1')
-  if ! echo "$sorted_list" | grep -A1 "$d" | grep -vq "$d" ; then
-    # Enable latest installed module if current kernel is above all modules that we have
-    enable_kernel_module "${available_modules##*$'\n'}" "$d"
+  if ! echo "$sorted_list" | grep -B1 "$d" | grep -vq "$d" ; then
+    # Enable first installed module if current kernel is upper all modules that we have
+    enable_kernel_module $(echo "$available_modules" | head -1) "$d"
   else
     # Enable upper version kernel module
-    enable_kernel_module $(echo "$sorted_list" | grep -A1 "$d" | grep -v "$d") "$d"
+    enable_kernel_module $(echo "$sorted_list" | grep -B1 "$d" | grep -v "$d") "$d"
   fi
 done
 
