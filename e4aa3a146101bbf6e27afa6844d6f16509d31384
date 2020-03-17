@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "74336d63_97928b2c",
+        "filename": "containers/external/kafka/Dockerfile",
+        "patchSetId": 7
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-03-17T12:36:24Z",
+      "side": 1,
+      "message": "in theory in general base they are already defined. so, it suppose remove the second declaration for contrail gid and suer",
+      "range": {
+        "startLine": 19,
+        "startChar": 21,
+        "endLine": 21,
+        "endChar": 26
+      },
+      "revId": "e4aa3a146101bbf6e27afa6844d6f16509d31384",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f0cd66d0_b79b86c5",
+        "filename": "containers/external/rabbitmq/Dockerfile",
+        "patchSetId": 7
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-03-17T12:36:24Z",
+      "side": 1,
+      "message": "why? \nand it is useless as it runs a child instance of bash, so env vars are not exported to parent",
+      "range": {
+        "startLine": 33,
+        "startChar": 4,
+        "endLine": 33,
+        "endChar": 36
+      },
+      "revId": "e4aa3a146101bbf6e27afa6844d6f16509d31384",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aa3eedf9_e8886a24",
+        "filename": "containers/external/rabbitmq/Dockerfile",
+        "patchSetId": 7
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-03-17T12:36:24Z",
+      "side": 1,
+      "message": "just hardcode the name. It is not the name that is used for connection to rabbit.\nIt is another use - it is an user that is used to run rabbitmq process, see how it is created in parent https://github.com/docker-library/rabbitmq/blob/master/3.7/ubuntu/Dockerfile#L187",
+      "range": {
+        "startLine": 34,
+        "startChar": 32,
+        "endLine": 34,
+        "endChar": 46
+      },
+      "revId": "e4aa3a146101bbf6e27afa6844d6f16509d31384",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3df9cd73_d28a0721",
+        "filename": "containers/external/zookeeper/Dockerfile",
+        "patchSetId": 7
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-03-17T12:36:24Z",
+      "side": 1,
+      "message": "same as for rabbit, i would avoid this env to avoid possible user name conflicts (between users to run processes and users for rest apis)",
+      "range": {
+        "startLine": 17,
+        "startChar": 4,
+        "endLine": 17,
+        "endChar": 28
+      },
+      "revId": "e4aa3a146101bbf6e27afa6844d6f16509d31384",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
