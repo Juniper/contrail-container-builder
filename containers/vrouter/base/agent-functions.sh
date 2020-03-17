@@ -731,7 +731,7 @@ function check_vhost0_dhcp_clients() {
 # and also for making sure the arp table is updated with the mac of the GW
 function launch_dhcp_clients() {
     mkdir -p /var/lib/dhcp
-    dhclient -v -1  -sf /vhost-dhcp.sh -cf /dhclient-vhost0.conf -pf /run/dhclient.vhost0.pid -lf /var/lib/dhcp/dhclient.vhost0.leases -I vhost0 2>&1 </dev/null & disown -h "$!"
+    dhclient -v -sf /vhost-dhcp.sh -cf /dhclient-vhost0.conf -pf /run/dhclient.vhost0.pid -lf /var/lib/dhcp/dhclient.vhost0.leases -I vhost0 2>&1 </dev/null & disown -h "$!"
     sleep 3
 }
 
