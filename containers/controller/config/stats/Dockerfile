@@ -10,6 +10,8 @@ LABEL name=$CONTAINER_NAME \
 
 RUN if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
     yum install -y python2-setuptools git && \
+    git config --global http.lowSpeedLimit 1000 && \
+    git config --global http.lowSpeedTime 350 && \
     git clone --single-branch https://github.com/Juniper/contrail-controller.git && \
     cd contrail-controller/src/stats && \
     python setup.py install && \
