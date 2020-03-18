@@ -10,6 +10,7 @@ K8S_TOKEN=${K8S_TOKEN:-"$(cat $K8S_TOKEN_FILE)"}
 host_ip=$(get_listen_ip_for_node KUBEMANAGER)
 cassandra_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
 
+mkdir -p /etc/contrail
 cat > /etc/contrail/contrail-kubernetes.conf << EOM
 [DEFAULTS]
 host_ip=${host_ip}

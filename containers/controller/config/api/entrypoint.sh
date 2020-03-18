@@ -27,6 +27,7 @@ else
   neutron_section=''
 fi
 
+mkdir -p /etc/contrail
 cat > /etc/contrail/contrail-api.conf << EOM
 [DEFAULTS]
 listen_ip_addr=${host_ip}

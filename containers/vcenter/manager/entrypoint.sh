@@ -7,6 +7,7 @@ if ! is_enabled ${INTROSPECT_LISTEN_ALL} ; then
   introspect_ip=$(get_ip_for_vrouter_from_control)
 fi
 
+mkdir -p /etc/contrail
 cat > /etc/contrail/contrail-vcenter-manager/config.yaml << EOM
 esxi:
   host: $ESXI_HOST

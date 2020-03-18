@@ -9,6 +9,7 @@ hostname=$(resolve_hostname_by_ip $hostip)
 rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')
 configdb_cql_servers=$(echo $CONFIGDB_CQL_SERVERS | sed 's/,/ /g')
 
+mkdir -p /etc/contrail
 cat > /etc/contrail/contrail-collector.conf << EOM
 [DEFAULT]
 analytics_data_ttl=${ANALYTICS_DATA_TTL:-48}

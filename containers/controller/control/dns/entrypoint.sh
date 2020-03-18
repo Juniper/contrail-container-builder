@@ -14,7 +14,6 @@ DNS_NAMED_CONFIG_DIRECTORY=${DNS_NAMED_CONFIG_DIRECTORY:-'/etc/contrail/dns'}
 DNS_RNDC_CONFIG_FILE=${DNS_RNDC_CONFIG_FILE:-'contrail-rndc.conf'}
 
 mkdir -p ${DNS_NAMED_CONFIG_DIRECTORY}
-
 cat > ${DNS_NAMED_CONFIG_DIRECTORY}/${DNS_RNDC_CONFIG_FILE} << EOM
 key "rndc-key" {
     algorithm hmac-md5;

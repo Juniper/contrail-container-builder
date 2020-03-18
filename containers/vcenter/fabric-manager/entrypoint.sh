@@ -2,6 +2,7 @@
 
 source /common.sh
 
+mkdir -p /etc/contrail
 cat > /etc/contrail/contrail-vcenter-fabric-manager/cvfm.conf << EOM
 [DEFAULTS]
 host_ip=$(get_listen_ip_for_node VCENTER_FABRIC_MANAGER)

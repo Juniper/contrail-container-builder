@@ -8,6 +8,7 @@ host_ip=$(get_listen_ip_for_node ANALYTICS_SNMP)
 rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')
 config_db_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
 
+mkdir -p /etc/contrail
 cat > /etc/contrail/contrail-topology.conf << EOM
 [DEFAULTS]
 host_ip=${host_ip}

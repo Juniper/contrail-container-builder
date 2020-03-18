@@ -15,6 +15,7 @@ function get_vip_for_node() {
 }
 api_hostname=${CONFIG_API_VIP:-$(get_vip_for_node CONFIG)}
 
+mkdir -p /etc/contrail
 cat > /etc/contrail/contrail-vcenter-plugin.conf << EOM
 [DEFAULT]
 # Vcenter plugin URL

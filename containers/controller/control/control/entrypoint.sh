@@ -11,6 +11,7 @@ hostname=${CONTROL_HOSTNAME:-${ip_hostname:-$(get_default_hostname)}}
 rabbitmq_server_list=$(echo $RABBITMQ_SERVERS | sed 's/,/ /g')
 configdb_cql_servers=$(echo $CONFIGDB_CQL_SERVERS | sed 's/,/ /g')
 
+mkdir -p /etc/contrail
 cat > /etc/contrail/contrail-control.conf << EOM
 [DEFAULT]
 # bgp_config_file=bgp_config.xml
