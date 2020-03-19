@@ -9,6 +9,7 @@ wait_redis_certs_if_ssl_enabled
 host_ip=$(get_listen_ip_for_node ANALYTICS_ALARM)
 config_db_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
 
+mkdir -p /etc/contrail
 cat > /etc/contrail/contrail-alarm-gen.conf << EOM
 [DEFAULTS]
 host_ip=${host_ip}

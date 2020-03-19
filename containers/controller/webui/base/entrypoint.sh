@@ -75,6 +75,7 @@ set_to_lower cassandra_enable_edit false
 set_to_lower WEBUI_INSECURE_ACCESS false
 set_to_lower serviceEndPointTakePublicURL true
 
+mkdir -p /etc/contrail
 cat > /etc/contrail/config.global.js << EOM
 /*
  * Copyright (c) 2014 Juniper Networks, Inc. All rights reserved.

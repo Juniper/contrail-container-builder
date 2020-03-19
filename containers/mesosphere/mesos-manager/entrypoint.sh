@@ -6,6 +6,7 @@ pre_start_init
 
 cassandra_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
 
+mkdir -p /etc/contrail
 cat > /etc/contrail/contrail-mesos.conf << EOM
 [MESOS]
 mesos_cni_server=$DEFAULT_LOCAL_IP

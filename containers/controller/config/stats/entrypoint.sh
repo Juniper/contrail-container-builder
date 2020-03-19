@@ -8,6 +8,7 @@ stats_data=/var/lib/stats
 mkdir -p $stats_data
 chown -R $CONTRAIL_UID:$CONTRAIL_GID $stats_data
 
+mkdir -p /etc/contrail
 cat > /etc/contrail/contrail-stats-client.conf << EOM
 [DEFAULT]
 stats_server=${STATS_SERVER:-"http://stats.tungsten.io/api/stats"}

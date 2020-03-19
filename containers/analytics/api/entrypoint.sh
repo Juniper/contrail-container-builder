@@ -8,6 +8,7 @@ wait_analytics_api_certs_if_ssl_enabled
 
 host_ip=$(get_listen_ip_for_node ANALYTICS)
 
+mkdir -p /etc/contrail
 cat > /etc/contrail/contrail-analytics-api.conf << EOM
 [DEFAULTS]
 host_ip=${host_ip}

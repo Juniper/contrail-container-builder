@@ -7,6 +7,7 @@ pre_start_init
 hostip=$(get_listen_ip_for_node ANALYTICSDB)
 hostname=$(resolve_hostname_by_ip $hostip)
 
+mkdir -p /etc/contrail
 cat > /etc/contrail/contrail-query-engine.conf << EOM
 [DEFAULT]
 analytics_data_ttl=${ANALYTICS_DATA_TTL:-48}

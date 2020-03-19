@@ -7,6 +7,7 @@ pre_start_init
 host_ip=$(get_listen_ip_for_node CONFIG)
 cassandra_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
 
+mkdir -p /etc/contrail
 cat > /etc/contrail/contrail-schema.conf << EOM
 [DEFAULTS]
 host_ip=${host_ip}

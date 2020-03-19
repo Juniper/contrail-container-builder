@@ -17,6 +17,7 @@ EOM
 fi
 
 echo "INFO: Preparing /etc/contrail/contrail-tor-agent.conf"
+mkdir -p /etc/contrail
 cat > /etc/contrail/contrail-tor-agent.conf << EOM
 [CONTROL-NODE]
 servers=${XMPP_SERVERS:-`get_server_list CONTROL ":$XMPP_SERVER_PORT "`}

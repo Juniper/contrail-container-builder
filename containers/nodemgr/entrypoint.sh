@@ -44,6 +44,7 @@ if ! is_enabled ${INTROSPECT_LISTEN_ALL} ; then
   introspect_ip=$hostip
 fi
 
+mkdir -p /etc/contrail
 cat > /etc/contrail/$NODEMGR_NAME.conf << EOM
 [DEFAULTS]
 http_server_ip=$introspect_ip

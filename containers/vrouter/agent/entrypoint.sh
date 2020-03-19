@@ -262,6 +262,7 @@ fi
 compute_node_address=${VROUTER_COMPUTE_NODE_ADDRESS:-$vrouter_ip}
 
 echo "INFO: Preparing /etc/contrail/contrail-vrouter-agent.conf"
+mkdir -p /etc/contrail
 cat << EOM > /etc/contrail/contrail-vrouter-agent.conf
 [CONTROL-NODE]
 servers=${XMPP_SERVERS:-`get_server_list CONTROL ":$XMPP_SERVER_PORT "`}
