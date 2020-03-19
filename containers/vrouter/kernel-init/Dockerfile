@@ -12,7 +12,7 @@ RUN rpm -Uvh --nodeps $(repoquery --location contrail-vrouter) && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 
-COPY entrypoint.sh /
+COPY *.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
 
