@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "082cba47_206d1dec",
+        "filename": "containers/vrouter/kernel-init/Dockerfile",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-03-19T19:23:21Z",
+      "side": 1,
+      "message": "why not to combine in one COPY like:\nCOPY *.sh /",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 4
+      },
+      "revId": "a7dfd189072ba508131f2c59632b60887e02bd4b",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e7634398_4e220466",
+        "filename": "containers/vrouter/kernel-init/kernel-init-functions.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-03-19T19:23:21Z",
+      "side": 1,
+      "message": "i am not sure it is a good architecture to rely on global vars..\nusually functions takes arguments and returns some .. and dont change global.\ne.g.\nget_vrouter_dir() {\nlocal path\u003d$1\nfind $path -type f -name \"vrouter.ko\"\n}\n\n\nin that case.. you will have in entrypoint somehting like:\n\nlist_dirs_modules\u003d$(get_vrouter_dir /opt/contrail/)\nlist_dirs_kernels\u003d$(get_modules_dirs /lib/modules)\n\navailable_modules\u003d$(get_lists_dirs_versions \"$list_dirs_modules\")\ninstalled_kernels\u003d$(get_lists_kernels_versions \"$list_dirs_kernels\")\n\ninstall_kernel_modules \"$installed_kernels\" \"$available_modules\"\n\n\nenable_kernel_module may use a env var for base paths - in that case in test it is possible to redefine env var and it will copy files from/to some other folders..",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 17
+      },
+      "revId": "a7dfd189072ba508131f2c59632b60887e02bd4b",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
