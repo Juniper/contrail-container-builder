@@ -253,6 +253,30 @@ if is_encryption_supported ; then
 crypt_interface=$VROUTER_CRYPT_INTERFACE
 EOM
 fi
+hugepages_option=""
+if (( HUGE_PAGES_1GB > 0 )) ; then
+    ensure_hugepages ${HUGE_PAGES_DIR}
+    allocated_pages_1GB=$(cat /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages)
+    if  (( HUGE_PAGES_1GB > allocated_pages_1GB )) ; then
+        echo "Requested HP1GB  $HUGE_PAGES_1GB more then available $allocated_pages_1GB.. try to allocate"
+        echo $HUGE_PAGES_1GB > sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages
+    fi
+    read -r -d '' hugepages_option << EOM || true
+[RESTART]
+huge_page_1GB=${HUGE_PAGES_DIR}/bridge ${HUGE_PAGES_DIR}/flow
+EOM
+elif (( HUGE_PAGES_2MB > 0 )) ; then
+    ensure_hugepages ${HUGE_PAGES_DIR}
+    allocated_pages_2MB=$(cat /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages)
+    if  (( HUGE_PAGES_2MB > allocated_pages_2MB )) ; then
+        echo "Requested HP2MB  $HUGE_PAGES_2MB more then available $allocated_pages_2MB.. try to allocate"
+        echo $HUGE_PAGES_2MB > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
+    fi
+    read -r -d '' hugepages_option << EOM || true
+[RESTART]
+huge_page_2MB=${HUGE_PAGES_DIR}/bridge ${HUGE_PAGES_DIR}/flow
+EOM
+fi
 
 introspect_ip='0.0.0.0'
 if ! is_enabled ${INTROSPECT_LISTEN_ALL} ; then
@@ -327,6 +351,8 @@ slo_destination = $SLO_DESTINATION
 sample_destination = $SAMPLE_DESTINATION
 
 $collector_stats_config
+
+$hugepages_option
 EOM
 
 cleanup_lbaas_netns_config
