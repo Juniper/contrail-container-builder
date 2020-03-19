@@ -31,7 +31,7 @@ If such group does not exist, create a new one.
 Direct parameters are used in entrypoints in various ways related to their meaning,
 but indirect parameters are used as default values for other parameters only.
 Direct parameters are related to entrypoint logic whereas indirect parameters are intended
-to simplify setting of direct parameters. 
+to simplify setting of direct parameters.
 
 Typical example of an indirect parameter is CONTROLLER_NODES which is not directly related
 to any container service but may be used to set both config and analytics nodes.
