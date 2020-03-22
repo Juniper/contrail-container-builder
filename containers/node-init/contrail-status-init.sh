@@ -35,7 +35,7 @@ fi
 tmp_file=/host/usr/bin/contrail-status.tmp
 cat > $tmp_file << EOM
 #!/bin/bash -e
-docker run --rm --name ${CONTRAIL_STATUS_CONTAINER_NAME:-contrail-status} $vol_opts $env_opts --pid host --net host --privileged ${CONTRAIL_STATUS_IMAGE}
+docker run --rm --name \${CONTRAIL_STATUS_CONTAINER_NAME:-contrail-status} $vol_opts $env_opts --pid host --net host --privileged ${CONTRAIL_STATUS_IMAGE}
 EOM
 
 chmod 755 $tmp_file
