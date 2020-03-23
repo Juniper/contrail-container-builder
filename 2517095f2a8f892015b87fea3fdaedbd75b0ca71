@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "077c613c_479c478a",
+        "filename": "containers/vrouter/kernel-init/kernel-init-functions.sh",
+        "patchSetId": 7
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-03-23T12:58:23Z",
+      "side": 1,
+      "message": "declare as local as well",
+      "range": {
+        "startLine": 36,
+        "startChar": 6,
+        "endLine": 36,
+        "endChar": 7
+      },
+      "revId": "2517095f2a8f892015b87fea3fdaedbd75b0ca71",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
