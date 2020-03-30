@@ -31,7 +31,7 @@ disc_server_ip=127.0.0.1
 disc_server_port=5998
 log_local=$LOG_LOCAL
 log_level=$LOG_LEVEL
-log_file=$LOG_DIR/contrail-mesos-manager.log
+log_file=$CONTAINER_LOG_DIR/contrail-mesos-manager.log
 
 $sandesh_client_config
 
@@ -42,5 +42,7 @@ add_ini_params_from_env MESOSPHERE /etc/contrail/contrail-mesos.conf
 
 set_third_party_auth_config
 set_vnc_api_lib_ini
+
+upgrade_old_logs "mesos-manager"
 
 run_service "$@"

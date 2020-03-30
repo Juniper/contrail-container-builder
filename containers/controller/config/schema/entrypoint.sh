@@ -15,7 +15,7 @@ http_server_ip=$(get_introspect_listen_ip_for_node CONFIG)
 api_server_ip=$CONFIG_NODES
 api_server_port=$CONFIG_API_PORT
 api_server_use_ssl=${CONFIG_API_SSL_ENABLE}
-log_file=$LOG_DIR/contrail-schema.log
+log_file=$CONTAINER_LOG_DIR/contrail-schema.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 cassandra_server_list=$cassandra_server_list
@@ -38,5 +38,7 @@ add_ini_params_from_env SCHEMA /etc/contrail/contrail-schema.conf
 
 set_third_party_auth_config
 set_vnc_api_lib_ini
+
+upgrade_old_logs "contrail-schema"
 
 run_service "$@"
