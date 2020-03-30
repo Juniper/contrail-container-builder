@@ -16,7 +16,7 @@ cat > /etc/contrail/contrail-kubernetes.conf << EOM
 host_ip=${host_ip}
 orchestrator=${CLOUD_ORCHESTRATOR}
 token=$K8S_TOKEN
-log_file=$LOG_DIR/contrail-kube-manager.log
+log_file=$CONTAINER_LOG_DIR/contrail-kube-manager.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 nested_mode=${KUBEMANAGER_NESTED_MODE:-"0"}

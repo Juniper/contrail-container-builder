@@ -27,11 +27,11 @@ mkdir -p /opt/plugin/site-packages
 cp -rf /opt/contrail/site-packages/* /opt/plugin/site-packages/
 
 # install appropriate version of python-neutron-lbaas based on OPENSTACK_VERSION
-pkg=$(ls -1 /opt/packages/ | grep python-neutron-lbaas-$OPENSTACK_VERSION)
+pkg=$(ls -1 /opt/packages/ | grep python-neutron-lbaas-$OPENSTACK_VERSION || true)
 if [[ -z "$pkg" ]]; then
   # rhel case
   echo "INFO: package couldn't be found for this version: $pkg_version. Available packages:"
-  ls -l /opt/packages/
+  ls -l /opt/packages/ || true
 else
   mkdir -p /tmp/lbaas
   pushd /tmp/lbaas
