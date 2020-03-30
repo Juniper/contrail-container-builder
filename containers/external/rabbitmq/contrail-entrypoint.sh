@@ -212,12 +212,20 @@ if is_enabled $RABBITMQ_USE_SSL && [[ "$1" == rabbitmq* ]]; then
 fi
 
 if [[ -n "$RABBITMQ_LOGS" && "$RABBITMQ_LOGS" != '-' ]] ; then
-  mkdir -p $(dirname "$RABBITMQ_LOGS")
+  log_dir=$(dirname $RABBITMQ_LOGS)
+  mkdir -p $log_dir
+  # move old logs if any to new folder
+  log_name=$(basename $RABBITMQ_LOGS)
+  mv $(dirname $log_dir)/${log_name}* ${log_dir}/ 2>/dev/null
   touch "$RABBITMQ_LOGS"
   chown rabbitmq:rabbitmq "$RABBITMQ_LOGS"
 fi
 if [[ -n "$RABBITMQ_SASL_LOGS" && "$RABBITMQ_SASL_LOGS" != '-' ]] ; then
-  mkdir -p $(dirname "$RABBITMQ_SASL_LOGS")
+  log_dir=$(dirname "$RABBITMQ_SASL_LOGS")
+  mkdir -p $log_dir
+  # move old logs if any to new folder
+  log_name=$(basename $RABBITMQ_SASL_LOGS)
+  mv $(dirname $log_dir)/${log_name}* ${log_dir}/ 2>/dev/null
   touch "$RABBITMQ_SASL_LOGS"
   chown rabbitmq:rabbitmq "$RABBITMQ_SASL_LOGS"
 fi

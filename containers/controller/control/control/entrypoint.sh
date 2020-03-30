@@ -23,7 +23,7 @@ hostip=${hostip}
 hostname=${hostname}
 http_server_ip=$(get_introspect_listen_ip_for_node CONTROL)
 http_server_port=${CONTROL_INTROSPECT_LISTEN_PORT:-$CONTROL_INTROSPECT_PORT}
-log_file=$LOG_DIR/contrail-control.log
+log_file=$CONTAINER_LOG_DIR/contrail-control.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 # log_files_count=${CONTROL__DEFAULT__log_files_count:-10}
@@ -59,5 +59,7 @@ add_ini_params_from_env CONTROL /etc/contrail/contrail-control.conf
 
 set_third_party_auth_config
 set_vnc_api_lib_ini
+
+upgrade_old_logs "contrail-control"
 
 run_service "$@"

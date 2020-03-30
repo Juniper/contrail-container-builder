@@ -30,7 +30,7 @@ $sandesh_client_config
 [INTROSPECT]
 collectors=$COLLECTOR_SERVERS
 logging_level=$LOG_LEVEL
-log_file=$LOG_DIR/contrail-vcenter-fabric-manager.log
+log_file=$CONTAINER_LOG_DIR/contrail-vcenter-fabric-manager.log
 
 [ZOOKEEPER]
 zookeeper_servers=$ZOOKEEPER_SERVERS
@@ -52,5 +52,7 @@ auth_tenant=${KEYSTONE_AUTH_ADMIN_TENANT:-''}
 auth_token_url=$KEYSTONE_AUTH_PROTO://${KEYSTONE_AUTH_HOST}:${KEYSTONE_AUTH_ADMIN_PORT}${KEYSTONE_AUTH_URL_TOKENS}
 EOM
 fi
+
+upgrade_old_logs "vcenter-fabric-manager"
 
 run_service "$@"
