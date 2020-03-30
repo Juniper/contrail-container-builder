@@ -11,8 +11,3 @@ if is_enabled "$INSTALL_PUPPET" ; then
   mkdir -p $INSTALL_PUPPET_DIR
   cp -f /contrail-tripleo-puppet*.rpm $INSTALL_PUPPET_DIR
 fi
-
-# some orchetrators configure other services to log into this dif, e.g. rabbit
-# that are run under their users.
-mkdir -p $LOG_DIR
-chmod 777 $LOG_DIR
