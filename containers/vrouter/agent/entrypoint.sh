@@ -295,7 +295,7 @@ $subcluster_option
 [DEFAULT]
 http_server_ip=$introspect_ip
 collectors=$COLLECTOR_SERVERS
-log_file=$LOG_DIR/contrail-vrouter-agent.log
+log_file=$CONTAINER_LOG_DIR/contrail-vrouter-agent.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 

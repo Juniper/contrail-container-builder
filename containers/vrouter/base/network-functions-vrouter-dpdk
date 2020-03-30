@@ -109,6 +109,9 @@ function start_dpdk_container() {
     fi
     local container_name=${CONTRAIL_VROUTER_AGENT_DPDK_CONTAINER_NAME:-'contrail-vrouter-agent-dpdk'}
     local log_dir=${LOG_DIR:-'/var/log/contrail'}
+    local node_type=${NODE_TYPE:-'vrouter'}
+    local service_name=${SERVICE_NAME:-'agent-dpdk'}
+    local container_log_dir=${CONTAINER_LOG_DIR:-${log_dir}/${NODE_TYPE}-${SERVICE_NAME}}
     mkdir -p /var/lib/contrail
     mkdir -p /var/log/containers/contrail
     eval "docker run \
@@ -123,7 +126,7 @@ function start_dpdk_container() {
         -v /lib/modules:/lib/modules \
         -v /var/run:/var/run \
         -v /var/lib/contrail:/var/lib/contrail \
-        -v /var/log/containers/contrail:$log_dir \
+        -v /var/log/containers/contrail:$container_log_dir \
         -v /var/crashes:/var/crashes \
         ${env_options} \
         ${CONTRAIL_VROUTER_AGENT_DPDK_DOCKER_IMAGE}"
