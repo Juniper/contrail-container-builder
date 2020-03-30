@@ -4,6 +4,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-analytics-base:${CONTRAIL_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
 
 ARG CONTAINER_NAME
+ENV CONTAINER_NAME $CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
       summary="Contrail Alarm Generator" \
       description="Contrail Alarm Generator generates alerts (alarms) which highlight unusual conditions that may require more urgent administrator attention and action."

@@ -5,6 +5,7 @@ ARG VENDOR_DOMAIN
 ENV VENDOR_DOMAIN=$VENDOR_DOMAIN
 
 ARG CONTAINER_NAME
+ENV CONTAINER_NAME $CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
       summary="Contrail Node Manager" \
       description="Contrail Node Manager is a monitor process per contrail virtual node that tracks the running state of the processes."

@@ -3,6 +3,7 @@ ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-controller-config-base:${CONTRAIL_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
 ARG CONTAINER_NAME
+ENV CONTAINER_NAME $CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
       summary="Contrail VNC Configuration Schema Transformer" \
       description="Contrail Schema Transformer compiles the high level, intent based data model into a low level configuration data model."

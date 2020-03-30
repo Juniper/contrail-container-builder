@@ -48,7 +48,7 @@ mkdir -p /etc/contrail
 cat > /etc/contrail/$NODEMGR_NAME.conf << EOM
 [DEFAULTS]
 http_server_ip=$introspect_ip
-log_file=$LOG_DIR/$NODEMGR_NAME.log
+log_file=$CONTAINER_LOG_DIR/$NODEMGR_NAME.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 hostip=${hostip}

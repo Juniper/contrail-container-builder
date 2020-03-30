@@ -3,6 +3,7 @@ ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
 ARG CONTAINER_NAME
+ENV CONTAINER_NAME $CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
       summary="Contrail Mesosphere Container Network Interface" \
       description="Contrail supports Mesosphere Container Network Interface."

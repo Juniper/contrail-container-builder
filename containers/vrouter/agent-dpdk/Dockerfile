@@ -4,6 +4,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-vrouter-base:${CONTRAIL_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
 
 ARG CONTAINER_NAME
+ENV CONTAINER_NAME $CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
       summary="Contrail DPDK poll mode driver" \
       description="DPDK support for Contrail vrouter agent"

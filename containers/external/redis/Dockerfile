@@ -3,6 +3,7 @@ ARG VENDOR_NAME
 ARG VENDOR_DOMAIN
 
 ARG CONTAINER_NAME
+ENV CONTAINER_NAME $CONTAINER_NAME
 ARG CONTRAIL_CONTAINER_TAG
 LABEL vendor=$VENDOR_NAME \
       version=$CONTRAIL_CONTAINER_TAG \
@@ -11,13 +12,19 @@ LABEL vendor=$VENDOR_NAME \
       summary="Contrail Redis" \
       description="Contrail Redis server supports query engine."
 
+# These definitions are just for build purposes and must not be changed at runtime
+ENV CONTRAIL_GID=1999 \
+    CONTRAIL_USER=contrail
+
 # Add required license as text file in Liceses directory
 RUN mkdir /licenses
 COPY __licensing.txt /licenses/licensing.txt
 
 COPY *.sh hostname_to_ip /
 RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done' && \
-    /upgrade_pkgs.sh
+    /upgrade_pkgs.sh && \
+    groupadd --gid $CONTRAIL_GID --system $CONTRAIL_USER && \
+    usermod -a -G $CONTRAIL_GID redis
 
 ENTRYPOINT ["/contrail-entrypoint.sh"]
 

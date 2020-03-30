@@ -4,6 +4,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-base:${CONTRAIL_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
 
 ARG CONTAINER_NAME
+ENV CONTAINER_NAME $CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
       summary="Contrail vCenter Fabric Manager" \
       description="CVFM manages VMware datacenter underlay network configuration based on vCenter events"

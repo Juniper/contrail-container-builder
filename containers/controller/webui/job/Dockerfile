@@ -4,6 +4,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-controller-webui-base:${CONTRAIL_CONTAINER_TA
 ARG VENDOR_DOMAIN
 
 ARG CONTAINER_NAME
+ENV CONTAINER_NAME $CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
       summary="Contrail WEB UI Job" \
       description="Contrail WEB UI Job middleware handles jobs from the WebUI service and contacts other Contrail services to execute them."

@@ -3,6 +3,7 @@
 # Logging
 LOG_LEVEL=${LOG_LEVEL:-SYS_NOTICE}
 LOG_DIR=${LOG_DIR:-"/var/log/contrail"}
+CONTAINER_LOG_DIR=${CONTAINER_LOG_DIR:-${LOG_DIR}/${CONTAINER_NAME}}
 LOG_LOCAL=${LOG_LOCAL:-1}
 
 if [[ "${LOG_LEVEL}" == "SYS_DEBUG" ]] ; then

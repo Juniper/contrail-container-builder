@@ -12,7 +12,7 @@ mkdir -p /etc/contrail
 cat > /etc/contrail/contrail-stats-client.conf << EOM
 [DEFAULT]
 stats_server=${STATS_SERVER:-"http://stats.tungsten.io/api/stats"}
-log_file=$LOG_DIR/contrail-stats-client.log
+log_file=$CONTAINER_LOG_DIR/contrail-stats-client.log
 log_level=$LOG_LEVEL
 state=$stats_data/state
 EOM

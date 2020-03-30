@@ -3,6 +3,7 @@ ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-analytics-base:${CONTRAIL_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
 ARG CONTAINER_NAME
+ENV CONTAINER_NAME $CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
       summary="Contrail Query Engine" \
       description="Contrail Query Engine handles the queries to access data from Analytics DB."

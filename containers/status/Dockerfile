@@ -5,6 +5,7 @@ ARG VENDOR_DOMAIN
 
 ENV VENDOR_DOMAIN=$VENDOR_DOMAIN
 ARG CONTAINER_NAME
+ENV CONTAINER_NAME $CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
       summary="Container with code of contrail-status tool" \
       description="Display a list of all components of a Contrail server node and report their current status of active or inactive."

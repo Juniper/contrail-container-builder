@@ -4,6 +4,7 @@ FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
 
 ARG CONTAINER_NAME
+ENV CONTAINER_NAME $CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
       summary="Contrail Kafka" \
       description="Contrail Kafka is used for streaming data in Analytics DB."
@@ -27,6 +28,7 @@ RUN yum install -y java java-1.8.0-openjdk-devel iproute less hostname python3 o
     yum clean all -y && \
     rm -rf /var/cache/yum && \
     groupadd -f -g 1011 kafka && adduser -M -g kafka kafka && \
+    usermod -a -G $CONTRAIL_GID $KAFKA_USER && \
     mkdir -p $LOG_DIR && \
     chown -R $KAFKA_USER:$KAFKA_GROUP $LOG_DIR && \
     chown -R $KAFKA_USER:$KAFKA_GROUP $KAFKA_DIR

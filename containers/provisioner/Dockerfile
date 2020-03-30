@@ -5,6 +5,7 @@ ARG VENDOR_DOMAIN
 ENV VENDOR_DOMAIN=$VENDOR_DOMAIN
 
 ARG CONTAINER_NAME
+ENV CONTAINER_NAME $CONTAINER_NAME
 LABEL name=$CONTAINER_NAME \
       summary="Contrail Provisioner" \
       description="Contrail Provisioner ia caoneiner that manage env for other containers."
