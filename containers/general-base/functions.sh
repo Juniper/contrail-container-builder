@@ -148,6 +148,21 @@ function resolve_hostname_by_ip() {
   fi
 }
 
+function upgrade_old_logs() {
+  local template=${1:-"${NODE_TYPE}-${SERVICE_NAME}"}
+  local old_dir=$(dirname $CONTAINER_LOG_DIR)
+  # move old logs for a service if any into new log dir
+  mkdir -p $CONTAINER_LOG_DIR && chmod 755 $CONTAINER_LOG_DIR
+  mv -n ${old_dir}/*${template}.log* ${CONTAINER_LOG_DIR}/ 2>/dev/null || true
+  if [[ -n "$CONTRAIL_UID" && -n "$CONTRAIL_GID" ]] ; then
+    local owner_opts="$CONTRAIL_UID:$CONTRAIL_GID"
+    # change files only with root
+    #   in some cases rabbit, redis and other services
+    #   may keep logs there under their users
+    chown $owner_opts $CONTAINER_LOG_DIR
+    find $CONTAINER_LOG_DIR -uid 0 -exec chown $owner_opts {} + ;
+  fi
+}
 
 function do_run_service() {
   if [[ -n "$CONTRAIL_UID" && -n "$CONTRAIL_GID" ]] ; then
@@ -170,17 +185,6 @@ function do_run_service() {
 function run_service() {
   if [[ -n "$CONTRAIL_UID" && -n "$CONTRAIL_GID" ]] ; then
     local owner_opts="$CONTRAIL_UID:$CONTRAIL_GID"
-    
-    mkdir -p $LOG_DIR
-    # change files only with root
-    #   in some cases rabbit, redis and other services
-    #   may keep logs there under their users
-    chown $owner_opts $LOG_DIR
-    find $LOG_DIR -uid 0 -exec chown $owner_opts {} + ;
-    # some orchetrators configure other services to log into this dif, e.g. rabbit
-    # that are run under their users.
-    chmod 777 $LOG_DIR
-
     mkdir -p /etc/contrail
     chown $owner_opts /etc/contrail
     find /etc/contrail -uid 0 -exec chown $owner_opts {} + ;
