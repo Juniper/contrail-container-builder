@@ -15,7 +15,7 @@ host_ip=${host_ip}
 partitions=${ALARMGEN_partitions:-30}
 http_server_ip=$(get_introspect_listen_ip_for_node ANALYTICS_ALARM)
 http_server_port=${ALARMGEN_INTROSPECT_LISTEN_PORT:-$ALARMGEN_INTROSPECT_PORT}
-log_file=$LOG_DIR/contrail-alarm-gen.log
+log_file=$CONTAINER_LOG_DIR/contrail-alarm-gen.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 collectors=$COLLECTOR_SERVERS
@@ -56,5 +56,7 @@ add_ini_params_from_env ALARM_GEN /etc/contrail/contrail-alarm-gen.conf
 
 set_third_party_auth_config
 set_vnc_api_lib_ini
+
+upgrade_old_logs "alarm-gen"
 
 run_service "$@"

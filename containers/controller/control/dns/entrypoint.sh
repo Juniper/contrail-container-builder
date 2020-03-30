@@ -12,6 +12,7 @@ configdb_cql_servers=$(echo $CONFIGDB_CQL_SERVERS | sed 's/,/ /g')
 DNS_NAMED_CONFIG_FILE=${DNS_NAMED_CONFIG_FILE:-'contrail-named.conf'}
 DNS_NAMED_CONFIG_DIRECTORY=${DNS_NAMED_CONFIG_DIRECTORY:-'/etc/contrail/dns'}
 DNS_RNDC_CONFIG_FILE=${DNS_RNDC_CONFIG_FILE:-'contrail-rndc.conf'}
+DNS_NAMED_LOG_FILE=${DNS_NAMED_LOG_FILE:-"${LOG_DIR}/${NODE_TYPE}-named/contrail-named.log"}
 
 mkdir -p ${DNS_NAMED_CONFIG_DIRECTORY}
 
@@ -33,7 +34,7 @@ cat > /etc/contrail/contrail-dns.conf << EOM
 collectors=$COLLECTOR_SERVERS
 named_config_file = ${DNS_NAMED_CONFIG_FILE}
 named_config_directory = ${DNS_NAMED_CONFIG_DIRECTORY}
-named_log_file = ${DNS_NAMED_LOG_FILE:-"$LOG_DIR/contrail-named.log"}
+named_log_file = ${DNS_NAMED_LOG_FILE}
 rndc_config_file = ${DNS_RNDC_CONFIG_FILE}
 named_max_cache_size=${DNS_NAMED_MAX_CACHE_SIZE:-32M} # max-cache-size (bytes) per view, can be in K or M
 named_max_retransmissions=${DNS_NAMED_MAX_RETRANSMISSIONS:-12}
@@ -44,7 +45,7 @@ hostname=${hostname:-$DEFAULT_HOSTNAME}
 http_server_port=${DNS_INTROSPECT_LISTEN_PORT:-$DNS_INTROSPECT_PORT}
 http_server_ip=$(get_introspect_listen_ip_for_node CONTROL)
 dns_server_port=$DNS_SERVER_PORT
-log_file=$LOG_DIR/contrail-dns.log
+log_file=$CONTAINER_LOG_DIR/contrail-dns.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 # log_files_count=${DNS__DEFAULT__log_files_count:-10}
@@ -80,5 +81,7 @@ add_ini_params_from_env DNS /etc/contrail/contrail-dns.conf
 
 set_third_party_auth_config
 set_vnc_api_lib_ini
+
+upgrade_old_logs "contrail-dns"
 
 run_service "$@"

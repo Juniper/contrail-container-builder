@@ -4,7 +4,7 @@ source /common.sh
 
 cat > /etc/contrail/ironic-notification-manager.conf << EOM
 [DEFAULTS]
-log_file = $LOG_DIR/ironic-notification-manager.log
+log_file = $CONTAINER_LOG_DIR/ironic-notification-manager.log
 log_level = $LOG_LEVEL
 log_local = $LOG_LOCAL
 
@@ -22,5 +22,7 @@ add_ini_params_from_env IRONIC_NOTIFICATION_MANAGER /etc/contrail/ironic-notific
 
 set_third_party_auth_config
 set_vnc_api_lib_ini
+
+upgrade_old_logs "ironic-notification-manager"
 
 run_service "$@"

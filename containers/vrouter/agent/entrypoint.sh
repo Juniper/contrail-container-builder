@@ -262,6 +262,8 @@ fi
 compute_node_address=${VROUTER_COMPUTE_NODE_ADDRESS:-$vrouter_ip}
 
 echo "INFO: Preparing /etc/contrail/contrail-vrouter-agent.conf"
+upgrade_old_logs "vrouter-agent"
+mkdir -p /etc/contrail
 cat << EOM > /etc/contrail/contrail-vrouter-agent.conf
 [CONTROL-NODE]
 servers=${XMPP_SERVERS:-`get_server_list CONTROL ":$XMPP_SERVER_PORT "`}
@@ -270,7 +272,7 @@ $subcluster_option
 [DEFAULT]
 http_server_ip=$introspect_ip
 collectors=$COLLECTOR_SERVERS
-log_file=$LOG_DIR/contrail-vrouter-agent.log
+log_file=$CONTAINER_LOG_DIR/contrail-vrouter-agent.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 

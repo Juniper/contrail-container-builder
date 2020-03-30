@@ -16,7 +16,7 @@ scan_frequency=${SNMPCOLLECTOR_SCAN_FREQUENCY:-600}
 fast_scan_frequency=${SNMPCOLLECTOR_FAST_SCAN_FREQUENCY:-60}
 http_server_ip=$(get_introspect_listen_ip_for_node ANALYTICS_SNMP)
 http_server_port=${SNMPCOLLECTOR_INTROSPECT_LISTEN_PORT:-$SNMPCOLLECTOR_INTROSPECT_PORT}
-log_file=$LOG_DIR/contrail-snmp-collector.log
+log_file=$CONTAINER_LOG_DIR/contrail-snmp-collector.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 collectors=$COLLECTOR_SERVERS
@@ -44,5 +44,7 @@ add_ini_params_from_env SNMP_COLLECTOR /etc/contrail/contrail-snmp-collector.con
 
 set_third_party_auth_config
 set_vnc_api_lib_ini
+
+upgrade_old_logs "snmp-collector"
 
 run_service "$@"

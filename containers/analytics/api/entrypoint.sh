@@ -24,7 +24,7 @@ fi
 
 cat >> /etc/contrail/contrail-analytics-api.conf << EOM
 aaa_mode=$AAA_MODE
-log_file=$LOG_DIR/contrail-analytics-api.log
+log_file=$CONTAINER_LOG_DIR/contrail-analytics-api.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 # Sandesh send rate limit can be used to throttle system logs transmitted per
@@ -59,5 +59,7 @@ add_ini_params_from_env ANALYTICS_API /etc/contrail/contrail-analytics-api.conf
 
 set_third_party_auth_config
 set_vnc_api_lib_ini
+
+upgrade_old_logs "analytics-api"
 
 run_service "$@"
