@@ -30,7 +30,7 @@ $sandesh_client_config
 [INTROSPECT]
 collectors=$COLLECTOR_SERVERS
 logging_level=$LOG_LEVEL
-log_file=$LOG_DIR/contrail-vcenter-fabric-manager.log
+log_file=$LOG_FOLDER_ABS_PATH/contrail-vcenter-fabric-manager.log
 
 [ZOOKEEPER]
 zookeeper_servers=$ZOOKEEPER_SERVERS

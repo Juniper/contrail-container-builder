@@ -32,7 +32,7 @@ cat > /etc/contrail/contrail-dns.conf << EOM
 collectors=$COLLECTOR_SERVERS
 named_config_file = ${DNS_NAMED_CONFIG_FILE}
 named_config_directory = ${DNS_NAMED_CONFIG_DIRECTORY}
-named_log_file = ${DNS_NAMED_LOG_FILE:-"$LOG_DIR/contrail-named.log"}
+named_log_file = ${DNS_NAMED_LOG_FILE:-"$LOG_FOLDER_ABS_PATH/contrail-named.log"}
 rndc_config_file = ${DNS_RNDC_CONFIG_FILE}
 named_max_cache_size=${DNS_NAMED_MAX_CACHE_SIZE:-32M} # max-cache-size (bytes) per view, can be in K or M
 named_max_retransmissions=${DNS_NAMED_MAX_RETRANSMISSIONS:-12}
@@ -43,7 +43,7 @@ hostname=${hostname:-$(get_default_hostname)}
 http_server_port=${DNS_INTROSPECT_LISTEN_PORT:-$DNS_INTROSPECT_PORT}
 http_server_ip=$(get_introspect_listen_ip_for_node CONTROL)
 dns_server_port=$DNS_SERVER_PORT
-log_file=$LOG_DIR/contrail-dns.log
+log_file=$LOG_FOLDER_ABS_PATH/contrail-dns.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 # log_files_count=${DNS__DEFAULT__log_files_count:-10}

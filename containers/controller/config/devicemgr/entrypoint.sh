@@ -18,7 +18,7 @@ api_server_use_ssl=${CONFIG_API_SSL_ENABLE}
 analytics_server_ip=$ANALYTICS_NODES
 analytics_server_port=$ANALYTICS_API_PORT
 push_mode=1
-log_file=$LOG_DIR/contrail-device-manager.log
+log_file=$LOG_FOLDER_ABS_PATH/contrail-device-manager.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 cassandra_server_list=$cassandra_server_list
@@ -47,7 +47,7 @@ add_ini_params_from_env DEVICE_MANAGER /etc/contrail/contrail-device-manager.con
 
 cat > /etc/contrail/contrail-fabric-ansible.conf <<EOM
 [DEFAULTS]
-log_file=$LOG_DIR/contrail-fabric-ansible.log
+log_file=$LOG_FOLDER_ABS_PATH/contrail-fabric-ansible.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 collectors=$COLLECTOR_SERVERS

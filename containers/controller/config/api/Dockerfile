@@ -3,6 +3,7 @@ ARG CONTRAIL_CONTAINER_TAG
 FROM ${CONTRAIL_REGISTRY}/contrail-controller-config-base:${CONTRAIL_CONTAINER_TAG}
 ARG VENDOR_DOMAIN
 ARG CONTAINER_NAME
+
 LABEL name=$CONTAINER_NAME \
       summary="Contrail Controller Configuration API" \
       description="Controller Configuration API provides a REST API to an orchestration system."
