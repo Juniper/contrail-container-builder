@@ -300,6 +300,7 @@ fi
 compute_node_address=${VROUTER_COMPUTE_NODE_ADDRESS:-$vrouter_ip}
 
 echo "INFO: Preparing /etc/contrail/contrail-vrouter-agent.conf"
+upgrade_old_logs "vrouter-agent"
 mkdir -p /etc/contrail
 cat << EOM > /etc/contrail/contrail-vrouter-agent.conf
 [CONTROL-NODE]
@@ -309,7 +310,7 @@ $subcluster_option
 [DEFAULT]
 http_server_ip=$introspect_ip
 collectors=$COLLECTOR_SERVERS
-log_file=$LOG_DIR/contrail-vrouter-agent.log
+log_file=$CONTAINER_LOG_DIR/contrail-vrouter-agent.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 
