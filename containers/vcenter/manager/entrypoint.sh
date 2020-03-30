@@ -40,10 +40,12 @@ sandesh:
   collectors: $COLLECTOR_SERVERS
   introspect_port: 9090
   logging_level: $LOG_LEVEL
-  log_file: $LOG_DIR/contrail-vcenter-manager.log
+  log_file: $CONTAINER_LOG_DIR/contrail-vcenter-manager.log
   http_server_ip: $introspect_ip
 
 EOM
+
+mkdir -p $CONTAINER_LOG_DIR
 
 exec "$@"
 
