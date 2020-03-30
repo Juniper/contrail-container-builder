@@ -170,16 +170,16 @@ function do_run_service() {
 function run_service() {
   if [[ -n "$CONTRAIL_UID" && -n "$CONTRAIL_GID" &&  "$(id -u)" = '0' ]] ; then
     local owner_opts="$CONTRAIL_UID:$CONTRAIL_GID"
-    
-    mkdir -p $LOG_DIR
+
+    mkdir -p $LOG_FOLDER_ABS_PATH
     # change files only with root
     #   in some cases rabbit, redis and other services
     #   may keep logs there under their users
-    chown $owner_opts $LOG_DIR
-    find $LOG_DIR -uid 0 -exec chown $owner_opts {} + ;
+    chown $owner_opts $LOG_FOLDER_ABS_PATH
+    find $LOG_FOLDER_ABS_PATH -uid 0 -exec chown $owner_opts {} + ;
     # some orchetrators configure other services to log into this dif, e.g. rabbit
     # that are run under their users.
-    chmod 777 $LOG_DIR
+    chmod 755 $LOG_FOLDER_ABS_PATH
 
     mkdir -p /etc/contrail
     chown $owner_opts /etc/contrail

@@ -25,7 +25,7 @@ my_ord=$(echo $my_ip_and_order | cut -d ' ' -f 2)
 my_ord=$((2*my_ord - 2))
 
 cat > /etc/dnsmasq/base.conf << EOM
-log-facility=${LOG_DIR}/dnsmasq.log
+log-facility=${LOG_FOLDER_ABS_PATH}/dnsmasq.log
 bogus-priv
 log-dhcp
 dhcp-reply-delay=${my_ord}

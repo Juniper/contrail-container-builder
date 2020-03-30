@@ -5,7 +5,7 @@ source /common.sh
 mkdir -p /etc/contrail
 cat > /etc/contrail/ironic-notification-manager.conf << EOM
 [DEFAULTS]
-log_file = $LOG_DIR/ironic-notification-manager.log
+log_file = $LOG_FOLDER_ABS_PATH/ironic-notification-manager.log
 log_level = $LOG_LEVEL
 log_local = $LOG_LOCAL
 
