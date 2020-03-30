@@ -24,7 +24,7 @@ syslog_port=${COLLECTOR_SYSLOG_LISTEN_PORT:-$COLLECTOR_SYSLOG_PORT}
 sflow_port=${COLLECTOR_SFLOW_LISTEN_PORT:-$COLLECTOR_SFLOW_PORT}
 ipfix_port=${COLLECTOR_IPFIX_LISTEN_PORT:-$COLLECTOR_IPFIX_PORT}
 # log_category=
-log_file=$LOG_DIR/contrail-collector.log
+log_file=$CONTAINER_LOG_DIR/contrail-collector.log
 log_files_count=${COLLECTOR_LOG_FILE_COUNT:-10}
 log_file_size=${COLLECTOR_LOG_FILE_SIZE:-1048576}
 log_level=$LOG_LEVEL
@@ -137,5 +137,7 @@ add_ini_params_from_env COLLECTOR /etc/contrail/contrail-collector.conf
 
 set_third_party_auth_config
 set_vnc_api_lib_ini
+
+upgrade_old_logs "collector"
 
 run_service "$@"

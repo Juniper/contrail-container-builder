@@ -33,7 +33,7 @@ controls {
 
 logging {
     channel debug_log {
-        file "${LOG_DIR}/contrail-named.log" versions 3 size 5m;
+        file "${CONTAINER_LOG_DIR}/contrail-named.log" versions 3 size 5m;
         severity debug;
         print-time yes;
         print-severity yes;
@@ -48,9 +48,10 @@ logging {
 };
 EOM
 
+upgrade_old_logs "contrail-named"
 chown -R contrail:contrail ${DNS_NAMED_CONFIG_DIRECTORY}
-touch ${LOG_DIR}/contrail-named.log
-chown contrail:contrail ${LOG_DIR}/contrail-named.log
-chown contrail:contrail ${LOG_DIR}
+touch ${CONTAINER_LOG_DIR}/contrail-named.log
+chown contrail:contrail ${CONTAINER_LOG_DIR}/contrail-named.log
+chown contrail:contrail ${CONTAINER_LOG_DIR}
 
 exec "$@"

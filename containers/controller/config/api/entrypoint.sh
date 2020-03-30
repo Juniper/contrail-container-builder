@@ -33,7 +33,7 @@ listen_ip_addr=${host_ip}
 listen_port=$CONFIG_API_PORT
 http_server_port=${CONFIG_API_INTROSPECT_PORT}
 http_server_ip=$(get_introspect_listen_ip_for_node CONFIG)
-log_file=$LOG_DIR/contrail-api.log
+log_file=$CONTAINER_LOG_DIR/contrail-api.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 list_optimization_enabled=${CONFIG_API_LIST_OPTIMIZATION_ENABLED:-True}
@@ -65,5 +65,7 @@ add_ini_params_from_env API /etc/contrail/contrail-api.conf
 
 set_third_party_auth_config
 set_vnc_api_lib_ini
+
+upgrade_old_logs "contrail-api"
 
 run_service "$@"

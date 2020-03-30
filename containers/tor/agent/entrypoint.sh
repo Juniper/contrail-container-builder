@@ -24,7 +24,7 @@ servers=${XMPP_SERVERS:-`get_server_list CONTROL ":$XMPP_SERVER_PORT "`}
 [DEFAULT]
 collectors=$COLLECTOR_SERVERS
 agent_name=${TOR_AGENT_NAME}
-log_file=$LOG_DIR/contrail-tor-agent-${TOR_AGENT_ID}.log
+log_file=$CONTAINER_LOG_DIR/contrail-tor-agent-${TOR_AGENT_ID}.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 agent_mode=tor
@@ -52,5 +52,7 @@ tor_product_name=${TOR_PRODUCT_NAME}
 tor_keepalive_interval=${TOR_AGENT_OVS_KA}
 ${toragent_ssl_config}
 EOM
+
+upgrade_old_logs "tor-agent-${TOR_AGENT_ID}"
 
 exec "$@"

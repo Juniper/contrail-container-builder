@@ -14,7 +14,7 @@ hostip=${hostip}
 hostname=${hostname:-$DEFAULT_HOSTNAME}
 http_server_ip=$(get_introspect_listen_ip_for_node ANALYTICSDB)
 http_server_port=${QUERYENGINE_INTROSPECT_LISTEN_PORT:-$QUERYENGINE_INTROSPECT_PORT}
-log_file=$LOG_DIR/contrail-query-engine.log
+log_file=$CONTAINER_LOG_DIR/contrail-query-engine.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
 max_slice=${QUERYENGINE_MAX_SLICE:-100}
@@ -45,5 +45,7 @@ add_ini_params_from_env QUERY_ENGINE /etc/contrail/contrail-query-engine.conf
 
 set_third_party_auth_config
 set_vnc_api_lib_ini
+
+upgrade_old_logs "query-engine"
 
 run_service "$@"
