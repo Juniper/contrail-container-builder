@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f37974b9_d07f82e4",
+        "filename": "containers/base/common.sh",
+        "patchSetId": 14
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-03-31T12:11:42Z",
+      "side": 1,
+      "message": "why not just set LOG_DIR\u003d${LOG_DIR:-\"/var/log/contrail/${NODE_TYPE}-${SERVICE_NAME}\"}\n?",
+      "range": {
+        "startLine": 6,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 49
+      },
+      "revId": "3a48e61be0ebcd9b43e1d5a437e76b744397c2f1",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "318184c7_8d71700a",
+        "filename": "containers/controller/config/api/Dockerfile",
+        "patchSetId": 14
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-03-31T12:11:42Z",
+      "side": 1,
+      "message": "looks empty change",
+      "range": {
+        "startLine": 6,
+        "startChar": 0,
+        "endLine": 6,
+        "endChar": 0
+      },
+      "revId": "3a48e61be0ebcd9b43e1d5a437e76b744397c2f1",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
