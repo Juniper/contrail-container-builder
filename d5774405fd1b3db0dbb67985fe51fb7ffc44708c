@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "3b9fd572_a69c2760",
+        "filename": "containers/base/common.sh",
+        "patchSetId": 19
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-04-02T17:25:45Z",
+      "side": 1,
+      "message": "export CONTAINER_LOG_DIR\u003d..\nbecause it is to be used in child processes for -zk.log files",
+      "range": {
+        "startLine": 6,
+        "startChar": 0,
+        "endLine": 6,
+        "endChar": 17
+      },
+      "revId": "d5774405fd1b3db0dbb67985fe51fb7ffc44708c",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "bbfd1529_b0bc7583",
         "filename": "containers/general-base/functions.sh",
         "patchSetId": 19
