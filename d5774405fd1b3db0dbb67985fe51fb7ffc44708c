@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bbfd1529_b0bc7583",
+        "filename": "containers/general-base/functions.sh",
+        "patchSetId": 19
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-04-02T17:18:46Z",
+      "side": 1,
+      "message": "please:\nmove out of the \u0027if\u0027 condition\nmkdir -p $CONTAINER_LOG_DIR \u0026\u0026 chmod 755 $CONTAINER_LOG_DIR\n(folder is to be always created,  keep inside the \u0027if\u0027 the code working with chown)",
+      "range": {
+        "startLine": 173,
+        "startChar": 0,
+        "endLine": 182,
+        "endChar": 32
+      },
+      "revId": "d5774405fd1b3db0dbb67985fe51fb7ffc44708c",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "de706e6e_ba540c78",
+        "filename": "containers/kubernetes/cni-init/entrypoint.sh",
+        "patchSetId": 19
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-04-02T17:18:46Z",
+      "side": 1,
+      "message": "revert (cni plugin has no defined service and is called by non-contrail code)",
+      "revId": "d5774405fd1b3db0dbb67985fe51fb7ffc44708c",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6c539a17_bb53c904",
+        "filename": "containers/kubernetes/cni-init/entrypoint.sh",
+        "patchSetId": 19
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-04-02T17:18:46Z",
+      "side": 1,
+      "message": "revert",
+      "range": {
+        "startLine": 69,
+        "startChar": 0,
+        "endLine": 70,
+        "endChar": 71
+      },
+      "revId": "d5774405fd1b3db0dbb67985fe51fb7ffc44708c",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}

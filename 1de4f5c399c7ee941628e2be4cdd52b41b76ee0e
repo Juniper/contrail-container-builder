@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8126430e_c47ad80a",
+        "filename": "containers/mesosphere/cni-init/entrypoint.sh",
+        "patchSetId": 19
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-04-02T17:18:46Z",
+      "side": 0,
+      "message": "revert (cni plugin has no service defined as it called from non-contrail code)",
+      "revId": "1de4f5c399c7ee941628e2be4cdd52b41b76ee0e",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
