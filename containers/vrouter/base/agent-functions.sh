@@ -457,11 +457,16 @@ function read_and_save_dpdk_params() {
 
 function ensure_hugepages() {
     local hp_dir=${1:?}
-    local hp_dir_mount_type="hugetlbfs $hp_dir hugetlbfs"
-    if ! grep -qs "$hp_dir_mount_type" /proc/mounts ; then
-        echo "ERROR: Hupepages dir($hp_dir) does not have hugetlbfs mount type"
-        exit -1
-    fi
+    hp_dir=${hp_dir/%\/}
+    local mp
+    local fs
+    for mp in $(mount -t hugetlbfs | awk '{print($3)}') ; do
+        if [[ "$mp" == "$hp_dir" ]] ; then
+            return
+        fi
+    done
+    echo "ERROR: Hupepages dir($hp_dir) does not have hugetlbfs mount type"
+    exit -1
 }
 
 function check_vrouter_agent_settings() {
