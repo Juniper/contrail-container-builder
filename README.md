@@ -144,7 +144,7 @@ These manifests are also stored and published in a container "contrail-k8s-manif
 
 ### Adding new container
 
-Before adding new container, please fill in a blueprint (https://blueprints.launchpad.net/opencontrail/+specs?show=all) and spec (https://github.com/Juniper/contrail-specs) stating why and how you're planning to do this.
+Before adding new container, please fill in a blueprint (https://blueprints.launchpad.net/opencontrail/+specs?show=all) and spec (https://github.com/tungstenfabric/tf-specs) stating why and how you're planning to do this.
 As a general rule, use existing containers as samples.
 
 To implement new container the following can be done:
