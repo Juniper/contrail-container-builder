@@ -40,7 +40,7 @@ function install_docker () {
 
 hash docker 2>/dev/null || install_docker
 
-docker_ver=$(docker -v | awk -F' ' '{print $3}' | sed 's/,//g')
+docker_ver=$(sudo docker -v | awk -F' ' '{print $3}' | sed 's/,//g')
 
 if [[ $docker_ver > "17.06" ]] ; then
   exit
