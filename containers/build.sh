@@ -53,7 +53,7 @@ if [ -n "$opts" ]; then
   log "Options: $opts"
 fi
 
-docker_ver=$(docker -v | awk -F' ' '{print $3}' | sed 's/,//g')
+docker_ver=$(sudo docker -v | awk -F' ' '{print $3}' | sed 's/,//g')
 log "Docker version: $docker_ver"
 
 was_errors=0
@@ -137,7 +137,7 @@ function process_container() {
 
   log "Building args: $build_arg_opts" | append_log_file $logfile true
   local target_name="${CONTRAIL_REGISTRY}/${container_name}:${tag}"
-  docker build -t $target_name \
+  sudo docker build -t $target_name \
     ${build_arg_opts} -f $docker_file ${opts} $dir 2>&1 | append_log_file $logfile
   exit_code=${PIPESTATUS[0]}
   local duration=$(date +"%s")
@@ -153,8 +153,8 @@ function process_container() {
     # other stuff required, so, now the final step to run a intermediate container,
     # install components inside and commit is as the final image.
     log "Rel build src path is ${rel_build_src_path}" | append_log_file $logfile
-    local cmd=$(docker inspect -f "{{json .Config.Cmd }}" ${target_name} )
-    local entrypoint=$(docker inspect -f "{{json .Config.Entrypoint }}" ${target_name} )
+    local cmd=$(sudo docker inspect -f "{{json .Config.Cmd }}" ${target_name} )
+    local entrypoint=$(sudo docker inspect -f "{{json .Config.Entrypoint }}" ${target_name} )
     local intermediate_base="${container_name}-src"
     local run_arguments="--name $intermediate_base --network host "
     if [[ $container_name == "contrail-base" || $container_name == "contrail-controller-webui-base" ]] ; then
@@ -166,33 +166,33 @@ function process_container() {
     fi
     run_arguments+=" -e "CONTRAIL_SOURCE=/root/contrail" -e "CONTAINER_SOURCE_DATA_PATH=$rel_build_src_path" -e "LINUX_DISTR=${LINUX_DISTR}"  -v ${CONTRAIL_SOURCE}:/root/contrail:z  --entrypoint /root/contrail/contrail-container-builder/containers/build_from_src.sh ${target_name}"
     log "Run command is \"Docker run ${run_arguments}\"" | append_log_file $logfile
-    docker run ${run_arguments} 2>&1 | append_log_file $logfile
+    sudo docker run ${run_arguments} 2>&1 | append_log_file $logfile
     exit_code=${PIPESTATUS[0]}
     if [ ${exit_code} -eq 0 ]; then
       if [[ "${cmd}" == 'null' ]]; then
-        docker commit  --change "ENTRYPOINT ${entrypoint}" \
+        sudo docker commit  --change "ENTRYPOINT ${entrypoint}" \
                       ${intermediate_base} ${intermediate_base} 2>&1 | append_log_file $logfile
         exit_code=${PIPESTATUS[0]}
       else
-        docker commit --change "CMD ${cmd}" \
+        sudo docker commit --change "CMD ${cmd}" \
                       --change "ENTRYPOINT ${entrypoint}" \
                       ${intermediate_base} ${intermediate_base} 2>&1 | append_log_file $logfile
         exit_code=${PIPESTATUS[0]}
       fi
       # retag containers
-      [ ${exit_code} -eq 0 ] && docker tag $intermediate_base ${target_name} || exit_code=1
+      [ ${exit_code} -eq 0 ] && sudo docker tag $intermediate_base ${target_name} || exit_code=1
     fi
     local duration_src=$(date +"%s")
     (( duration_src -= duration ))
     log "Docker build from source duration: $duration_src seconds" | append_log_file $logfile
   fi
   if [ $exit_code -eq 0 -a ${CONTRAIL_REGISTRY_PUSH} -eq 1 ]; then
-    docker push $target_name 2>&1 | append_log_file $logfile
+    sudo docker push $target_name 2>&1 | append_log_file $logfile
     exit_code=${PIPESTATUS[0]}
   fi
   if [[ -n "${intermediate_base}" && "${CONTRAIL_BUILD_FROM_SOURCE}" == 'true' ]] ; then
     log "Remove ${intermediate_base} temp build container" | append_log_file $logfile
-    docker rm -f ${intermediate_base} || true 2>&1 | append_log_file $logfile
+    sudo docker rm -f ${intermediate_base} || true 2>&1 | append_log_file $logfile
   fi
   duration=$(date +"%s")
   (( duration -= start_time ))
@@ -268,7 +268,6 @@ function update_repos() {
     content=$(cat "$rfile" | sed -e "s|\${CONTRAIL_REPOSITORY}|${CONTRAIL_REPOSITORY}|g")
     dfile=$(basename $rfile | sed 's/.template//')
     update_file "general-base/$dfile" "$content"
-    update_file "k8s-manifests/$dfile" "$content"
     # this is special case - image derived directly from ubuntu image
     update_file "vrouter/kernel-build-init/$dfile" "$content"
   done

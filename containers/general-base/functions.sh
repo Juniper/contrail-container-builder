@@ -150,7 +150,7 @@ function resolve_hostname_by_ip() {
 
 
 function do_run_service() {
-  if [[ -n "$CONTRAIL_UID" && -n "$CONTRAIL_GID" &&  "$(id -u)" = '0' ]] ; then
+  if [[ -n "$CONTRAIL_UID" && -n "$CONTRAIL_GID" ]] ; then
     # processes are run under root and contrail users
     # so, contrail user has to has rights to right there for
     # core generation
@@ -168,7 +168,7 @@ function do_run_service() {
 }
 
 function run_service() {
-  if [[ -n "$CONTRAIL_UID" && -n "$CONTRAIL_GID" &&  "$(id -u)" = '0' ]] ; then
+  if [[ -n "$CONTRAIL_UID" && -n "$CONTRAIL_GID" ]] ; then
     local owner_opts="$CONTRAIL_UID:$CONTRAIL_GID"
     
     mkdir -p $LOG_DIR
