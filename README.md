@@ -8,7 +8,7 @@ Checked on:
 
 Works with limitations and known issues.
 
-Everything is tested in CentOS 7.4 / Ubuntu 16.04 for deployment to run on one/three machines.
+Everything is tested in CentOS 7.4 / Ubuntu 16.04 for deployment to run on one/three machines
 
 ## Building containers
 
