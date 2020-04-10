@@ -27,10 +27,10 @@ HUGE_PAGES_2MB=${HUGE_PAGES_2MB:-0}
 HUGE_PAGES_1GB_DIR=${HUGE_PAGES_1GB_DIR:-""}
 HUGE_PAGES_2MB_DIR=${HUGE_PAGES_2MB_DIR:-""}
 if [[ 0 != $HUGE_PAGES_1GB && -z "$HUGE_PAGES_1GB_DIR" ]] ;then
-  HUGE_PAGES_1GB_DIR=$(mount -t hugetlbfs | awk '/pagesize=1G/{print($3)}' | head -n 1)
+  HUGE_PAGES_1GB_DIR=$(mount -t hugetlbfs | awk '/pagesize=1G|pagesize=1024M/{print($3)}' | tail -n 1)
 fi
 if [[ 0 != $HUGE_PAGES_2MB && -z "$HUGE_PAGES_2MB_DIR" ]] ;then
-  HUGE_PAGES_2MB_DIR=$(mount -t hugetlbfs | awk '/pagesize=2M/{print($3)}' | head -n 1)
+  HUGE_PAGES_2MB_DIR=$(mount -t hugetlbfs | awk '/pagesize=2M/{print($3)}' | tail -n 1)
 fi
 
 DPDK_MEM_PER_SOCKET=${DPDK_MEM_PER_SOCKET:-1024}
