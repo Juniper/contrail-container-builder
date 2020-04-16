@@ -12,7 +12,7 @@ LABEL name=$CONTAINER_NAME \
 
 RUN yum install -y dhclient NetworkManager contrail-vrouter-dpdk contrail-vrouter-dpdk-init && \
     yum clean all -y && \
-    rm -rf /var/cache/yum && \
+    rm -rf /var/cache/yum /etc/sysconfig/network-scripts && \
     ldconfig
 
 COPY entrypoint.sh /
