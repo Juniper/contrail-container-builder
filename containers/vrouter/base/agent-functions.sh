@@ -510,14 +510,58 @@ function ensure_host_resolv_conf() {
     fi
 }
 
+function get_loaded_vrouter_version() {
+    cat /sys/module/vrouter/version
+}
+
+function get_available_vrouter_version() {
+    modinfo -F version  vrouter
+}
+
+function match_cur_and_avail_vrouter_vers() {
+    local cur_ver=$(get_loaded_vrouter_version)
+    local avail_ver=$(get_available_vrouter_version)
+    echo "INFO: vrouter cur_ver=$cur_ver avail_ver=$avail_ver"
+   [[ "$cur_ver" == "$avail_ver" ]]
+}
+
+function match_build_and_avail_vrouter_vers() {
+    local avail_ver=$(get_available_vrouter_version)
+    echo "INFO: vrouter avail_ver=$avail_ver"
+    [[ "$BUILD_VERSION" == "$avail_ver" ]]
+}
+
+function wait_vrouter_match_agent_build_version() {
+    if [[ -z "$BUILD_VERSION" ]] ; then
+        echo "DEBUG: not BUILD_VERSION provided to sync with kernel installation"
+        return
+    fi
+    echo "INFO: wait till vrouter available for BUILD_VERSION=$BUILD_VERSION"
+    wait_cmd_success match_build_and_avail_vrouter_vers 5 30
+}
+
 function init_vhost0() {
     # Probe vhost0
     local vrouter_cidr="$(get_cidr_for_nic vhost0)"
     if [[ "$vrouter_cidr" != '' ]] ; then
         echo "INFO: vhost0 is already up"
         ensure_host_resolv_conf
-        return 0
+        if is_dpdk || match_cur_and_avail_vrouter_vers ; then
+            return 0
+        fi
+        if [[ ! -z "$BIND_INT" ]] ; then
+            # do not reinit in container in case if called in tripleo
+            # this case should not happen normally, just log it
+            echo "DEBUG: attempt to call init_vhost0 from ifup from host - wrong usage"
+            return 0
+        fi
+        echo "INFO: vrouter changed.. ifdown vhost0 to reload"
+        remove_vhost0
     fi
+    # Upgrade case to wait appropriate vrouter module (on ubuntu it takes time to build new
+    # and agent is run before the build if done)
+    echo "INFO: wait till uptodate vrouter module available"
+    wait_vrouter_match_agent_build_version || return 1
 
     declare phys_int phys_int_mac addrs bind_type bind_int mtu routes
     if ! is_dpdk ; then
@@ -658,12 +702,9 @@ function remove_vhost0() {
     echo "INFO: removing vhost0"
     declare phys_int phys_int_mac restore_ip_cmd routes
     IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
-    local netscript_dir='/etc/sysconfig/network-scripts'
-    if [ ! -d "$netscript_dir" ] ; then
-        restore_ip_cmd=$(gen_ip_addr_add_cmd vhost0 $phys_int)
-        routes=$(get_dev_routes vhost0)
-        del_dev_routes vhost0 "$routes"
-    fi
+    restore_ip_cmd=$(gen_ip_addr_add_cmd vhost0 $phys_int)
+    routes=$(get_dev_routes vhost0)
+    del_dev_routes vhost0 "$routes"
     remove_vhost0_kernel || { echo "ERROR: failed to remove vhost0" && return 1; }
     restore_phys_int $phys_int "$restore_ip_cmd" "$routes"
 }
@@ -674,15 +715,26 @@ function cleanup_vrouter_agent_files() {
     rm -rf /etc/contrail/contrail-vrouter-agent.conf
 }
 
+function is_process_dead() {
+    if [ -n "$pid" ] && kill -0 $pid 2>&1 >/dev/null ; then
+        return 1
+    fi
+}
+
 # terminate vrouter agent process
 function term_process() {
     local pid=$1
-    [ -z "$pid" ] && return
-    if kill -0 $pid 2>&1 >/dev/null ; then
-        echo "INFO: terminating process $pid"
-        kill -KILL "$pid" &>/dev/null
-        wait $pid
+    if is_process_dead $pid ; then
+        return
     fi
+    echo "INFO: terminate process $pid"
+    kill "$pid"
+    if wait_cmd_success is_process_dead 3 5 ; then
+        return
+    fi
+    echo "INFO: kill process $pid"
+    kill -KILL "$pid" &>/dev/null
+    wait_cmd_success is_process_dead 3 5
 }
 
 # send quit signal to root process
