@@ -158,7 +158,7 @@ function restore_phys_int() {
     local routes="$3"
     local netscript_dir='/etc/sysconfig/network-scripts'
     echo "INFO: restore bind interface $phys_int"
-    if [ -d "$netscript_dir" ] ; then
+    if [ -d "$netscript_dir" ] && ls ${netscript_dir}/contrail.org.ifcfg-* ; then
         pushd "$netscript_dir"
         declare i
         for i in $(ls | grep 'contrail\.org\.ifcfg\-' | sed 's/contrail\.org\.ifcfg\-//g') ; do
