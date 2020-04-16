@@ -10,19 +10,23 @@ fi
 echo "INFO: dpdk started"
 
 function trap_dpdk_agent_quit() {
-    term_process $dpdk_agent_process
+    local res=0
+    if ! term_process $dpdk_agent_process ; then
+        echo "ERROR: failed to terminate process"
+        res=1
+    fi
     if [ -n "$pci_address" ] ; then
         restore_phys_int_dpdk "$pci_address"
     else
         echo "WARNING: PCIs list is empty, nothing to rebind to initial net driver"
     fi
     cleanup_vrouter_agent_files
-    exit 0
+    exit $res
 }
 
 function trap_dpdk_agent_term() {
     term_process $dpdk_agent_process
-    exit 0
+    exit $?
 }
 
 # Clean up files and vhost0, when SIGQUIT signal by clean-up.sh
