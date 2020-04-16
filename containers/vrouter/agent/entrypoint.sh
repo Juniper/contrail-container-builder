@@ -34,6 +34,9 @@ trap 'trap_vrouter_agent_hub' SIGHUP
 
 pre_start_init
 
+# this is used for sync with vrouter.ko module available on filesystem
+export BUILD_VERSION=${BUILD_VERSION-"$(cat /contrail_build_version)"}
+
 # init_vhost for dpdk case is called from dpdk container.
 #   In osp13 case there is docker service restart that leads
 #   to restart of dpdk container at the step right after network
