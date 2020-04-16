@@ -510,13 +510,31 @@ function ensure_host_resolv_conf() {
     fi
 }
 
+function need_reload_vrouter() {
+    local cur_ver=$(modinfo -F version vrouter)
+    local file_path=$(modinfo -F filename  vrouter)
+    local file_ver=$(strings $file_path | grep '^version=' | cut -d '=' -f2)
+    echo "INFO: kernel module info: cur_ver=$cur_ver file_path=$file_path file_ver=$file_ver"
+    [[ "$cur_ver" != "$file_ver" ]]
+}
+
 function init_vhost0() {
     # Probe vhost0
     local vrouter_cidr="$(get_cidr_for_nic vhost0)"
     if [[ "$vrouter_cidr" != '' ]] ; then
         echo "INFO: vhost0 is already up"
-        ensure_host_resolv_conf
-        return 0
+        if is_dpdk || ! need_reload_vrouter ; then
+            ensure_host_resolv_conf
+            return 0
+        fi
+        if [[ ! -z "$BIND_INT" ]] ; then
+            # do not reinit in container in case if called in tripleo
+            # this case should not happen normally, just log it
+            echo "DEBUG: attempt to call init_vhost0 from ifup from host - wrong usage"
+            return 0
+        fi
+        echo "INFO: vrouter changed.. ifdown vhost to reload"
+        remove_vhost0
     fi
 
     declare phys_int phys_int_mac addrs bind_type bind_int mtu routes
