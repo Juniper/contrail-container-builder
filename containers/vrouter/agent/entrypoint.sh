@@ -52,6 +52,9 @@ else
     fi
 fi
 
+# Update /dhclient-vhost0.conf with the system /etc/dhcp/dhclient.conf
+cat /etc/dhcp/dhclient.conf >> /dhclient-vhost0.conf
+
 # For Google and Azure the underlying physical inetrface has network plumbed differently.
 # We need the following to initialize vhost0 in GC and Azure
 azure_or_gcp_or_aws=$(cat /sys/devices/virtual/dmi/id/chassis_vendor && cat /sys/devices/virtual/dmi/id/product_version)

@@ -19,6 +19,9 @@ function get_default_vrouter_gateway() {
 function create_vhost_network_functions() {
     local dir=$1
     pushd "$dir"
+    # Update /dhclient-vhost0.conf with the system /etc/dhcp/dhclient.conf
+    cat /etc/dhcp/dhclient.conf >> /dhclient-vhost0.conf
+
     /bin/cp -f /ifup-vhost /ifdown-vhost /dhclient-vhost0.conf ./
     chmod 744 ./ifup-vhost ./ifdown-vhost ./dhclient-vhost0.conf
     /bin/cp -f  /network-functions-vrouter /network-functions-vrouter-${AGENT_MODE} ./
@@ -789,9 +792,9 @@ function check_vhost0_dhcp_clients() {
 # and also for making sure the arp table is updated with the mac of the GW
 function launch_dhcp_clients() {
     mkdir -p /var/lib/dhcp
-    cp /dhclient-vhost0.conf /dhclient.conf
-    cat /etc/dhcp/dhclient.conf >> /dhclient.conf
-    dhclient -v -sf /vhost-dhcp.sh -cf /dhclient.conf -pf /run/dhclient.vhost0.pid -lf /var/lib/dhcp/dhclient.vhost0.leases -I vhost0 2>&1 </dev/null & disown -h "$!"
+    # Update /dhclient-vhost0.conf with the system /etc/dhcp/dhclient.conf
+    cat /etc/dhcp/dhclient.conf >> /dhclient-vhost0.conf
+    dhclient -v -sf /vhost-dhcp.sh -cf /dhclient-vhost0.conf -pf /run/dhclient.vhost0.pid -lf /var/lib/dhcp/dhclient.vhost0.leases -I vhost0 2>&1 </dev/null & disown -h "$!"
     sleep 3
 }
 
