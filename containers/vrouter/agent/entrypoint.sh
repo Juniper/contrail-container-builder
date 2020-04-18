@@ -53,7 +53,7 @@ else
 fi
 
 # Update /dhclient-vhost0.conf with the system /etc/dhcp/dhclient.conf
-cat /etc/dhcp/dhclient.conf >> /dhclient-vhost0.conf
+[[ $(cat /etc/dhcp/dhclient.conf >> /dhclient-vhost0.conf) ]] || true
 
 # For Google and Azure the underlying physical inetrface has network plumbed differently.
 # We need the following to initialize vhost0 in GC and Azure
