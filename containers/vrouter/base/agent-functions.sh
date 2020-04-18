@@ -20,7 +20,7 @@ function create_vhost_network_functions() {
     local dir=$1
     pushd "$dir"
     # Update /dhclient-vhost0.conf with the system /etc/dhcp/dhclient.conf
-    cat /etc/dhcp/dhclient.conf >> /dhclient-vhost0.conf
+    [ -e /etc/dhcp/dhclient.conf ] && cat /etc/dhcp/dhclient.conf >> /dhclient-vhost0.conf
 
     /bin/cp -f /ifup-vhost /ifdown-vhost /dhclient-vhost0.conf ./
     chmod 744 ./ifup-vhost ./ifdown-vhost ./dhclient-vhost0.conf
