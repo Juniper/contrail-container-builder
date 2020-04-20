@@ -10,8 +10,9 @@ LABEL name=$CONTAINER_NAME \
 
 RUN  yum install -y dhclient NetworkManager contrail-vrouter-agent haproxy libvirt-client \
      python-opencontrail-vrouter-netns python-contrail-vrouter-api && \
+     rpm -qi contrail-vrouter-agent | awk '/Version/{print($3)}' > /contrail_build_version && \
      yum clean all -y && \
-     rm -rf /var/cache/yum && \
+     rm -rf /var/cache/yum /etc/sysconfig/network-scripts && \
      ldconfig
 
 COPY *.sh /

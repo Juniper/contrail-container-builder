@@ -513,11 +513,19 @@ function ensure_host_resolv_conf() {
     fi
 }
 
+function dbg_trace_agent_vers() {
+    local agent_ver=$BUILD_VERSION
+    local loaded_vrouter_ver=$(cat /sys/module/vrouter/version)
+    local available_vrouter_ver=$(modinfo -F version  vrouter)
+    echo "DEBUG: versions: agent=$agent_ver, loaded_vrouter=$loaded_vrouter_ver, available_vrouter=$available_vrouter_ver"
+}
+
 function init_vhost0() {
     # Probe vhost0
     local vrouter_cidr="$(get_cidr_for_nic vhost0)"
     if [[ "$vrouter_cidr" != '' ]] ; then
         echo "INFO: vhost0 is already up"
+        dbg_trace_agent_vers
         ensure_host_resolv_conf
         return 0
     fi
@@ -534,6 +542,7 @@ function init_vhost0() {
         fi
         echo "INFO: creating vhost0 for nic mode: nic: $phys_int, mac=$phys_int_mac"
         if ! create_vhost0 $phys_int $phys_int_mac ; then
+            dbg_trace_agent_vers
             return 1
         fi
         bind_type='kernel'
@@ -616,7 +625,7 @@ function init_vhost0() {
     fi
 
     [[ $ret == 0 ]] && ensure_host_resolv_conf
-
+    dbg_trace_agent_vers
     return $ret
 }
 
@@ -661,12 +670,9 @@ function remove_vhost0() {
     echo "INFO: removing vhost0"
     declare phys_int phys_int_mac restore_ip_cmd routes
     IFS=' ' read -r phys_int phys_int_mac <<< $(get_physical_nic_and_mac)
-    local netscript_dir='/etc/sysconfig/network-scripts'
-    if [ ! -d "$netscript_dir" ] ; then
-        restore_ip_cmd=$(gen_ip_addr_add_cmd vhost0 $phys_int)
-        routes=$(get_dev_routes vhost0)
-        del_dev_routes vhost0 "$routes"
-    fi
+    restore_ip_cmd=$(gen_ip_addr_add_cmd vhost0 $phys_int)
+    routes=$(get_dev_routes vhost0)
+    del_dev_routes vhost0 "$routes"
     remove_vhost0_kernel || { echo "ERROR: failed to remove vhost0" && return 1; }
     restore_phys_int $phys_int "$restore_ip_cmd" "$routes"
 }
@@ -677,15 +683,26 @@ function cleanup_vrouter_agent_files() {
     rm -rf /etc/contrail/contrail-vrouter-agent.conf
 }
 
+function is_process_dead() {
+    if [ -n "$pid" ] && kill -0 $pid 2>&1 >/dev/null ; then
+        return 1
+    fi
+}
+
 # terminate vrouter agent process
 function term_process() {
     local pid=$1
-    [ -z "$pid" ] && return
-    if kill -0 $pid 2>&1 >/dev/null ; then
-        echo "INFO: terminating process $pid"
-        kill -KILL "$pid" &>/dev/null
-        wait $pid
+    if is_process_dead $pid ; then
+        return
     fi
+    echo "INFO: terminate process $pid"
+    kill "$pid"
+    if wait_cmd_success is_process_dead 3 5 ; then
+        return
+    fi
+    echo "INFO: kill process $pid"
+    kill -KILL "$pid" &>/dev/null
+    wait_cmd_success is_process_dead 3 5
 }
 
 # send quit signal to root process

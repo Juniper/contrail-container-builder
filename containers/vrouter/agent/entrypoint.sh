@@ -6,15 +6,19 @@ source /agent-functions.sh
 echo "INFO: agent started in $AGENT_MODE mode"
 
 function trap_vrouter_agent_quit() {
-    term_process $vrouter_agent_process
+    local res=0
+    if ! term_process $vrouter_agent_process ; then
+        echo "ERROR: Failed to stop agent process"
+        res=1
+    fi
     remove_vhost0
     cleanup_vrouter_agent_files
-    exit 0
+    exit $res
 }
 
 function trap_vrouter_agent_term() {
     term_process $vrouter_agent_process
-    exit 0
+    exit $?
 }
 
 function trap_vrouter_agent_hub() {
@@ -33,6 +37,9 @@ trap 'trap_vrouter_agent_term' SIGTERM SIGINT
 trap 'trap_vrouter_agent_hub' SIGHUP
 
 pre_start_init
+
+# this is used for debug trace if vrouter.ko doesnt match agent
+export BUILD_VERSION=${BUILD_VERSION-"$(cat /contrail_build_version)"}
 
 # init_vhost for dpdk case is called from dpdk container.
 #   In osp13 case there is docker service restart that leads
