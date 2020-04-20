@@ -21,6 +21,15 @@ NODEMGR_NAME=${NODEMGR_TYPE}-nodemgr
 ntype=`echo ${NODE_TYPE^^} | tr '-' '_'`
 
 if [[ $ntype == 'VROUTER' ]]; then
+  # Ensure vhost0 is up.
+  # Nodemgr in vrouter mode is run on the node with vhost0.
+  # During vhost0 initialization there is possible race between
+  # the host_ip deriving logic and vhost0 initialization
+  if ! wait_nic_up vhost0 ; then
+    echo "ERROR: vhost0 is not up .. exit to allow docker policy to restart container if needed"
+    exit 1
+  fi
+
   htype='VROUTER'
   hostip=$(get_ip_for_vrouter_from_control)
   host_name=${VROUTER_HOSTNAME:-}
