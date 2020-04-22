@@ -182,11 +182,11 @@ function restore_phys_int() {
         fi
         popd
     else
-        set_dev_routes $phys_int "$routes"
         if [ -n "$add_ipaddr_cmd" ] ; then
             echo "INFO: restore IPs for $phys_int"
             eval "$add_ipaddr_cmd"
         fi
+        set_dev_routes $phys_int "$routes"
     fi
 }
 
