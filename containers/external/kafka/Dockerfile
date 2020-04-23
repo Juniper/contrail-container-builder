@@ -9,7 +9,7 @@ LABEL name=$CONTAINER_NAME \
       description="Contrail Kafka is used for streaming data in Analytics DB."
 
 ARG KAFKA_DISTRO_NAME=kafka_2.11-2.3.1
-ARG KAFKA_CACHE=https://github.com/Juniper/contrail-third-party-cache/blob/master/kafka
+ARG KAFKA_CACHE=https://github.com/tungstenfabric/tf-third-party-cache/blob/master/kafka
 
 ENV KAFKA_DIR=/opt/$KAFKA_DISTRO_NAME \
     KAFKA_CONF_DIR=/opt/$KAFKA_DISTRO_NAME/config \
