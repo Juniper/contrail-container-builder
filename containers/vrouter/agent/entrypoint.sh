@@ -40,6 +40,8 @@ pre_start_init
 
 # this is used for debug trace if vrouter.ko doesnt match agent
 export BUILD_VERSION=${BUILD_VERSION-"$(cat /contrail_build_version)"}
+# to explicetely disable vhost0 (for triplo where host is do it)
+export KERNEL_INIT_VHOST0=${KERNEL_INIT_VHOST0:-"true"}
 
 # init_vhost for dpdk case is called from dpdk container.
 #   In osp13 case there is docker service restart that leads
@@ -47,14 +49,14 @@ export BUILD_VERSION=${BUILD_VERSION-"$(cat /contrail_build_version)"}
 #   pre-config stetp. At this moment agen container is not created yet
 #   and ifup is alrady run before, so, only dpdk container
 #   can do re-init of vhost0.
-if ! is_dpdk ; then
-    if ! init_vhost0 ; then
-        echo "FATAL: failed to init vhost0"
+if is_dpdk || [[ "$KERNEL_INIT_VHOST0" != 'true' ]] ; then
+    if ! wait_vhost0 ; then
+        echo "FATAL: failed to wait vhost0"
         exit 1
     fi
 else
-    if ! wait_vhost0 ; then
-        echo "FATAL: failed to wait vhost0"
+    if ! init_vhost0 ; then
+        echo "FATAL: failed to init vhost0"
         exit 1
     fi
 fi
