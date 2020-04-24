@@ -178,15 +178,21 @@ function restore_phys_int() {
         # (in tripleo case BIND_INT is defined in here because this function is called
         # from ifdown on host, and dpdk container in tripleo has this env defined as well)
         if [ -z "$BIND_INT" ] ; then
+            echo "INFO: clean ifcfg-vhost0"
             mv ifcfg-vhost0 contrail.prev.ifcfg-vhost0
         fi
         popd
     else
-        if [ -n "$add_ipaddr_cmd" ] ; then
-            echo "INFO: restore IPs for $phys_int"
-            eval "$add_ipaddr_cmd"
+        # For non-tripleo reinit bind interface
+        # (in tripleo case BIND_INT is defined in here because this function is called
+        # from ifdown on host)
+        if [ -z "$BIND_INT" ] ; then
+            if [ -n "$add_ipaddr_cmd" ] ; then
+                echo "INFO: restore IPs for $phys_int"
+                eval "$add_ipaddr_cmd"
+            fi
+            set_dev_routes $phys_int "$routes"
         fi
-        set_dev_routes $phys_int "$routes"
     fi
 }
 
