@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-HAPROXY_FILE=/usr/local/etc/haproxy/haproxy.cfg
+HAPROXY_FILE=/etc/haproxy/haproxy.cfg
 cat > $HAPROXY_FILE << EOM
 global
         tune.maxrewrite 1024
@@ -11,8 +11,8 @@ global
         log /dev/log    local1 notice
         stats timeout 30s
         daemon
-        user $HAPROXY_USER
-        group $HAPROXY_USER
+        user haproxy
+        group haproxy
 
         # Default SSL material locations
         ca-base /etc/contrail/ssl/certs
