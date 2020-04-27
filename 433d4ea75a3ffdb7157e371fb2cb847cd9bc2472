@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4389e3fb_1a003e15",
+        "filename": "containers/external/haproxy/Dockerfile",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-04-27T16:56:41Z",
+      "side": 1,
+      "message": "return here code:\ngroupadd --gid $HAPROXY_GID --system $HAPROXY_USER \u0026\u0026 \\\n    useradd --uid $HAPROXY_UID --no-create-home --shell /sbin/nologin --system --gid $HAPROXY_GID $HAPROXY_USER \u0026\u0026 \\\nyum clean all -y \u0026\u0026 \\\nrm -rf /var/cache/yum",
+      "revId": "433d4ea75a3ffdb7157e371fb2cb847cd9bc2472",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "db579b8c_e37852e6",
+        "filename": "containers/external/haproxy/docker-entrypoint.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-04-27T16:56:41Z",
+      "side": 1,
+      "message": "might be just remove it and add needed thing into our contrail-entrypoint.sh ?",
+      "range": {
+        "startLine": 1,
+        "startChar": 1,
+        "endLine": 17,
+        "endChar": 9
+      },
+      "revId": "433d4ea75a3ffdb7157e371fb2cb847cd9bc2472",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
