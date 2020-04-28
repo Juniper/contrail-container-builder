@@ -230,5 +230,5 @@ if [[ -n "$RABBITMQ_SASL_LOGS" && "$RABBITMQ_SASL_LOGS" != '-' ]] ; then
   chown rabbitmq:rabbitmq "$RABBITMQ_SASL_LOGS"
 fi
 
-echo "INFO: $(date): /usr/local/bin/docker-entrypoint.sh $@"
-exec /usr/local/bin/docker-entrypoint.sh "$@"
+echo "INFO: $(date): /docker-entrypoint.sh $@"
+exec  /docker-entrypoint.sh "$@"
