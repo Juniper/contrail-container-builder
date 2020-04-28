@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 source /common.sh
 
 # In all in one deployment there is the race between vhost0 initialization
@@ -231,4 +233,4 @@ if [[ -n "$RABBITMQ_SASL_LOGS" && "$RABBITMQ_SASL_LOGS" != '-' ]] ; then
 fi
 
 echo "INFO: $(date): /usr/local/bin/docker-entrypoint.sh $@"
-exec /usr/local/bin/docker-entrypoint.sh "$@"
+exec /docker-entrypoint.sh "$@"
