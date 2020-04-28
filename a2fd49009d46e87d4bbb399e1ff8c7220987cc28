@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0b768f6a_eb8805fa",
+        "filename": "containers/external/haproxy/Dockerfile",
+        "patchSetId": 4
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-04-28T08:05:50Z",
+      "side": 1,
+      "message": "remove,\nplease , take a look at general base.. it is available from there as env",
+      "range": {
+        "startLine": 6,
+        "startChar": 0,
+        "endLine": 6,
+        "endChar": 16
+      },
+      "revId": "a2fd49009d46e87d4bbb399e1ff8c7220987cc28",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
