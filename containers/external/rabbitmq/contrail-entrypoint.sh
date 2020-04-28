@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source /common.sh
+source /functions.sh
 
 # In all in one deployment there is the race between vhost0 initialization
 # and own IP detection, so there is 10 retries
@@ -29,7 +30,7 @@ for server in $(echo ${RABBITMQ_NODES} | tr ',' ' '); do
   fi
   cluster_nodes+="'contrail@${server_hostname}',"
   server_names_list=($server_names_list $server_hostname)
-  if server_ip=`/hostname_to_ip $server` && [[ ",$server_ip," =~ ",$my_ip," ]] ; then
+  if server_ip=$( find_my_ip_and_order_for_node $server ) && [[ ",$server_ip," =~ ",$my_ip," ]] ; then
     my_node=$server_hostname
     echo "INFO: my_node=$server_hostname"
   fi
@@ -230,5 +231,5 @@ if [[ -n "$RABBITMQ_SASL_LOGS" && "$RABBITMQ_SASL_LOGS" != '-' ]] ; then
   chown rabbitmq:rabbitmq "$RABBITMQ_SASL_LOGS"
 fi
 
-echo "INFO: $(date): /usr/local/bin/docker-entrypoint.sh $@"
-exec /usr/local/bin/docker-entrypoint.sh "$@"
+echo "INFO: $(date): /docker-entrypoint.sh $@"
+exec  /docker-entrypoint.sh "$@"
