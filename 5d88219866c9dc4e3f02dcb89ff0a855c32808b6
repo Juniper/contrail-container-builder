@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7d22dd18_c15d5b5d",
+        "filename": "containers/external/haproxy/docker-entrypoint.sh",
+        "patchSetId": 6
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-04-30T11:30:36Z",
+      "side": 1,
+      "message": "in my example it was: \"$(whereis haproxy-systemd-wrapper | awk \u0027{print($2)}\u0027)\"",
+      "range": {
+        "startLine": 14,
+        "startChar": 18,
+        "endLine": 14,
+        "endChar": 49
+      },
+      "revId": "5d88219866c9dc4e3f02dcb89ff0a855c32808b6",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
