@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f8fb3361_5763e07f",
+        "filename": "containers/external/haproxy/Dockerfile",
+        "patchSetId": 7
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-06T10:36:46Z",
+      "side": 1,
+      "message": "pelase revise lables, some of them are in general base already.",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 98
+      },
+      "revId": "dbb039be67083874fd02d34645efc116ff02ef16",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bd49b63a_f53b3cb7",
+        "filename": "containers/external/haproxy/Dockerfile",
+        "patchSetId": 7
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-06T10:36:46Z",
+      "side": 1,
+      "message": "remove comment",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 15,
+        "endChar": 57
+      },
+      "revId": "dbb039be67083874fd02d34645efc116ff02ef16",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
