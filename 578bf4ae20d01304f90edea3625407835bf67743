@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ad864341_214b6cac",
+        "filename": "containers/external/rabbitmq/Dockerfile",
+        "patchSetId": 12
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-06T09:22:17Z",
+      "side": 1,
+      "message": "remove",
+      "range": {
+        "startLine": 15,
+        "startChar": 28,
+        "endLine": 15,
+        "endChar": 34
+      },
+      "revId": "578bf4ae20d01304f90edea3625407835bf67743",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "597782d1_759672b0",
+        "filename": "containers/external/rabbitmq/Dockerfile",
+        "patchSetId": 12
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-06T09:22:17Z",
+      "side": 1,
+      "message": "lets put into root, just put name in the above command\nand fix in contrail-entrypoint.sh",
+      "range": {
+        "startLine": 16,
+        "startChar": 5,
+        "endLine": 16,
+        "endChar": 25
+      },
+      "revId": "578bf4ae20d01304f90edea3625407835bf67743",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
