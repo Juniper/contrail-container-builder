@@ -1,4 +1,4 @@
-FROM redis:4.0.14
+FROM registry.access.redhat.com/rhosp13/openstack-redis
 ARG VENDOR_NAME
 ARG VENDOR_DOMAIN
 
@@ -21,7 +21,7 @@ COPY __licensing.txt /licenses/licensing.txt
 
 COPY *.sh hostname_to_ip /
 RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done' && \
-    /upgrade_pkgs.sh && \
+    yum update -y && \
     groupadd --gid $CONTRAIL_GID --system $CONTRAIL_USER && \
     usermod -a -G $CONTRAIL_GID redis
 
