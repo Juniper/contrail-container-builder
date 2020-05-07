@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 source /common.sh
-
+source /functions.sh
 # redis is needed for WebUI also. WebUI works with 127.0.0.1
 # If WebUI is placed on the same node with analytics - redis will listen on two IP-s and analytics and WebUI will work well.
 # If WebUI is placed on different node than analitics - redis on the node with WebUI will listen only 127.0.0.1 and it is sufficient for WebUI.
@@ -29,4 +29,4 @@ fi
 [ -n "$REDIS_PROTECTED_MODE" ] && redis_opts+=" --protected-mode $REDIS_PROTECTED_MODE"
 
 echo "INFO: redis cmd options: $redis_opts"
-exec docker-entrypoint.sh $redis_opts
+exec /docker-entrypoint.sh $redis_opts
