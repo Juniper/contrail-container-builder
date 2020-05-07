@@ -1,29 +1,22 @@
-FROM redis:4.0.14
-ARG VENDOR_NAME
-ARG VENDOR_DOMAIN
-
-ARG CONTAINER_NAME
+ARG CONTRAIL_REGISTRY
 ARG CONTRAIL_CONTAINER_TAG
-LABEL vendor=$VENDOR_NAME \
-      version=$CONTRAIL_CONTAINER_TAG \
-      release="5.1.0" \
-      name=$CONTAINER_NAME \
+FROM ${CONTRAIL_REGISTRY}/contrail-general-base:${CONTRAIL_CONTAINER_TAG}
+ARG VENDOR_DOMAIN
+ARG CONTAINER_NAME
+
+LABEL name=$CONTAINER_NAME \
       summary="Contrail Redis" \
       description="Contrail Redis server supports query engine."
 
-# These definitions are just for build purposes and must not be changed at runtime
-ENV CONTRAIL_GID=1999 \
-    CONTRAIL_USER=contrail
-
-# Add required license as text file in Liceses directory
-RUN mkdir /licenses
-COPY __licensing.txt /licenses/licensing.txt
-
-COPY *.sh hostname_to_ip /
+COPY *.sh /
 RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done' && \
-    /upgrade_pkgs.sh && \
-    groupadd --gid $CONTRAIL_GID --system $CONTRAIL_USER && \
-    usermod -a -G $CONTRAIL_GID redis
+    yum install https://repo.ius.io/ius-release-el7.rpm \
+    https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y && \
+    yum install redis40u.x86_64 -y && \
+    usermod -a -G $CONTRAIL_GID redis && \
+    yum remove epel-release ius-release -y && \
+    yum clean all -y && rm -rf /var/cache/yum
+
 
 ENTRYPOINT ["/contrail-entrypoint.sh"]
 
