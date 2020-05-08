@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "af941fde_f19714a9",
+        "filename": "containers/external/rabbitmq/Dockerfile",
+        "patchSetId": 14
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-08T12:12:08Z",
+      "side": 1,
+      "message": "looks not needed",
+      "range": {
+        "startLine": 4,
+        "startChar": 0,
+        "endLine": 5,
+        "endChar": 15
+      },
+      "revId": "7885beb877e94c7b35d4fbd8c9c8a69e5b7f24db",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "665eee9a_bf2c6701",
+        "filename": "containers/external/rabbitmq/contrail-entrypoint.sh",
+        "patchSetId": 14
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-08T12:12:08Z",
+      "side": 1,
+      "message": "remove, \ncommon.sh has the code that enable -x in case of DEBUG log level set",
+      "range": {
+        "startLine": 3,
+        "startChar": 0,
+        "endLine": 3,
+        "endChar": 6
+      },
+      "revId": "7885beb877e94c7b35d4fbd8c9c8a69e5b7f24db",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
