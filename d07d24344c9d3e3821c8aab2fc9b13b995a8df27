@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e32f1b53_dee8004c",
+        "filename": "containers/external/haproxy/Dockerfile",
+        "patchSetId": 8
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-08T11:29:20Z",
+      "side": 1,
+      "message": "it looks not used",
+      "range": {
+        "startLine": 4,
+        "startChar": 0,
+        "endLine": 5,
+        "endChar": 15
+      },
+      "revId": "d07d24344c9d3e3821c8aab2fc9b13b995a8df27",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
