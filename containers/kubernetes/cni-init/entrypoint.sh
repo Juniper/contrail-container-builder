@@ -3,6 +3,7 @@
 source /common.sh
 
 VROUTER_PORT=${VROUTER_PORT:-9091}
+KUBERNETES_META_PLUGIN=${KUBERNETES_META_PLUGIN:-'multus'}
 KUBEMANAGER_NESTED_MODE=${KUBEMANAGER_NESTED_MODE:-'0'}
 run_command="/bin/true"
 
@@ -35,6 +36,7 @@ cat << EOM > /host/etc_cni/net.d/10-contrail.conf
 {
     "cniVersion": "0.3.1",
     "contrail" : {
+        "meta-plugin"   : "$KUBERNETES_META_PLUGIN",
         "vrouter-ip"    : "127.0.0.1",
         "vrouter-port"  : $VROUTER_PORT,
         "config-dir"    : "/var/lib/contrail/ports/vm",
@@ -59,6 +61,7 @@ cat << EOM > /host/etc_cni/net.d/10-contrail.conf
    "cniVersion": "0.3.1",
    "contrail" : {
        "mode"              : "k8s",
+       "meta-plugin"       : "$KUBERNETES_META_PLUGIN",
        "vif-type"          : "macvlan",
        "parent-interface"  : "$phys_int",
        "vrouter-ip"        : "$KUBERNESTES_NESTED_VROUTER_VIP",
@@ -66,7 +69,6 @@ cat << EOM > /host/etc_cni/net.d/10-contrail.conf
        "config-dir"        : "/var/lib/contrail/ports/vm",
        "poll-timeout"      : 5,
        "poll-retries"      : 15,
-       "log-dir"          : "$LOG_DIR/cni",
        "log-file"          : "$LOG_DIR/cni/opencontrail.log",
        "log-level"         : "4"
    },
