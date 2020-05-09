@@ -577,52 +577,58 @@ function init_vhost0() {
 
     local ret=0
     if [[ -e /etc/sysconfig/network-scripts/ifcfg-${phys_int} || -e /etc/sysconfig/network-scripts/ifcfg-vhost0 ]]; then
-        echo "INFO: creating ifcfg-vhost0 and initialize it via ifup"
-        if ! is_dpdk ; then
-            ifdown ${phys_int}
-            kill_dhcp_clients ${phys_int}
-        fi
-        if [ -z "$BIND_INT" ] ; then
+        if is_dpdk ; then
+            echo "INFO: creating ifcfg-vhost0 and initialize it via ifup"
+            #if ! is_dpdk ; then
+            #    ifdown ${phys_int}
+            #    kill_dhcp_clients ${phys_int}
+            #fi
+            if [ -z "$BIND_INT" ] ; then
             # Patch if it is not the case of OSP+DPDK (BIND_INT is set if 
             # dpdk container is started by ifup script, vhost0 is initialized here 
             # and ifcfg files are already prepared correctly by os-net-collect)
-            prepare_ifcfg $phys_int $bind_type $bind_int || true
-        fi
-        if ! is_dpdk ; then
-            ifup ${phys_int} || { echo "ERROR: failed to ifup $phys_int." && ret=1; }
-        fi
-        ip link set dev vhost0 down
-        ifup vhost0 || { echo "ERROR: failed to ifup vhost0." && ret=1; }
-        check_physical_mtu ${mtu} ${phys_int}
-    else
-        echo "INFO: there is no ifcfg-$phys_int and ifcfg-vhost0, so initialize vhost0 manually"
-        if ! is_dpdk ; then
-            # TODO: switch off dhcp on phys_int permanently
-            kill_dhcp_clients ${phys_int}
-        fi
-        echo "INFO: Changing physical interface to vhost in ip table"
-        echo "$addrs" | while IFS= read -r line ; do
-            if ! is_dpdk ; then
-                local addr_to_del=`echo $line | cut -d ' ' -f 1`
-                ip address delete $addr_to_del dev $phys_int || { echo "ERROR: failed to del $addr_to_del from ${phys_int}." && ret=1; }
+                prepare_ifcfg $phys_int $bind_type $bind_int || true
             fi
-            local addr_to_add=`echo $line | sed 's/brd/broadcast/'`
-            ip address add $addr_to_add dev vhost0 || { echo "ERROR: failed to add address $addr_to_add to vhost0." && ret=1; }
-        done
+            #if ! is_dpdk ; then
+            #    ifup ${phys_int} || { echo "ERROR: failed to ifup $phys_int." && ret=1; }
+            #fi
+            ip link set dev vhost0 down
+            ifup vhost0 || { echo "ERROR: failed to ifup vhost0." && ret=1; }
+            check_physical_mtu ${mtu} ${phys_int}
+        fi
+    else
+        if is_dpdk ; then
+            echo "INFO: there is no ifcfg-$phys_int and ifcfg-vhost0, so initialize vhost0 manually"
+            #if ! is_dpdk ; then
+                # TODO: switch off dhcp on phys_int permanently
+            #    kill_dhcp_clients ${phys_int}
+            #fi
+            echo "INFO: Changing physical interface to vhost in ip table"
+            echo "$addrs" | while IFS= read -r line ; do
+                #if ! is_dpdk ; then
+                #    local addr_to_del=`echo $line | cut -d ' ' -f 1`
+                #    ip address delete $addr_to_del dev $phys_int || { echo "ERROR: failed to del $addr_to_del from ${phys_int}." && ret=1; }
+                #fi
+                local addr_to_add=`echo $line | sed 's/brd/broadcast/'`
+                ip address add $addr_to_add dev vhost0 || { echo "ERROR: failed to add address $addr_to_add to vhost0." && ret=1; }
+            done
+        fi
         if [[ -n "$mtu" ]] ; then
             echo "INFO: set mtu"
             ip link set dev vhost0 mtu $mtu
         fi
-        check_physical_mtu ${mtu} ${phys_int}
-        set_dev_routes vhost0 "$routes"
+        if is_dpdk ; then
+            check_physical_mtu ${mtu} ${phys_int}
+            set_dev_routes vhost0 "$routes"
+        fi
     fi
     # Remove all routes from phys iface if any.
     # One case is centos: it may assign 192.254.0.0/16 to ethX as a Zeroconf route.
     # (/etc/sysconfig/network-scripts/ifup-eth)
-    if ! is_dpdk ; then
-        local _phys_int_routes=$(get_dev_routes $phys_int)
-        del_dev_routes ${phys_int} "$_phys_int_routes"
-    fi
+    #if ! is_dpdk ; then
+    #    local _phys_int_routes=$(get_dev_routes $phys_int)
+    #    del_dev_routes ${phys_int} "$_phys_int_routes"
+    #fi
 
     [[ $ret == 0 ]] && ensure_host_resolv_conf
     dbg_trace_agent_vers
