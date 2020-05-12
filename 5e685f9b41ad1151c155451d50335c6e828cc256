@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2f6d0e73_26f0da43",
+        "filename": "containers/kubernetes/cni-init/entrypoint.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-05-12T14:25:31Z",
+      "side": 1,
+      "message": "I think it would be better to move this line to common.sh\n\nand is it possible to set empty value here by default as it was previously?\nany who\u0027ll use this can set this variable in the env to \u0027multus\u0027",
+      "revId": "5e685f9b41ad1151c155451d50335c6e828cc256",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
