@@ -62,4 +62,13 @@ for server in $ZOO_SERVERS; do
     echo "$server" >> "$CONFIG"
 done
 
-exec /docker-entrypoint.sh "$@"
+# Write myid only if it doesn't exist
+if [[ ! -f "$ZOO_DATA_DIR/myid" ]]; then
+    echo "${ZOO_MY_ID}" > "$ZOO_DATA_DIR/myid"
+fi
+
+chown -R ${ZOO_USER} "$ZOO_DATA_DIR" "$ZOO_DATA_LOG_DIR" "$ZOO_LOG_DIR" "$ZOO_CONF_DIR"
+CONTRAIL_UID=$( id -u ${ZOO_USER} )
+CONTRAIL_GID=$( id -g ${ZOO_GROUP} )
+
+do_run_service "$@"
