@@ -40,6 +40,7 @@ RUN YUM_ENABLE_REPOS=$(echo $YUM_ENABLE_REPOS | tr -d '"') && \
         echo "INFO: contrail-general-base: install $GENERAL_EXTRA_RPMS" && \
         yum install -y $GENERAL_EXTRA_RPMS ; \
     fi && \
+    yum install -y python3 && \
     yum clean all -y && \
     rm -rf /var/cache/yum && \
     groupadd --gid $CONTRAIL_GID --system $CONTRAIL_USER && \
