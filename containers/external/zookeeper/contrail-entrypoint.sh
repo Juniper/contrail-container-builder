@@ -51,15 +51,27 @@ clientPortAddress=${MY_ZOO_IP}
 dataDir=${ZOO_DATA_DIR}
 dataLogDir=${ZOO_DATA_LOG_DIR}
 
+
 tickTime=${ZOO_TICK_TIME}
 initLimit=${ZOO_INIT_LIMIT}
 syncLimit=${ZOO_SYNC_LIMIT}
 
 maxClientCnxns=${ZOO_MAX_CLIENT_CNXNS}
+
+admin.enableServer=false
 EOM
 
 for server in $ZOO_SERVERS; do
     echo "$server" >> "$CONFIG"
 done
 
-exec /docker-entrypoint.sh "$@"
+# Write myid only if it doesn't exist
+if [[ ! -f "$ZOO_DATA_DIR/myid" ]]; then
+    echo "${ZOO_MY_ID}" > "$ZOO_DATA_DIR/myid"
+fi
+
+chown -R ${ZOO_USER} "$ZOO_DATA_DIR" "$ZOO_DATA_LOG_DIR" "$ZOO_LOG_DIR" "$ZOO_CONF_DIR"
+CONTRAIL_UID=$( id -u ${ZOO_USER} )
+CONTRAIL_GID=$( id -g ${ZOO_GROUP} )
+
+do_run_service "$@"
