@@ -1,6 +1,4 @@
-#!/usr/bin/env bash
-
-set -e
+#!/bin/bash -e
 
 source /common.sh
 
@@ -91,6 +89,11 @@ client_encryption_options:
     algorithm: ${CASSANDRA_SSL_ALGORITHM}
     store_type: JKS
     cipher_suites: ${CASSANDRA_SSL_CIPHER_SUITES}
+#change datafile directory
+data_file_directories:
+     - /var/lib/cassandra/data
+#change commitlog_directory
+commitlog_directory: /var/lib/cassandra/commitlog
 EOF
 
   # prepare settings for cqlsh
