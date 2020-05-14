@@ -1,6 +1,4 @@
-#!/usr/bin/env bash
-
-set -e
+#!/bin/bash -e
 
 source /common.sh
 
@@ -92,7 +90,15 @@ client_encryption_options:
     store_type: JKS
     cipher_suites: ${CASSANDRA_SSL_CIPHER_SUITES}
 EOF
-
+#explicitly set 
+cat <<EOF >>$CONFIG
+#change datafile directory
+data_file_directories:
+     - ${CASSANDRA_LIB}/data
+#change commitlog_directory
+commitlog_directory: ${CASSANDRA_LIB}/commitlog
+saved_caches_directory: ${CASSANDRA_LIB}/saved_caches
+EOF
   # prepare settings for cqlsh
   cat >/root/.cqlshrc << EOM
 [ssl]
