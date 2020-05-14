@@ -3,6 +3,7 @@
 source /common.sh
 
 pre_start_init
+wait_zookeeper_certs_if_ssl_enabled
 
 hostip=$(get_listen_ip_for_node ANALYTICS)
 hostname=$(resolve_hostname_by_ip $hostip)
@@ -132,6 +133,10 @@ $rabbitmq_ssl_config
 $sandesh_client_config
 
 $collector_stats_config
+
+[ZOOKEEPER]
+zookeeper_ssl_enable=$ZOOKEEPER_SSL_ENABLE
+${zookeeper_ssl_config}
 EOM
 
 add_ini_params_from_env COLLECTOR /etc/contrail/contrail-collector.conf

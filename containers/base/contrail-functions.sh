@@ -90,6 +90,16 @@ function wait_analytics_api_certs_if_ssl_enabled() {
   fi
 }
 
+function wait_zookeeper_certs_if_ssl_enabled() {
+  if ! is_enabled ${ZOOKEEPER_SSL_ENABLE} ; then
+    return
+  fi
+
+  if [[ "$SERVER_KEYFILE" != "$ZOOKEEPER_SSL_KEYFILE" ]]; then
+    wait_files "$ZOOKEEPER_SSL_CERTFILE" "$ZOOKEEPER_SSL_KEYFILE"
+  fi
+}
+
 function pre_start_init() {
   wait_certs_if_ssl_enabled
 }
