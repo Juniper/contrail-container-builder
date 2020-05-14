@@ -1,4 +1,4 @@
-FROM zookeeper:3.4.14
+FROM zookeeper:3.6.1
 ARG VENDOR_NAME
 ARG VENDOR_DOMAIN
 
