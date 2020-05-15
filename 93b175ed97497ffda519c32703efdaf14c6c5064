@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "83bd7a40_04a935dd",
+        "filename": "containers/external/rabbitmq/Dockerfile",
+        "patchSetId": 23
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-15T17:41:45Z",
+      "side": 1,
+      "message": "look debug?  if so lets remove.\ndo we need openssl here?",
+      "range": {
+        "startLine": 16,
+        "startChar": 69,
+        "endLine": 16,
+        "endChar": 79
+      },
+      "revId": "93b175ed97497ffda519c32703efdaf14c6c5064",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
