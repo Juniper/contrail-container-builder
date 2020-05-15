@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "72ad5823_df0956b3",
+        "filename": "containers/node-init/contrail-status-init.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-15T08:38:14Z",
+      "side": 1,
+      "message": "lets remove \"\n(otherwise \"-opt1 v1 -opt2 v2\" becomes one param from contrail-status.py point of view)",
+      "range": {
+        "startLine": 38,
+        "startChar": 208,
+        "endLine": 38,
+        "endChar": 209
+      },
+      "revId": "158d4982f4bef2c48bad4b5f1406a6444b473625",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "102de280_34daefa9",
+        "filename": "containers/status/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-15T08:38:14Z",
+      "side": 1,
+      "message": "can be removed",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 27
+      },
+      "revId": "158d4982f4bef2c48bad4b5f1406a6444b473625",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
