@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e75c4253_fc7f495e",
+        "filename": "containers/external/zookeeper/Dockerfile",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-15T16:07:38Z",
+      "side": 1,
+      "message": "why devel? \nin theory just openjdk should be enough for java runtime",
+      "range": {
+        "startLine": 28,
+        "startChar": 42,
+        "endLine": 28,
+        "endChar": 48
+      },
+      "revId": "935311ca10814c9156e8893ba73a4255a53d83ba",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3cf8f0b6_e272b63e",
+        "filename": "containers/external/zookeeper/Dockerfile",
+        "patchSetId": 3
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-15T16:07:38Z",
+      "side": 1,
+      "message": "hm.. do youknow why mv ? not cp",
+      "range": {
+        "startLine": 36,
+        "startChar": 4,
+        "endLine": 36,
+        "endChar": 6
+      },
+      "revId": "935311ca10814c9156e8893ba73a4255a53d83ba",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f72ae464_81502931",
+        "filename": "containers/external/zookeeper/Dockerfile",
+        "patchSetId": 3
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-15T16:07:38Z",
+      "side": 1,
+      "message": "chown -R ?\ni would do it after tar -x...\nto let next mv command work wit already changed files\n?",
+      "range": {
+        "startLine": 37,
+        "startChar": 4,
+        "endLine": 37,
+        "endChar": 51
+      },
+      "revId": "935311ca10814c9156e8893ba73a4255a53d83ba",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b6a66718_c940b2b9",
+        "filename": "containers/external/zookeeper/Dockerfile",
+        "patchSetId": 3
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-15T16:07:38Z",
+      "side": 1,
+      "message": "could we join it with previous ENV ?",
+      "range": {
+        "startLine": 46,
+        "startChar": 0,
+        "endLine": 47,
+        "endChar": 27
+      },
+      "revId": "935311ca10814c9156e8893ba73a4255a53d83ba",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4608b1db_11471bb1",
+        "filename": "containers/external/zookeeper/docker-entrypoint.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-15T16:07:38Z",
+      "side": 1,
+      "message": "it looks we can just remove this file and put into contrail-entrypoint.sh directly:\n\necho \"${ZOO_MY_ID}\" \u003e \"$ZOO_DATA_DIR/myid\"\n\nchown -R ${ZOO_USER} \"$ZOO_DATA_DIR\" \"$ZOO_DATA_LOG_DIR\" \"$ZOO_LOG_DIR\" \"$ZOO_CONF_DIR\"\nCONTRAIL_UID\u003d$( id -u ${ZOO_USER} )\nCONTRAIL_GID\u003d$( id -g ${ZOO_GROUP} )\n\ndo_run_service \"$@\"",
+      "revId": "935311ca10814c9156e8893ba73a4255a53d83ba",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
