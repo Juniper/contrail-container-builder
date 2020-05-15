@@ -1,0 +1,234 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "87ccca2e_4926e4ed",
+        "filename": "containers/external/cassandra/Dockerfile",
+        "patchSetId": 11
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-15T17:28:16Z",
+      "side": 1,
+      "message": "could be joined with previous via \\.  ?",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 3
+      },
+      "revId": "9b0254ef0cad9672c80a8597b74fd22d7495a57a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1802b01f_b1381c25",
+        "filename": "containers/external/cassandra/Dockerfile",
+        "patchSetId": 11
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-15T17:28:16Z",
+      "side": 1,
+      "message": "in theory just openjdk should be enough (w/o devel)",
+      "range": {
+        "startLine": 25,
+        "startChar": 42,
+        "endLine": 25,
+        "endChar": 48
+      },
+      "revId": "9b0254ef0cad9672c80a8597b74fd22d7495a57a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "72e8487a_b2195671",
+        "filename": "containers/external/cassandra/Dockerfile",
+        "patchSetId": 11
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-15T17:28:16Z",
+      "side": 1,
+      "message": "what is installed from epel?\nideally we need to avoid it.",
+      "range": {
+        "startLine": 26,
+        "startChar": 4,
+        "endLine": 26,
+        "endChar": 89
+      },
+      "revId": "9b0254ef0cad9672c80a8597b74fd22d7495a57a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "977f7c96_f8f75489",
+        "filename": "containers/external/cassandra/Dockerfile",
+        "patchSetId": 11
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-15T17:28:16Z",
+      "side": 1,
+      "message": "replace tab with spaces",
+      "range": {
+        "startLine": 35,
+        "startChar": 0,
+        "endLine": 35,
+        "endChar": 1
+      },
+      "revId": "9b0254ef0cad9672c80a8597b74fd22d7495a57a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ee1946e6_9bf8c65c",
+        "filename": "containers/external/cassandra/Dockerfile",
+        "patchSetId": 11
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-15T17:28:16Z",
+      "side": 1,
+      "message": "replace tab with spaces",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 37,
+        "endChar": 1
+      },
+      "revId": "9b0254ef0cad9672c80a8597b74fd22d7495a57a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8ea5c7ec_0bb43293",
+        "filename": "containers/external/cassandra/Dockerfile",
+        "patchSetId": 11
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-15T17:28:16Z",
+      "side": 1,
+      "message": "looks strange",
+      "range": {
+        "startLine": 38,
+        "startChar": 1,
+        "endLine": 38,
+        "endChar": 10
+      },
+      "revId": "9b0254ef0cad9672c80a8597b74fd22d7495a57a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "abe26d62_79227d0b",
+        "filename": "containers/external/cassandra/Dockerfile",
+        "patchSetId": 11
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-15T17:28:16Z",
+      "side": 1,
+      "message": "replace tab with spaces",
+      "range": {
+        "startLine": 39,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 18
+      },
+      "revId": "9b0254ef0cad9672c80a8597b74fd22d7495a57a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1eb010ed_38712ad9",
+        "filename": "containers/external/cassandra/Dockerfile",
+        "patchSetId": 11
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-15T17:28:16Z",
+      "side": 1,
+      "message": "remove",
+      "range": {
+        "startLine": 46,
+        "startChar": 4,
+        "endLine": 46,
+        "endChar": 12
+      },
+      "revId": "9b0254ef0cad9672c80a8597b74fd22d7495a57a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c7258251_620b86b7",
+        "filename": "containers/external/cassandra/Dockerfile",
+        "patchSetId": 11
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-15T17:28:16Z",
+      "side": 1,
+      "message": "suppose VOLUME $CASSANDRA_LOG is to be here as well?",
+      "range": {
+        "startLine": 49,
+        "startChar": 0,
+        "endLine": 49,
+        "endChar": 21
+      },
+      "revId": "9b0254ef0cad9672c80a8597b74fd22d7495a57a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0f347c73_4e4d19f0",
+        "filename": "containers/external/cassandra/contrail-entrypoint.sh",
+        "patchSetId": 11
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-15T17:28:16Z",
+      "side": 1,
+      "message": "not needed\ncommon.sh enable it if LOG_LEVEL is set to SYS_DEBUG",
+      "range": {
+        "startLine": 3,
+        "startChar": 6,
+        "endLine": 3,
+        "endChar": 7
+      },
+      "revId": "9b0254ef0cad9672c80a8597b74fd22d7495a57a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
