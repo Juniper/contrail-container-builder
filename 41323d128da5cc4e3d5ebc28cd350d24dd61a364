@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6140b9e8_3ee1ae1e",
+        "filename": "containers/external/redis/Dockerfile",
+        "patchSetId": 10
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-15T15:49:36Z",
+      "side": 1,
+      "message": "i would remove it..\nwhich packages are installed from epel?",
+      "range": {
+        "startLine": 14,
+        "startChar": 4,
+        "endLine": 14,
+        "endChar": 77
+      },
+      "revId": "41323d128da5cc4e3d5ebc28cd350d24dd61a364",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2b96f961_5c763d1a",
+        "filename": "containers/external/redis/Dockerfile",
+        "patchSetId": 10
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-15T15:49:36Z",
+      "side": 1,
+      "message": "join with previous RUN via \u0026\u0026",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 42
+      },
+      "revId": "41323d128da5cc4e3d5ebc28cd350d24dd61a364",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0c7b96cc_8c43432b",
+        "filename": "containers/external/redis/docker-entrypoint.sh",
+        "patchSetId": 10
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-15T15:49:36Z",
+      "side": 1,
+      "message": "it looks tabs are used instead of spaces. lets use spaces.",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 1
+      },
+      "revId": "41323d128da5cc4e3d5ebc28cd350d24dd61a364",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "64c08a88_eb64e643",
+        "filename": "containers/external/redis/docker-entrypoint.sh",
+        "patchSetId": 10
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-15T15:49:36Z",
+      "side": 1,
+      "message": "it looks you can move it upper (just befor previous if)\nand remove duplication inside if.\nand remove do_run_service \"$@\" inside if as well.",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 29
+      },
+      "revId": "41323d128da5cc4e3d5ebc28cd350d24dd61a364",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
