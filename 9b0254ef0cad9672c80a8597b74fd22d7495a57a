@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "5ab1bd36_5aefda2c",
+        "filename": "containers/external/cassandra/Dockerfile",
+        "patchSetId": 11
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 846
+      },
+      "writtenOn": "2020-05-18T08:53:09Z",
+      "side": 1,
+      "message": "no, because we need to check, if cassandra is working in smoke test",
+      "parentUuid": "87ccca2e_4926e4ed",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 3
+      },
+      "revId": "9b0254ef0cad9672c80a8597b74fd22d7495a57a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "1802b01f_b1381c25",
         "filename": "containers/external/cassandra/Dockerfile",
         "patchSetId": 11
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "4e537182_03bc393a",
+        "filename": "containers/external/cassandra/Dockerfile",
+        "patchSetId": 11
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 846
+      },
+      "writtenOn": "2020-05-18T08:53:09Z",
+      "side": 1,
+      "message": "ok",
+      "parentUuid": "1802b01f_b1381c25",
+      "range": {
+        "startLine": 25,
+        "startChar": 42,
+        "endLine": 25,
+        "endChar": 48
+      },
+      "revId": "9b0254ef0cad9672c80a8597b74fd22d7495a57a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "72e8487a_b2195671",
         "filename": "containers/external/cassandra/Dockerfile",
         "patchSetId": 11
@@ -59,6 +107,30 @@
       "writtenOn": "2020-05-15T17:28:16Z",
       "side": 1,
       "message": "what is installed from epel?\nideally we need to avoid it.",
+      "range": {
+        "startLine": 26,
+        "startChar": 4,
+        "endLine": 26,
+        "endChar": 89
+      },
+      "revId": "9b0254ef0cad9672c80a8597b74fd22d7495a57a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e9ee9098_e5baf767",
+        "filename": "containers/external/cassandra/Dockerfile",
+        "patchSetId": 11
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 846
+      },
+      "writtenOn": "2020-05-18T08:53:09Z",
+      "side": 1,
+      "message": "jemalloc is needed for cassandra. it is only available in epel",
+      "parentUuid": "72e8487a_b2195671",
       "range": {
         "startLine": 26,
         "startChar": 4,
@@ -140,6 +212,30 @@
     },
     {
       "key": {
+        "uuid": "25aec42c_3af2ccfd",
+        "filename": "containers/external/cassandra/Dockerfile",
+        "patchSetId": 11
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 846
+      },
+      "writtenOn": "2020-05-18T08:53:09Z",
+      "side": 1,
+      "message": "https://github.com/docker-library/cassandra/blob/4c146a91f56dc3043284c817f1d61f152199482c/3.11/Dockerfile#L135",
+      "parentUuid": "8ea5c7ec_0bb43293",
+      "range": {
+        "startLine": 38,
+        "startChar": 1,
+        "endLine": 38,
+        "endChar": 10
+      },
+      "revId": "9b0254ef0cad9672c80a8597b74fd22d7495a57a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "abe26d62_79227d0b",
         "filename": "containers/external/cassandra/Dockerfile",
         "patchSetId": 11
@@ -197,6 +293,30 @@
       "writtenOn": "2020-05-15T17:28:16Z",
       "side": 1,
       "message": "suppose VOLUME $CASSANDRA_LOG is to be here as well?",
+      "range": {
+        "startLine": 49,
+        "startChar": 0,
+        "endLine": 49,
+        "endChar": 21
+      },
+      "revId": "9b0254ef0cad9672c80a8597b74fd22d7495a57a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9d283c24_3079bedf",
+        "filename": "containers/external/cassandra/Dockerfile",
+        "patchSetId": 11
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 846
+      },
+      "writtenOn": "2020-05-18T08:53:09Z",
+      "side": 1,
+      "message": "there is no logs in vlm in https://github.com/docker-library/cassandra/blob/4c146a91f56dc3043284c817f1d61f152199482c/3.11/Dockerfile#L142",
+      "parentUuid": "c7258251_620b86b7",
       "range": {
         "startLine": 49,
         "startChar": 0,
