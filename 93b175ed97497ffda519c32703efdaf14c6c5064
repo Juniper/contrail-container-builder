@@ -46,6 +46,30 @@
       "revId": "93b175ed97497ffda519c32703efdaf14c6c5064",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "66b62bab_c22675f7",
+        "filename": "containers/external/rabbitmq/Dockerfile",
+        "patchSetId": 23
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-18T14:09:52Z",
+      "side": 1,
+      "message": "openssl - ok.\n\nvim-common:\nI build this container from review w/o vim-common and glibc is there.\nlets remove it.",
+      "parentUuid": "803dbf8b_bc97aace",
+      "range": {
+        "startLine": 16,
+        "startChar": 69,
+        "endLine": 16,
+        "endChar": 79
+      },
+      "revId": "93b175ed97497ffda519c32703efdaf14c6c5064",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
