@@ -22,6 +22,30 @@
       "revId": "93b175ed97497ffda519c32703efdaf14c6c5064",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "803dbf8b_bc97aace",
+        "filename": "containers/external/rabbitmq/Dockerfile",
+        "patchSetId": 23
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 846
+      },
+      "writtenOn": "2020-05-18T11:18:02Z",
+      "side": 1,
+      "message": "Vim-common - some libs needs here, openssl - i don\u0027t find that it is needed.",
+      "parentUuid": "83bd7a40_04a935dd",
+      "range": {
+        "startLine": 16,
+        "startChar": 69,
+        "endLine": 16,
+        "endChar": 79
+      },
+      "revId": "93b175ed97497ffda519c32703efdaf14c6c5064",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
