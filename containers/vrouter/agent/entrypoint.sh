@@ -270,9 +270,10 @@ if (( HUGE_PAGES_1GB > 0 )) ; then
     hp_dir=${HUGE_PAGES_1GB_DIR:-${HUGE_PAGES_DIR}}
     ensure_hugepages ${hp_dir}
     allocated_pages_1GB=$(cat /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages)
+    echo "INFO: Requested HP1GB $HUGE_PAGES_1GB available $allocated_pages_1GB"
     if  (( HUGE_PAGES_1GB > allocated_pages_1GB )) ; then
-        echo "Requested HP1GB  $HUGE_PAGES_1GB more then available $allocated_pages_1GB.. try to allocate"
-        echo $HUGE_PAGES_1GB > sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages
+        echo "INFO: Requested HP1GB  $HUGE_PAGES_1GB more then available $allocated_pages_1GB.. try to allocate"
+        echo $HUGE_PAGES_1GB > /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages
     fi
     read -r -d '' hugepages_option << EOM || true
 [RESTART]
@@ -282,8 +283,9 @@ elif (( HUGE_PAGES_2MB > 0 )) ; then
     hp_dir=${HUGE_PAGES_2MB_DIR:-${HUGE_PAGES_DIR}}
     ensure_hugepages ${hp_dir}
     allocated_pages_2MB=$(cat /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages)
+    echo "INFO: Requested HP2MB  $HUGE_PAGES_2MB available $allocated_pages_2MB"
     if  (( HUGE_PAGES_2MB > allocated_pages_2MB )) ; then
-        echo "Requested HP2MB  $HUGE_PAGES_2MB more then available $allocated_pages_2MB.. try to allocate"
+        echo "INFO: Requested HP2MB  $HUGE_PAGES_2MB more then available $allocated_pages_2MB.. try to allocate"
         echo $HUGE_PAGES_2MB > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
     fi
     read -r -d '' hugepages_option << EOM || true
