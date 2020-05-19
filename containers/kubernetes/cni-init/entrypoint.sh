@@ -35,6 +35,7 @@ cat << EOM > /host/etc_cni/net.d/10-contrail.conf
 {
     "cniVersion": "0.3.1",
     "contrail" : {
+        "meta-plugin"   : "$KUBERNETES_CNI_META_PLUGIN",
         "vrouter-ip"    : "127.0.0.1",
         "vrouter-port"  : $VROUTER_PORT,
         "config-dir"    : "/var/lib/contrail/ports/vm",
@@ -43,7 +44,6 @@ cat << EOM > /host/etc_cni/net.d/10-contrail.conf
         "log-file"      : "$LOG_DIR/cni/opencontrail.log",
         "log-level"     : "4"
     },
-
     "name": "contrail-k8s-cni",
     "type": "contrail-k8s-cni"
 }
@@ -59,6 +59,7 @@ cat << EOM > /host/etc_cni/net.d/10-contrail.conf
    "cniVersion": "0.3.1",
    "contrail" : {
        "mode"              : "k8s",
+       "meta-plugin"       : "$KUBERNETES_CNI_META_PLUGIN",
        "vif-type"          : "macvlan",
        "parent-interface"  : "$phys_int",
        "vrouter-ip"        : "$KUBERNESTES_NESTED_VROUTER_VIP",
@@ -66,7 +67,6 @@ cat << EOM > /host/etc_cni/net.d/10-contrail.conf
        "config-dir"        : "/var/lib/contrail/ports/vm",
        "poll-timeout"      : 5,
        "poll-retries"      : 15,
-       "log-dir"          : "$LOG_DIR/cni",
        "log-file"          : "$LOG_DIR/cni/opencontrail.log",
        "log-level"         : "4"
    },

@@ -13,6 +13,7 @@
 | VROUTER_GATEWAY                |                                                |
 | **Kubernetes**                 |                                                |
 | KUBEMANAGER_NESTED_MODE        | 0                                              |
+| KUBERNETES_CNI_META_PLUGIN     | multus                                         |
 | KUBERNESTES_NESTED_VROUTER_VIP | 10.10.10.2                                     |
 | **vRouter**                    |                                                |
 | VROUTER_PORT                   | 9091                                           |
