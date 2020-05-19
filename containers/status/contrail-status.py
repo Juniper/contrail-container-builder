@@ -97,6 +97,80 @@ INDEXED_SERVICES = [
     'tor-agent',
 ]
 
+class DockerContainersInterface:
+    def __init__(self):
+        self._client = docker.from_env()
+        if hasattr(self._client, 'api'):
+            self._client = self._client.api
+
+    def list(self, filter_):
+        f = {'label': [filter_]}
+        return self._client.containers(all = True, filters = f)
+
+    def inspect(self, id_):
+        try:
+            return self._client.inspect_container(id_)
+        except docker.errors.APIError:
+            logging.exception('docker')
+            return None
+
+class PodmanContainersInterface:
+    def _execute(self, arguments_, timeout_ = 10):
+        a = ["podman"]
+        a.extend(arguments_)
+        p = subprocess.Popen(a, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+        try:
+            o, e = p.communicate(timeout_)
+        except TimeoutExpired:
+            p.kill()
+            o, e = p.communicate()
+        p.wait()
+        if e:
+            logging.critical(e)
+
+        return (p.returncode, o)
+
+    def _parse_json(self, arguments_):
+        a = []
+        a.extend(arguments_)
+        a.extend(["--format", "json"])
+        c, o = self._execute(a)
+        if 0 != c:
+            # NB. there is nothing to parse
+            return (c, None)
+
+        try:
+            return (c, json.loads(o))
+        except Exception:
+            logging.exception('json parsing')
+            return (c, None)
+
+    def _decorate(self, container_):
+        if container_:
+            if 'ID' in container_:
+                container_['Id'] = container_['ID']
+            if 'State' in container_:
+                s = container_['State']
+                container_['State'] = ['unknown', 'configured', 'created',
+                        'running', 'stopped', 'paused', 'exited', 'removing'][s]
+
+        return container_
+
+    def list(self, filter_):
+        _, output = self._parse_json(["ps", "-a", "--filter",
+            '"label={0}"'.format(filter_)])
+        if output:
+            for i in output:
+                self._decorate(i)
+
+        return output
+
+    def inspect(self, id_):
+        _, output = self._parse_json(["inspect", id_])
+        if output and len(output) > 0:
+            return output[0]
+
+        return None
 
 debug_output = False
 # docker client is used in several places - just cache it at start
@@ -432,7 +506,7 @@ def get_value_from_env(env, key):
 
 
 def get_full_env_of_container(cid):
-    cnt_full = client.inspect_container(cid)
+    cnt_full = client.inspect(cid)
     return cnt_full['Config'].get('Env')
 
 
@@ -441,8 +515,8 @@ def get_containers():
 
     items = dict()
     vendor_domain = os.getenv('VENDOR_DOMAIN', 'net.juniper.contrail')
-    flt = {'label': [vendor_domain + '.container.name']}
-    for cnt in client.containers(all=True, filters=flt):
+    flt = vendor_domain + '.container.name'
+    for cnt in client.list(flt):
         labels = cnt.get('Labels', dict())
         if not labels:
             continue
@@ -552,9 +626,10 @@ def main():
     debug_output = options.debug
     output_format = options.format
 
-    client = docker.from_env()
-    if hasattr(client, 'api'):
-        client = client.api
+    if os.path.exists('/run/.containerenv'):
+        client = PodmanContainersInterface()
+    else:
+        client = DockerContainersInterface()
 
     containers = get_containers()
     print_containers(containers)
