@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3c3c331c_87d695e4",
+        "filename": "containers/external/cassandra/Dockerfile",
+        "patchSetId": 15
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-19T13:49:55Z",
+      "side": 1,
+      "message": "replace tab with spaces",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 1
+      },
+      "revId": "2fbcd258b93c8fa8f6c7f04253a1f6308276cce5",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "75e955e4_a7812a7d",
+        "filename": "containers/external/cassandra/docker-entrypoint.sh",
+        "patchSetId": 15
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-19T13:49:55Z",
+      "side": 1,
+      "message": "it was enough to declare ENV in docker file\nCASSANDRA_START_RPC with true value by default.",
+      "range": {
+        "startLine": 94,
+        "startChar": 0,
+        "endLine": 94,
+        "endChar": 74
+      },
+      "revId": "2fbcd258b93c8fa8f6c7f04253a1f6308276cce5",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
