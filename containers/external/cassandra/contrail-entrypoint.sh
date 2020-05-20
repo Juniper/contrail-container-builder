@@ -112,6 +112,27 @@ EOM
 
 fi
 
+<<<<<<< HEAD   (4af8da Backport from master for DPDK_CTRL_THREAD_MASK and SERVICE_C)
+=======
+# Number of flush writers should match number of vCPUs if ssd disks are used
+change_variable memtable_flush_writers ${CASSANDRA_CONFIG_MEMTABLE_FLUSH_WRITER}
+# For compaction operation there is a need for more capacity
+change_variable concurrent_compactors ${CASSANDRA_CONFIG_CONCURRECT_COMPACTORS}
+change_variable compaction_throughput_mb_per_sec ${CASSANDRA_CONFIG_COMPACTION_THROUGHPUT_MB_PER_SEC}
+# Increasing throughput for writes and reads
+change_variable concurrent_reads ${CASSANDRA_CONFIG_CONCURRECT_READS}
+change_variable concurrent_writes ${CASSANDRA_CONFIG_CONCURRECT_WRITES}
+# We are reducing GC pressure
+change_variable memtable_allocation_type ${CASSANDRA_CONFIG_MEMTABLE_ALLOCATION_TYPE}
+
+# patch loggin options
+declare -A log_levels_map=( [SYS_DEBUG]='DEBUG' [SYS_INFO]='INFO' [SYS_NOTICE]='INFO' [SYS_ERROR]="ERROR" )
+log_level=${log_levels_map[$LOG_LEVEL]}
+if [ -n "$log_level" ] ; then
+  sed -i "s/\(<logger.*org.apache.cassandra.*level=\"\).*\(\".*\)/\1${log_level}\2/g" /etc/cassandra/logback.xml
+fi
+
+>>>>>>> CHANGE (f0bbab Set cassandra log level according to input settings)
 echo "INFO: CASSANDRA_SEEDS=$CASSANDRA_SEEDS CASSANDRA_LISTEN_ADDRESS=$CASSANDRA_LISTEN_ADDRESS JVM_EXTRA_OPTS=$JVM_EXTRA_OPTS"
 echo "INFO: exec /docker-entrypoint.sh $@"
 
