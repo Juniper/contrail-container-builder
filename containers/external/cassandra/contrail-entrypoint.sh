@@ -112,6 +112,13 @@ change_variable concurrent_writes ${CASSANDRA_CONFIG_CONCURRECT_WRITES}
 # We are reducing GC pressure
 change_variable memtable_allocation_type ${CASSANDRA_CONFIG_MEMTABLE_ALLOCATION_TYPE}
 
+# patch loggin options
+declare -A log_levels_map=( [SYS_DEBUG]='DEBUG' [SYS_INFO]='INFO' [SYS_NOTICE]='INFO' [SYS_ERROR]="ERROR" )
+log_level=${log_levels_map[$LOG_LEVEL]}
+if [ -n "$log_level" ] ; then
+  sed -i "s/\(<logger.*org.apache.cassandra.*level=\"\).*\(\".*\)/\1${log_level}\2/g" /etc/cassandra/logback.xml
+fi
+
 echo "INFO: CASSANDRA_SEEDS=$CASSANDRA_SEEDS CASSANDRA_LISTEN_ADDRESS=$CASSANDRA_LISTEN_ADDRESS JVM_EXTRA_OPTS=$JVM_EXTRA_OPTS"
 echo "INFO: exec /docker-entrypoint.sh $@"
 
