@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source /common.sh
+source /functions.sh
 
 # In all in one deployment there is the race between vhost0 initialization
 # and own IP detection, so there is 10 retries
@@ -230,5 +231,5 @@ if [[ -n "$RABBITMQ_SASL_LOGS" && "$RABBITMQ_SASL_LOGS" != '-' ]] ; then
   chown rabbitmq:rabbitmq "$RABBITMQ_SASL_LOGS"
 fi
 
-echo "INFO: $(date): /usr/local/bin/docker-entrypoint.sh $@"
-exec /usr/local/bin/docker-entrypoint.sh "$@"
+echo "INFO: $(date): /docker-entrypoint.sh $@"
+exec  /docker-entrypoint.sh "$@"
