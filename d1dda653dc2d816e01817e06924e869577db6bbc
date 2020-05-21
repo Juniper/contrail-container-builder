@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6b470628_0f5b2044",
+        "filename": "containers/external/cassandra/contrail-entrypoint.sh",
+        "patchSetId": 19
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-21T11:27:19Z",
+      "side": 1,
+      "message": "move it out of if - right after the \u0027fi\u0027 (line 109)",
+      "range": {
+        "startLine": 93,
+        "startChar": 0,
+        "endLine": 101,
+        "endChar": 3
+      },
+      "revId": "d1dda653dc2d816e01817e06924e869577db6bbc",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
