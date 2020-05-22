@@ -9,7 +9,7 @@ LABEL name=$CONTAINER_NAME \
 
 COPY *.sh /
 
-RUN curl https://bootstrap.pypa.io/get-pip.py | python2 && \
+RUN curl https://bootstrap.pypa.io/get-pip.py | python2 - 'pip==20.1' && \
     mkdir -p /opt/contrail/site-packages && \
     pip install --target=/opt/contrail/site-packages future six && \
     rpm -Uvh --nodeps $(repoquery --location python-contrail) && \

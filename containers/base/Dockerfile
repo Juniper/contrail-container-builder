@@ -24,7 +24,7 @@ RUN BASE_EXTRA_RPMS=$(echo $BASE_EXTRA_RPMS | tr -d '"' | tr ',' ' ') && \
     fi && \
     yum install -y iproute less hostname python2-setuptools wget && \
     wget -nv -c --tries=3 -O /tmp/get-pip.py https://bootstrap.pypa.io/get-pip.py && \
-    python2 /tmp/get-pip.py && \
+    python2 /tmp/get-pip.py 'pip==20.1' && \
     if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
       yum install -y contrail-lib contrail-setup contrail-utils python-contrail ; \
     fi && \
