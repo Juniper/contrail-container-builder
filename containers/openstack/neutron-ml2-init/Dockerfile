@@ -12,7 +12,7 @@ LABEL name=$CONTAINER_NAME \
 COPY *.sh /
 
 # run _prepare_packages.sh as a last step cause it can break some repositories
-RUN curl https://bootstrap.pypa.io/get-pip.py | python2 && \
+RUN curl https://bootstrap.pypa.io/get-pip.py | python2 - 'pip==20.1' && \
     mkdir -p /opt/contrail/site-packages && \
     pip install --no-compile --target=/opt/contrail/site-packages future && \
     rpm -Uvh --nodeps $(repoquery --location python-contrail) && \
