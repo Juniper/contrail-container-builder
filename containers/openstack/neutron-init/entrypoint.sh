@@ -1,8 +1,5 @@
 #!/bin/bash -ex
 
-# linux distro here always centos for now
-lib_path='/usr/lib/python2.7/site-packages'
-
 # some containers with neutron-server have neutron_lbaas and some don't.
 # and we can't check presense of this library inside neutron-server in init contrainer.
 # due to this fact we may need to bring own version of neutron-lbaas into neutron-server container.
