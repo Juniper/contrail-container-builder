@@ -13,7 +13,14 @@ ARG LINUX_DISTR
 COPY *.sh /
 
 # run _prepare_packages.sh as a last step cause it can break some repositories
+<<<<<<< HEAD   (49a468 Set cassandra log level according to input settings)
 RUN rpm -Uvh --nodeps $(repoquery --location python-contrail) && \
+=======
+RUN curl https://bootstrap.pypa.io/get-pip.py | python2 - 'pip==20.1' && \
+    pip install --target=/opt/contrail/site-packages future && \
+    mkdir -p /opt/contrail/site-packages && \
+    rpm -Uvh --nodeps $(repoquery --location python-contrail) && \
+>>>>>>> CHANGE (19d336 pip pip version)
     rpm -Uvh --nodeps $(repoquery --location neutron-plugin-contrail) && \
     mkdir -p /opt/contrail/site-packages && \
     cp -rf /usr/lib/python2.7/site-packages/neutron_plugin_contrail* /opt/contrail/site-packages && \

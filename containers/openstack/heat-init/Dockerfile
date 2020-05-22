@@ -8,7 +8,16 @@ LABEL name=$CONTAINER_NAME \
       summary="Init container for OpenStack Heat" \
       description="Sidecar container with libraries for heat services."
 
+<<<<<<< HEAD   (49a468 Set cassandra log level according to input settings)
 RUN rpm -Uvh --nodeps $(repoquery --location python-contrail) && \
+=======
+COPY *.sh /
+
+RUN curl https://bootstrap.pypa.io/get-pip.py | python2 - 'pip==20.1' && \
+    mkdir -p /opt/contrail/site-packages && \
+    pip install --target=/opt/contrail/site-packages future six && \
+    rpm -Uvh --nodeps $(repoquery --location python-contrail) && \
+>>>>>>> CHANGE (19d336 pip pip version)
     rpm -Uvh --nodeps $(repoquery --location contrail-heat) && \
     mkdir -p /opt/contrail/site-packages && \
     cp -rf /usr/lib/python2.7/site-packages/contrail_heat* /opt/contrail/site-packages && \
