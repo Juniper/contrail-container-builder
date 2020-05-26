@@ -35,7 +35,7 @@ RUN set -eux && for item in `ls /__*` ; do mv $item /${item:3} ; done && \
     groupadd -f -g 1000 $ZOO_GROUP && adduser -u 1000 -M -g $ZOO_GROUP $ZOO_USER && \
     usermod -a -G $CONTRAIL_GID $ZOO_USER && \
     mkdir -p "$ZOO_DATA_LOG_DIR" "$ZOO_DATA_DIR" "$ZOO_CONF_DIR" "$ZOO_LOG_DIR" && \
-    chown ${ZOO_USER}:${ZOO_GROUP} "$ZOO_DATA_LOG_DIR" "$ZOO_DATA_DIR" "$ZOO_CONF_DIR" "$ZOO_LOG_DIR" && \
+    chown -R ${ZOO_USER}:${ZOO_GROUP} "$ZOO_DATA_LOG_DIR" "$ZOO_DATA_DIR" "$ZOO_CONF_DIR" "$ZOO_LOG_DIR" && \
     wget -nv --tries=3 -c -O ${ZOO_DISTRO_NAME}.tar.gz ${ZOO_URL}/zookeeper-${ZOO_VERSION}/${ZOO_DISTRO_NAME}.tar.gz && \
     tar -xzvf $ZOO_DISTRO_NAME.tar.gz && \
     rm -rf  $ZOO_DISTRO_NAME.tar.gz && \
