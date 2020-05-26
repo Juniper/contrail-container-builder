@@ -4,6 +4,10 @@ set -e
 
 source /common.sh
 
+#bind mount permission for logs
+mkdir -p $LOG_DIR
+chown -R $KAFKA_USER:$KAFKA_GROUP $LOG_DIR
+
 : ${KAFKA_LISTEN_ADDRESS='auto'}
 my_ip=''
 my_index=1

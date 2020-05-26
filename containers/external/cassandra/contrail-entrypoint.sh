@@ -4,6 +4,12 @@ source /common.sh
 
 CONFIG=/etc/cassandra/cassandra.yaml
 
+#bind mount permission for logs
+mkdir -p  ${CASSANDRA_LOG}
+chown -R ${CASSANDRA_USER}:${CASSANDRA_GROUP} ${CASSANDRA_LOG}
+chmod 777 ${CASSANDRA_LOG}
+ln -sT ${CASSANDRA_LOG} "${CASSANDRA_HOME}/logs"
+
 change_variable()
 {
   local VARIABLE_NAME=$1
