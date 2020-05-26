@@ -127,6 +127,10 @@ if [ -n "$log_level" ] ; then
   sed -i "s/\(<logger.*org.apache.cassandra.*level=\"\).*\(\".*\)/\1${log_level}\2/g" /etc/cassandra/logback.xml
 fi
 
+#bind mount permission for logs
+chown -R ${CASSANDRA_USER}:${CASSANDRA_GROUP} ${CASSANDRA_LOG} ${CASSANDRA_LIB}
+chmod 777 ${CASSANDRA_LOG} ${CASSANDRA_LIB}
+
 echo "INFO: CASSANDRA_SEEDS=$CASSANDRA_SEEDS CASSANDRA_LISTEN_ADDRESS=$CASSANDRA_LISTEN_ADDRESS JVM_EXTRA_OPTS=$JVM_EXTRA_OPTS"
 echo "INFO: exec /docker-entrypoint.sh $@"
 

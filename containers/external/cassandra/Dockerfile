@@ -33,11 +33,11 @@ RUN set -eux && for item in `ls /__*` ; do mv $item /${item:3} ; done && \
     rm -rf  apache-cassandra-$CASSANDRA_VERSION-bin.tar.gz && \
     mv "$CASSANDRA_HOME/conf" $CASSANDRA_CONFIG && \
     ln -sT "$CASSANDRA_CONFIG" "$CASSANDRA_HOME/conf" && \
-    mkdir -p  ${CASSANDRA_LOG} ${CASSANDRA_LIB} && \
-    chown -R ${CASSANDRA_USER}:${CASSANDRA_GROUP} $CASSANDRA_CONFIG ${CASSANDRA_LOG} ${CASSANDRA_LIB}  && \
-    chmod 777 $CASSANDRA_CONFIG ${CASSANDRA_LOG} ${CASSANDRA_LIB} && \
-    ln -sT ${CASSANDRA_LIB} "$CASSANDRA_HOME/data" && \
-    ln -sT ${CASSANDRA_LOG} "$CASSANDRA_HOME/logs" && \
+    mkdir -p ${CASSANDRA_LIB} ${CASSANDRA_LOG} && \
+    chown -R ${CASSANDRA_USER}:${CASSANDRA_GROUP} ${CASSANDRA_CONFIG} && \
+    chmod 777 ${CASSANDRA_CONFIG} && \
+    ln -sT ${CASSANDRA_LIB} "${CASSANDRA_HOME}/data" && \
+    ln -sT ${CASSANDRA_LOG} "${CASSANDRA_HOME}/logs" && \
     yum remove epel-release -y && \
     yum clean all -y && \
     rm -rf /var/cache/yum && \
