@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d17640ed_8f50966c",
+        "filename": "containers/external/cassandra/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-26T12:21:40Z",
+      "side": 1,
+      "message": "CASSANDRA_LIB - is for data.\nthat is mounted from host as well.\nso, i would move chown/chmod for it into entrypoint as well.",
+      "range": {
+        "startLine": 36,
+        "startChar": 4,
+        "endLine": 38,
+        "endChar": 50
+      },
+      "revId": "cb2c06349fe87895a82ea524cfaaa7b5ca32e58e",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a8f8d486_f551911c",
+        "filename": "containers/external/cassandra/contrail-entrypoint.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-26T12:21:40Z",
+      "side": 1,
+      "message": "please, move this code at the line 135 )directly before the line with \"echo \"INFO: CASSANDRA_SEEDS\u003d....\"",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 48
+      },
+      "revId": "cb2c06349fe87895a82ea524cfaaa7b5ca32e58e",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "980726f5_c2333df3",
+        "filename": "containers/external/cassandra/contrail-entrypoint.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-26T12:21:40Z",
+      "side": 1,
+      "message": "ln will fail on second run (say container restart). it can be still kept in docker file.",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 48
+      },
+      "revId": "cb2c06349fe87895a82ea524cfaaa7b5ca32e58e",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "49f2c0c9_76e005d9",
+        "filename": "containers/external/kafka/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-26T12:21:40Z",
+      "side": 1,
+      "message": "it is for data, i would to it in entrypoint as well.",
+      "range": {
+        "startLine": 34,
+        "startChar": 4,
+        "endLine": 34,
+        "endChar": 48
+      },
+      "revId": "cb2c06349fe87895a82ea524cfaaa7b5ca32e58e",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "11f5fa18_62a529d7",
+        "filename": "containers/external/kafka/docker-entrypoint.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-26T12:21:40Z",
+      "side": 1,
+      "message": "see lines 109-118. it looks it is already here.",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 42
+      },
+      "revId": "cb2c06349fe87895a82ea524cfaaa7b5ca32e58e",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
