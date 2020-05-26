@@ -18,22 +18,20 @@ ENV KAFKA_DIR=/opt/$KAFKA_DISTRO_NAME \
     KAFKA_USER=kafka \
     KAFKA_GROUP=kafka
 
-RUN yum install -y java java-1.8.0-openjdk iproute less python3 openssl wget && \
+COPY *.sh /
+
+RUN for item in `ls /__*` ; do mv $item /${item:3} ; done && \
+    yum install -y java java-1.8.0-openjdk iproute less python3 openssl wget && \
     wget -nv --tries=3 -c -O $KAFKA_DISTRO_NAME.tgz $KAFKA_CACHE/$KAFKA_DISTRO_NAME.tgz?raw=true && \
     tar -xvf $KAFKA_DISTRO_NAME.tgz && \
-    mkdir -p $KAFKA_CONF_DIR && \
+    mkdir -p $KAFKA_CONF_DIR $LOG_DIR && \
     mv $KAFKA_DISTRO_NAME/* $KAFKA_DIR && \
     rm -f $KAFKA_DISTRO_NAME.tgz && \
     yum clean all -y && \
     rm -rf /var/cache/yum && \
     groupadd -f -g 1011 kafka && adduser -M -g kafka kafka && \
     usermod -a -G $CONTRAIL_GID $KAFKA_USER && \
-    mkdir -p $LOG_DIR && \
-    chown -R $KAFKA_USER:$KAFKA_GROUP $LOG_DIR && \
-    chown -R $KAFKA_USER:$KAFKA_GROUP $KAFKA_DIR
-
-COPY *.sh /
-RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done'
+    chown -R $KAFKA_USER:$KAFKA_GROUP $LOG_DIR $KAFKA_DIR
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 WORKDIR $KAFKA_DIR
