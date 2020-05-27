@@ -1,12 +1,13 @@
 #!/usr/bin/python
 
-import json
+import logging
 import operator
 import optparse
 import os
 import socket
 import subprocess
 import warnings
+import json
 
 import docker
 from lxml import etree
@@ -15,6 +16,7 @@ from sandesh_common.vns import constants as vns_constants
 import six
 from urllib3.exceptions import SubjectAltNameWarning
 import yaml
+from nodemgr.common import cri_containers as cri
 
 warnings.filterwarnings('ignore', category=SubjectAltNameWarning)
 warnings.filterwarnings('ignore', ".*SNIMissingWarning.*")
@@ -171,6 +173,18 @@ class PodmanContainersInterface:
             return output[0]
 
         return None
+
+class CriOContainersInterface(cri.CriOContainersInterface):
+    def __init__(self):
+        cri.CriOContainersInterface.__init__(self)
+
+    @staticmethod
+    def get_channel_path():
+        return '/var/run/crio/crio.sock'
+
+    def list(self, filter_):
+        x = cri.CriOContainersInterface.list(self, True)
+        return [i for i in x if filter_ in i['Labels']]
 
 debug_output = False
 # docker client is used in several places - just cache it at start
@@ -626,10 +640,12 @@ def main():
     debug_output = options.debug
     output_format = options.format
 
-    if os.path.exists('/run/.containerenv'):
-        client = PodmanContainersInterface()
-    else:
+    if not os.path.exists('/run/.containerenv'):
         client = DockerContainersInterface()
+    elif os.path.exists(CriOContainersInterface.get_channel_path()):
+        client = CriOContainersInterface()
+    else:
+        client = PodmanContainersInterface()
 
     containers = get_containers()
     print_containers(containers)
