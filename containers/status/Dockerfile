@@ -9,9 +9,10 @@ LABEL name=$CONTAINER_NAME \
       summary="Container with code of contrail-status tool" \
       description="Display a list of all components of a Contrail server node and report their current status of active or inactive."
 
-RUN yum install -y python2-docker PyYAML podman && \
+RUN yum install -y python2-docker PyYAML podman contrail-nodemgr && \
     yum clean all -y && \
-    rm -rf /var/cache/yum
+    rm -rf /var/cache/yum && \
+    pip2 install --no-compile grpc==0.3.post19 grpcio==1.29.0 protobuf==3.12.1
 
 COPY contrail-status.py /root
 COPY entrypoint.sh /
