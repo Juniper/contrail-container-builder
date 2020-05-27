@@ -269,7 +269,9 @@ function update_repos() {
     dfile=$(basename $rfile | sed 's/.template//')
     update_file "general-base/$dfile" "$content"
     # this is special case - image derived directly from ubuntu image
-    update_file "vrouter/kernel-build-init/$dfile" "$content"
+    if [ $dfile != "redhat.repo" ]; then
+      update_file "vrouter/kernel-build-init/$dfile" "$content"
+    fi
   done
 }
 
