@@ -103,7 +103,7 @@ function is_dpdk() {
 }
 
 function is_sriov() {
-   [[ -n "$SRIOV_PHYSICAL_INTERFACE" ]] && [[ "$SRIOV_VF" -ne 0 ]]
+   [[ -n "$SRIOV_PHYSICAL_INTERFACE" ]] && [[ -n "$SRIOV_VF" ]]
 }
 
 function set_third_party_auth_config(){
