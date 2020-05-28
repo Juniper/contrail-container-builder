@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d863e6a1_944be460",
+        "filename": "containers/external/cassandra/Dockerfile",
+        "patchSetId": 3
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-28T13:37:08Z",
+      "side": 1,
+      "message": "lets dont touch this file.\nthis is used in case if someone dont bind host folder into container.\nthere are users who use own orchestration.",
+      "revId": "73e689c2c8df64316283b2397e5f9b031cb19c6a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "05a6bdd1_9bf30b7c",
+        "filename": "containers/external/cassandra/contrail-entrypoint.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-28T13:37:08Z",
+      "side": 1,
+      "message": "1. check docker-entrypoint.sh\nthere is find and chown.\njust change that chown to\nchown -R ${CASSANDRA_USER}:${CASSANDRA_GROUP}..\n\n2. lets dont do chmod 777. It breaks logic of external logrotated.",
+      "range": {
+        "startLine": 129,
+        "startChar": 0,
+        "endLine": 132,
+        "endChar": 43
+      },
+      "revId": "73e689c2c8df64316283b2397e5f9b031cb19c6a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "96437032_ae704ea9",
+        "filename": "containers/external/kafka/Dockerfile",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-28T13:37:08Z",
+      "side": 1,
+      "message": "put space between \u0026\u0026",
+      "range": {
+        "startLine": 27,
+        "startChar": 37,
+        "endLine": 27,
+        "endChar": 38
+      },
+      "revId": "73e689c2c8df64316283b2397e5f9b031cb19c6a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d11a3455_9ee114d1",
+        "filename": "containers/external/kafka/Dockerfile",
+        "patchSetId": 3
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-28T13:37:08Z",
+      "side": 1,
+      "message": "remove trailing spaces",
+      "range": {
+        "startLine": 33,
+        "startChar": 43,
+        "endLine": 33,
+        "endChar": 46
+      },
+      "revId": "73e689c2c8df64316283b2397e5f9b031cb19c6a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d77a2192_efc38a12",
+        "filename": "containers/external/kafka/docker-entrypoint.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-28T13:37:08Z",
+      "side": 1,
+      "message": "let have one line without \\",
+      "range": {
+        "startLine": 106,
+        "startChar": 0,
+        "endLine": 107,
+        "endChar": 45
+      },
+      "revId": "73e689c2c8df64316283b2397e5f9b031cb19c6a",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
