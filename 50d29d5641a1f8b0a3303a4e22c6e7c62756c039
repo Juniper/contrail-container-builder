@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a3485b23_200bcd4b",
+        "filename": "containers/node-init/contrail-status-init.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-28T18:00:12Z",
+      "side": 1,
+      "message": "lets bind folders unconditionally\n/sys/fs:/sys/fs\n/var/run:/var/run\n/var/lib/containers:/var/lib/containers\n/run/runc:/run/runc\neven if some missed line /run/runc in some setups it just be created s empty ? might it be a problem?\n\nI mean. - i would like to make as as simple as possible.. say, just determine docker/podman is to be used and all others options just same.",
+      "range": {
+        "startLine": 49,
+        "startChar": 23,
+        "endLine": 49,
+        "endChar": 31
+      },
+      "revId": "50d29d5641a1f8b0a3303a4e22c6e7c62756c039",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
