@@ -35,7 +35,7 @@ fi
 tmp_file=/host/usr/bin/contrail-status.tmp
 tmp_suffix="${CONTRAIL_STATUS_IMAGE} /root/contrail-status.py ${CONTRAIL_STATUS_OPTS} \$@"
 cat > $tmp_file << EOM
-#!/bin/bash -e
+#!/bin/bash
 u=\$(which docker 2>/dev/null)
 d=\$(pidof dockerd 2>/dev/null)
 if ((\$? == 0)); then
