@@ -103,7 +103,9 @@ function is_dpdk() {
 }
 
 function is_sriov() {
-   [[ -n "$SRIOV_PHYSICAL_INTERFACE" ]] && [[ "$SRIOV_VF" -ne 0 ]]
+   local sriov_physical_interfaces=( $(echo $SRIOV_PHYSICAL_INTERFACE | tr ',' ' ') )
+   local sriov_vfs=( $(echo $SRIOV_VF | tr ',' ' ') )
+   [[ -n "$SRIOV_PHYSICAL_INTERFACE" ]] && [[ -n "$SRIOV_VF" ]] && [[ ${#sriov_physical_interfaces[@]} == ${#sriov_vfs[@]} ]]
 }
 
 function set_third_party_auth_config(){
