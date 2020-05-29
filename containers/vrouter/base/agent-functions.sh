@@ -631,15 +631,27 @@ function init_vhost0() {
 
 function init_sriov() {
     # check whether sriov enabled
-    if ! is_sriov ; then
+    if [[ -z "$SRIOV_PHYSICAL_INTERFACE && -z "$SRIOV_PHYSICAL_INTERFACE"]] ; then
+        echo "INFO: sriov parameters are not provided"
         return
     fi
 
-    echo "INFO: SRIOV Enabled"
-    local  sriov_numvfs="/sys/class/net/${SRIOV_PHYSICAL_INTERFACE}/device/sriov_numvfs"
-    if [[ -f "$sriov_numvfs" ]] ; then
-        echo "$SRIOV_VF" > $sriov_numvfs
+    local sriov_physical_interfaces=( $(echo $SRIOV_PHYSICAL_INTERFACE | tr ',' ' ') )
+    local sriov_vfs=( $(echo $SRIOV_VF | tr ',' ' ') )
+
+    if [[ -z "$SRIOV_PHYSICAL_INTERFACE || -z "$SRIOV_PHYSICAL_INTERFACE"
+         || ${#sriov_physical_interfaces[@]} -ne ${#sriov_vfs[@]} ]] ; then
+        echo "ERROR: sriov parameteres are not correct"
+        exit -1
     fi
+    echo "INFO: SRIOV Enabled"
+    local sriov_numvfs=""
+    for i in ${!sriov_vfs[@]}; do
+        sriov_numvfs="/sys/class/net/${sriov_physical_interfaces[$i]}/device/sriov_numvfs"
+        if [[ -f "$sriov_numvfs" ]] ; then
+            echo "${sriov_vfs[$i]}" > $sriov_numvfs
+        fi
+    done
 }
 
 function cleanup_lbaas_netns_config() {
