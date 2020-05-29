@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "87929530_14d58736",
+        "filename": "containers/vrouter/base/agent-functions.sh",
+        "patchSetId": 6
+      },
+      "lineNbr": 634,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-29T13:37:54Z",
+      "side": 1,
+      "message": "missing ending \"",
+      "range": {
+        "startLine": 634,
+        "startChar": 13,
+        "endLine": 634,
+        "endChar": 40
+      },
+      "revId": "350979d1552aec4d9e0dc20c439574620230b5d9",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "80689a3c_6c7b0008",
+        "filename": "containers/vrouter/base/agent-functions.sh",
+        "patchSetId": 6
+      },
+      "lineNbr": 634,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-29T13:37:54Z",
+      "side": 1,
+      "message": "between \" and ] there must be a space",
+      "range": {
+        "startLine": 634,
+        "startChar": 72,
+        "endLine": 634,
+        "endChar": 74
+      },
+      "revId": "350979d1552aec4d9e0dc20c439574620230b5d9",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c671220d_a14f70aa",
+        "filename": "containers/vrouter/base/agent-functions.sh",
+        "patchSetId": 6
+      },
+      "lineNbr": 655,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-05-29T13:37:54Z",
+      "side": 1,
+      "message": "please check function manually, say, create a t.sh put the function there and call it with providing env variable to see that there is no syntax errors.\nyou can use any name eth you have in system, let just echo \u003e $srivnumfs fail..  but other logic you\u0027d see.",
+      "range": {
+        "startLine": 632,
+        "startChar": 0,
+        "endLine": 655,
+        "endChar": 1
+      },
+      "revId": "350979d1552aec4d9e0dc20c439574620230b5d9",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
