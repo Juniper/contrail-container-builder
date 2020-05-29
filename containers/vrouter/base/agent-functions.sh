@@ -632,14 +632,20 @@ function init_vhost0() {
 function init_sriov() {
     # check whether sriov enabled
     if ! is_sriov ; then
+        echo "INFO: sriov parameters are not provided or are not correct"
         return
     fi
 
     echo "INFO: SRIOV Enabled"
-    local  sriov_numvfs="/sys/class/net/${SRIOV_PHYSICAL_INTERFACE}/device/sriov_numvfs"
-    if [[ -f "$sriov_numvfs" ]] ; then
-        echo "$SRIOV_VF" > $sriov_numvfs
-    fi
+    local sriov_physical_interfaces=( $(echo $SRIOV_PHYSICAL_INTERFACE | tr ',' ' ') )
+    local sriov_vfs=( $(echo $SRIOV_VF | tr ',' ' ') )
+    local sriov_numvfs=""
+    for i in ${!sriov_vfs[@]}; do
+        sriov_numvfs="/sys/class/net/${sriov_physical_interfaces[$i]}/device/sriov_numvfs"
+        if [[ -f "$sriov_numvfs" ]] ; then
+            echo "${sriov_vfs[$i]}" > $sriov_numvfs
+        fi
+    done
 }
 
 function cleanup_lbaas_netns_config() {
