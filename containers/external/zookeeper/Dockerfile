@@ -31,7 +31,7 @@ ENV PATH=$PATH:/${ZOO_DISTRO_NAME}/bin \
 COPY *.sh hostname_to_ip /
 
 RUN set -eux && for item in `ls /__*` ; do mv $item /${item:3} ; done && \
-    yum install -y java java-1.8.0-openjdk iproute perl openssl wget && \
+    yum install -y java java-1.8.0-openjdk iproute perl nmap-ncat openssl wget && \
     groupadd -f -g 1000 $ZOO_GROUP && adduser -u 1000 -M -g $ZOO_GROUP $ZOO_USER && \
     usermod -a -G $CONTRAIL_GID $ZOO_USER && \
     mkdir -p "$ZOO_DATA_LOG_DIR" "$ZOO_DATA_DIR" "$ZOO_CONF_DIR" "$ZOO_LOG_DIR" && \
