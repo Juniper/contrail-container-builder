@@ -59,6 +59,7 @@ syncLimit=${ZOO_SYNC_LIMIT}
 maxClientCnxns=${ZOO_MAX_CLIENT_CNXNS}
 
 admin.enableServer=false
+4lw.commands.whitelist=*
 EOM
 
 for server in $ZOO_SERVERS; do
