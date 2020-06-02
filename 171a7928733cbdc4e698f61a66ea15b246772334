@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c036b318_61a95d3a",
+        "filename": "containers/vrouter/base/agent-functions.sh",
+        "patchSetId": 5
+      },
+      "lineNbr": 639,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-02T14:52:20Z",
+      "side": 1,
+      "message": "local ....",
+      "range": {
+        "startLine": 639,
+        "startChar": 4,
+        "endLine": 639,
+        "endChar": 29
+      },
+      "revId": "171a7928733cbdc4e698f61a66ea15b246772334",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e28e6459_2319c183",
+        "filename": "containers/vrouter/base/agent-functions.sh",
+        "patchSetId": 5
+      },
+      "lineNbr": 649,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-02T14:52:20Z",
+      "side": 1,
+      "message": "put before for \nlocal i",
+      "revId": "171a7928733cbdc4e698f61a66ea15b246772334",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
