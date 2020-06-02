@@ -35,6 +35,7 @@ cat << EOM > /host/etc_cni/net.d/10-contrail.conf
 {
     "cniVersion": "0.3.1",
     "contrail" : {
+        "cluster-name"  : "$KUBERNETES_CLUSTER_NAME",
         "meta-plugin"   : "$KUBERNETES_CNI_META_PLUGIN",
         "vrouter-ip"    : "127.0.0.1",
         "vrouter-port"  : $VROUTER_PORT,
@@ -58,6 +59,7 @@ cat << EOM > /host/etc_cni/net.d/10-contrail.conf
 {
    "cniVersion": "0.3.1",
    "contrail" : {
+       "cluster-name"      : "$KUBERNETES_CLUSTER_NAME",
        "mode"              : "k8s",
        "meta-plugin"       : "$KUBERNETES_CNI_META_PLUGIN",
        "vif-type"          : "macvlan",
