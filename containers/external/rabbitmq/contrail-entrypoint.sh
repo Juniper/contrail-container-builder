@@ -76,6 +76,7 @@ echo "INFO: RABBITMQ_NODENAME=$RABBITMQ_NODENAME, RABBITMQ_NODE_PORT=$RABBITMQ_N
 
 # to be able to run rabbitmqctl without params
 echo "RABBITMQ_NODENAME=contrail@$my_node" > /etc/rabbitmq/rabbitmq-env.conf
+echo "HOME=/var/lib/rabbitmq" >> /etc/rabbitmq/rabbitmq-env.conf
 if is_enabled $RABBITMQ_USE_SSL ; then
   echo 'RABBITMQ_CTL_ERL_ARGS="-proto_dist inet_tls"' >> /etc/rabbitmq/rabbitmq-env.conf
 fi
