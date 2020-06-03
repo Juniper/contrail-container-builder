@@ -5,6 +5,7 @@ export ALARMGEN_REDIS_AGGREGATE_DB_OFFSET=${ALARMGEN_REDIS_AGGREGATE_DB_OFFSET:-
 
 pre_start_init
 wait_redis_certs_if_ssl_enabled
+wait_zookeeper_certs_if_ssl_enabled
 
 host_ip=$(get_listen_ip_for_node ANALYTICS_ALARM)
 config_db_server_list=$(echo $CONFIGDB_SERVERS | sed 's/,/ /g')
@@ -51,6 +52,10 @@ $kombu_ssl_config
 $sandesh_client_config
 
 $collector_stats_config
+
+[ZOOKEEPER]
+zookeeper_ssl_enable=$ZOOKEEPER_SSL_ENABLE
+${zookeeper_ssl_config}
 EOM
 
 add_ini_params_from_env ALARM_GEN /etc/contrail/contrail-alarm-gen.conf
