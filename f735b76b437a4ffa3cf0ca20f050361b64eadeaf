@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f76409b9_c63b85c3",
+        "filename": "containers/external/kafka/Dockerfile",
+        "patchSetId": 4
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-03T12:00:20Z",
+      "side": 0,
+      "message": "lets keep these lines\nor use one chown -R $KAFKA_USER:$KAFKA_GROUP $LOG_DIR $KAFKA_DIR \n\nfor case if people use own orchestration",
+      "range": {
+        "startLine": 32,
+        "startChar": 0,
+        "endLine": 33,
+        "endChar": 48
+      },
+      "revId": "f735b76b437a4ffa3cf0ca20f050361b64eadeaf",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d9d4c352_aa8cbff8",
+        "filename": "containers/external/cassandra/Dockerfile",
+        "patchSetId": 4
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-03T12:00:20Z",
+      "side": 1,
+      "message": "please return ${CASSANDRA_LOG} ${CASSANDRA_LIB}  here.\nbecause someone can use own orchestration w/o binding from host",
+      "range": {
+        "startLine": 37,
+        "startChar": 4,
+        "endLine": 37,
+        "endChar": 69
+      },
+      "revId": "70152ac51d3dc205d266b5c1f709f9c74ce1af6e",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "35b63956_660744ae",
+        "filename": "containers/external/cassandra/contrail-entrypoint.sh",
+        "patchSetId": 4
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-03T12:00:20Z",
+      "side": 1,
+      "message": "missed path",
+      "range": {
+        "startLine": 130,
+        "startChar": 0,
+        "endLine": 130,
+        "endChar": 45
+      },
+      "revId": "70152ac51d3dc205d266b5c1f709f9c74ce1af6e",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
