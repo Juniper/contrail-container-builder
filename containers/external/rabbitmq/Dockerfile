@@ -16,9 +16,12 @@ RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done' && \
     curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.rpm.sh | bash && \
     yum install -y erlang-21.3* rabbitmq-server-3.7.20* bind bind-utils perl vim-common && \
     usermod -a -G $CONTRAIL_GID rabbitmq && \
+    usermod -d /var/lib/rabbitmq rabbitmq && \
     rabbitmq-plugins enable --offline rabbitmq_management && \
     yum clean all -y && \
     rm -rf /var/cache/yum
+
+VOLUME "/var/lib/rabbitmq"
 
 EXPOSE 15671 15672 4369 5671 5672 25672
 
