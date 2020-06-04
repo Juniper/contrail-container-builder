@@ -20,7 +20,8 @@ ENV ZOO_CONF_DIR=/conf \
     ZOO_MAX_CLIENT_CNXNS=60 \
     ZOO_URL="https://archive.apache.org/dist/zookeeper" \
     ZOO_USER="zookeeper" \
-    ZOO_GROUP="zookeeper"
+    ZOO_GROUP="zookeeper" \
+    ZOO_MAX_SESSION_TIMEOUT=120000
 
 ARG ZOO_VERSION="3.6.1"
 ARG ZOO_DISTRO_NAME="apache-zookeeper-${ZOO_VERSION}-bin"
