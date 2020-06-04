@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3c7cc6cd_c11256ca",
+        "filename": "common.env.sample",
+        "patchSetId": 1
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-04T16:45:39Z",
+      "side": 1,
+      "message": "#ZOO....\nremove trailing spaces",
+      "range": {
+        "startLine": 120,
+        "startChar": 0,
+        "endLine": 120,
+        "endChar": 23
+      },
+      "revId": "c70708284f44b32f617fdc552231484285820363",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aa0077d2_d651cbf2",
+        "filename": "containers/external/zookeeper/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-04T16:45:39Z",
+      "side": 1,
+      "message": "please check again example in the ticket - it looks there is 120000",
+      "range": {
+        "startLine": 24,
+        "startChar": 28,
+        "endLine": 24,
+        "endChar": 33
+      },
+      "revId": "c70708284f44b32f617fdc552231484285820363",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
