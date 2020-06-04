@@ -57,6 +57,7 @@ initLimit=${ZOO_INIT_LIMIT}
 syncLimit=${ZOO_SYNC_LIMIT}
 
 maxClientCnxns=${ZOO_MAX_CLIENT_CNXNS}
+maxSessionTimeout=${ZOO_MAX_SESSION_TIMEOUT}
 
 admin.enableServer=false
 4lw.commands.whitelist=*
