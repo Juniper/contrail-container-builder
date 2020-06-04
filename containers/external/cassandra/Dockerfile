@@ -13,7 +13,8 @@ ENV CASSANDRA_HOME=/opt/cassandra \
     CASSANDRA_LIB=/var/lib/cassandra \
     CASSANDRA_LOG=/var/log/cassandra \
     CASSANDRA_USER=cassandra \
-    CASSANDRA_GROUP=cassandra
+    CASSANDRA_GROUP=cassandra \
+    CASSANDRA_FILE_CACHE_SIZE_IN_MB=512
 ENV PATH="$CASSANDRA_HOME/bin:$PATH"
 
 ARG CASSANDRA_VERSION=3.11.3
