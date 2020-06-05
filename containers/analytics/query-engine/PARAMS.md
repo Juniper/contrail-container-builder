@@ -58,9 +58,8 @@
 | LOG_LEVEL                          | SYS_NOTICE                                                              |
 | LOG_LOCAL                          | -1                                                                      |
 | **Redis**                          |                                                                         |
-| REDIS_SERVERS                      | $REDIS_NODES with $REDIS_SERVER_PORT                                    |
+| REDIS_SERVERS                      | $ANALYTICS_NODES with $REDIS_SERVER_PORT                                |
 | REDIS_SERVER_PASSWORD              | ""                                                                      |
-| *REDIS_NODES*                      | $ANALYTICS_NODES                                                        |
 | REDIS_SSL_CACERTFILE               | $SERVER_CA_CERTFILE                                                     |
 | REDIS_SSL_CERTFILE                 | $SERVER_CERTFILE                                                        |
 | REDIS_SSL_ENABLE                   | $SSL_ENABLE                                                             |
