@@ -212,7 +212,7 @@ if is_enabled $RABBITMQ_USE_SSL && [[ "$1" == rabbitmq* ]]; then
   export RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS="${RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS:-} $sslErlArgs"
   export RABBITMQ_CTL_ERL_ARGS="${RABBITMQ_CTL_ERL_ARGS:-} $sslErlArgs"
 fi
-
+chown -R rabbitmq:rabbitmq /var/log/rabbitmq
 if [[ -n "$RABBITMQ_LOGS" && "$RABBITMQ_LOGS" != '-' ]] ; then
   log_dir=$(dirname $RABBITMQ_LOGS)
   mkdir -p $log_dir
