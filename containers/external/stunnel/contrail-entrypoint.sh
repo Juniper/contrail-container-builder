@@ -25,6 +25,11 @@ setgid = $CONTRAIL_GID
 EOM
 fi
 
+# it doesn't matter here if REDIS_NODES will have duplicates
+# first list must be ANALYTICSNODES and if IP can be found there then it doesn't matter
+# what is in WEBUI_NODES
+REDIS_NODES="${REDIS_NODES:-$ANALYTICS_NODES,$WEBUI_NODES}"
+
 # Stunnel should listen on 2 ip address - my_ip and localhost
 if [[ -z "$REDIS_LISTEN_ADDRESS" && -n "$REDIS_NODES" ]]; then
   for i in {1..10} ; do
@@ -34,6 +39,10 @@ if [[ -z "$REDIS_LISTEN_ADDRESS" && -n "$REDIS_NODES" ]]; then
     fi
     sleep 1
   done
+  if [ -z "$my_ip_and_order" ]; then
+    echo "ERROR: Cannot find self ips ('$(get_local_ips)') in Redis nodes ('$REDIS_NODES')"
+    exit -1
+  fi
   redis_node_ip=$(echo $my_ip_and_order | cut -d ' ' -f 1)
   [ -n "$redis_node_ip" ] && REDIS_LISTEN_ADDRESS=${redis_node_ip}
 fi
