@@ -3,7 +3,8 @@
 source /common.sh
 
 if ! is_enabled ${APPLY_DEFAULTS} ; then
-  exit 0
+  exec $@
+  exit $?
 fi
 
 pre_start_init
