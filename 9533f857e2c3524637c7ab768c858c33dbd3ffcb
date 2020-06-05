@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b90285ca_7e007256",
+        "filename": "containers/external/cassandra/Dockerfile",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-05T09:14:31Z",
+      "side": 1,
+      "message": "the check looks goog.\nnow lets revert it , to keep cassandra delfault behaviour",
+      "range": {
+        "startLine": 16,
+        "startChar": 30,
+        "endLine": 17,
+        "endChar": 39
+      },
+      "revId": "9533f857e2c3524637c7ab768c858c33dbd3ffcb",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
