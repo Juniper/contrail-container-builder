@@ -3,7 +3,7 @@
 source /common.sh
 
 CONFIG=/etc/cassandra/cassandra.yaml
-
+JVM_OPTIONS=/etc/cassandra/jvm.options
 change_variable()
 {
   local VARIABLE_NAME=$1
@@ -30,7 +30,30 @@ fi
 export CASSANDRA_SEEDS=$(echo $CASSANDRA_SEEDS | cut -d ',' -f 1,2)
 export CASSANDRA_LISTEN_ADDRESS=$my_ip
 export CASSANDRA_RPC_ADDRESS=$my_ip
-
+#set heap size options directly to jvm.options to avoid possible duplicates
+if [[ -n "$JVM_EXTRA_OPTS"  ]] ; then
+  CASSANDRA_XMX="$(echo $JVM_EXTRA_OPTS | sed -n 's/.*\(-Xmx[0-9]*[mMgG]\).*/\1/p')"
+  CASSANDRA_XMS="$(echo $JVM_EXTRA_OPTS | sed -n 's/.*\(-Xms[0-9]*[mMgG]\).*/\1/p')"
+  if [[ -n "${CASSANDRA_XMX}" && -n "${CASSANDRA_XMS}" ]] ; then
+    #case if JVM_EXTRA_OPTS has more options to consider
+    JVM_EXTRA_OPTS="$(echo $JVM_EXTRA_OPTS | sed 's/-Xms[0-9]*[mMgG]//g')"
+    JVM_EXTRA_OPTS="$(echo $JVM_EXTRA_OPTS | sed 's/-Xmx[0-9]*[mMgG]//g')"    
+    rm -rf "$JVM_OPTIONS".bak
+    cp "$JVM_OPTIONS" "$JVM_OPTIONS".bak
+      for yaml in \
+        Xmx \
+        Xms \
+      ; do
+        var="CASSANDRA_${yaml^^}"
+        val="${!var}"
+        if [ -n "$val" ] ; then
+          sed -i 's/^#'"-$yaml"'.*/'"$val"'/g' "$JVM_OPTIONS"          
+        fi
+      done
+  else
+    echo "Xms and Xmx options are not extracted. Add to cli command instead of options. "
+  fi
+fi
 export JVM_EXTRA_OPTS="${JVM_EXTRA_OPTS} -Dcassandra.rpc_port=${CASSANDRA_PORT} \
   -Dcassandra.native_transport_port=${CASSANDRA_CQL_PORT} \
   -Dcassandra.ssl_storage_port=${CASSANDRA_SSL_STORAGE_PORT} \
