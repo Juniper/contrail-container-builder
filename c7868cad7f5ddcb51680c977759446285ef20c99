@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ee4d6f00_167430bd",
+        "filename": "common.env.sample",
+        "patchSetId": 2
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-06-05T09:09:22Z",
+      "side": 1,
+      "message": "please revert this file",
+      "revId": "c7868cad7f5ddcb51680c977759446285ef20c99",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
