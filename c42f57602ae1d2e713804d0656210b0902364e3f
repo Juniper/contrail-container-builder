@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "69a73902_31c76912",
+        "filename": "containers/external/rabbitmq/contrail-entrypoint.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-05T11:10:20Z",
+      "side": 1,
+      "message": "add before mkdir -p /var/log/rabbitmq",
+      "range": {
+        "startLine": 215,
+        "startChar": 27,
+        "endLine": 215,
+        "endChar": 44
+      },
+      "revId": "c42f57602ae1d2e713804d0656210b0902364e3f",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
