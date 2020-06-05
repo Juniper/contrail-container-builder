@@ -6,6 +6,11 @@ source /common.sh
 # If WebUI is placed on the same node with analytics - redis will listen on two IP-s and analytics and WebUI will work well.
 # If WebUI is placed on different node than analitics - redis on the node with WebUI will listen only 127.0.0.1 and it is sufficient for WebUI.
 
+# it doesn't matter here if REDIS_NODES will have duplicates
+# first list must be ANALYTICSNODES and if IP can be found there then it doesn't matter
+# what is in CONTROLLER_NODES
+REDIS_NODES="$ANALYTICS_NODES,$CONTROLLER_NODES"
+
 if [[ -z "$REDIS_LISTEN_ADDRESS" && -n "$REDIS_NODES" ]]; then
   for i in {1..10} ; do
     my_ip_and_order=$(find_my_ip_and_order_for_node REDIS)
