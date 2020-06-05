@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "80ec8cbf_5b21b83a",
+        "filename": "containers/external/cassandra/contrail-entrypoint.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-05T15:51:31Z",
+      "side": 1,
+      "message": "1. the order of options can be arbitrary ..\nso the code may work differently for \"-Xms1g -Xmx2g\" and \"-Xmx2g -Xms1g\"\n\n2. JVM_EXTRA_OPTS in theroy may have others options as well...\nso, we need here redefine it variable and keep others options except ones we need.",
+      "range": {
+        "startLine": 34,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 41
+      },
+      "revId": "e229c504ac9198385d80eadb4096d8872e4d1fda",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e389ffce_9b222e54",
+        "filename": "containers/external/cassandra/contrail-entrypoint.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-05T15:51:31Z",
+      "side": 1,
+      "message": "in theory one of option maybe provided only..",
+      "range": {
+        "startLine": 37,
+        "startChar": 30,
+        "endLine": 37,
+        "endChar": 32
+      },
+      "revId": "e229c504ac9198385d80eadb4096d8872e4d1fda",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "75c28839_4b1cc7dc",
+        "filename": "containers/external/cassandra/contrail-entrypoint.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-05T15:51:31Z",
+      "side": 1,
+      "message": "rm -f before cp\nto avoid errors on second run",
+      "range": {
+        "startLine": 39,
+        "startChar": 22,
+        "endLine": 39,
+        "endChar": 40
+      },
+      "revId": "e229c504ac9198385d80eadb4096d8872e4d1fda",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "66719669_23f91acf",
+        "filename": "containers/external/cassandra/contrail-entrypoint.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-05T15:51:31Z",
+      "side": 1,
+      "message": "-n \"$val\"\n?",
+      "range": {
+        "startLine": 46,
+        "startChar": 13,
+        "endLine": 46,
+        "endChar": 19
+      },
+      "revId": "e229c504ac9198385d80eadb4096d8872e4d1fda",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "569021b8_0313732a",
+        "filename": "containers/external/cassandra/contrail-entrypoint.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-05T15:51:31Z",
+      "side": 1,
+      "message": "is that for debug?\n\nmaybe easily just do cat after the loop?",
+      "range": {
+        "startLine": 48,
+        "startChar": 9,
+        "endLine": 48,
+        "endChar": 33
+      },
+      "revId": "e229c504ac9198385d80eadb4096d8872e4d1fda",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
