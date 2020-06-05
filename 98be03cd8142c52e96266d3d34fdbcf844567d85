@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7476e997_0f0d16fb",
+        "filename": "containers/external/redis/contrail-entrypoint.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-05T16:33:55Z",
+      "side": 1,
+      "message": "1. maybe keep compatibility?\nREDIS_NODES\u003d${REDIS_NODES:-\"$ANALYTICS_NODES,....}\n2. CONTROLLER_NODES  or WEBUI_NODES ?",
+      "range": {
+        "startLine": 12,
+        "startChar": 31,
+        "endLine": 12,
+        "endChar": 47
+      },
+      "revId": "98be03cd8142c52e96266d3d34fdbcf844567d85",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
