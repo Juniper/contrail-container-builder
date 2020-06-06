@@ -37,8 +37,7 @@ tmp_suffix="${CONTRAIL_STATUS_IMAGE} /root/contrail-status.py ${CONTRAIL_STATUS_
 cat > $tmp_file << EOM
 #!/bin/bash
 u=\$(which docker 2>/dev/null)
-d=\$(pidof dockerd 2>/dev/null)
-if ((\$? == 0)); then
+if pidof dockerd 2>/dev/null || pidof dockerd-current 2>/dev/null ; then
     \$u run --rm --name \${CONTRAIL_STATUS_CONTAINER_NAME:-contrail-status} -v /var/run/docker.sock:/var/run/docker.sock $vol_opts $env_opts --pid host --net host --privileged $tmp_suffix
     exit \$?
 fi
