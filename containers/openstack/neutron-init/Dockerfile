@@ -13,8 +13,10 @@ COPY *.sh /
 
 # run _prepare_packages.sh as a last step cause it can break some repositories
 RUN curl https://bootstrap.pypa.io/get-pip.py | python2 - 'pip==20.1' && \
-    pip install --target=/opt/contrail/site-packages future && \
-    mkdir -p /opt/contrail/site-packages && \
+    mkdir -p /opt/contrail/site-packages /opt/contrail/python2/site-packages /opt/contrail/python3/site-packages && \
+    pip install --no-compile --target=/opt/python2/site-packages future && \
+    yum install -y python3 python3-setuptools && \
+    python3 -m pip install --no-compile --target=/opt/contrail/python3/site-packages "future==0.18.2" && \
     rpm -Uvh --nodeps $(repoquery --location python-contrail) && \
     rpm -Uvh --nodeps $(repoquery --location neutron-plugin-contrail) && \
     cp -rf /usr/lib/python2.7/site-packages/neutron_plugin_contrail* /opt/contrail/site-packages && \
