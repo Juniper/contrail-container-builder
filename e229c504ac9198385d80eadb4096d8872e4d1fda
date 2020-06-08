@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "94fa31bb_44519243",
+        "filename": "containers/external/cassandra/contrail-entrypoint.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 846
+      },
+      "writtenOn": "2020-06-08T07:21:20Z",
+      "side": 1,
+      "message": "we can\u0027t handle this case. I don\u0027t find where there is only one option. Only if the options are equal",
+      "parentUuid": "e389ffce_9b222e54",
+      "range": {
+        "startLine": 37,
+        "startChar": 30,
+        "endLine": 37,
+        "endChar": 32
+      },
+      "revId": "e229c504ac9198385d80eadb4096d8872e4d1fda",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "75c28839_4b1cc7dc",
         "filename": "containers/external/cassandra/contrail-entrypoint.sh",
         "patchSetId": 1
