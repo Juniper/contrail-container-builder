@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "41c8cbe0_bf882938",
+        "filename": "kubernetes/manifests/contrail-standalone-kubernetes.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-09T10:25:53Z",
+      "side": 1,
+      "message": "1) for now contrail services (except externals like cassandra) do create subfolders\ninside a /var/log/contrail/ that correspond to service name (common.sh in\ncontrail_container_builder:\nLOG_DIR\u003d${LOG_DIR:-\"/var/log/contrail\"}\nexport CONTAINER_LOG_DIR\u003d${CONTAINER_LOG_DIR:-${LOG_DIR}/${NODE_TYPE}-${SERVICE_NAME}}\n\nSo, there analyticsdb-logs is used for both types - external and query-engine.\n\nIn that case the result be that on host in /var/log/contrail/database appear cassandra \nlog files and subfolders with query engine.\n\nSo, I would use a kind of volume like\n      - name: contrail-logs\n        hostPath:\n          path: /var/log/contrail\n\nthat be used for regular contrail services\n\nand for external own volume like analyticsdb-logs now.\n\n\n2) please handle all yaml in this folder (the are mostly copy of each with small diff)",
+      "range": {
+        "startLine": 303,
+        "startChar": 0,
+        "endLine": 305,
+        "endChar": 42
+      },
+      "revId": "5c474072e23eaf3e8fc9dd450313f5ec4bb9393c",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
