@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e7910029_7f39f864",
+        "filename": "kubernetes/manifests/contrail-standalone-kubernetes.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1549,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-09T09:42:58Z",
+      "side": 1,
+      "message": "/var/lib/contrail/loadbalancer\nno?",
+      "range": {
+        "startLine": 1549,
+        "startChar": 16,
+        "endLine": 1549,
+        "endChar": 46
+      },
+      "revId": "e1065bb8fdc853de7f8a5aee8ab3badfce540abe",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
