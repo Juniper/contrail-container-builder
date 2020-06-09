@@ -1481,6 +1481,8 @@ spec:
           name: agent-logs
         - mountPath: /mnt
           name: docker-unix-socket
+        - mountPath: /var/lib/contrail/loadbalancer
+          name: lb-nodemgr
       - name: contrail-agent-provisioner
         image: "{{CONTRAIL_REGISTRY}}/contrail-provisioner:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -1542,6 +1544,9 @@ spec:
       - name: host-usr-bin
         hostPath:
           path: /usr/bin
+      - name: lb-nodemgr
+        hostPath:
+          path: /var/lib/contrail/loadbalancer
 
 # Meta information section
 ---
