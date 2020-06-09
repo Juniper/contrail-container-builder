@@ -3,7 +3,7 @@
 source /common.sh
 
 CONFIG=/etc/cassandra/cassandra.yaml
-
+JVM_OPTIONS_CONFIG=/etc/cassandra/jvm.options
 change_variable()
 {
   local VARIABLE_NAME=$1
@@ -30,6 +30,16 @@ fi
 export CASSANDRA_SEEDS=$(echo $CASSANDRA_SEEDS | cut -d ',' -f 1,2)
 export CASSANDRA_LISTEN_ADDRESS=$my_ip
 export CASSANDRA_RPC_ADDRESS=$my_ip
+#set heap size options directly to jvm.options to avoid possible duplicates
+echo "INFO: JVM_EXTRA_OPTS=$JVM_EXTRA_OPTS"
+for yaml in Xmx Xms ; do
+  opt=$(echo $JVM_EXTRA_OPTS | sed -n "s/.*\(-${yaml}[0-9]*[mMgG]\).*/\1/p")
+  if [[ -n "${opt}" ]] ; then
+    #remove opt from JVM_EXTRA_OPTS and put it to config file
+    JVM_EXTRA_OPTS=$(echo $JVM_EXTRA_OPTS | sed "s/-${yaml}[0-9]*[mMgG]//g")
+    sed -i "s/^[#]*-${yaml}.*/${opt}/g" $JVM_OPTIONS_CONFIG
+  fi
+done
 
 export JVM_EXTRA_OPTS="${JVM_EXTRA_OPTS} -Dcassandra.rpc_port=${CASSANDRA_PORT} \
   -Dcassandra.native_transport_port=${CASSANDRA_CQL_PORT} \
