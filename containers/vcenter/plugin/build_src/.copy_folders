@@ -1,2 +1,0 @@
-vcenter-plugin/webs/. /usr/share/contrail-vcenter-plugin/webs/
-vcenter-plugin/target/dependency/. /usr/share/contrail-vcenter-plugin/lib/
