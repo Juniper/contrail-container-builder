@@ -239,7 +239,7 @@ spec:
           value: "2"
         volumeMounts:
         - mountPath: /var/log/contrail
-          name: analyticsdb-logs
+          name: contrail-logs
         - mountPath: /mnt
           name: docker-unix-socket
       - name: contrail-analyticsdb-provisioner
@@ -263,7 +263,7 @@ spec:
           value: "2"
         volumeMounts:
         - mountPath: /var/log/contrail
-          name: analyticsdb-logs
+          name: contrail-logs
       - name: contrail-analyticsdb
         image: "{{CONTRAIL_REGISTRY}}/contrail-external-cassandra:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -293,7 +293,7 @@ spec:
             name: configzookeeperenv
         volumeMounts:
         - mountPath: /var/log/contrail
-          name: analyticsdb-logs
+          name: contrail-logs
       imagePullSecrets:
       - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
@@ -302,7 +302,10 @@ spec:
           path: /var/lib/contrail/analyticsdb
       - name: analyticsdb-logs
         hostPath:
-          path: /var/log/contrail/analyticsdb
+          path: /var/log/contrail/database
+      - name: contrail-logs
+        hostPath:
+          path: /var/log/contrail
       - name: docker-unix-socket
         hostPath:
           path: /var/run
@@ -378,7 +381,7 @@ spec:
  #   type: Socket
         volumeMounts:
         - mountPath: /var/log/contrail
-          name: configdb-logs
+          name: contrail-logs
         - mountPath: /mnt
           name: docker-unix-socket
       - name: contrail-config-database-provisioner
@@ -400,7 +403,7 @@ spec:
           value: "2"
         volumeMounts:
         - mountPath: /var/log/contrail
-          name: configdb-logs
+          name: contrail-logs
       imagePullSecrets:
       - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
@@ -409,13 +412,17 @@ spec:
           path: /var/lib/contrail/configdb
       - name: configdb-logs
         hostPath:
-          path: /var/log/contrail/configdb
+          path: /var/log/contrail/config-database
       - name: docker-unix-socket
         hostPath:
           path: /var/run
       - name: host-usr-bin
         hostPath:
           path: /usr/bin
+      - name: contrail-logs
+        hostPath:
+          path: /var/log/contrail
+
 ---
 apiVersion: apps/v1
 kind: DaemonSet
@@ -471,7 +478,7 @@ spec:
             name: configzookeeperenv
         volumeMounts:
         - mountPath: /var/log/contrail
-          name: analytics-logs
+          name: contrail-logs
       - name: contrail-analytics-collector
         image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-collector:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -480,7 +487,7 @@ spec:
             name: env
         volumeMounts:
         - mountPath: /var/log/contrail
-          name: analytics-logs
+          name: contrail-logs
       - name: contrail-analytics-nodemgr
         image: "{{CONTRAIL_REGISTRY}}/contrail-nodemgr:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -501,7 +508,7 @@ spec:
 #   type: Socket
         volumeMounts:
         - mountPath: /var/log/contrail
-          name: analytics-logs
+          name: contrail-logs
         - mountPath: /mnt
           name: docker-unix-socket
       - name: contrail-analytics-provisioner
@@ -521,7 +528,7 @@ spec:
           value: analytics
         volumeMounts:
         - mountPath: /var/log/contrail
-          name: analytics-logs
+          name: contrail-logs
       imagePullSecrets:
       - name: {{ KUBERNETES_SECRET_CONTRAIL_REPO }}
       volumes:
@@ -534,6 +541,10 @@ spec:
       - name: host-usr-bin
         hostPath:
           path: /usr/bin
+      - name: contrail-logs
+        hostPath:
+          path: /var/log/contrail
+
 ---
 apiVersion: apps/v1
 kind: DaemonSet
@@ -734,6 +745,9 @@ spec:
             name: env
         - configMapRef:
             name: configzookeeperenv
+        volumeMounts:
+        - mountPath: /var/log/kafka
+          name: kafka-logs  
       - name: contrail-analytics-alarm-gen
         image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-alarm-gen:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -805,6 +819,9 @@ spec:
       - name: host-usr-bin
         hostPath:
           path: /usr/bin
+      - name: kafka-logs
+        hostPath:
+          path: /var/log/contrail/kafka
 ---
 apiVersion: apps/v1
 kind: DaemonSet

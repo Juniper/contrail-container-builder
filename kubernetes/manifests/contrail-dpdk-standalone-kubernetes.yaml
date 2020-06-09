@@ -392,7 +392,7 @@ spec:
 #   path: /var/run/docker.sock and
  #   type: Socket
         volumeMounts:
-        - mountPath: /var/log/contrail
+        - mountPath: /var/log/contrail/config-database
           name: configdb-logs
         - mountPath: /mnt
           name: docker-unix-socket
@@ -424,7 +424,7 @@ spec:
           path: /var/lib/contrail/configdb
       - name: configdb-logs
         hostPath:
-          path: /var/log/contrail/configdb
+          path: /var/log/contrail/config-database
       - name: docker-unix-socket
         hostPath:
           path: /var/run
@@ -749,6 +749,9 @@ spec:
             name: env
         - configMapRef:
             name: configzookeeperenv
+        volumeMounts:
+        - mountPath: /var/log/kafka
+          name: kafka-logs    
       - name: contrail-analytics-alarm-gen
         image: "{{CONTRAIL_REGISTRY}}/contrail-analytics-alarm-gen:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -820,6 +823,9 @@ spec:
       - name: host-usr-bin
         hostPath:
           path: /usr/bin
+      - name: kafka-logs
+        hostPath:
+          path: /var/log/contrail/kafka
 ---
 apiVersion: apps/v1
 kind: DaemonSet
