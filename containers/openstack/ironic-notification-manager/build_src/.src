@@ -1,4 +1,0 @@
-build/production/config/common
-build/production/libpartition
-build/production/api-lib
-controller/src/config/ironic-notification-manager

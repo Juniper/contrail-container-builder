@@ -1,6 +1,0 @@
-vrouter/utils/dkms/gen_build_info.sh /contrail_tools/gen_build_info.sh
-build/production/vrouter/utils/vif /contrail_tools/usr/bin/vif
-vrouter/GPL-2.0.txt  /vrouter_src/GPL-2.0.txt
-vrouter/LICENSE  /vrouter_src/LICENSE
-vrouter/utils/dkms/gen_build_info.sh  /vrouter_src/utils/dkms/gen_build_info.sh
-vrouter/Makefile  /vrouter_src/Makefile
