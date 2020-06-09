@@ -11,7 +11,7 @@ RUN BASE_EXTRA_RPMS=$(echo $BASE_EXTRA_RPMS | tr -d '"' | tr ',' ' ') && \
         echo "INFO: contrail-base: install $BASE_EXTRA_RPMS" ; \
         yum install -y $BASE_EXTRA_RPMS ; \
     fi && \
-    yum install -y iproute less hostname python3 nodejs-0.10.48-1contrail.el7 contrail-web-controller contrail-web-core && \
+    yum install -y iproute less python3 nodejs-0.10.48-1contrail.el7 contrail-web-controller contrail-web-core && \
     yum clean all -y && \
     rm -rf /var/cache/yum && \
     chown -R $CONTRAIL_USER:$CONTRAIL_USER /usr/src/contrail
