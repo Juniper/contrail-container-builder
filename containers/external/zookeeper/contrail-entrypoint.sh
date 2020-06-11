@@ -32,10 +32,37 @@ fi
 
 export ZOO_PORT=${ZOOKEEPER_PORT}
 export ZOO_MY_ID=$my_ord
+if is_enabled $ZOOKEEPER_SSL_ENABLE ; then
+   export SERVER_JVMFLAGS="-Dzookeeper.serverCnxnFactory=org.apache.zookeeper.server.NettyServerCnxnFactory"
+fi
 
 echo "INFO: ZOO_MY_ID=$ZOO_MY_ID, ZOO_PORT=$ZOO_PORT"
 echo "INFO: ZOO_SERVERS=$ZOO_SERVERS"
 echo "INFO: /docker-entrypoint.sh $@"
+
+if is_enabled $ZOOKEEPER_SSL_ENABLE ; then
+  zoo_dir='/usr/local/lib/zookeeper/jks'
+  mkdir -p $zoo_dir
+
+  keytool -keystore ${zoo_dir}/zookeeper.server.truststore.jks \
+          -keypass ${ZOOKEEPER_SSL_KEY_PASSWORD} 
+          -storepass ${ZOOKEEPER_SSL_STORE_PASSWORD} \
+          -noprompt \
+          -alias CARoot -import -file ${ZOOKEEPER_SSL_CACERTFILE}
+  openssl pkcs12 -export -in ${ZOOKEEPER_SSL_CERTFILE} \
+          -inkey ${ZOOKEEPER_SSL_KEYFILE} \
+          -chain -CAfile ${ZOOKEEPER_SSL_CACERTFILE} \
+          -password pass:${ZOOKEEPER_SSL_KEY_PASSWORD}  -name localhost -out TmpFile
+  keytool -importkeystore -deststorepass ${ZOOKEEPER_SSL_KEY_PASSWORD} \
+          -destkeystore ${zoo_dir}/zookeeper.server.keystore.jks \
+          -srcstorepass ${ZOOKEEPER_SSL_STORE_PASSWORD} -srckeystore TmpFile \
+          -srcstoretype PKCS12 -alias localhost
+  keytool -keystore ${zoo_dir}/zookeeper.server.keystore.jks \
+          -keypass ${ZOOKEEPER_SSL_KEY_PASSWORD} 
+          -storepass ${ZOOKEEPER_SSL_STORE_PASSWORD} \
+          -noprompt \
+          -alias CARoot -import -file ${ZOOKEEPER_SSL_CACERTFILE}
+fi
 
 # Zookeeper has a check to validate dataDir and dataLogDir parameters at startup
 # if they are different. So, keeping them same. Details - CEM-9153, CEM-9150
@@ -45,23 +72,45 @@ export ZOO_DATA_LOG_DIR=${CONTRAIL_ZOOKEEPER_DATALOG:-'/data'}
 # Generate the config file
 CONFIG="$ZOO_CONF_DIR/zoo.cfg"
 
-cat > ${CONFIG} << EOM
-clientPort=${ZOO_PORT}
-clientPortAddress=${MY_ZOO_IP}
-dataDir=${ZOO_DATA_DIR}
-dataLogDir=${ZOO_DATA_LOG_DIR}
+if ! is_enabled ${ZOOKEEPER_SSL_ENABLE} ; then
+    cat > ${CONFIG} << EOM
+    clientPort=${ZOO_PORT}
+    clientPortAddress=${MY_ZOO_IP}
+    dataDir=${ZOO_DATA_DIR}
+    dataLogDir=${ZOO_DATA_LOG_DIR}
 
 
-tickTime=${ZOO_TICK_TIME}
-initLimit=${ZOO_INIT_LIMIT}
-syncLimit=${ZOO_SYNC_LIMIT}
+    tickTime=${ZOO_TICK_TIME}
+    initLimit=${ZOO_INIT_LIMIT}
+    syncLimit=${ZOO_SYNC_LIMIT}
 
-maxClientCnxns=${ZOO_MAX_CLIENT_CNXNS}
+    maxClientCnxns=${ZOO_MAX_CLIENT_CNXNS}
 
-admin.enableServer=false
-4lw.commands.whitelist=*
+    admin.enableServer=false
+    4lw.commands.whitelist=*
 
 EOM
+else
+    cat > ${CONFIG} << EOM
+    secureClientPort=${ZOO_PORT}
+    clientPortAddress=${MY_ZOO_IP}
+    dataDir=${ZOO_DATA_DIR}
+    dataLogDir=${ZOO_DATA_LOG_DIR}
+
+    ssl.keyStore.location=${zoo_dir}/zookeeper.server.keystore.jks
+    ssl.keyStore.password=${ZOOKEEPER_SSL_KEY_PASSWORD} 
+    ssl.trustStore.location=${zoo_dir}/zookeeper.server.truststore.jks
+    ssl.trustStore.password=${ZOOKEEPER_SSL_STORE_PASSWORD} 
+
+    tickTime=${ZOO_TICK_TIME}
+    initLimit=${ZOO_INIT_LIMIT}
+    syncLimit=${ZOO_SYNC_LIMIT}
+
+    maxClientCnxns=${ZOO_MAX_CLIENT_CNXNS}
+    admin.enableServer=false
+    4lw.commands.whitelist=*
+EOM
+fi
 
 [ -n "${ZOO_MAX_SESSION_TIMEOUT}" ] && echo "maxSessionTimeout=${ZOO_MAX_SESSION_TIMEOUT}" >> ${CONFIG}
 
