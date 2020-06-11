@@ -101,6 +101,39 @@ echo "log.cleaner.dedupe.buffer.size=${KAFKA_log_cleaner_dedupe_buffer_size}" >>
 echo "offsets.topic.replication.factor=$replication_factor" >> ${CONFIG}
 echo "reserved.broker.max.id=100001" >> ${CONFIG}
 
+if is_enabled $ZOOKEEPER_SSL_ENABLE ; then
+  zoo_dir='/usr/local/lib/zookeeper/jks'
+  mkdir -p $zoo_dir
+
+  keytool -keystore ${zoo_dir}/zookeeper.server.truststore.jks \
+          -keypass ${ZOOKEEPER_SSL_KEY_PASSWORD} 
+          -storepass ${ZOOKEEPER_SSL_STORE_PASSWORD} \
+          -noprompt \
+          -alias CARoot -import -file ${ZOOKEEPER_SSL_CACERTFILE}
+  openssl pkcs12 -export -in ${ZOOKEEPER_SSL_CERTFILE} \
+          -inkey ${ZOOKEEPER_SSL_KEYFILE} \
+          -chain -CAfile ${ZOOKEEPER_SSL_CACERTFILE} \
+          -password pass:${ZOOKEEPER_SSL_KEY_PASSWORD}  -name localhost -out TmpFile
+  keytool -importkeystore -deststorepass ${ZOOKEEPER_SSL_KEY_PASSWORD} \
+          -destkeystore ${zoo_dir}/zookeeper.server.keystore.jks \
+          -srcstorepass ${ZOOKEEPER_SSL_STORE_PASSWORD} -srckeystore TmpFile \
+          -srcstoretype PKCS12 -alias localhost
+  keytool -keystore ${zoo_dir}/zookeeper.server.keystore.jks \
+          -keypass ${ZOOKEEPER_SSL_KEY_PASSWORD} 
+          -storepass ${ZOOKEEPER_SSL_STORE_PASSWORD} \
+          -noprompt \
+          -alias CARoot -import -file ${ZOOKEEPER_SSL_CACERTFILE}
+
+  export KAFKA_OPTS="
+    -Dzookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty
+    -Dzookeeper.client.secure=true
+    -Dzookeeper.ssl.keyStore.location=${zoo_dir}/zookeeper.server.keystore.jks
+    -Dzookeeper.ssl.keyStore.password=${ZOOKEEPER_SSL_KEY_PASSWORD}
+    -Dzookeeper.ssl.trustStore.location=${zoo_dir}/zookeeper.server.truststore.jks
+    -Dzookeeper.ssl.trustStore.password=${ZOOKEEPER_SSL_STORE_PASSWORD} 
+    "
+fi
+
 # Container is run under root, so
 # here it is needed to upgrade owner for kafka files
 chown -R $KAFKA_USER:$KAFKA_GROUP "$KAFKA_DIR" "$KAFKA_CONF_DIR" "$LOG_DIR"
