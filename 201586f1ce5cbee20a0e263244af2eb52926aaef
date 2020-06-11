@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "496e6420_264d9e73",
+        "filename": "kubernetes/manifests/contrail-standalone-kubernetes.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 535,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-06-11T14:07:46Z",
+      "side": 1,
+      "message": "is it still required?",
+      "range": {
+        "startLine": 535,
+        "startChar": 6,
+        "endLine": 535,
+        "endChar": 28
+      },
+      "revId": "201586f1ce5cbee20a0e263244af2eb52926aaef",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
