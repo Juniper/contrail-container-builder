@@ -1530,6 +1530,8 @@ spec:
           name: agent-logs
         - mountPath: /mnt
           name: var-run
+        - mountPath: /var/lib/contrail/loadbalancer
+          name: lb-nodemgr
       - name: contrail-agent-provisioner
         image: "{{CONTRAIL_REGISTRY}}/contrail-provisioner:{{CONTRAIL_CONTAINER_TAG}}"
         imagePullPolicy: ""
@@ -1591,6 +1593,9 @@ spec:
       - name: host-etc-contrail
         hostPath:
           path: /etc/contrail
+      - mountPath: lb-nodemgr
+        hostPath:
+          path: /var/lib/contrail/loadbalancer
 
 # Meta information section
 ---
