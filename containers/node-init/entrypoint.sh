@@ -6,6 +6,8 @@ ret=0
 
 /contrail-status-init.sh || ret=1
 
+/contrail-tools-init.sh || ret=1
+
 /certs-init.sh || ret=1
 
 /files-init.sh || ret=1
