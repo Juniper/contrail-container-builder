@@ -59,7 +59,8 @@ for server in "${server_list[@]}"; do
 done
 
 zk_list="${zk_server_list::-1}"
-if [[ `echo ${#server_list[@]}` -gt 1 ]] ; then
+zk_list_size=${#server_list[@]}
+if [[ $zk_list_size -gt 1 ]] ; then
   replication_factor=2
 else
   replication_factor=1
@@ -90,9 +91,15 @@ sed -i "s/^#log.retention.bytes=.*$/log.retention.bytes=$KAFKA_log_retention_byt
 sed -i "s/^log.retention.hours=.*$/log.retention.hours=$KAFKA_log_retention_hours/g" ${CONFIG}
 sed -i "s/^log.segment.bytes=.*$/log.segment.bytes=$KAFKA_log_segment_bytes/g" ${CONFIG}
 sed -i "s/^num.partitions=.*$/num.partitions=30/g" ${CONFIG}
-sed -i "s/^default.replication.factor=.*/default.replication.factor=$replication_factor/g" ${CONFIG}
 
 echo " " >> ${CONFIG}
+if [[ $zk_list_size -eq 2 ]] ; then
+  (grep -q '^default.replication.factor' ${CONFIG} && sed -i 's|^default.replication.factor=.*$|default.replication.factor=2|' ${CONFIG}) || echo "default.replication.factor=2" >> ${CONFIG}
+fi
+if [[ $zk_list_size -gt 2 ]] ; then
+  (grep -q '^default.replication.factor' ${CONFIG} && sed -i 's|^default.replication.factor=.*$|default.replication.factor=3|' ${CONFIG}) || echo "default.replication.factor=3" >> ${CONFIG}
+  (grep -q '^min.insync.replicas' ${CONFIG} && sed -i 's|^min.insync.replicas=.*$|min.insync.replicas=2|' ${CONFIG}) || echo "min.insync.replicas=2" >> ${CONFIG}
+fi
 echo "log.cleanup.policy=${KAFKA_log_cleanup_policy}" >> ${CONFIG}
 echo "log.cleaner.threads=${KAFKA_log_cleaner_threads}" >> ${CONFIG}
 echo "log.cleaner.dedupe.buffer.size=${KAFKA_log_cleaner_dedupe_buffer_size}" >> ${CONFIG}
