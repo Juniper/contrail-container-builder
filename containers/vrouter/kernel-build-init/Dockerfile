@@ -27,7 +27,7 @@ COPY *.repo /etc/yum.repos.d/
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
-    apt-get install -y --no-install-recommends yum yum-utils rpm2cpio cpio dkms && \
+    apt-get install -y --no-install-recommends yum yum-utils rpm2cpio cpio dkms ca-certificates && \
     yum install -y contrail-vrouter-source && \
     mkdir -p /opt/contrail/src /contrail_tools && \
     mv /usr/src/* /opt/contrail/src/ && \
@@ -39,7 +39,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     cd .. && \
     yum clean all -y && \
     rm -rf /var/cache/yum && \
-    apt-get purge -y yum yum-utils rpm2cpio cpio && \
+    apt-get purge -y yum yum-utils rpm2cpio cpio ca-certificates && \
     apt-get autoremove -y
 
 COPY dkms.conf /opt/contrail/src/
