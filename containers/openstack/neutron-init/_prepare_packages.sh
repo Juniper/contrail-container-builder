@@ -3,7 +3,7 @@
 # download all requried version of package python-neutron-lbaas
 # appropriate version based on OPENSTACK_VERSION will be chosen and installed at runtime
 
-if [[ "$LINUX_DISTR" == 'rhel'* ]]; then
+if [[ "$LINUX_DISTR" =~ 'rhel' || "$LINUX_DISTR" =~ 'ubi' ]]; then
   # RedHat has own packages installed in neutron container - do not store it for RHEL
   exit 0
 fi

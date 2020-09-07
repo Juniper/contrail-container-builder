@@ -23,9 +23,14 @@ fi
 
 # target platform info
 export LINUX_DISTR=${LINUX_DISTR:-centos}
-declare -A _target_linux_ver_ids
-_target_linux_ver_ids=([centos]='7' [rhel7]='latest')
-export LINUX_DISTR_VER=${LINUX_DISTR_VER:-${_target_linux_ver_ids[$LINUX_DISTR]}}
+export LINUX_DISTR_VER=${LINUX_DISTR_VER:-}
+if [[ -z "$LINUX_DISTR_VER" ]] ; then
+  if [[ "$LINUX_DISTR" =~ 'centos' ]] ; then
+    LINUX_DISTR_VER=7
+  else
+    LINUX_DISTR_VER='latest'
+  fi
+fi
 
 # ubuntu version for vrouter kernel build init and mellanox ubuntu containers
 export UBUNTU_DISTR=${UBUNTU_DISTR:-ubuntu}
@@ -76,7 +81,7 @@ export GENERAL_EXTRA_RPMS=${GENERAL_EXTRA_RPMS-""}
 export BASE_EXTRA_RPMS=${BASE_EXTRA_RPMS-"https://repos.fedorapeople.org/repos/openstack/openstack-queens/rdo-release-queens-1.noarch.rpm"}
 export DOCKER_REPO=${DOCKER_REPO:-'https://download.docker.com/linux/centos/docker-ce.repo'}
 export YUM_ENABLE_REPOS=${YUM_ENABLE_REPOS:-}
-if [[ "$LINUX_DISTR" == 'rhel'* ]] ; then
+if [[ "$LINUX_DISTR" =~ 'rhel' ]] ; then
   export RHEL_FORCE_REGISTRATION=${RHEL_FORCE_REGISTRATION:-'false'}
   export RHEL_USER_NAME=${RHEL_USER_NAME:-}
   export RHEL_USER_PASSWORD=${RHEL_USER_PASSWORD:-}
@@ -232,7 +237,7 @@ export REDIS_SSL_CACERTFILE=${REDIS_SSL_CACERTFILE-${SERVER_CA_CERTFILE}}
 # VRouter kernel module init image.
 if [[ "$VROUTER_DPDK" == True ]] ; then
     export VROUTER_KERNEL_INIT_IMAGE='contrail-vrouter-kernel-init-dpdk'
-elif [[ "$LINUX_DISTR" == 'ubuntu' ]] ; then
+elif [[ "$LINUX_DISTR" =~ 'ubuntu' ]] ; then
     export VROUTER_KERNEL_INIT_IMAGE='contrail-vrouter-kernel-build-init'
 else
     export VROUTER_KERNEL_INIT_IMAGE='contrail-vrouter-kernel-init'
