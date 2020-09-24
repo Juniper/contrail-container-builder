@@ -10,7 +10,7 @@ LABEL name=$CONTAINER_NAME \
 RUN   yum install -y git && \
       git config --global http.lowSpeedLimit 1000 && \
       git config --global http.lowSpeedTime 350 && \
-      git clone --single-branch https://github.com/Juniper/contrail-controller.git && \
+      git clone --single-branch https://github.com/Juniper/contrail-controller.git contrail-controller -b R2005 && \
       cd contrail-controller/src/stats && \
       python setup.py install --no-compile && \
       yum autoremove -y git && \
