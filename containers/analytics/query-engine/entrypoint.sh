@@ -3,6 +3,7 @@
 source /common.sh
 
 pre_start_init
+wait_redis_certs_if_ssl_enabled
 
 hostip=$(get_listen_ip_for_node ANALYTICSDB)
 hostname=$(resolve_hostname_by_ip $hostip)
