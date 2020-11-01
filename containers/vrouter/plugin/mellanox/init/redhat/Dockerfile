@@ -8,6 +8,9 @@ LABEL name=$CONTAINER_NAME \
       summary="Mellanox plugin for RedHat" \
       description="DPDK Mellanox kernel module for RedHat."
 
+#Hack remove tpc repo files from base container
+RUN rm /etc/yum.repos.d/tpc*
+
 # this copy should be before yum install
 COPY *.repo /etc/yum.repos.d/
 
