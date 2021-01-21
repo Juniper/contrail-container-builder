@@ -1,4 +1,4 @@
-FROM haproxy:1.7
+FROM haproxy:1.7.11
 ARG VENDOR_NAME
 ARG VENDOR_DOMAIN
 
