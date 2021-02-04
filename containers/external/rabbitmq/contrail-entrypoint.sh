@@ -122,7 +122,7 @@ EOF
 fi
 
 cat << EOF >> /etc/rabbitmq/rabbitmq.config
-              {cluster_partition_handling, autoheal},
+              {cluster_partition_handling, ${RABBITMQ_CLUSTER_PARTITION_HANDLING}},
               {loopback_users, []},
               {cluster_nodes, {[${cluster_nodes::-1}], disc}},
               {vm_memory_high_watermark, 0.8},
