@@ -1,8 +1,5 @@
 #!/bin/bash -ex
 
-# linux distro here always centos for now
-lib_path='/usr/lib/python2.7/site-packages'
-
 # some containers with neutron-server have neutron_lbaas and some don't.
 # and we can't check presense of this library inside neutron-server in init contrainer.
 # due to this fact we may need to bring own version of neutron-lbaas into neutron-server container.
@@ -23,11 +20,17 @@ function copy_sources() {
   done
 }
 
-mkdir -p /opt/plugin/site-packages
+mkdir -p /opt/plugin/site-packages /opt/plugin/python3/site-packages
+
+# python3
+cp -rf /opt/contrail_python3/site-packages/* /opt/plugin/python3/site-packages/
+
+# python2
 cp -rf /opt/contrail/site-packages/* /opt/plugin/site-packages/
 
 # install appropriate version of python-neutron-lbaas based on OPENSTACK_VERSION
-pkg=$(ls -1 /opt/packages/ | grep python-neutron-lbaas-$OPENSTACK_VERSION)
+# do not fail grep if packages are absent
+pkg=$(ls -1 /opt/packages/ | grep python-neutron-lbaas-$OPENSTACK_VERSION || /bin/true)
 if [[ -z "$pkg" ]]; then
   # rhel case
   echo "INFO: package couldn't be found for this version: $pkg_version. Available packages:"
