@@ -8,8 +8,12 @@ LABEL name=$CONTAINER_NAME \
       summary="Contrail Device Manager" \
       description="Contrail Device Manager is used to manage network devices in the Contrail system."
 
+<<<<<<< HEAD   (511b0c changes done to pin haproxy img version to fix CE-10114)
 RUN curl https://bootstrap.pypa.io/get-pip.py | python2 - 'pip==20.1' && \
     pip install --no-compile \
+=======
+RUN pip install --no-compile \
+>>>>>>> CHANGE (bf3846 move pip installation to config-base to be able to install c)
         "markdown==3.1.1" \
         "markupSafe==1.1.1" \
         "ansible==2.6.13" \
