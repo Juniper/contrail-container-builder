@@ -8,7 +8,7 @@ LABEL name=$CONTAINER_NAME \
       summary="Contrail Device Manager" \
       description="Contrail Device Manager is used to manage network devices in the Contrail system."
 
-RUN curl https://bootstrap.pypa.io/get-pip.py | python2 - 'pip==20.1' && \
+RUN curl https://bootstrap.pypa.io/pip/get-pip.py | python2 - 'pip==20.1' && \
     pip install --no-compile \
         "markdown==3.1.1" \
         "markupSafe==1.1.1" \
