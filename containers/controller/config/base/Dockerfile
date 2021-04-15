@@ -5,7 +5,8 @@ ARG VENDOR_DOMAIN
 ENV VENDOR_DOMAIN=$VENDOR_DOMAIN
 ARG CONTRAIL_BUILD_FROM_SOURCE
 
-RUN sed -e '/^tsflags=nodocs/d' -i /etc/yum.conf && \
+RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py | python2 - 'pip==20.1' && \
+    sed -e '/^tsflags=nodocs/d' -i /etc/yum.conf && \
     if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]]; then \
       yum install -y contrail-config contrail-config-openstack && \
       yum clean all -y && \
