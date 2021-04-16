@@ -9,7 +9,8 @@ LABEL name=$CONTAINER_NAME \
       description="Contrail Device Manager is used to manage network devices in the Contrail system."
 
 # git rpm cannot be remove as it removes contrail-utils, and common by deps
-RUN pip install --no-compile \
+RUN curl https://bootstrap.pypa.io/2.7/get-pip.py | python2 - 'pip==20.1' && \
+    pip install --no-compile \
         "markdown==3.1.1" \
         "markupSafe==1.1.1" \
         "ansible==2.6.13" \
