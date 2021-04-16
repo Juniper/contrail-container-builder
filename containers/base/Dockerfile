@@ -24,7 +24,7 @@ RUN BASE_EXTRA_RPMS=$(echo $BASE_EXTRA_RPMS | tr -d '"' | tr ',' ' ') && \
         [ -d /etc/pki/rpm-gpg ] && rpm --import /etc/pki/rpm-gpg/* ; \
     fi && \
     yum install -y iproute less hostname python2-setuptools && \
-    curl https://bootstrap.pypa.io/2.7/get-pip.py | python2 - 'pip==20.1' && \
+    curl https://bootstrap.pypa.io/pip/2.7/get-pip.py | python2 - 'pip==20.1' && \
     if [[ -z "$CONTRAIL_BUILD_FROM_SOURCE" ]] ; then \
       yum install -y contrail-lib contrail-setup contrail-utils python-contrail ; \
     fi && \
