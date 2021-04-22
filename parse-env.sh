@@ -36,6 +36,18 @@ fi
 export UBUNTU_DISTR=${UBUNTU_DISTR:-ubuntu}
 export UBUNTU_DISTR_VERSION=${UBUNTU_DISTR_VER:-18.04}
 
+# Use docker internal proxy registry
+export CASSANDRA_DISTR=${CASSANDRA_DISTR:-'cassandra'}
+export CASSANDRA_DISTR_VERSION=${CASSANDRA_DISTR_VERSION:-'3.11.3'}
+export HAPROXY_DISTR=${HAPROXY_DISTR:-'haproxy'}
+export HAPROXY_DISTR_VERSION=${HAPROXY_DISTR_VERSION:-'1.7'}
+export RABBITMQ_DISTR=${RABBITMQ_DISTR:-'rabbitmq'}
+export RABBITMQ_DISTR_VERSION=${RABBITMQ_DISTR_VERSION:-'3.7.20-management'}
+export REDIS_DISTR=${REDIS_DISTR:-'redis'}
+export REDIS_DISTR_VERSION=${REDIS_DISTR_VERSION:-'4.0.14'}
+export ZOOKEEPER_DISTR=${ZOOKEEPER_DISTR:-'zookeeper'}
+export ZOOKEEPER_DISTR_VERSION=${ZOOKEEPER_DISTR_VERSION:-'3.4.14'}
+
 # build platform info
 export LINUX_ID=$linux_id
 export LINUX_VER_ID=$linux_ver_id
