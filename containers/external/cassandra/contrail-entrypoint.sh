@@ -108,6 +108,7 @@ EOF
   cat >/root/.cqlshrc << EOM
 [ssl]
 certfile = $CASSANDRA_SSL_CA_CERTFILE
+version = SSLv23
 EOM
 
 fi
