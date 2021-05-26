@@ -96,6 +96,11 @@ function process_container() {
       -e "s|^FROM \${CONTRAIL_REGISTRY}/\([^:]*\):\${CONTRAIL_CONTAINER_TAG}|FROM ${CONTRAIL_REGISTRY}/\1:${tag}|" \
       -e "s|^FROM \$LINUX_DISTR:\$LINUX_DISTR_VER|FROM $LINUX_DISTR:$LINUX_DISTR_VER|" \
       -e "s|^FROM \$UBUNTU_DISTR:\$UBUNTU_DISTR_VERSION|FROM $UBUNTU_DISTR:$UBUNTU_DISTR_VERSION|" \
+      -e "s|^FROM \$CASSANDRA_DISTR:\$CASSANDRA_DISTR_VERSION|FROM $CASSANDRA_DISTR:$CASSANDRA_DISTR_VERSION|" \
+      -e "s|^FROM \$HAPROXY_DISTR:\$HAPROXY_DISTR_VERSION|FROM $HAPROXY_DISTR:$HAPROXY_DISTR_VERSION|" \
+      -e "s|^FROM \$RABBITMQ_DISTR:\$RABBITMQ_DISTR_VERSION|FROM $RABBITMQ_DISTR:$RABBITMQ_DISTR_VERSION|" \
+      -e "s|^FROM \$REDIS_DISTR:\$REDIS_DISTR_VERSION|FROM $REDIS_DISTR:$REDIS_DISTR_VERSION|" \
+      -e "s|^FROM \$ZOOKEEPER_DISTR:\$ZOOKEEPER_DISTR_VERSION|FROM $ZOOKEEPER_DISTR:$ZOOKEEPER_DISTR_VERSION|" \
       ${docker_file}.nofromargs
     docker_file="${docker_file}.nofromargs"
   fi
@@ -111,6 +116,16 @@ function process_container() {
   build_arg_opts+=" --build-arg UBUNTU_DISTR=${UBUNTU_DISTR}"
   build_arg_opts+=" --build-arg VENDOR_NAME=${VENDOR_NAME}"
   build_arg_opts+=" --build-arg VENDOR_DOMAIN=${VENDOR_DOMAIN}"
+  build_arg_opts+=" --build-arg CASSANDRA_DISTR=${CASSANDRA_DISTR}"
+  build_arg_opts+=" --build-arg CASSANDRA_DISTR_VERSION=${CASSANDRA_DISTR_VERSION}"
+  build_arg_opts+=" --build-arg HAPROXY_DISTR=${HAPROXY_DISTR}"
+  build_arg_opts+=" --build-arg HAPROXY_DISTR_VERSION=${HAPROXY_DISTR_VERSION}"
+  build_arg_opts+=" --build-arg RABBITMQ_DISTR=${RABBITMQ_DISTR}"
+  build_arg_opts+=" --build-arg RABBITMQ_DISTR_VERSION=${RABBITMQ_DISTR_VERSION}"
+  build_arg_opts+=" --build-arg REDIS_DISTR=${REDIS_DISTR}"
+  build_arg_opts+=" --build-arg REDIS_DISTR_VERSION=${REDIS_DISTR_VERSION}"
+  build_arg_opts+=" --build-arg ZOOKEEPER_DISTR=${ZOOKEEPER_DISTR}"
+  build_arg_opts+=" --build-arg ZOOKEEPER_DISTR_VERSION=${ZOOKEEPER_DISTR_VERSION}"
   if [[ ! -z "$CONTRAIL_BUILD_FROM_SOURCE" ]]; then
     build_arg_opts+=" --build-arg CONTRAIL_BUILD_FROM_SOURCE=${CONTRAIL_BUILD_FROM_SOURCE}"
   fi
