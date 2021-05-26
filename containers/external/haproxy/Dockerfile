@@ -1,10 +1,6 @@
-<<<<<<< HEAD   (2f574a fix url for get-pip.py)
-FROM haproxy:1.7.11
-=======
 ARG HAPROXY_DISTR=haproxy
 ARG HAPROXY_DISTR_VERSION=1.7
 FROM $HAPROXY_DISTR:$HAPROXY_DISTR_VERSION
->>>>>>> CHANGE (1fac35 Build external container passing ARG's)
 ARG VENDOR_NAME
 ARG VENDOR_DOMAIN
 
