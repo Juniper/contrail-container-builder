@@ -36,6 +36,7 @@ http_server_ip=$(get_introspect_listen_ip_for_node CONFIG)
 log_file=$CONTAINER_LOG_DIR/contrail-api.log
 log_level=$LOG_LEVEL
 log_local=$LOG_LOCAL
+trace_file=$CONTAINER_LOG_DIR/vnc_openstack-${index}.err
 list_optimization_enabled=${CONFIG_API_LIST_OPTIMIZATION_ENABLED:-True}
 auth=$AUTH_MODE
 aaa_mode=$AAA_MODE
