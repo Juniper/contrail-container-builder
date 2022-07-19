@@ -8,17 +8,34 @@ LABEL name=$CONTAINER_NAME \
       summary="Contrail Device Manager" \
       description="Contrail Device Manager is used to manage network devices in the Contrail system."
 
-RUN curl https://bootstrap.pypa.io/get-pip.py | python2 - 'pip==20.1' && \
-    pip install "inflection>=0.3.1" "jxmlease>=1.0.1" "ncclient==0.6.3" "junos-eznc>=2.1.7,<=2.2.0" "timeout_decorator>=0.4.0" "python-jsonschema-objects>=0.3.3" "jsnapy>=1.3.2" "ansible==2.6.13" "cffi<1.13" && \
-    ansible-galaxy install Juniper.junos && \
-    yum install -y iputils && \
+RUN pip install --no-compile \
+        "markdown==3.1.1" \
+        "markupSafe==1.1.1" \
+        "ansible==2.6.13" \
+        "colorama==0.4.3" \
+        "configparser==4.0.2" \
+        "icdiff==1.9.1" \
+        "inflection==0.3.1" \
+        "jinja2==2.11.1" \
+        "jsnapy==1.3.2" \
+        "junos-eznc==2.5.4" \
+        "jxmlease==1.0.1" \
+        "lxml==4.5.0" \
+        "ncclient==0.6.3" \
+        "pyserial==3.4" \
+        "python-jsonschema-objects==0.3.12" \
+        "scp==0.13.2" \
+        "selectors2==2.0.1" \
+        "timeout-decorator==0.4.1" &&  \
+    yum install -y git iputils && \
+    ansible-galaxy install Juniper.junos,2.3.0 && \
     yum clean all -y && \
     rm -rf /var/cache/yum
 
 COPY entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/usr/bin/python","/usr/bin/contrail-device-manager","--conf_file","/etc/contrail/contrail-device-manager.conf","--conf_file","/etc/contrail/contrail-keystone-auth.conf"]
+CMD ["/usr/bin/contrail-device-manager", "--conf_file", "/etc/contrail/contrail-device-manager.conf", "--conf_file", "/etc/contrail/contrail-keystone-auth.conf"]
 
 ENV SERVICE_NAME=device-manager
 LABEL $VENDOR_DOMAIN".service"=$SERVICE_NAME
