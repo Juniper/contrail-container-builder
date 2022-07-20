@@ -1,4 +1,6 @@
-FROM cassandra:3.11.3
+ARG CASSANDRA_DISTR=cassandra
+ARG CASSANDRA_DISTR_VERSION=3.11.3
+FROM $CASSANDRA_DISTR:$CASSANDRA_DISTR_VERSION
 ARG VENDOR_NAME
 ARG VENDOR_DOMAIN
 
@@ -16,7 +18,8 @@ RUN mkdir /licenses
 COPY __licensing.txt /licenses/licensing.txt
 
 COPY *.sh /
-RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done'
+RUN bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done' && \
+   /upgrade_pkgs.sh
 
 ENTRYPOINT ["/contrail-entrypoint.sh"]
 CMD ["cassandra", "-f"]

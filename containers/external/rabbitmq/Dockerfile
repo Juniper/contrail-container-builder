@@ -1,4 +1,6 @@
-FROM rabbitmq:3.6.10-management
+ARG RABBITMQ_DISTR=rabbitmq
+ARG RABBITMQ_DISTR_VERSION=3.7.20-management
+FROM $RABBITMQ_DISTR:$RABBITMQ_DISTR_VERSION
 ARG VENDOR_NAME
 ARG VENDOR_DOMAIN
 
@@ -11,18 +13,28 @@ LABEL vendor=$VENDOR_NAME \
       summary="Contrail RabbitMQ" \
       description="Contrail Rabbitmq is the message bus that different Contrail processes subscribe to."
 
+# These definitions are just for build purposes and must not be changed at runtime
+ENV CONTRAIL_GID=1999 \
+    CONTRAIL_USER=contrail
+
+
 # Add required license as text file in Liceses directory
 RUN mkdir /licenses
 COPY __licensing.txt /licenses/licensing.txt
 
+COPY *.sh hostname_to_ip /
+
 # due to changes in debian repos apt-transport-https is needed for
 # update but it can't be installed without update. thus error in
 # first update should be ignored.
-RUN apt-get update || /bin/true && \
-         apt-get -fy install bind9-host xxd
 
-COPY *.sh hostname_to_ip /
-RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done'
+RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done' && \
+    export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update || /bin/true && \
+    apt-get -fy install bind9-host xxd && \
+    /upgrade_pkgs.sh && \
+    groupadd --gid $CONTRAIL_GID --system $CONTRAIL_USER && \
+    usermod -a -G $CONTRAIL_GID rabbitmq
 
 ENTRYPOINT ["/contrail-entrypoint.sh"]
 CMD ["rabbitmq-server"]

@@ -1,5 +1,6 @@
-FROM haproxy:1.7
-ARG VENDOR_NAME
+ARG CASSANDRA_DISTR=cassandra
+ARG CASSANDRA_DISTR_VERSION=3.11.3
+FROM $CASSANDRA_DISTR:$CASSANDRA_DISTR_VERSION
 ARG VENDOR_DOMAIN
 
 ARG CONTAINER_NAME
@@ -17,13 +18,10 @@ COPY __licensing.txt /licenses/licensing.txt
 
 COPY *.sh /
 
-ENV HAPROXY_GID=1999
-ENV HAPROXY_UID=1999
 ENV HAPROXY_USER=haproxy
 
 RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done' && \
-    groupadd --gid $HAPROXY_GID --system $HAPROXY_USER && \
-    useradd --uid $HAPROXY_UID --no-create-home --shell /sbin/nologin --system --gid $HAPROXY_GID $HAPROXY_USER
+   /upgrade_pkgs.sh
 
 ENTRYPOINT ["/contrail-entrypoint.sh"]
 CMD ["haproxy", "-f", "/usr/local/etc/haproxy/haproxy.cfg"]

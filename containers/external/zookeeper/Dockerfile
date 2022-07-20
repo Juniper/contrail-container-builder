@@ -1,4 +1,6 @@
-FROM zookeeper:3.4.10
+ARG ZOOKEEPER_DISTR=zookeeper
+ARG ZOOKEEPER_DISTR_VERSION=3.4.14
+FROM $ZOOKEEPER_DISTR:$ZOOKEEPER_DISTR_VERSION
 ARG VENDOR_NAME
 ARG VENDOR_DOMAIN
 
@@ -11,12 +13,19 @@ LABEL vendor=$VENDOR_NAME \
       summary="Contrail Zookeeper" \
       description="Contrail uses the Apache ZooKeeper process to maintain synchronization of Contrail configuration, analytics and database running on the different instances of controllers."
 
+# These definitions are just for build purposes and must not be changed at runtime
+ENV CONTRAIL_GID=1999 \
+    CONTRAIL_USER=contrail
+
 # Add required license as text file in Liceses directory
 RUN mkdir /licenses
 COPY __licensing.txt /licenses/licensing.txt
 
 COPY *.sh hostname_to_ip /
-RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done'
+RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done' && \
+    /upgrade_pkgs.sh && \
+    groupadd --gid $CONTRAIL_GID --system $CONTRAIL_USER && \
+    usermod -a -G $CONTRAIL_GID zookeeper
 
 ENTRYPOINT ["/contrail-entrypoint.sh"]
 CMD ["zkServer.sh", "start-foreground"]

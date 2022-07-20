@@ -23,13 +23,31 @@ fi
 
 # target platform info
 export LINUX_DISTR=${LINUX_DISTR:-centos}
-declare -A _target_linux_ver_ids
-_target_linux_ver_ids=([centos]='7.4.1708')
-export LINUX_DISTR_VER=${LINUX_DISTR_VER:-${_target_linux_ver_ids[$LINUX_DISTR]}}
+export LINUX_DISTR_VER=${LINUX_DISTR_VER:-}
+if [[ -z "$LINUX_DISTR_VER" ]] ; then
+  if [[ "$LINUX_DISTR" =~ 'centos' ]] ; then
+    LINUX_DISTR_VER=7
+  else
+    LINUX_DISTR_VER='latest'
+  fi
+fi
+
 
 # ubuntu version for vrouter kernel build init and mellanox ubuntu containers
 export UBUNTU_DISTR=${UBUNTU_DISTR:-ubuntu}
-export UBUNTU_DISTR_VERSION=${UBUNTU_DISTR_VER:-16.04}
+export UBUNTU_DISTR_VERSION=${UBUNTU_DISTR_VER:-18.04}
+
+# Use docker internal proxy registry
+export CASSANDRA_DISTR=${CASSANDRA_DISTR:-'cassandra'}
+export CASSANDRA_DISTR_VERSION=${CASSANDRA_DISTR_VERSION:-'3.11.3'}
+export HAPROXY_DISTR=${HAPROXY_DISTR:-'haproxy'}
+export HAPROXY_DISTR_VERSION=${HAPROXY_DISTR_VERSION:-'1.7'}
+export RABBITMQ_DISTR=${RABBITMQ_DISTR:-'rabbitmq'}
+export RABBITMQ_DISTR_VERSION=${RABBITMQ_DISTR_VERSION:-'3.7.20-management'}
+export REDIS_DISTR=${REDIS_DISTR:-'redis'}
+export REDIS_DISTR_VERSION=${REDIS_DISTR_VERSION:-'4.0.14'}
+export ZOOKEEPER_DISTR=${ZOOKEEPER_DISTR:-'zookeeper'}
+export ZOOKEEPER_DISTR_VERSION=${ZOOKEEPER_DISTR_VERSION:-'3.4.14'}
 
 # build platform info
 export LINUX_ID=$linux_id
@@ -40,13 +58,24 @@ if [[ $HOST_IP == 'auto' ]] ; then
   export HOST_IP=`ip address show dev $default_interface | head -3 | tail -1 | tr "/" " " | awk '{print $2}'`
 fi
 
-export CONTRAIL_VERSION=${CONTRAIL_VERSION:-'4.1.0.0-8'}
-export K8S_VERSION=${K8S_VERSION:-'1.11.2'}
-export OPENSTACK_VERSION=${OPENSTACK_VERSION:-'queens'}
-default_tag="${CONTRAIL_VERSION}"
-export CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG:-$default_tag}
+# To enable installation Contrail from sources set this variable to
+# the root of build dir on host, e.g. /root/contrail
+# It should be root created by scons.
+# (SRC_ROOT - is used as default to inherit value from TF CI)
+export CONTRAIL_SOURCE=${CONTRAIL_SOURCE:-'/root/contrail'}
+export CONTRAIL_BUILDER_DIR=${CONTRAIL_BUILDER_DIR:-$CONTRAIL_SOURCE'/contrail-container-builder'}
+# Flag to switch to build from sources
+export CONTRAIL_BUILD_FROM_SOURCE=${CONTRAIL_BUILD_FROM_SOURCE:-}
 
-default_packages_url="https://s3-us-west-2.amazonaws.com/contrailrhel7/contrail-install-packages-${CONTRAIL_VERSION}.el7.noarch.rpm"
+export K8S_VERSION=${K8S_VERSION:-'1.15.4'}
+
+export OPENSTACK_VERSION=${OPENSTACK_VERSION:-'queens'}
+# CONTRAIL_VERSION is depricated.
+# For Compatibility with Juniper CI. Will be removed.
+[ -z "$CONTRAIL_CONTAINER_TAG" ] && [ -n "$CONTRAIL_VERSION" ] && CONTRAIL_CONTAINER_TAG=$CONTRAIL_VERSION
+export CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG:-'dev'}
+
+default_packages_url="https://s3-us-west-2.amazonaws.com/contrailrhel7/contrail-install-packages-${CONTRAIL_CONTAINER_TAG}.el7.noarch.rpm"
 export CONTRAIL_INSTALL_PACKAGES_URL=${CONTRAIL_INSTALL_PACKAGES_URL:-$default_packages_url}
 export CONTRAIL_REGISTRY=${CONTRAIL_REGISTRY:-'auto'}
 export CONTRAIL_REGISTRY_PUSH=${CONTRAIL_REGISTRY_PUSH:-1}
@@ -56,17 +85,17 @@ if [[ $CONTRAIL_REGISTRY == 'auto' ]] ; then
   export CONTRAIL_REGISTRY="${default_registry_ip}:5000"
 fi
 if [[ $CONTRAIL_REPOSITORY == 'auto' ]] ; then
-  export CONTRAIL_REPOSITORY="http://${default_registry_ip}/${CONTRAIL_VERSION}"
+  export CONTRAIL_REPOSITORY="http://${default_registry_ip}/${CONTRAIL_CONTAINER_TAG}"
 fi
 export CONTRAIL_PARALLEL_BUILD=${CONTRAIL_PARALLEL_BUILD:-'false'}
 export CONTRAIL_KEEP_LOG_FILES=${CONTRAIL_KEEP_LOG_FILES:-'false'}
 
-export GENERAL_EXTRA_RPMS=${GENERAL_EXTRA_RPMS:-""}
+export GENERAL_EXTRA_RPMS=${GENERAL_EXTRA_RPMS-""}
 # use some stable OpenStack repo for Contrail's dependencies
-export BASE_EXTRA_RPMS=${BASE_EXTRA_RPMS:-"https://repos.fedorapeople.org/repos/openstack/openstack-queens/rdo-release-queens-1.noarch.rpm"}
+export BASE_EXTRA_RPMS=${BASE_EXTRA_RPMS-"https://repos.fedorapeople.org/repos/openstack/openstack-queens/rdo-release-queens-1.noarch.rpm"}
 export DOCKER_REPO=${DOCKER_REPO:-'https://download.docker.com/linux/centos/docker-ce.repo'}
 export YUM_ENABLE_REPOS=${YUM_ENABLE_REPOS:-}
-if [[ "$LINUX_DISTR" == 'rhel'* ]] ; then
+if [[ "$LINUX_DISTR" =~ 'rhel' ]] ; then
   export RHEL_FORCE_REGISTRATION=${RHEL_FORCE_REGISTRATION:-'false'}
   export RHEL_USER_NAME=${RHEL_USER_NAME:-}
   export RHEL_USER_PASSWORD=${RHEL_USER_PASSWORD:-}
@@ -91,6 +120,9 @@ if [[ "$LINUX_DISTR" == 'rhel'* ]] ; then
         ;;
       rocky)
         rhel_os_repo_num='14'
+        ;;
+	  stein)
+        rhel_os_repo_num='15'
         ;;
       *)
         echo "ERROR: unsupported OS $OPENSTACK_VERSION for RHEL"
@@ -142,8 +174,11 @@ export KUBERNETES_API_SECURE_PORT=${KUBERNETES_API_SECURE_PORT:-'6443'}
 
 export DPDK_UIO_DRIVER=${DPDK_UIO_DRIVER:-'uio_pci_generic'}
 export CPU_CORE_MASK=${CPU_CORE_MASK:-'0x01'}
+export SERVICE_CORE_MASK=${SERVICE_CORE_MASK:-}
+export DPDK_CTRL_THREAD_MASK=${DPDK_CTRL_THREAD_MASK:-}
 export HUGE_PAGES=${HUGE_PAGES:-""}
 export NIC_OFFLOAD_ENABLE=${NIC_OFFLOAD_ENABLE:-False}
+export JVM_EXTRA_OPTS=${JVM_EXTRA_OPTS:-'-Xms1g -Xmx2g'}
 
 #TLS options
 export SSL_ENABLE=${SSL_ENABLE:-False}
@@ -162,6 +197,11 @@ export CONFIG_API_SSL_ENABLE=${CONFIG_API_SSL_ENABLE:-${SSL_ENABLE}}
 export CONFIG_API_SERVER_CERTFILE=${CONFIG_API_SERVER_CERTFILE:-${SERVER_CERTFILE}}
 export CONFIG_API_SERVER_KEYFILE=${CONFIG_API_SERVER_KEYFILE:-${SERVER_KEYFILE}}
 export CONFIG_API_SERVER_CA_CERTFILE=${CONFIG_API_SERVER_CA_CERTFILE:-${SERVER_CA_CERTFILE}}
+export ANALYTICS_API_SSL_ENABLE=${ANALYTICS_API_SSL_ENABLE:-${SSL_ENABLE}}
+export ANALYTICS_API_SSL_INSECURE=${ANALYTICS_API_SSL_INSECURE:-${SSL_INSECURE}}
+export ANALYTICS_API_SERVER_CERTFILE=${ANALYTICS_API_SERVER_CERTFILE:-${SERVER_CERTFILE}}
+export ANALYTICS_API_SERVER_KEYFILE=${ANALYTICS_API_SERVER_KEYFILE:-${SERVER_KEYFILE}}
+export ANALYTICS_API_SERVER_CA_CERTFILE=${ANALYTICS_API_SERVER_CA_CERTFILE:-${SERVER_CA_CERTFILE}}
 
 export INTROSPECT_SSL_ENABLE=${INTROSPECT_SSL_ENABLE:-${SSL_ENABLE}}
 export INTROSPECT_SSL_INSECURE=${INTROSPECT_SSL_INSECURE:-${SSL_INSECURE}}
@@ -209,7 +249,7 @@ export REDIS_SSL_CACERTFILE=${REDIS_SSL_CACERTFILE-${SERVER_CA_CERTFILE}}
 # VRouter kernel module init image.
 if [[ "$VROUTER_DPDK" == True ]] ; then
     export VROUTER_KERNEL_INIT_IMAGE='contrail-vrouter-kernel-init-dpdk'
-elif [[ "$LINUX_DISTR" == 'ubuntu' ]] ; then
+elif [[ "$LINUX_DISTR" =~ 'ubuntu' ]] ; then
     export VROUTER_KERNEL_INIT_IMAGE='contrail-vrouter-kernel-build-init'
 else
     export VROUTER_KERNEL_INIT_IMAGE='contrail-vrouter-kernel-init'
