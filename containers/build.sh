@@ -38,10 +38,11 @@ function append_log_file() {
 }
 
 log "Target platform: $LINUX_DISTR:$LINUX_DISTR_VER"
+[ -n ${CONTRAIL_BUILD_FROM_SOURCE} ] && log "Contrail source root: $CONTRAIL_SOURCE" && log "Contrail builder root: $CONTRAIL_BUILDER_DIR"
+log "Contrail container tag: $CONTRAIL_CONTAINER_TAG"
 log "Contrail version: $CONTRAIL_VERSION"
 log "Contrail registry: $CONTRAIL_REGISTRY"
 log "Contrail repository: $CONTRAIL_REPOSITORY"
-log "Contrail container tag: $CONTRAIL_CONTAINER_TAG"
 log "Contrail generic base extra rpms: $GENERAL_EXTRA_RPMS"
 log "Contrail base extra rpms: $BASE_EXTRA_RPMS"
 log "yum additional repos to enable: $YUM_ENABLE_REPOS"
@@ -54,7 +55,7 @@ if [ -n "$opts" ]; then
   log "Options: $opts"
 fi
 
-docker_ver=$(docker -v | awk -F' ' '{print $3}' | sed 's/,//g')
+docker_ver=$(sudo docker -v | awk -F' ' '{print $3}' | sed 's/,//g')
 log "Docker version: $docker_ver"
 
 was_errors=0
@@ -73,14 +74,21 @@ function process_container() {
     return
   fi
   local start_time=$(date +"%s")
+  # if variable CONTRAIL_CONTAINER_NAME has been set up - use its value as builded container name
+  # use CONTRAIL_CONTAINER_NAME for build the only conainer
+  if [[ -z "${CONTRAIL_CONTAINER_NAME}" ]] ; then
   local container_name=`echo ${dir#"./"} | tr "/" "-"`
   local container_name="contrail-${container_name}"
+  else
+    local container_name=${CONTRAIL_CONTAINER_NAME}
+  fi
+  
   local tag="${CONTRAIL_CONTAINER_TAG}"
 
   local logfile='build-'$container_name'.log'
   log "Building $container_name" | append_log_file $logfile true
   
-  local build_arg_opts=''
+  local build_arg_opts='--network host'
   if [[ "$docker_ver" < '17.06' ]] ; then
     # old docker can't use ARG-s before FROM:
     # comment all ARG-s before FROM
@@ -90,6 +98,11 @@ function process_container() {
       -e "s|^FROM \${CONTRAIL_REGISTRY}/\([^:]*\):\${CONTRAIL_CONTAINER_TAG}|FROM ${CONTRAIL_REGISTRY}/\1:${tag}|" \
       -e "s|^FROM \$LINUX_DISTR:\$LINUX_DISTR_VER|FROM $LINUX_DISTR:$LINUX_DISTR_VER|" \
       -e "s|^FROM \$UBUNTU_DISTR:\$UBUNTU_DISTR_VERSION|FROM $UBUNTU_DISTR:$UBUNTU_DISTR_VERSION|" \
+	   -e "s|^FROM \$CASSANDRA_DISTR:\$CASSANDRA_DISTR_VERSION|FROM $CASSANDRA_DISTR:$CASSANDRA_DISTR_VERSION|" \
+      -e "s|^FROM \$HAPROXY_DISTR:\$HAPROXY_DISTR_VERSION|FROM $HAPROXY_DISTR:$HAPROXY_DISTR_VERSION|" \
+      -e "s|^FROM \$RABBITMQ_DISTR:\$RABBITMQ_DISTR_VERSION|FROM $RABBITMQ_DISTR:$RABBITMQ_DISTR_VERSION|" \
+      -e "s|^FROM \$REDIS_DISTR:\$REDIS_DISTR_VERSION|FROM $REDIS_DISTR:$REDIS_DISTR_VERSION|" \
+      -e "s|^FROM \$ZOOKEEPER_DISTR:\$ZOOKEEPER_DISTR_VERSION|FROM $ZOOKEEPER_DISTR:$ZOOKEEPER_DISTR_VERSION|" \
       ${docker_file}.nofromargs
     docker_file="${docker_file}.nofromargs"
   fi
@@ -105,36 +118,95 @@ function process_container() {
   build_arg_opts+=" --build-arg UBUNTU_DISTR=${UBUNTU_DISTR}"
   build_arg_opts+=" --build-arg VENDOR_NAME=${VENDOR_NAME}"
   build_arg_opts+=" --build-arg VENDOR_DOMAIN=${VENDOR_DOMAIN}"
+  build_arg_opts+=" --build-arg CASSANDRA_DISTR=${CASSANDRA_DISTR}"
+  build_arg_opts+=" --build-arg CASSANDRA_DISTR_VERSION=${CASSANDRA_DISTR_VERSION}"
+  build_arg_opts+=" --build-arg HAPROXY_DISTR=${HAPROXY_DISTR}"
+  build_arg_opts+=" --build-arg HAPROXY_DISTR_VERSION=${HAPROXY_DISTR_VERSION}"
+  build_arg_opts+=" --build-arg RABBITMQ_DISTR=${RABBITMQ_DISTR}"
+  build_arg_opts+=" --build-arg RABBITMQ_DISTR_VERSION=${RABBITMQ_DISTR_VERSION}"
+  build_arg_opts+=" --build-arg REDIS_DISTR=${REDIS_DISTR}"
+  build_arg_opts+=" --build-arg REDIS_DISTR_VERSION=${REDIS_DISTR_VERSION}"
+  build_arg_opts+=" --build-arg ZOOKEEPER_DISTR=${ZOOKEEPER_DISTR}"
+  build_arg_opts+=" --build-arg ZOOKEEPER_DISTR_VERSION=${ZOOKEEPER_DISTR_VERSION}"
+  if [[ ! -z "$CONTRAIL_BUILD_FROM_SOURCE" ]]; then
+    build_arg_opts+=" --build-arg CONTRAIL_BUILD_FROM_SOURCE=${CONTRAIL_BUILD_FROM_SOURCE}"
+  fi
 
   if [[ -f ./$dir/.externals ]]; then
     local item=''
     for item in `cat ./$dir/.externals` ; do
+	  [ -z "$item" ] && continue
       local src=`echo $item | cut -d ':' -f 1`
       local dst=`echo $item | cut -d ':' -f 2`
+	  if [[ -z "$src" || -z "$dst" ]] ; then
+        err "Building $container_name failed, invalid format of ./$dir/.externals" 2>&1 | append_log_file $logfile true
+        was_errors=1
+        return $exit_code
+      fi
       rsync -r --exclude $dst --exclude-from='../.gitignore' ./$dir/$src ./$dir/$dst 2>&1 | append_log_file $logfile
     done
   fi
 
-  docker build -t ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} \
-               -t ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag} \
+  log "Building args: $build_arg_opts" | append_log_file $logfile true
+  local target_name="${CONTRAIL_REGISTRY}/${container_name}:${tag}"
+  sudo docker build -t $target_name \
     ${build_arg_opts} -f $docker_file ${opts} $dir 2>&1 | append_log_file $logfile
+  exit_code=${PIPESTATUS[0]}
   local duration=$(date +"%s")
   (( duration -= start_time ))
   log "Docker build duration: $duration seconds" | append_log_file $logfile
-  exit_code=${PIPESTATUS[0]}
-  if [ $exit_code -eq 0 -a ${CONTRAIL_REGISTRY_PUSH} -eq 1 ]; then
-    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${tag} 2>&1 | append_log_file $logfile
+    local abs_build_src_path=${CONTRAIL_BUILDER_DIR}/containers/${dir##./}/build_src
+  log "Contrail build dir ${CONTRAIL_BUILDER_DIR}" | append_log_file $logfile
+  log "Abs build src path is ${abs_build_src_path}" | append_log_file $logfile
+  local relative_build_src_path=${dir}/build_src
+  if [[ ${exit_code} -eq 0 && ! -z "$CONTRAIL_BUILD_FROM_SOURCE" && -e ${relative_build_src_path} ]]; then
+    # Setup from source
+    # RHEL has old docker that doesnt support neither staged build nor mount option
+    # 'RUN --mount' (still experimental at the moment of writting this comment).
+    # So, ther is WA: previously build image is empty w/o RPMs but with all
+    # other stuff required, so, now the final step to run a intermediate container,
+    # install components inside and commit is as the final image.
+    local cmd=$(sudo docker inspect -f "{{json .Config.Cmd }}" ${target_name} )
+    local entrypoint=$(sudo docker inspect -f "{{json .Config.Entrypoint }}" ${target_name} )
+    local intermediate_base="${container_name}-src"
+    local run_arguments="--name $intermediate_base --network host \
+       -e "CONTRAIL_SOURCE=${CONTRAIL_SOURCE}" \
+       -e "LINUX_DISTR=${LINUX_DISTR}" \
+       -v ${CONTRAIL_SOURCE}:${CONTRAIL_SOURCE} \
+       -v ${abs_build_src_path}:/build_src \
+       -v ${CONTRAIL_BUILDER_DIR}/containers/build_from_src.sh:/setup.sh \
+       --entrypoint /setup.sh \
+      ${target_name}"
+    log "Run command is \"Docker run ${run_arguments}\"" | append_log_file $logfile
+    sudo docker run ${run_arguments} 2>&1 | append_log_file $logfile
     exit_code=${PIPESTATUS[0]}
-    # temporary workaround; to be removed when all other components switch to new tags
-    docker push ${CONTRAIL_REGISTRY}'/'${container_name}:${OPENSTACK_VERSION}-${tag} 2>&1 | append_log_file $logfile
+    if [ ${exit_code} -eq 0 ]; then
+      sudo docker commit \
+        --change "CMD $cmd" \
+        --change "ENTRYPOINT $entrypoint" \
+        $intermediate_base $intermediate_base 2>&1 | append_log_file $logfile
+      exit_code=${PIPESTATUS[0]}
+      # retag containers
+      [ ${exit_code} -eq 0 ] && sudo docker tag $intermediate_base ${target_name} || exit_code=1
+    fi
+    local duration_src=$(date +"%s")
+    (( duration_src -= duration ))
+    log "Docker build from source duration: $duration_src seconds" | append_log_file $logfile
+  fi
+
+  if [ $exit_code -eq 0 -a ${CONTRAIL_REGISTRY_PUSH} -eq 1 ]; then
+    sudo docker push $target_name 2>&1 | append_log_file $logfile
+    exit_code=${PIPESTATUS[0]}
+    
   fi
   duration=$(date +"%s")
   (( duration -= start_time ))
   if [ ${exit_code} -eq 0 ]; then
+    log "Building $container_name finished successfully, duration: $duration seconds" | append_log_file $logfile true
     if [[ "${CONTRAIL_KEEP_LOG_FILES,,}" != 'true' ]] ; then
       rm -f $logfile
     fi
-    log "Building $container_name finished successfully, duration: $duration seconds" | append_log_file $logfile true
+    
   else
     err "Building $container_name failed, duration: $duration seconds" 2>&1 | append_log_file $logfile true
     was_errors=1
