@@ -23,7 +23,7 @@ RUN mkdir /licenses
 COPY __licensing.txt /licenses/licensing.txt
 
 COPY *.sh hostname_to_ip /
-
+RUN chmod 0755 upgrade_pkgs.sh
 # due to changes in debian repos apt-transport-https is needed for
 # update but it can't be installed without update. thus error in
 # first update should be ignored.

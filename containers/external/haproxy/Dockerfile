@@ -17,6 +17,7 @@ RUN mkdir /licenses
 COPY __licensing.txt /licenses/licensing.txt
 
 COPY *.sh /
+RUN chmod 0755 upgrade_pkgs.sh
 
 ENV HAPROXY_USER=haproxy
 
