@@ -22,6 +22,9 @@ RUN mkdir /licenses
 COPY __licensing.txt /licenses/licensing.txt
 
 COPY *.sh hostname_to_ip /
+
+RUN chmod 0755 /upgrade_pkgs.sh
+
 RUN /bin/bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done' && \
     /upgrade_pkgs.sh && \
     groupadd --gid $CONTRAIL_GID --system $CONTRAIL_USER && \
