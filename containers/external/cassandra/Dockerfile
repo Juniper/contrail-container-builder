@@ -18,6 +18,7 @@ RUN mkdir /licenses
 COPY __licensing.txt /licenses/licensing.txt
 
 COPY *.sh /
+RUN chmod 0755 upgrade_pkgs.sh
 RUN bash -c 'for item in `ls /__*` ; do mv $item /${item:3} ; done' && \
    /upgrade_pkgs.sh
 
