@@ -35,4 +35,3 @@ apt-get -y install libpython-stdlib libpython2.7 libpython2.7-minimal
 apt-get -y install lsof mime-support pciutils python
 apt-get -y install python-libxml2 python-minimal python2.7 python2.7-minimal
 apt-get -y install sgml-base xml-core
-apt-get -y install libicu55
