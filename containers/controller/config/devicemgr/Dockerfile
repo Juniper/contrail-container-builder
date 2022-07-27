@@ -8,6 +8,12 @@ LABEL name=$CONTAINER_NAME \
       summary="Contrail Device Manager" \
       description="Contrail Device Manager is used to manage network devices in the Contrail system."
 
+RUN set -xe \
+    && yum update \
+    && yum install python3-pip -y \
+    && yum install python-pip -y \
+    && pip --version
+
 RUN pip install --no-compile \
         "markdown==3.1.1" \
         "markupSafe==1.1.1" \
