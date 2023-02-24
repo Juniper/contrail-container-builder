@@ -12,12 +12,6 @@ RUN BASE_EXTRA_RPMS=$(echo $BASE_EXTRA_RPMS | tr -d '"' | tr ',' ' ') && \
         echo "INFO: contrail-base: install $BASE_EXTRA_RPMS" ; \
         yum install -y $BASE_EXTRA_RPMS ; \
     fi && \
-    python2 -m pip install remote-pdb && \
-    source /etc/os-release && \
-    if [[ "$ID" == 'rhel' && "${PLATFORM_ID//*:/}" == 'el8' ]] ; then \
-        python2 -m pip install --no-compile "gevent==1.1.2"  "greenlet<2.0.0" && \
-        yum install -y python-kazoo python2-requests ; \
-    fi && \
     yum install -y iproute less hostname python3 python3-setuptools contrail-lib contrail-setup contrail-utils python-contrail && \
     yum clean all -y && \
     rm -rf /var/cache/yum && \
